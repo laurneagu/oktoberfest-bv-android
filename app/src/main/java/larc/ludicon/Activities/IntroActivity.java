@@ -95,6 +95,7 @@ public class IntroActivity extends Activity {
                 updateUI();
             }
         };
+        updateUI();
     }
 
     /**
