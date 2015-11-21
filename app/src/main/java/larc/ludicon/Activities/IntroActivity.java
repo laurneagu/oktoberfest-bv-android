@@ -53,6 +53,7 @@ public class IntroActivity extends Activity {
 
     private CallbackManager callbackManager;
     private ProfileTracker profileTracker;
+    private ProfilePictureView profilePictureView;
     private IConnectionChecker connectionChecker;
     private UserCredentials credentials;
     private TextView greeting;
@@ -87,7 +88,10 @@ public class IntroActivity extends Activity {
         LoginButton login_button = (LoginButton)findViewById(R.id.login_button);
         login_button.setReadPermissions(Arrays.asList("public_profile","email","user_friends"));
 
+        profilePictureView = (ProfilePictureView) findViewById(R.id.profilePictureIntro);
+        profilePictureView.setVisibility(View.INVISIBLE);
         greeting = (TextView) findViewById(R.id.greeting);
+        greeting.setVisibility(View.INVISIBLE);
 
         profileTracker = new ProfileTracker() {
             @Override
@@ -129,8 +133,14 @@ public class IntroActivity extends Activity {
 
         if (accessToken != null && profile != null) // if user has successfully logged in
         {
+            profilePictureView.setDrawingCacheEnabled(true);
+            profilePictureView.setProfileId(profile.getId());
+            profilePictureView.setVisibility(View.VISIBLE);
+
             LoginButton login_button = (LoginButton) findViewById(R.id.login_button);
             login_button.setVisibility(View.INVISIBLE);
+
+            greeting.setVisibility(View.VISIBLE);
             greeting.setText(getString(R.string.hello_user, profile.getFirstName()));
 
             credentials = new UserCredentials(profile.getName(), "facebook");
