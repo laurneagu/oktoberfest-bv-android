@@ -158,6 +158,7 @@ public class IntroActivity extends Activity {
 
                     // No shared preferences
                     if(id == "") {
+                        UserIdSave.setInfotoSharedPref(profile.getFirstName(), profile.getLastName(),profile.getId(),getApplicationContext());
                         // TODO check if it's registered, in our database
                         // TODO something if not registered in our database
                         jumpToMainActivity();

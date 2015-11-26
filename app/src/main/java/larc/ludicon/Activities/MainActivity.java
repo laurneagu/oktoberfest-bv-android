@@ -1,6 +1,7 @@
 package larc.ludicon.Activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -12,6 +13,7 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.widget.LoginButton;
 
 import larc.ludicon.R;
+import larc.ludicon.SharedPreferences.UserIdSave;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,7 +26,11 @@ public class MainActivity extends AppCompatActivity {
         fakeLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // logout from facebook
                 LoginManager.getInstance().logOut();
+                //clear SharedPreferences when logout
+                UserIdSave.clearFromSharedPref(getApplicationContext());
+                //go back to IntroActivity
                 Intent goToIntro = new Intent(getApplicationContext(), IntroActivity.class);
                 goToIntro.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(goToIntro);
