@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,6 +34,8 @@ import com.facebook.FacebookAuthorizationException;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.appevents.AppEventsLogger;
@@ -46,6 +49,8 @@ import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareDialog;
+
+import org.json.JSONObject;
 
 import java.util.Arrays;
 
@@ -69,6 +74,25 @@ public class IntroActivity extends Activity {
                 new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
+
+                        GraphRequest request = GraphRequest.newMeRequest(
+                                loginResult.getAccessToken(),
+                                new GraphRequest.GraphJSONObjectCallback() {
+                                    @Override
+                                    public void onCompleted(
+                                            JSONObject object,
+                                            GraphResponse response) {
+                                        // If user has no shared preferences
+                                        if(UserIdSave.getIdFromSharedPref(getApplicationContext()) == "" ) {
+                                            Profile profile = Profile.getCurrentProfile();
+                                            UserIdSave.setInfotoSharedPref(profile.getFirstName(), profile.getLastName(), profile.getId(), object.optString("email"), getApplicationContext());
+                                        }
+                                    }
+                                });
+                        Bundle parameters = new Bundle();
+                        parameters.putString("fields", "id,name,email");
+                        request.setParameters(parameters);
+                        request.executeAsync();
                         updateUI();
                     }
 
@@ -86,7 +110,7 @@ public class IntroActivity extends Activity {
         setContentView(R.layout.activity_intro);
 
         LoginButton login_button = (LoginButton)findViewById(R.id.login_button);
-        login_button.setReadPermissions(Arrays.asList("public_profile","email","user_friends"));
+        login_button.setReadPermissions(Arrays.asList("public_profile, email, user_friends"));
 
         profilePictureView = (ProfilePictureView) findViewById(R.id.profilePictureIntro);
         profilePictureView.setVisibility(View.INVISIBLE);
@@ -96,6 +120,25 @@ public class IntroActivity extends Activity {
         profileTracker = new ProfileTracker() {
             @Override
             protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
+                GraphRequest request = GraphRequest.newMeRequest(
+                        AccessToken.getCurrentAccessToken(),
+                        new GraphRequest.GraphJSONObjectCallback() {
+                            @Override
+                            public void onCompleted(
+                                    JSONObject object,
+                                    GraphResponse response) {
+                                // If user has no shared preferences
+                                if(UserIdSave.getIdFromSharedPref(getApplicationContext()) == "") {
+
+                                    Profile profile = Profile.getCurrentProfile();
+                                    UserIdSave.setInfotoSharedPref(profile.getFirstName(), profile.getLastName(), profile.getId(),object.optString("email"), getApplicationContext());
+                                }
+                            }
+                        });
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "id,name,email");
+                request.setParameters(parameters);
+                request.executeAsync();
                 updateUI();
             }
         };
@@ -109,12 +152,12 @@ public class IntroActivity extends Activity {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
-                // Actions to do after 1 seconds
+                // Actions to do after 5 seconds
                 Intent goToNextActivity = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(goToNextActivity);
                 finish();
             }
-        }, 5000); // delay time for transition to next activity -> insert any time wanted here instead of 5000
+        }, 5000); // Delay time for transition to next activity -> insert any time wanted here instead of 5000
     }
 
 
@@ -125,7 +168,7 @@ public class IntroActivity extends Activity {
         return connectionChecker.isNetworkAvailable(getApplicationContext());
     }
 
-    // Facebook
+    // Update UI
     private void updateUI() {
 
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
@@ -146,30 +189,18 @@ public class IntroActivity extends Activity {
             credentials = new UserCredentials(profile.getName(), "facebook");
             UserCredentials.setUserCredentialsInstance(credentials);
 
-            if(credentials != null) { // if not the first log in
+            if(credentials != null) { // Not the first log in
 
                 AccessToken.getCurrentAccessToken().getPermissions();
 
-                // check internet connection
+                // Check internet connection
                 if(isNetworkConnected()){
+                    // TODO : Check if registered in database. If not -> add it.  
+                    jumpToMainActivity();
 
-                    User curr_user = new User(profile.getFirstName(), profile.getLastName(),profile.getId(),"facebook");
-                    String id = UserIdSave.getIdFromSharedPref(getApplicationContext());
-
-                    // No shared preferences
-                    if(id == "") {
-                        UserIdSave.setInfotoSharedPref(profile.getFirstName(), profile.getLastName(),profile.getId(),getApplicationContext());
-                        // TODO check if it's registered, in our database
-                        // TODO something if not registered in our database
-                        jumpToMainActivity();
-                    }
-                    else{
-                        credentials.setId(id);
-                        jumpToMainActivity();
-                    }
                 }
                 else{
-                    //TODO something if Network not connected
+                    // TODO something if Network not connected
                 }
             }
 

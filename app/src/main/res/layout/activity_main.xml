@@ -4,13 +4,14 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="larc.ludicon.Activities.MainActivity">
+    tools:context="larc.ludicon.Activities.MainActivity"
+    android:background="#70ffe1">
 
     <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/textView2"
         android:layout_centerVertical="true"
-        android:layout_alignLeft="@+id/fakeLoginButton"
-        android:layout_alignStart="@+id/fakeLoginButton" />
+        android:layout_centerHorizontal="true" />
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -19,5 +20,15 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="78dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cine sunt?"
+        android:id="@+id/PopUpbutton"
+        android:layout_marginBottom="104dp"
+        android:layout_above="@+id/textView2"
+        android:layout_alignLeft="@+id/textView2"
+        android:layout_alignStart="@+id/textView2" />
 
 </RelativeLayout>

@@ -1,5 +1,6 @@
 package larc.ludicon.Activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
@@ -14,14 +15,21 @@ import com.facebook.login.widget.LoginButton;
 
 import larc.ludicon.R;
 import larc.ludicon.SharedPreferences.UserIdSave;
+import larc.ludicon.Utils.Popup;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        Button popupButton = (Button)findViewById(R.id.PopUpbutton);
+        popupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this,Popup.class));
+            }
+        });
         Button fakeLogin = (Button)findViewById(R.id.fakeLoginButton);
         fakeLogin.setOnClickListener(new View.OnClickListener() {
             @Override

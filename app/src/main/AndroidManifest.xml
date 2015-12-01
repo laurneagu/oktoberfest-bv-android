@@ -19,6 +19,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".Utils.Popup"
+            android:theme="@style/AppTheme.CustomTheme"
+        ></activity>
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
@@ -30,8 +33,7 @@
             android:value="@string/facebook_app_id" />
 
         <activity
-            android:name=".Activities.MainActivity"
-            android:label="@string/title_activity_main" >
+            android:name=".Activities.MainActivity" >
         </activity>
     </application>
 
