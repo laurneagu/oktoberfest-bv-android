@@ -195,7 +195,7 @@ public class IntroActivity extends Activity {
 
                 // Check internet connection
                 if(isNetworkConnected()){
-                    // TODO : Check if registered in database. If not -> add it.  
+                    // TODO : Check if registered in database. If not -> add it.
                     jumpToMainActivity();
 
                 }
