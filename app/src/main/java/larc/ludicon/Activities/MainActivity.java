@@ -40,12 +40,12 @@ public class MainActivity extends Activity {
 //        This is an example (add a user to cloud) - we should do the same:
 
         ParseUser user = new ParseUser();
-        user.setUsername("bulaDePeMarte2");
+        user.setUsername("bulaDPeMarte");
         user.setPassword("MartianaMea");
-        user.setEmail("martianuxxx@marte.mr");
+        user.setEmail("martianuxxax@marte.mr");
 
 // other fields can be set just like with ParseObject
-        user.put("phone", "650-555-0000");
+        user.put("phone", "650-555-0010");
 
         user.signUpInBackground(new SignUpCallback() {
             public void done(ParseException e) {

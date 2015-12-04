@@ -1,8 +1,11 @@
 package larc.ludicon.Utils.CloudConnection;
 
 /**
+ * Cloud Connection class
+ *
  * Created by Andrei on 12/4/2015.
  */
 public interface CloudConnection {
 
+    public void initialize();
 }
