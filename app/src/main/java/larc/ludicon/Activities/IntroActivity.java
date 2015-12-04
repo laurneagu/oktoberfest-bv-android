@@ -51,7 +51,6 @@ public class IntroActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        User.clear(getApplicationContext());
         super.onCreate(savedInstanceState);
 
         //CloudConnection cloudConnection = new ParseConnection(this,"7ynxx7uuHFrR4b5tEDDv3yEOPIFhcjsdSIUfDGxh", "sVYUFfdDYLmuqhxU9pxSVvdxRioC3jurlNJb41cw");
@@ -59,8 +58,6 @@ public class IntroActivity extends Activity {
 
         // Facebook init
         FacebookSdk.sdkInitialize(getApplicationContext());
-        if( LoginManager.getInstance() != null)
-            LoginManager.getInstance().logOut();
         callbackManager = CallbackManager.Factory.create();
         LoginManager.getInstance().registerCallback(callbackManager,
                 new FacebookCallback<LoginResult>() {
