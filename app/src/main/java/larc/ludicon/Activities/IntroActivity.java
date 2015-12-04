@@ -53,9 +53,6 @@ public class IntroActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //CloudConnection cloudConnection = new ParseConnection(this,"7ynxx7uuHFrR4b5tEDDv3yEOPIFhcjsdSIUfDGxh", "sVYUFfdDYLmuqhxU9pxSVvdxRioC3jurlNJb41cw");
-        //cloudConnection.initialize();
-
         // Facebook init
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
@@ -73,15 +70,10 @@ public class IntroActivity extends Activity {
                                             GraphResponse response) {
 
                                         Profile profile = Profile.getCurrentProfile();
-                                        if(profile == null) {
-                                            profileTracker.startTracking();
-                                        }
                                         // If user has no shared preferences
-                                        if(User.getId(getApplicationContext()) == ""&&profile!=null){
+                                        if(User.getId(getApplicationContext()) == ""&& profile!= null){
                                             User.setInfo(profile.getFirstName(), profile.getLastName(), profile.getId(), object.optString("email"), getApplicationContext());
-
                                             User.setPassword("facebook", getApplicationContext());
-                                            Log.v("LOGINEntry", "A intrat" + User.getEmail(getApplicationContext()) + " " + User.getLastName(getApplicationContext()));
                                         }
                                     }
                                 });
@@ -187,31 +179,14 @@ public class IntroActivity extends Activity {
             greeting.setVisibility(View.VISIBLE);
             greeting.setText(getString(R.string.hello_user, profile.getFirstName()));
 
-
-            // Not the first log in
-            if( User.getId(getApplicationContext()) !=null && User.getId(getApplicationContext()) != ""  ) {
-                AccessToken.getCurrentAccessToken().getPermissions();
-                jumpToMainActivity();
-            }
-            // First login
-            else{
-
-                // Check internet connection
-                if(isNetworkConnected()){
-
-
-
-                    jumpToMainActivity();
-                }
-                else{
-                    // TODO something if Network not connected
-                }
-            }
+            jumpToMainActivity();
+            
 
         }      else { // Login FAILED
                     greeting.setText("");
         }
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

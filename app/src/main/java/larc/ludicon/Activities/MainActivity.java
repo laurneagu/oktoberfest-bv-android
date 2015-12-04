@@ -29,10 +29,6 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         Button popupButton = (Button)findViewById(R.id.PopUpbutton);
 
-          /* Initialize Parse connection */
-         //Parse.initialize(this, "7ynxx7uuHFrR4b5tEDDv3yEOPIFhcjsdSIUfDGxh", "sVYUFfdDYLmuqhxU9pxSVvdxRioC3jurlNJb41cw");
-
-
         try{
             ParseUser.logIn(User.getEmail(getApplicationContext()),User.getPassword(getApplicationContext()));
         }catch(ParseException e){ // User doesn't exist
