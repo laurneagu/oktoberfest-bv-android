@@ -16,7 +16,10 @@ public class User {
 
     public static final String password = "pass";
     public static void setPassword(String i_password, Context context){
-        // TODO
+        SharedPreferences sharedPref = context.getSharedPreferences(mfilename, 0);
+        SharedPreferences.Editor edit = sharedPref.edit();
+        edit.putString(password, i_password);
+        edit.commit();
     }
     public static String getPassword(Context context){
         SharedPreferences sharedPref = context.getSharedPreferences(mfilename, 0);
