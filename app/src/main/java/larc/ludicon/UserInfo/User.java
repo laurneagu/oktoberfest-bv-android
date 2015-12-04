@@ -1,4 +1,4 @@
-package larc.ludicon.SharedPreferences;
+package larc.ludicon.UserInfo;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 /**
  * Created by Ciprian on 11/18/2015.
  */
-public class UserIdSave {
+public class User {
     private static String mfilename = "UserDetails";
     private static String mUserId = "Id";
     public static final String firstName = "firstName";

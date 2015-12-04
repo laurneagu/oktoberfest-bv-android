@@ -2,8 +2,6 @@ package larc.ludicon.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,14 +9,13 @@ import android.view.View;
 import android.widget.Button;
 
 import com.facebook.login.LoginManager;
-import com.facebook.login.widget.LoginButton;
 import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
 import larc.ludicon.R;
-import larc.ludicon.SharedPreferences.UserIdSave;
+import larc.ludicon.UserInfo.User;
 import larc.ludicon.Utils.Popup;
 
 public class MainActivity extends Activity {
@@ -43,7 +40,7 @@ public class MainActivity extends Activity {
 //        This is an example (add a user to cloud) - we should do the same:
 
         ParseUser user = new ParseUser();
-        user.setUsername("bulaDePeMarte");
+        user.setUsername("bulaDePeMarte2");
         user.setPassword("MartianaMea");
         user.setEmail("martianuxxx@marte.mr");
 
@@ -69,8 +66,8 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 // logout from facebook
                 LoginManager.getInstance().logOut();
-                //clear SharedPreferences when logout
-                UserIdSave.clearFromSharedPref(getApplicationContext());
+                //clear UserInfo when logout
+                User.clearFromSharedPref(getApplicationContext());
                 //go back to IntroActivity
                 Intent goToIntro = new Intent(getApplicationContext(), IntroActivity.class);
                 goToIntro.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

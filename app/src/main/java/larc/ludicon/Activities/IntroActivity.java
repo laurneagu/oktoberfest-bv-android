@@ -1,27 +1,16 @@
 package larc.ludicon.Activities;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
-import android.provider.Settings;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import larc.ludicon.R;
-import larc.ludicon.SharedPreferences.UserIdSave;
-import larc.ludicon.SqlConnection.User;
+import larc.ludicon.UserInfo.User;
 import larc.ludicon.Utils.ConnectionChecker.IConnectionChecker;
 import larc.ludicon.Utils.ConnectionChecker.ConnectionChecker;
 import larc.ludicon.Utils.UserCredentials;
@@ -30,25 +19,16 @@ import larc.ludicon.Utils.UserCredentials;
 import com.facebook.FacebookSdk;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
-import com.facebook.FacebookAuthorizationException;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
-import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.facebook.login.widget.ProfilePictureView;
-import com.facebook.share.ShareApi;
-import com.facebook.share.Sharer;
-import com.facebook.share.model.ShareLinkContent;
-import com.facebook.share.model.SharePhoto;
-import com.facebook.share.model.SharePhotoContent;
-import com.facebook.share.widget.ShareDialog;
 
 import org.json.JSONObject;
 
@@ -83,9 +63,9 @@ public class IntroActivity extends Activity {
                                             JSONObject object,
                                             GraphResponse response) {
                                         // If user has no shared preferences
-                                        if(UserIdSave.getIdFromSharedPref(getApplicationContext()) == "" ) {
+                                        if(User.getIdFromSharedPref(getApplicationContext()) == "" ) {
                                             Profile profile = Profile.getCurrentProfile();
-                                            UserIdSave.setInfotoSharedPref(profile.getFirstName(), profile.getLastName(), profile.getId(), object.optString("email"), getApplicationContext());
+                                            User.setInfotoSharedPref(profile.getFirstName(), profile.getLastName(), profile.getId(), object.optString("email"), getApplicationContext());
                                         }
                                     }
                                 });
@@ -128,10 +108,10 @@ public class IntroActivity extends Activity {
                                     JSONObject object,
                                     GraphResponse response) {
                                 // If user has no shared preferences
-                                if(UserIdSave.getIdFromSharedPref(getApplicationContext()) == "") {
+                                if(User.getIdFromSharedPref(getApplicationContext()) == "") {
 
                                     Profile profile = Profile.getCurrentProfile();
-                                    UserIdSave.setInfotoSharedPref(profile.getFirstName(), profile.getLastName(), profile.getId(),object.optString("email"), getApplicationContext());
+                                    User.setInfotoSharedPref(profile.getFirstName(), profile.getLastName(), profile.getId(), object.optString("email"), getApplicationContext());
                                 }
                             }
                         });

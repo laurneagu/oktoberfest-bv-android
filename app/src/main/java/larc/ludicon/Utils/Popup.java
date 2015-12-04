@@ -6,7 +6,7 @@ import android.util.DisplayMetrics;
 import android.widget.TextView;
 
 import larc.ludicon.R;
-import larc.ludicon.SharedPreferences.UserIdSave;
+import larc.ludicon.UserInfo.User;
 
 /**
  * Created by Ciprian on 12/1/2015.
@@ -25,11 +25,11 @@ public class Popup extends Activity{
         // Set the Popup Window proportional to width,height
         getWindow().setLayout((int)(width*0.8),(int)(height*0.8));
         TextView firstName = (TextView)findViewById(R.id.textView1);
-        firstName.setText(UserIdSave.getFirstName(getApplicationContext()));
+        firstName.setText(User.getFirstName(getApplicationContext()));
         TextView lastName = (TextView)findViewById(R.id.textView2);
-        lastName.setText(UserIdSave.getLastName(getApplicationContext()));
+        lastName.setText(User.getLastName(getApplicationContext()));
         TextView email = (TextView)findViewById(R.id.textView3);
-        email.setText(UserIdSave.getEmail(getApplicationContext()));
+        email.setText(User.getEmail(getApplicationContext()));
     }
 
 }
