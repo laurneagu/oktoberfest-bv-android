@@ -31,6 +31,7 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.facebook.login.widget.ProfilePictureView;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
@@ -119,7 +120,8 @@ public class IntroActivity extends Activity {
 
                                     Profile profile = Profile.getCurrentProfile();
                                     User.setInfo(profile.getFirstName(), profile.getLastName(), profile.getId(), object.optString("email"), getApplicationContext());
-                                    User.setPassword("facebook");
+                                    // TODO - add Birthday
+                                    User.setPassword("facebook",getApplicationContext());
                                 }
                             }
                         });
@@ -188,29 +190,33 @@ public class IntroActivity extends Activity {
                 // Check internet connection
                 if(isNetworkConnected()){
 
-                    ParseUser.logInInBackground(User.getEmail(getApplicationContext()), )
+                    try{
+                        ParseUser.logIn(User.getEmail(getApplicationContext()),User.getPassword(getApplicationContext()));
+                    }catch(ParseException e){ // User doesn't exist
 
+                        ParseUser user = new ParseUser();
+                        user.setUsername(User.getEmail(getApplicationContext()));
+                        user.setPassword(User.getPassword(getApplicationContext()));
+                        user.setEmail(User.getEmail(getApplicationContext()));
+                        // Use thisKindOfNaming for column name
+                        user.put("firstName", User.getFirstName(getApplicationContext()));
+                        user.put("lastName", User.getLastName(getApplicationContext()));
+                        // TODO - add Birthday
 
-                    ParseUser user = new ParseUser();
-                    user.setUsername(User.getEmail(getApplicationContext()));
-                    user.setPassword(User.getPassword());
-                    user.setEmail(User.getEmail(getApplicationContext()));
-                    // Use thisKindOfNaming for column name
-                    user.put("firstName", User.getFirstName(getApplicationContext()));
-                    user.put("lastName", User.getLastName(getApplicationContext()));
-
-                    user.signUpInBackground(new SignUpCallback() {
-                        public void done(ParseException e) {
-                            if (e == null) {
-                                // Hooray! Let them use the app now.
-                            } else {
-                                // Sign up didn't succeed. Look at the ParseException
-                                // to figure out what went wrong
+                        user.signUpInBackground(new SignUpCallback() {
+                            public void done(ParseException e) {
+                                if (e == null) {
+                                    // Hooray! Let them use the app now.
+                                } else {
+                                    // Sign up didn't succeed. Look at the ParseException
+                                    // to figure out what went wrong
+                                }
                             }
-                        }
-                    });
+                        });
 
+                    }
 
+                    User.parseUser = ParseUser.getCurrentUser();
 
                     jumpToMainActivity();
                 }

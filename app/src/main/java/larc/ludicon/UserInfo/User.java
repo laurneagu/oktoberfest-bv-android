@@ -3,6 +3,8 @@ package larc.ludicon.UserInfo;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.parse.ParseUser;
+
 /**
  * Created by Ciprian on 11/18/2015.
  */
@@ -13,6 +15,7 @@ public class User {
     public static final String firstName = "firstName";
     public static final String lastName= "lastName";
     public static final String email= "email";
+    public static ParseUser parseUser;
 
     public static final String password = "pass";
     public static void setPassword(String i_password, Context context){
