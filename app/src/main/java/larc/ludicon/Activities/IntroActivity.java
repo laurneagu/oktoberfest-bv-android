@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -50,6 +51,7 @@ public class IntroActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        User.clear(getApplicationContext());
         super.onCreate(savedInstanceState);
 
         CloudConnection cloudConnection = new ParseConnection(this,"7ynxx7uuHFrR4b5tEDDv3yEOPIFhcjsdSIUfDGxh", "sVYUFfdDYLmuqhxU9pxSVvdxRioC3jurlNJb41cw");
@@ -70,10 +72,17 @@ public class IntroActivity extends Activity {
                                     public void onCompleted(
                                             JSONObject object,
                                             GraphResponse response) {
+
+                                        Profile profile = Profile.getCurrentProfile();
+                                        if(profile == null) {
+                                            profileTracker.startTracking();
+                                        }
                                         // If user has no shared preferences
-                                        if(User.getId(getApplicationContext()) == "" ) {
-                                            Profile profile = Profile.getCurrentProfile();
+                                        if(User.getId(getApplicationContext()) == ""&&profile!=null){
                                             User.setInfo(profile.getFirstName(), profile.getLastName(), profile.getId(), object.optString("email"), getApplicationContext());
+
+                                            User.setPassword("facebook", getApplicationContext());
+                                            Log.v("LOGINEntry", "A intrat" + User.getEmail(getApplicationContext()) + " " + User.getLastName(getApplicationContext()));
                                         }
                                     }
                                 });
@@ -193,7 +202,7 @@ public class IntroActivity extends Activity {
                     try{
                         ParseUser.logIn(User.getEmail(getApplicationContext()),User.getPassword(getApplicationContext()));
                     }catch(ParseException e){ // User doesn't exist
-
+                        Log.v("CactchEntry", "A intrat"+User.getEmail(getApplicationContext()));
                         ParseUser user = new ParseUser();
                         user.setUsername(User.getEmail(getApplicationContext()));
                         user.setPassword(User.getPassword(getApplicationContext()));

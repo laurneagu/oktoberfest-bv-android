@@ -70,6 +70,7 @@ public class MainActivity extends Activity {
                 LoginManager.getInstance().logOut();
                 //clear UserInfo when logout
                 User.clear(getApplicationContext());
+                if(User.parseUser!=null) User.parseUser.logOut();
                 //go back to IntroActivity
                 Intent goToIntro = new Intent(getApplicationContext(), IntroActivity.class);
                 goToIntro.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
