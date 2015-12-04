@@ -30,7 +30,7 @@ public class MainActivity extends Activity {
         Button popupButton = (Button)findViewById(R.id.PopUpbutton);
 
           /* Initialize Parse connection */
-        // Parse.initialize(this, "7ynxx7uuHFrR4b5tEDDv3yEOPIFhcjsdSIUfDGxh", "sVYUFfdDYLmuqhxU9pxSVvdxRioC3jurlNJb41cw");
+         Parse.initialize(this, "7ynxx7uuHFrR4b5tEDDv3yEOPIFhcjsdSIUfDGxh", "sVYUFfdDYLmuqhxU9pxSVvdxRioC3jurlNJb41cw");
 
 
         try{

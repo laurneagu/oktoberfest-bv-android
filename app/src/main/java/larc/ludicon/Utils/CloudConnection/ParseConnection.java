@@ -33,10 +33,10 @@ public class ParseConnection implements CloudConnection {
     }
 
     public void initialize(){
-        if(!connected) {
+        /*if(!connected) {
             Parse.initialize(context, id, key);
             this.connected = true;
-        }
+        }*/
     }
 
     public void queryUsers(String column, String value){ // eg: column = "username" | value = "gheorghe"
