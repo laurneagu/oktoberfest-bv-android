@@ -67,7 +67,7 @@ public class MainActivity extends Activity {
                 // logout from facebook
                 LoginManager.getInstance().logOut();
                 //clear UserInfo when logout
-                User.clearFromSharedPref(getApplicationContext());
+                User.clear(getApplicationContext());
                 //go back to IntroActivity
                 Intent goToIntro = new Intent(getApplicationContext(), IntroActivity.class);
                 goToIntro.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

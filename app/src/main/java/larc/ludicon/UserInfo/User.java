@@ -7,13 +7,20 @@ import android.content.SharedPreferences;
  * Created by Ciprian on 11/18/2015.
  */
 public class User {
+
     private static String mfilename = "UserDetails";
     private static String mUserId = "Id";
     public static final String firstName = "firstName";
     public static final String lastName= "lastName";
     public static final String email= "email";
 
-    public static String getIdFromSharedPref(Context context) {
+    private String password;
+    public void setPassword(String i_password){ password = i_password; }
+    public String getPassword(){
+        return password;
+    }
+
+    public static String getId(Context context) {
         SharedPreferences sharedPref = context.getSharedPreferences(mfilename, 0);
         String jsonDataString = sharedPref.getString(mUserId, "");
         return jsonDataString;
@@ -30,7 +37,7 @@ public class User {
         SharedPreferences sharedPref = context.getSharedPreferences(mfilename, 0);
         return sharedPref.getString(email, "");
     }
-    public static void setInfotoSharedPref(String fName, String lName, String id ,String mail,Context context)
+    public static void setInfo(String fName, String lName, String id ,String mail,Context context)
     {
         SharedPreferences sharedPref = context.getSharedPreferences(mfilename, 0);
         SharedPreferences.Editor edit = sharedPref.edit();
@@ -41,11 +48,10 @@ public class User {
         edit.commit();
     }
 
-    public static void clearFromSharedPref(Context context) {
-
+    public static void clear(Context context) {
         SharedPreferences sharedPref = context.getSharedPreferences(mfilename,0);
         SharedPreferences.Editor edit = sharedPref.edit();
-        edit.clear();
+        edit.clear().commit();
     }
 
 

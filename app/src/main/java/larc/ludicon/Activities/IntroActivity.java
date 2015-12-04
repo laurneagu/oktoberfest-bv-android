@@ -13,7 +13,6 @@ import larc.ludicon.R;
 import larc.ludicon.UserInfo.User;
 import larc.ludicon.Utils.ConnectionChecker.IConnectionChecker;
 import larc.ludicon.Utils.ConnectionChecker.ConnectionChecker;
-import larc.ludicon.Utils.UserCredentials;
 
 
 import com.facebook.FacebookSdk;
@@ -40,7 +39,6 @@ public class IntroActivity extends Activity {
     private ProfileTracker profileTracker;
     private ProfilePictureView profilePictureView;
     private IConnectionChecker connectionChecker;
-    private UserCredentials credentials;
     private TextView greeting;
 
     @Override
@@ -63,9 +61,9 @@ public class IntroActivity extends Activity {
                                             JSONObject object,
                                             GraphResponse response) {
                                         // If user has no shared preferences
-                                        if(User.getIdFromSharedPref(getApplicationContext()) == "" ) {
+                                        if(User.getId(getApplicationContext()) == "" ) {
                                             Profile profile = Profile.getCurrentProfile();
-                                            User.setInfotoSharedPref(profile.getFirstName(), profile.getLastName(), profile.getId(), object.optString("email"), getApplicationContext());
+                                            User.setInfo(profile.getFirstName(), profile.getLastName(), profile.getId(), object.optString("email"), getApplicationContext());
                                         }
                                     }
                                 });
@@ -108,10 +106,10 @@ public class IntroActivity extends Activity {
                                     JSONObject object,
                                     GraphResponse response) {
                                 // If user has no shared preferences
-                                if(User.getIdFromSharedPref(getApplicationContext()) == "") {
+                                if(User.getId(getApplicationContext()) == "") {
 
                                     Profile profile = Profile.getCurrentProfile();
-                                    User.setInfotoSharedPref(profile.getFirstName(), profile.getLastName(), profile.getId(), object.optString("email"), getApplicationContext());
+                                    User.setInfo(profile.getFirstName(), profile.getLastName(), profile.getId(), object.optString("email"), getApplicationContext());
                                 }
                             }
                         });
@@ -154,7 +152,7 @@ public class IntroActivity extends Activity {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         Profile profile = Profile.getCurrentProfile();
 
-        if (accessToken != null && profile != null) // if user has successfully logged in
+        if (accessToken != null && profile != null) // If user has successfully logged in
         {
             profilePictureView.setDrawingCacheEnabled(true);
             profilePictureView.setProfileId(profile.getId());
@@ -166,28 +164,29 @@ public class IntroActivity extends Activity {
             greeting.setVisibility(View.VISIBLE);
             greeting.setText(getString(R.string.hello_user, profile.getFirstName()));
 
-            credentials = new UserCredentials(profile.getName(), "facebook");
-            UserCredentials.setUserCredentialsInstance(credentials);
 
-            if(credentials != null) { // Not the first log in
-
+            // Not the first log in
+            if( User.getId(getApplicationContext()) !=null && User.getId(getApplicationContext()) != ""  ) {
                 AccessToken.getCurrentAccessToken().getPermissions();
+                jumpToMainActivity();
+            }
+            // First login
+            else{
 
                 // Check internet connection
                 if(isNetworkConnected()){
                     // TODO : Check if registered in database. If not -> add it.
-                    jumpToMainActivity();
 
+
+                    jumpToMainActivity();
                 }
                 else{
                     // TODO something if Network not connected
                 }
             }
 
-        } else {
-            credentials = null;
-            UserCredentials.setUserCredentialsInstance(credentials);
-            greeting.setText(null);
+        }      else { // Login FAILED
+                    greeting.setText(null);
         }
     }
 
