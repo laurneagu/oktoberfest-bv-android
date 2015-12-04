@@ -141,6 +141,7 @@ public class IntroActivity extends Activity {
                 updateUI();
             }
         };
+
         updateUI();
     }
 
@@ -199,33 +200,7 @@ public class IntroActivity extends Activity {
                 // Check internet connection
                 if(isNetworkConnected()){
 
-                    try{
-                        ParseUser.logIn(User.getEmail(getApplicationContext()),User.getPassword(getApplicationContext()));
-                    }catch(ParseException e){ // User doesn't exist
-                        Log.v("CactchEntry", "A intrat"+User.getEmail(getApplicationContext()));
-                        ParseUser user = new ParseUser();
-                        user.setUsername(User.getEmail(getApplicationContext()));
-                        user.setPassword(User.getPassword(getApplicationContext()));
-                        user.setEmail(User.getEmail(getApplicationContext()));
-                        // Use thisKindOfNaming for column name
-                        user.put("firstName", User.getFirstName(getApplicationContext()));
-                        user.put("lastName", User.getLastName(getApplicationContext()));
-                        // TODO - add Birthday
 
-                        user.signUpInBackground(new SignUpCallback() {
-                            public void done(ParseException e) {
-                                if (e == null) {
-                                    // Hooray! Let them use the app now.
-                                } else {
-                                    // Sign up didn't succeed. Look at the ParseException
-                                    // to figure out what went wrong
-                                }
-                            }
-                        });
-
-                    }
-
-                    User.parseUser = ParseUser.getCurrentUser();
 
                     jumpToMainActivity();
                 }
@@ -235,7 +210,7 @@ public class IntroActivity extends Activity {
             }
 
         }      else { // Login FAILED
-                    greeting.setText(null);
+                    greeting.setText("");
         }
     }
 
