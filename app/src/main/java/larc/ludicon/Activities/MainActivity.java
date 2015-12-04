@@ -16,6 +16,8 @@ import com.parse.SignUpCallback;
 
 import larc.ludicon.R;
 import larc.ludicon.UserInfo.User;
+import larc.ludicon.Utils.CloudConnection.CloudConnection;
+import larc.ludicon.Utils.CloudConnection.ParseConnection;
 import larc.ludicon.Utils.Popup;
 
 public class MainActivity extends Activity {
@@ -27,7 +29,7 @@ public class MainActivity extends Activity {
         Button popupButton = (Button)findViewById(R.id.PopUpbutton);
 
           /* Initialize Parse connection */
-        Parse.initialize(this, "7ynxx7uuHFrR4b5tEDDv3yEOPIFhcjsdSIUfDGxh", "sVYUFfdDYLmuqhxU9pxSVvdxRioC3jurlNJb41cw");
+        // Parse.initialize(this, "7ynxx7uuHFrR4b5tEDDv3yEOPIFhcjsdSIUfDGxh", "sVYUFfdDYLmuqhxU9pxSVvdxRioC3jurlNJb41cw");
 
         popupButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -39,24 +41,24 @@ public class MainActivity extends Activity {
 //        TODO - Here - Andrei and Ciprian merge the code for users
 //        This is an example (add a user to cloud) - we should do the same:
 
-        ParseUser user = new ParseUser();
-        user.setUsername("bulaDPeMarte");
-        user.setPassword("MartianaMea");
-        user.setEmail("martianuxxax@marte.mr");
+//        ParseUser user = new ParseUser();
+//        user.setUsername("bulaDPeMarte");
+//        user.setPassword("MartianaMea");
+//        user.setEmail("martianuxxax@marte.mr");
 
 // other fields can be set just like with ParseObject
-        user.put("phone", "650-555-0010");
-
-        user.signUpInBackground(new SignUpCallback() {
-            public void done(ParseException e) {
-                if (e == null) {
-                    // Hooray! Let them use the app now.
-                } else {
-                    // Sign up didn't succeed. Look at the ParseException
-                    // to figure out what went wrong
-                }
-            }
-        });
+//        user.put("phone", "650-555-0010");
+//
+//        user.signUpInBackground(new SignUpCallback() {
+//            public void done(ParseException e) {
+//                if (e == null) {
+//                    // Hooray! Let them use the app now.
+//                } else {
+//                    // Sign up didn't succeed. Look at the ParseException
+//                    // to figure out what went wrong
+//                }
+//            }
+//        });
 
 
 

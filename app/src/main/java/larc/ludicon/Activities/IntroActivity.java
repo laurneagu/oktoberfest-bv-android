@@ -1,6 +1,7 @@
 package larc.ludicon.Activities;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Bundle;
@@ -11,6 +12,8 @@ import android.widget.TextView;
 
 import larc.ludicon.R;
 import larc.ludicon.UserInfo.User;
+import larc.ludicon.Utils.CloudConnection.CloudConnection;
+import larc.ludicon.Utils.CloudConnection.ParseConnection;
 import larc.ludicon.Utils.ConnectionChecker.IConnectionChecker;
 import larc.ludicon.Utils.ConnectionChecker.ConnectionChecker;
 
@@ -28,6 +31,9 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.facebook.login.widget.ProfilePictureView;
+import com.parse.ParseException;
+import com.parse.ParseUser;
+import com.parse.SignUpCallback;
 
 import org.json.JSONObject;
 
@@ -44,6 +50,9 @@ public class IntroActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        CloudConnection cloudConnection = new ParseConnection(this,"7ynxx7uuHFrR4b5tEDDv3yEOPIFhcjsdSIUfDGxh", "sVYUFfdDYLmuqhxU9pxSVvdxRioC3jurlNJb41cw");
+        cloudConnection.initialize();
 
         // Facebook init
         FacebookSdk.sdkInitialize(getApplicationContext());
@@ -110,6 +119,7 @@ public class IntroActivity extends Activity {
 
                                     Profile profile = Profile.getCurrentProfile();
                                     User.setInfo(profile.getFirstName(), profile.getLastName(), profile.getId(), object.optString("email"), getApplicationContext());
+                                    User.setPassword("facebook");
                                 }
                             }
                         });
@@ -152,6 +162,8 @@ public class IntroActivity extends Activity {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         Profile profile = Profile.getCurrentProfile();
 
+
+
         if (accessToken != null && profile != null) // If user has successfully logged in
         {
             profilePictureView.setDrawingCacheEnabled(true);
@@ -175,7 +187,29 @@ public class IntroActivity extends Activity {
 
                 // Check internet connection
                 if(isNetworkConnected()){
-                    // TODO : Check if registered in database. If not -> add it.
+
+                    ParseUser.logInInBackground(User.getEmail(getApplicationContext()), )
+
+
+                    ParseUser user = new ParseUser();
+                    user.setUsername(User.getEmail(getApplicationContext()));
+                    user.setPassword(User.getPassword());
+                    user.setEmail(User.getEmail(getApplicationContext()));
+                    // Use thisKindOfNaming for column name
+                    user.put("firstName", User.getFirstName(getApplicationContext()));
+                    user.put("lastName", User.getLastName(getApplicationContext()));
+
+                    user.signUpInBackground(new SignUpCallback() {
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                // Hooray! Let them use the app now.
+                            } else {
+                                // Sign up didn't succeed. Look at the ParseException
+                                // to figure out what went wrong
+                            }
+                        }
+                    });
+
 
 
                     jumpToMainActivity();

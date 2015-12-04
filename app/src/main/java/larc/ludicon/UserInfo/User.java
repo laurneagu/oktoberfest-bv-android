@@ -14,10 +14,13 @@ public class User {
     public static final String lastName= "lastName";
     public static final String email= "email";
 
-    private String password;
-    public void setPassword(String i_password){ password = i_password; }
-    public String getPassword(){
-        return password;
+    public static final String password = "pass";
+    public static void setPassword(String i_password, Context context){
+        // TODO
+    }
+    public static String getPassword(Context context){
+        SharedPreferences sharedPref = context.getSharedPreferences(mfilename, 0);
+        return sharedPref.getString(password, "");
     }
 
     public static String getId(Context context) {
@@ -37,6 +40,7 @@ public class User {
         SharedPreferences sharedPref = context.getSharedPreferences(mfilename, 0);
         return sharedPref.getString(email, "");
     }
+
     public static void setInfo(String fName, String lName, String id ,String mail,Context context)
     {
         SharedPreferences sharedPref = context.getSharedPreferences(mfilename, 0);
