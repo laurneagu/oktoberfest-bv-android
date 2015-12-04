@@ -18,15 +18,25 @@ public class ParseConnection implements CloudConnection {
     private Context context;
     private String id;
     private String key;
+    private boolean connected;
 
     public ParseConnection(Context context, String id, String key){
         this.context = context;
         this.id = id;
         this.key = key;
+        this.connected = false;
+    }
+
+    @Override
+    public boolean checkConnection() {
+        return connected;
     }
 
     public void initialize(){
-        Parse.initialize(context,id,key);
+        if(!connected) {
+            Parse.initialize(context, id, key);
+            this.connected = true;
+        }
     }
 
     public void queryUsers(String column, String value){ // eg: column = "username" | value = "gheorghe"
