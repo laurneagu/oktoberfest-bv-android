@@ -13,6 +13,7 @@
         android:name="larc.ludicon.Utils.UseParse">
         <activity
             android:name=".Activities.IntroActivity"
+            android:screenOrientation="portrait"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,7 +35,8 @@
             android:value="@string/facebook_app_id" />
 
         <activity
-            android:name=".Activities.MainActivity" >
+            android:name=".Activities.MainActivity"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 

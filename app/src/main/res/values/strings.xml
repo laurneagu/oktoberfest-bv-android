@@ -8,5 +8,5 @@
 
     <string name="title_activity_intro">IntroActivity</string>
     <string name="dummy_content">LUDICON</string>
-    <string name="hello_user">Bun venit in Ludicon, %1$s!</string>
+    <string name="hello_user">Bun venit, %1$s!</string>
 </resources>

@@ -16,34 +16,29 @@
         android:scaleType="centerCrop"
         android:background="@drawable/bg"/>
 
-    <TextView android:text="@string/hello_world"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="83dp" />
-
     <com.facebook.login.widget.ProfilePictureView
         android:id="@+id/profilePictureIntro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/login_button"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="70dp"
         android:layout_centerHorizontal="true" />
     <TextView
         android:id="@+id/greeting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#000000"
-        android:textSize="18sp"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="200dp"
+        android:layout_alignParentBottom="true"/>
+
     <com.facebook.login.widget.LoginButton
         android:id="@+id/login_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="101dp"
+        android:layout_marginBottom="121dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
 
