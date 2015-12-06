@@ -96,6 +96,7 @@ public class IntroActivity extends Activity {
 
                     @Override
                     public void onError(FacebookException exception) {
+                        openNoInternetConnectionDialog();
                         updateUI();
                     }
                 });
