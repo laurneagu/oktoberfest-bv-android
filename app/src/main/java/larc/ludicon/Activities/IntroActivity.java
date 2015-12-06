@@ -2,6 +2,7 @@ package larc.ludicon.Activities;
 
 import android.app.Activity;
 import android.app.Application;
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import larc.ludicon.Utils.CloudConnection.CloudConnection;
 import larc.ludicon.Utils.CloudConnection.ParseConnection;
 import larc.ludicon.Utils.ConnectionChecker.IConnectionChecker;
 import larc.ludicon.Utils.ConnectionChecker.ConnectionChecker;
+import larc.ludicon.Utils.MessageDialog;
 
 
 import com.facebook.FacebookSdk;
@@ -53,6 +55,9 @@ public class IntroActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if( isNetworkConnected() == false ) {
+            openNoInternetConnectionDialog();
+        }
         // Facebook init
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
@@ -164,9 +169,6 @@ public class IntroActivity extends Activity {
 
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         Profile profile = Profile.getCurrentProfile();
-
-
-
         if (accessToken != null && profile != null) // If user has successfully logged in
         {
             profilePictureView.setDrawingCacheEnabled(true);
@@ -185,6 +187,10 @@ public class IntroActivity extends Activity {
         }      else { // Login FAILED
                     greeting.setText("");
         }
+    }
+    public void openNoInternetConnectionDialog() {
+        DialogFragment newFragment = new MessageDialog();
+        newFragment.show(getFragmentManager(), "message");
     }
 
 

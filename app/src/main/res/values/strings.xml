@@ -9,4 +9,11 @@
     <string name="title_activity_intro">IntroActivity</string>
     <string name="dummy_content">LUDICON</string>
     <string name="hello_user">Bun venit, %1$s!</string>
+
+    <string name="dialogmessage">Nu exista conexiune la Internet! Intrati in Setari pentru a activa \n Wi-Fi/Retele Mobile</string>
+    <string name="dialogbutton1">Setari</string>
+    <string name="dialogbutton2">Inchide</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
