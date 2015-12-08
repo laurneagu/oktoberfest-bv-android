@@ -10,10 +10,13 @@ import com.parse.ParseUser;
 
 import java.util.List;
 
+import larc.ludicon.UserInfo.User;
+
 /**
  * Created by Andrei on 12/4/2015.
  */
-public class ParseConnection implements CloudConnection {
+public class ParseConnection extends android.app.Application implements CloudConnection  {
+
 
     private Context context;
     private String id;
@@ -33,10 +36,10 @@ public class ParseConnection implements CloudConnection {
     }
 
     public void initialize(){
-        /*if(!connected) {
+        if(!connected) {
             Parse.initialize(context, id, key);
             this.connected = true;
-        }*/
+        }
     }
 
     public void queryUsers(String column, String value){ // eg: column = "username" | value = "gheorghe"

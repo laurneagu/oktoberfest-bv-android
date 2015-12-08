@@ -3,12 +3,14 @@ package larc.ludicon.Activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.parse.Parse;
 import com.parse.ParseException;
@@ -40,7 +42,11 @@ public class MainActivity extends Activity {
             // Use thisKindOfNaming for column name
             user.put("firstName", User.getFirstName(getApplicationContext()));
             user.put("lastName", User.getLastName(getApplicationContext()));
+            Profile p = Profile.getCurrentProfile();
+
             // TODO - add Birthday
+
+
 
             user.signUpInBackground(new SignUpCallback() {
                 public void done(ParseException e) {
@@ -63,28 +69,6 @@ public class MainActivity extends Activity {
                 startActivity(new Intent(MainActivity.this,Popup.class));
             }
         });
-
-//        TODO - Here - Andrei and Ciprian merge the code for users
-//        This is an example (add a user to cloud) - we should do the same:
-
-//        ParseUser user = new ParseUser();
-//        user.setUsername("bulaDPeMarte");
-//        user.setPassword("MartianaMea");
-//        user.setEmail("martianuxxax@marte.mr");
-
-// other fields can be set just like with ParseObject
-//        user.put("phone", "650-555-0010");
-//
-//        user.signUpInBackground(new SignUpCallback() {
-//            public void done(ParseException e) {
-//                if (e == null) {
-//                    // Hooray! Let them use the app now.
-//                } else {
-//                    // Sign up didn't succeed. Look at the ParseException
-//                    // to figure out what went wrong
-//                }
-//            }
-//        });
 
 
 
