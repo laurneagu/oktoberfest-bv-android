@@ -59,7 +59,7 @@ public class User {
         User.image.compress(Bitmap.CompressFormat.PNG, 100, stream);
         byte[] data = stream.toByteArray();
 
-        ParseFile imageFile = new ParseFile("profileImage"+User.getFirstName(context)+User.getLastName(context)+".png", data);
+        ParseFile imageFile = new ParseFile("profileImage"+User.parseUser.getObjectId()+".png", data);
         try {
             imageFile.save();
         } catch (ParseException e) {
