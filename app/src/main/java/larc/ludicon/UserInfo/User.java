@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 
 import com.parse.ParseUser;
 
+import java.util.Date;
+
 /**
  * Created by Ciprian on 11/18/2015.
  */
@@ -15,9 +17,21 @@ public class User {
     public static final String firstName = "firstName";
     public static final String lastName= "lastName";
     public static final String email= "email";
+
+    public static final String sex = "unknown";
+    public static final Date birthDate = new Date();
+
+    /* Important: We get the data in these static fields, but after log in
+    our user is "parsUser" */
     public static ParseUser parseUser;
 
     public static final String password = "pass";
+
+    /* This function will fill the user info from parse */
+    public static void updateUserFromParse(Context context){
+
+    }
+
     public static void setPassword(String i_password, Context context){
         SharedPreferences sharedPref = context.getSharedPreferences(mfilename, 0);
         SharedPreferences.Editor edit = sharedPref.edit();
