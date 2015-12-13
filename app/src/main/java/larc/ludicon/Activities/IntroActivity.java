@@ -4,12 +4,15 @@ import android.app.Activity;
 import android.app.Application;
 import android.app.DialogFragment;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import larc.ludicon.R;
@@ -172,9 +175,14 @@ public class IntroActivity extends Activity {
         Profile profile = Profile.getCurrentProfile();
         if (accessToken != null && profile != null) // If user has successfully logged in
         {
+
             profilePictureView.setDrawingCacheEnabled(true);
             profilePictureView.setProfileId(profile.getId());
             profilePictureView.setVisibility(View.VISIBLE);
+
+            ImageView fbImage = ( ( ImageView)profilePictureView.getChildAt( 0));
+            Bitmap    bitmap  = ( (BitmapDrawable) fbImage.getDrawable()).getBitmap();
+            User.setImage(bitmap);
 
             LoginButton login_button = (LoginButton) findViewById(R.id.login_button);
             login_button.setVisibility(View.INVISIBLE);
@@ -185,7 +193,8 @@ public class IntroActivity extends Activity {
             jumpToMainActivity();
             
 
-        }      else { // Login FAILED
+        }
+        else { // Login FAILED
                     greeting.setText("");
         }
     }

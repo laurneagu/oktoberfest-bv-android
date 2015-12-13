@@ -2,9 +2,13 @@ package larc.ludicon.UserInfo;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 
+import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseUser;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Date;
 
 /**
@@ -24,12 +28,31 @@ public class User {
     /* Important: We get the data in these static fields, but after log in
     our user is "parsUser" */
     public static ParseUser parseUser;
+    public static Bitmap image;
 
     public static final String password = "pass";
 
     /* This function will fill the user info from parse */
     public static void updateUserFromParse(Context context){
 
+    }
+
+    public static void setImage(Bitmap image){
+        User.image = image;
+    }
+
+    public static void updateParseImage(){
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        User.image.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] data = stream.toByteArray();
+
+        ParseFile imageFile = new ParseFile("image.png", data);
+//        try {
+//            imageFile.save();
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+        User.parseUser.put("image",imageFile);
     }
 
     public static void setPassword(String i_password, Context context){

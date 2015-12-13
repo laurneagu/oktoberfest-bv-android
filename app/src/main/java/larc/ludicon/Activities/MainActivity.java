@@ -42,6 +42,7 @@ public class MainActivity extends Activity {
             // Use thisKindOfNaming for column name
             user.put("firstName", User.getFirstName(getApplicationContext()));
             user.put("lastName", User.getLastName(getApplicationContext()));
+
             Profile p = Profile.getCurrentProfile();
 
             // TODO - add Birthday
@@ -62,6 +63,14 @@ public class MainActivity extends Activity {
         }
 
         User.parseUser = ParseUser.getCurrentUser();
+        User.updateParseImage();
+        try {
+            User.parseUser.save();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        // update static fields from Parse;
 
         popupButton.setOnClickListener(new View.OnClickListener() {
             @Override
