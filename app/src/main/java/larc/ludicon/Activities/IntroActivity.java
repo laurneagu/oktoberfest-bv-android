@@ -79,7 +79,7 @@ public class IntroActivity extends Activity {
 
                                         Profile profile = Profile.getCurrentProfile();
                                         // If user has no shared preferences
-                                        if(User.getId(getApplicationContext()) == ""&& profile!= null){
+                                        if (User.getId(getApplicationContext()) == "" && profile != null) {
                                             User.setInfo(profile.getFirstName(), profile.getLastName(), profile.getId(), object.optString("email"), getApplicationContext());
                                             User.setPassword("facebook", getApplicationContext());
                                         }
@@ -110,6 +110,9 @@ public class IntroActivity extends Activity {
         login_button.setReadPermissions(Arrays.asList("public_profile, email, user_friends"));
 
         profilePictureView = (ProfilePictureView) findViewById(R.id.profilePictureIntro);
+
+
+
         profilePictureView.setVisibility(View.INVISIBLE);
         greeting = (TextView) findViewById(R.id.greeting);
         greeting.setVisibility(View.INVISIBLE);
@@ -178,12 +181,14 @@ public class IntroActivity extends Activity {
 
             profilePictureView.setDrawingCacheEnabled(true);
             profilePictureView.setProfileId(profile.getId());
+            User.profilePictureView = profilePictureView;
+
+
+//            ImageView fbImage = ( ( ImageView)profilePictureView.getChildAt(0));
+//            Bitmap    bitmap  = ( (BitmapDrawable) fbImage.getDrawable()).getBitmap();
+//            User.setImage(bitmap);
+
             profilePictureView.setVisibility(View.VISIBLE);
-
-            ImageView fbImage = ( ( ImageView)profilePictureView.getChildAt( 0));
-            Bitmap    bitmap  = ( (BitmapDrawable) fbImage.getDrawable()).getBitmap();
-            User.setImage(bitmap);
-
             LoginButton login_button = (LoginButton) findViewById(R.id.login_button);
             login_button.setVisibility(View.INVISIBLE);
 

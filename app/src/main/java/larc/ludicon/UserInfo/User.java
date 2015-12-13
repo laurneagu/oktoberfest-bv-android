@@ -3,13 +3,20 @@ package larc.ludicon.UserInfo;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.view.View;
+import android.widget.ImageView;
 
+import com.facebook.Profile;
+import com.facebook.login.widget.ProfilePictureView;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Date;
+
+import larc.ludicon.R;
 
 /**
  * Created by Ciprian on 11/18/2015.
@@ -18,40 +25,47 @@ public class User {
 
     private static String mfilename = "UserDetails";
     private static String mUserId = "Id";
-    public static final String firstName = "firstName";
-    public static final String lastName= "lastName";
-    public static final String email= "email";
+    public static  String firstName = "firstName";
+    public static  String lastName= "lastName";
+    public static  String email= "email";
 
-    public static final String sex = "unknown";
-    public static final Date birthDate = new Date();
+    public static  String sex = "unknown";
+    public static  Date birthDate = new Date();
 
     /* Important: We get the data in these static fields, but after log in
     our user is "parsUser" */
     public static ParseUser parseUser;
     public static Bitmap image;
+    public static ProfilePictureView profilePictureView;
 
     public static final String password = "pass";
 
     /* This function will fill the user info from parse */
     public static void updateUserFromParse(Context context){
+        User.firstName = (String)User.parseUser.get("firstName");
+        User.lastName = (String)User.parseUser.get("lastName");
 
     }
 
-    public static void setImage(Bitmap image){
-        User.image = image;
+    public static void setImage(){
+        ImageView fbImage = ( ( ImageView)profilePictureView.getChildAt(0));
+        Bitmap    bitmap  = ( (BitmapDrawable) fbImage.getDrawable()).getBitmap();
+        User.image = bitmap;
+
     }
 
-    public static void updateParseImage(){
+    public static void updateParseImage(Context context){
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         User.image.compress(Bitmap.CompressFormat.PNG, 100, stream);
         byte[] data = stream.toByteArray();
 
-        ParseFile imageFile = new ParseFile("image.png", data);
-//        try {
-//            imageFile.save();
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
+        ParseFile imageFile = new ParseFile("profileImage"+User.getFirstName(context)+User.getLastName(context)+".png", data);
+        try {
+            imageFile.save();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         User.parseUser.put("image",imageFile);
     }
 

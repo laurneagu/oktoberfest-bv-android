@@ -3,7 +3,6 @@ package larc.ludicon.Activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,15 +11,12 @@ import android.widget.Button;
 
 import com.facebook.Profile;
 import com.facebook.login.LoginManager;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
 import larc.ludicon.R;
 import larc.ludicon.UserInfo.User;
-import larc.ludicon.Utils.CloudConnection.CloudConnection;
-import larc.ludicon.Utils.CloudConnection.ParseConnection;
 import larc.ludicon.Utils.Popup;
 
 public class MainActivity extends Activity {
@@ -63,19 +59,16 @@ public class MainActivity extends Activity {
         }
 
         User.parseUser = ParseUser.getCurrentUser();
-        User.updateParseImage();
-        try {
-            User.parseUser.save();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        User.setImage();
+        User.updateParseImage(this.getApplicationContext());
+        User.parseUser.saveInBackground();
 
         // update static fields from Parse;
 
         popupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this,Popup.class));
+                startActivity(new Intent(MainActivity.this, Popup.class));
             }
         });
 
@@ -89,7 +82,7 @@ public class MainActivity extends Activity {
                 LoginManager.getInstance().logOut();
                 //clear UserInfo when logout
                 User.clear(getApplicationContext());
-                if(User.parseUser!=null) User.parseUser.logOut();
+                if (User.parseUser != null) User.parseUser.logOut();
                 //go back to IntroActivity
                 Intent goToIntro = new Intent(getApplicationContext(), IntroActivity.class);
                 goToIntro.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
