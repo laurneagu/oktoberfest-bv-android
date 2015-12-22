@@ -14,9 +14,12 @@ import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
 
 import larc.ludicon.R;
+import larc.ludicon.UserInfo.User;
 import larc.ludicon.Utils.Popup;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
@@ -35,6 +38,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
+
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 public class AskPreferences extends Activity {
 
@@ -70,7 +77,30 @@ public class AskPreferences extends Activity {
                 // TODO INSERT PARSE PREFERENCES UPDATE METHOD
                 // TODO USE sportsList below(array with sports containing name, id, isChecked )
                 ArrayList<Sport> sportsList = dataAdapter.sportsList;
+                //List<String> sportArray = new ArrayList<String>();
+                try {
+                    ParseQuery<ParseUser> userQuery = ParseUser.getQuery();
+                    userQuery.whereEqualTo("email", User.getEmail(getApplicationContext()));
+                    List<ParseUser> userResults = userQuery.find();
+                    for ( ParseObject pU : userResults )
+                    {
+                        for ( Sport s : sportsList )
+                        {
+                            if( s.isChecked == true ) {
+                                pU.addUnique("sports",s.name);
+                            }
+                           /* else
+                            {   List<String> list = new ArrayList<String>();
+                                list.add(s.name);
+                                pU.removeAll("sports",list);
+                            }*/
 
+                        }
+                        pU.save();
+                    }
+                }
+                catch(Exception exc)
+                {}
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
             }
         });
@@ -79,19 +109,40 @@ public class AskPreferences extends Activity {
     }
 
     private void displayListView() {
-
-        // TODO Query in Sports Table and add all of them to sportsList with ( name, id, isChecked = false )
-        // TODO Query in User Table and see which sports are preferred by User and mark them with isChecked = true
         //Array list of sports : name, id, isChecked
         ArrayList <Sport> sportsList = new ArrayList<Sport>();
-        sportsList.add(new Sport("Fotbal","1",false));
-        sportsList.add(new Sport("Ping Pong","2",false));
-        sportsList.add(new Sport("Tenis","3",false));
-        sportsList.add(new Sport("Baschet","4",false));
-        sportsList.add(new Sport("Alergare","5",false));
-        sportsList.add(new Sport("Volei","6",false));
-        sportsList.add(new Sport("Sah","7",false));
 
+        //Query in Sports Table and add all of them to sportsList with ( name, id, isChecked = false )
+        ParseQuery <ParseObject> sportsQuery = ParseQuery.getQuery("Sport");
+        try {
+            List<ParseObject> results = sportsQuery.find();
+            for ( ParseObject pObj : results)
+            {
+                    sportsList.add(new Sport( (String)(pObj.get("name")),pObj.getObjectId(),false));
+            }
+        }
+        catch(Exception exc)
+        {}
+        // Query in User Table and see which sports are preferred by User and mark them with isChecked = true
+        try {
+            ParseQuery<ParseUser> userQuery = ParseUser.getQuery();
+            userQuery.whereEqualTo("email", User.getEmail(getApplicationContext()));
+            List<ParseUser> userResults = userQuery.find();
+            for ( ParseUser pU : userResults )
+            {
+                List<String> userSportList = pU.getList("sports");
+                for ( String str : userSportList )
+                {
+                    for ( Sport s : sportsList )
+                    {
+                        if ( str.equalsIgnoreCase(s.name) )
+                                s.isChecked = true;
+                    }
+                }
+            }
+        }
+        catch(Exception exc)
+        {}
         //create an ArrayAdaptor from the Sport Array
         dataAdapter = new MyCustomAdapter(getApplicationContext() , R.layout.sport_info, sportsList);
         ListView listView = (ListView) findViewById(R.id.listView1);
