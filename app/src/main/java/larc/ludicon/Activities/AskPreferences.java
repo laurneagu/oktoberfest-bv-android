@@ -74,8 +74,8 @@ public class AskPreferences extends Activity {
         selectSportsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO INSERT PARSE PREFERENCES UPDATE METHOD
-                // TODO USE sportsList below(array with sports containing name, id, isChecked )
+                //  INSERT PARSE PREFERENCES UPDATE METHOD
+                // USE sportsList below(array with sports containing name, id, isChecked )
                 ArrayList<Sport> sportsList = dataAdapter.sportsList;
                 //List<String> sportArray = new ArrayList<String>();
                 try {
@@ -87,7 +87,7 @@ public class AskPreferences extends Activity {
                         for ( Sport s : sportsList )
                         {
                             if( s.isChecked == true ) {
-                                pU.addUnique("sports",s.name);
+                                pU.addUnique("sports",s.id);
                             }
                            /* else
                             {   List<String> list = new ArrayList<String>();
@@ -135,7 +135,7 @@ public class AskPreferences extends Activity {
                 {
                     for ( Sport s : sportsList )
                     {
-                        if ( str.equalsIgnoreCase(s.name) )
+                        if ( str.equalsIgnoreCase(s.id) )
                                 s.isChecked = true;
                     }
                 }
