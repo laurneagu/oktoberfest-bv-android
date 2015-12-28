@@ -1,4 +1,4 @@
-package larc.ludicon.Activities.util;
+package larc.ludicon.Utils.util;
 
 import android.app.Activity;
 import android.os.Build;

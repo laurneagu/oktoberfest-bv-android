@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:id="@+id/drawer_layout_settings"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/header"/>
+    <include layout="@layout/leftside_panel"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/transparent"
+        android:layout_centerHorizontal="true"
+        android:text="Log out"
+        android:textSize="20dp"
+        android:id="@+id/logout"
+        android:layout_marginBottom="10dp"
+        />
+    </RelativeLayout>
+</android.support.v4.widget.DrawerLayout>

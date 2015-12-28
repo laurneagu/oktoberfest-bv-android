@@ -1,35 +1,51 @@
 package larc.ludicon.Activities;
 
 import android.app.Activity;
-import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.facebook.Profile;
-import com.facebook.login.LoginManager;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
+import larc.ludicon.Adapters.LeftPanelItemClicker;
+import larc.ludicon.Adapters.LeftSidePanelAdapter;
 import larc.ludicon.R;
 import larc.ludicon.UserInfo.User;
-import larc.ludicon.Utils.Popup;
 
 public class MainActivity extends Activity {
+
+    // Left side panel
+    private ListView mDrawerList;
+
+    private ActionBarDrawerToggle mDrawerToggle;
+    private DrawerLayout mDrawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button popupButton = (Button)findViewById(R.id.PopUpbutton);
 
-        try{
-            ParseUser.logIn(User.getEmail(getApplicationContext()),User.getPassword(getApplicationContext()));
-        }catch(ParseException e){ // User doesn't exist
+        // Left side panel
+        mDrawerList = (ListView) findViewById(R.id.leftMenu);
+        initializeLeftSidePanel();
+
+        try {
+            ParseUser.logIn(User.getEmail(getApplicationContext()), User.getPassword(getApplicationContext()));
+        } catch (ParseException e) { // User doesn't exist
             Log.v("CactchEntry", "A intrat" + User.getEmail(getApplicationContext()));
             ParseUser user = new ParseUser();
             user.setUsername(User.getEmail(getApplicationContext()));
@@ -42,8 +58,6 @@ public class MainActivity extends Activity {
             Profile p = Profile.getCurrentProfile();
 
             // TODO - add Birthday
-
-
 
             user.signUpInBackground(new SignUpCallback() {
                 public void done(ParseException e) {
@@ -63,32 +77,14 @@ public class MainActivity extends Activity {
         User.updateParseImage(this.getApplicationContext());
         User.parseUser.saveInBackground();
 
-        // update static fields from Parse;
 
-        popupButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, Popup.class));
-            }
-        });
+        // User picture and name for HEADER MENU
+        TextView userName = (TextView) findViewById(R.id.userName);
+        userName.setText(User.getFirstName(getApplicationContext()) + " " + User.getLastName(getApplicationContext()));
 
-
-
-        Button fakeLogin = (Button)findViewById(R.id.fakeLoginButton);
-        fakeLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // logout from facebook
-                LoginManager.getInstance().logOut();
-                //clear UserInfo when logout
-                User.clear(getApplicationContext());
-                if (User.parseUser != null) User.parseUser.logOut();
-                //go back to IntroActivity
-                Intent goToIntro = new Intent(getApplicationContext(), IntroActivity.class);
-                goToIntro.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(goToIntro);
-            }
-        });
+        ImageView userPic = (ImageView) findViewById(R.id.userPicture);
+        Drawable d = new BitmapDrawable(getResources(), User.image);
+        userPic.setImageDrawable(d);
     }
 
     @Override
@@ -110,6 +106,46 @@ public class MainActivity extends Activity {
             return true;
         }
 
+        // Left side panel
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
+    }
+
+
+    // Left side menu
+    public void initializeLeftSidePanel() {
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.leftMenu);
+
+        // Set the adapter for the list view
+        mDrawerList.setAdapter(new LeftSidePanelAdapter(this, MainActivity.this));
+        // Set the list's click listener
+        LeftPanelItemClicker.OnItemClick(mDrawerList, getApplicationContext(), MainActivity.this);
+
+        final ImageButton showPanel = (ImageButton) findViewById(R.id.showPanel);
+        showPanel.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Perform action on click
+                mDrawerLayout.openDrawer(Gravity.LEFT);
+            }
+        });
+
+        // Toggle efect on left side panel
+        mDrawerToggle = new android.support.v4.app.ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+        };
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+
     }
 }

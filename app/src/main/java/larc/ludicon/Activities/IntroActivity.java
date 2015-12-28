@@ -4,8 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.app.DialogFragment;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
+import android.media.Image;
 import android.os.Handler;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,8 +16,6 @@ import android.widget.TextView;
 
 import larc.ludicon.R;
 import larc.ludicon.UserInfo.User;
-import larc.ludicon.Utils.CloudConnection.CloudConnection;
-import larc.ludicon.Utils.CloudConnection.ParseConnection;
 import larc.ludicon.Utils.ConnectionChecker.IConnectionChecker;
 import larc.ludicon.Utils.ConnectionChecker.ConnectionChecker;
 import larc.ludicon.Utils.MessageDialog;
@@ -37,11 +34,6 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.facebook.login.widget.ProfilePictureView;
-import com.parse.Parse;
-import com.parse.ParseException;
-import com.parse.ParseUser;
-import com.parse.SignUpCallback;
-
 import org.json.JSONObject;
 
 import java.util.Arrays;
@@ -53,12 +45,13 @@ public class IntroActivity extends Activity {
     private ProfilePictureView profilePictureView;
     private IConnectionChecker connectionChecker;
     private TextView greeting;
+    private ImageView logo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if( isNetworkConnected() == false ) {
+        if (isNetworkConnected() == false) {
             openNoInternetConnectionDialog();
         }
         // Facebook init
@@ -89,11 +82,13 @@ public class IntroActivity extends Activity {
                         parameters.putString("fields", "id,name,email");
                         request.setParameters(parameters);
                         request.executeAsync();
+
                         updateUI();
                     }
 
                     @Override
                     public void onCancel() {
+
                         updateUI();
                     }
 
@@ -106,14 +101,17 @@ public class IntroActivity extends Activity {
 
         setContentView(R.layout.activity_intro);
 
-        LoginButton login_button = (LoginButton)findViewById(R.id.login_button);
+        // TODO relative to the phone screen, not hardoded
+        logo = (ImageView)findViewById(R.id.logo);
+        logo.getLayoutParams().height = 300;
+        logo.getLayoutParams().width = 300;
+
+        LoginButton login_button = (LoginButton) findViewById(R.id.login_button);
         login_button.setReadPermissions(Arrays.asList("public_profile, email, user_friends"));
 
         profilePictureView = (ProfilePictureView) findViewById(R.id.profilePictureIntro);
-
-
-
         profilePictureView.setVisibility(View.INVISIBLE);
+
         greeting = (TextView) findViewById(R.id.greeting);
         greeting.setVisibility(View.INVISIBLE);
 
@@ -128,12 +126,12 @@ public class IntroActivity extends Activity {
                                     JSONObject object,
                                     GraphResponse response) {
                                 // If user has no shared preferences
-                                if(User.getId(getApplicationContext()) == "") {
+                                if (User.getId(getApplicationContext()) == "") {
 
                                     Profile profile = Profile.getCurrentProfile();
                                     User.setInfo(profile.getFirstName(), profile.getLastName(), profile.getId(), object.optString("email"), getApplicationContext());
                                     // TODO - add Birthday
-                                    User.setPassword("facebook",getApplicationContext());
+                                    User.setPassword("facebook", getApplicationContext());
                                 }
                             }
                         });
@@ -156,7 +154,7 @@ public class IntroActivity extends Activity {
         handler.postDelayed(new Runnable() {
             public void run() {
                 // Actions to do after 5 seconds
-                Intent goToNextActivity = new Intent(getApplicationContext(), AskPreferences.class);
+                Intent goToNextActivity = new Intent(getApplicationContext(), MainActivity.class); //AskPreferences.class);
                 startActivity(goToNextActivity);
                 finish();
             }
@@ -178,9 +176,9 @@ public class IntroActivity extends Activity {
         Profile profile = Profile.getCurrentProfile();
         if (accessToken != null && profile != null) // If user has successfully logged in
         {
-
             profilePictureView.setDrawingCacheEnabled(true);
             profilePictureView.setProfileId(profile.getId());
+
             User.profilePictureView = profilePictureView;
 
 

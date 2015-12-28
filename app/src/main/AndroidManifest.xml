@@ -8,7 +8,7 @@
     <application
         android:name=".Utils.UseParse"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/logo2"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
@@ -20,9 +20,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".Utils.Popup"
-            android:theme="@style/AppTheme.CustomTheme" />
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
@@ -37,6 +34,11 @@
             android:name=".Activities.MainActivity"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name=".Activities.SettingsActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+
         <activity
             android:name=".Activities.AskPreferences"
             android:configChanges="orientation|keyboardHidden|screenSize"

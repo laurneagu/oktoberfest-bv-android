@@ -98,7 +98,7 @@ public class User {
         return sharedPref.getString(email, "");
     }
 
-    public static void setInfo(String fName, String lName, String id ,String mail,Context context)
+    public static void setInfo(String fName, String lName, String id ,String mail, Context context)
     {
         SharedPreferences sharedPref = context.getSharedPreferences(mfilename, 0);
         SharedPreferences.Editor edit = sharedPref.edit();

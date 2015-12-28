@@ -8,7 +8,7 @@
 
     <string name="title_activity_intro">IntroActivity</string>
     <string name="dummy_content">LUDICON</string>
-    <string name="hello_user">Bun venit, %1$s!</string>
+    <string name="hello_user">Hi %1$s!</string>
 
     <string name="dialogmessage">\tNu exista conexiune la Internet!\n\tIntrati in Setari pentru a activa \n\tWi-Fi/Retele Mobile</string>
     <string name="dialogbutton1">Setari</string>
@@ -19,4 +19,7 @@
 
     <string name="title_activity_ask_preferences">AskPreferences</string>
     <string name="dummy_button">Dummy Button</string>
+
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
 </resources>
