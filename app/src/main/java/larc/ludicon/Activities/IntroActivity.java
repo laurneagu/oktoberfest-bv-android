@@ -70,6 +70,7 @@ public class IntroActivity extends Activity {
                                             JSONObject object,
                                             GraphResponse response) {
 
+
                                         Profile profile = Profile.getCurrentProfile();
                                         // If user has no shared preferences
                                         if (User.getId(getApplicationContext()) == "" && profile != null) {
