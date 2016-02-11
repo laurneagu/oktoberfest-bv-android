@@ -82,7 +82,6 @@ public class SettingsActivity  extends Activity {
                 LoginManager.getInstance().logOut();
                 //clear UserInfo when logout
                 User.clear(getApplicationContext());
-                //if (User.parseUser != null) User.parseUser.logOut();
                 //go back to IntroActivity
                 Intent goToIntro = new Intent(getApplicationContext(), IntroActivity.class);
                 goToIntro.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -99,7 +98,6 @@ public class SettingsActivity  extends Activity {
     private void displayListView() {
         //Array list of sports : name, id, isChecked
         // Asa iau datele din cloud
-
         Firebase sportRed = User.firebaseRef.child("sports"); // chech user
         sportRed.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -135,24 +133,6 @@ public class SettingsActivity  extends Activity {
                 //User.firebaseRef.child("msge").setValue("The read failed: " + firebaseError.getMessage());
             }
         });
-
-        /*  //create an ArrayAdaptor from the Sport Array
-        dataAdapter = new MyCustomAdapter(getApplicationContext(), R.layout.sport_info, sportsList);
-        ListView listView = (ListView) findViewById(R.id.listView);
-        // Assign adapter to ListView
-        listView.setAdapter(dataAdapter);
-
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                // When clicked, show a toast with the TextView text
-                Sport sport = (Sport) parent.getItemAtPosition(position);
-                Toast.makeText(getApplicationContext(),
-                        "Clicked on Row: " + sport.name,
-                        Toast.LENGTH_LONG).show();
-            }
-        });*/
 
     }
 
