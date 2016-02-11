@@ -35,6 +35,7 @@ import com.firebase.client.ValueEventListener;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import larc.ludicon.Adapters.LeftPanelItemClicker;
@@ -45,7 +46,7 @@ import larc.ludicon.UserInfo.User;
 /**
  * Created by Laur User on 12/29/2015.
  */
-public class SettingsActivity  extends Activity {
+public class SettingsActivity extends Activity {
 
     MyCustomAdapter dataAdapter = null;
 
@@ -56,6 +57,11 @@ public class SettingsActivity  extends Activity {
     private TextView progressText;
     private SeekBar seekBar;
     private Button saveButton;
+    private ArrayList<Sport> sportsList = new ArrayList<Sport>();
+    Firebase rangeRef = User.firebaseRef.child("users").child(User.uid).child("range");
+    Firebase userSports = User.firebaseRef.child("users").child(User.uid).child("sports");
+    final Firebase sportRed = User.firebaseRef.child("sports"); // chech user
+    private int savedProgress = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,7 +82,23 @@ public class SettingsActivity  extends Activity {
         userPic.setImageDrawable(d);
 
         //TODO Get Range from FireBase and put it in savedProgress
-        int savedProgress = 0;
+
+
+        rangeRef.addListenerForSingleValueEvent(new ValueEventListener() { // get all sports
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                savedProgress = Integer.parseInt(snapshot.getValue().toString());
+                progressText = (TextView) findViewById(R.id.progressText);
+                progressText.setText(savedProgress + " km");
+                seekBar = (SeekBar) findViewById(R.id.seekBar2);
+                seekBar.setProgress(savedProgress);
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+            }
+        });
+
         progressText = (TextView) findViewById(R.id.progressText);
         progressText.setText(savedProgress + " km");
         seekBar = (SeekBar) findViewById(R.id.seekBar2);
@@ -89,6 +111,7 @@ public class SettingsActivity  extends Activity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
                 progress = progressValue;
+                rangeRef.setValue(progressValue);
                 progressText.setText(progress + " km");
             }
 
@@ -118,15 +141,27 @@ public class SettingsActivity  extends Activity {
                 //finish();
             }
         });
-        // Save button
-        saveButton = (Button) findViewById(R.id.logout);
+
+        /*// Save button
+        saveButton = (Button) findViewById(R.id.saveButton);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //TODO Save Range + Sports in FireBase
 
+                Map<String, Object> map = new HashMap<String, Object>();
+                for (Sport s : sportsList) {
+                    if (s.isChecked) {
+                        map.put(s.name, s.id);
+                    }
+                }
+                userSports.setValue(map);
+
+
+
             }
         });
+        */
 
         // Logout button
         Button logout = (Button) findViewById(R.id.logout);
@@ -145,44 +180,67 @@ public class SettingsActivity  extends Activity {
         });
 
     }
+
     private void displayListView() {
         //Array list of sports : name, id, isChecked
         // Asa iau datele din cloud
-        Firebase sportRed = User.firebaseRef.child("sports"); // chech user
-        sportRed.addListenerForSingleValueEvent(new ValueEventListener() {
+
+
+        final HashMap<String, Boolean> exist = new HashMap<String, Boolean>();
+        userSports.addListenerForSingleValueEvent(new ValueEventListener() { // get user sports
             @Override
             public void onDataChange(DataSnapshot snapshot) {
 
-                ArrayList<Sport> sportsList = new ArrayList<Sport>();
-
-                for (DataSnapshot sport: snapshot.getChildren()) {
-                   sportsList.add(new Sport(sport.getKey(),sport.child("id").getValue().toString(),false));
+                for (DataSnapshot sport : snapshot.getChildren()) {
+                    sportsList.add(new Sport(sport.getKey(), sport.getValue().toString(), true));
+                    exist.put(sport.getKey(), true);
                 }
 
-                //create an ArrayAdaptor from the Sport Array
-                dataAdapter = new MyCustomAdapter(getApplicationContext(), R.layout.sport_info, sportsList);
-                ListView listView = (ListView) findViewById(R.id.listView);
-                // Assign adapter to ListView
-                listView.setAdapter(dataAdapter);
+                sportRed.addListenerForSingleValueEvent(new ValueEventListener() { // get all sports
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+
+                        for (DataSnapshot sport : snapshot.getChildren()) {
+                            if (!exist.containsKey(sport.getKey())) {
+                                sportsList.add(new Sport(sport.getKey(), sport.child("id").getValue().toString(), false));
+                            }
+                        }
+
+                        //create an ArrayAdaptor from the Sport Array
+                        dataAdapter = new MyCustomAdapter(getApplicationContext(), R.layout.sport_info, sportsList);
+                        ListView listView = (ListView) findViewById(R.id.listView);
+                        // Assign adapter to ListView
+                        listView.setAdapter(dataAdapter);
 
 
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    public void onItemClick(AdapterView<?> parent, View view,
-                                            int position, long id) {
-                        // When clicked, show a toast with the TextView text
-                        Sport sport = (Sport) parent.getItemAtPosition(position);
-                        Toast.makeText(getApplicationContext(),
-                                "Clicked on Row: " + sport.name,
-                                Toast.LENGTH_LONG).show();
+                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            public void onItemClick(AdapterView<?> parent, View view,
+                                                    int position, long id) {
+                                // When clicked, show a toast with the TextView text
+                                Sport sport = (Sport) parent.getItemAtPosition(position);
+                                Toast.makeText(getApplicationContext(),
+                                        "Clicked on Row: " + sport.name,
+                                        Toast.LENGTH_LONG).show();
+
+
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+                        //User.firebaseRef.child("msge").setValue("The read failed: " + firebaseError.getMessage());
                     }
                 });
+
+
             }
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
-                //User.firebaseRef.child("msge").setValue("The read failed: " + firebaseError.getMessage());
             }
         });
+
 
     }
 
@@ -224,6 +282,15 @@ public class SettingsActivity  extends Activity {
                         CheckBox cb = (CheckBox) v;
                         Sport sport = (Sport) cb.getTag();
                         sport.setSelected(cb.isChecked());
+
+                        // Update firebase
+                        Map<String, Object> map = new HashMap<String, Object>();
+                        for (Sport s : sportsList) {
+                            if (s.isChecked) {
+                                map.put(s.name, s.id);
+                            }
+                        }
+                        userSports.setValue(map);
                     }
                 });
             } else {
@@ -241,6 +308,7 @@ public class SettingsActivity  extends Activity {
         }
 
     }// Left side menu
+
     public void initializeLeftSidePanel() {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_settings);
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
@@ -292,6 +360,8 @@ public class SettingsActivity  extends Activity {
         if (id == R.id.action_settings) {
             return true;
         }
+
+
 
 
         return super.onOptionsItemSelected(item);

@@ -16,13 +16,16 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
+        android:background="#8f2525"
         android:text="Log out"
         android:textSize="20dp"
         android:id="@+id/logout"
         android:layout_alignParentBottom="true"
-        android:layout_alignLeft="@+id/saveButton"
-        android:layout_alignStart="@+id/saveButton" />
+        android:textColor="#ffffff"
+        android:layout_alignRight="@+id/textView6"
+        android:layout_alignEnd="@+id/textView6"
+        android:layout_alignLeft="@+id/textView6"
+        android:layout_alignStart="@+id/textView6" />
 
         <ListView
             android:paddingTop="50dp"
@@ -35,22 +38,14 @@
             android:layout_marginTop="70dp"
             android:layout_toStartOf="@+id/logout"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Save "
-            android:id="@+id/saveButton"
-            android:layout_above="@+id/logout"
-            android:layout_centerHorizontal="true" />
+            android:layout_alignParentEnd="true"
+            android:layout_above="@+id/textView8" />
 
         <SeekBar
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:id="@+id/seekBar2"
-            android:layout_marginTop="54dp"
-            android:layout_below="@+id/textView9"
+            android:layout_above="@+id/progressText"
             android:layout_centerHorizontal="true" />
 
         <TextView
@@ -78,7 +73,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Range"
             android:id="@+id/textView8"
-            android:layout_below="@+id/listView"
+            android:layout_above="@+id/textView9"
             android:layout_centerHorizontal="true" />
 
         <TextView
@@ -87,17 +82,17 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="This is the area of discovering friends"
             android:id="@+id/textView9"
-            android:layout_below="@+id/textView8"
-            android:layout_alignLeft="@+id/textView7"
-            android:layout_alignStart="@+id/textView7" />
+            android:layout_above="@+id/seekBar2"
+            android:layout_alignRight="@+id/textView7"
+            android:layout_alignEnd="@+id/textView7" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:id="@+id/progressText"
-            android:layout_above="@+id/saveButton"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:layout_above="@+id/logout" />
 
     </RelativeLayout>
 </android.support.v4.widget.DrawerLayout>

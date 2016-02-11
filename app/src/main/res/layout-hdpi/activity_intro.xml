@@ -19,23 +19,14 @@
 
     <ImageView
         android:id="@+id/logo"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="110dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
-        />
-    <TextView
-        android:id="@+id/dpi"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#FFFFFF"
-        android:textSize="36sp"
-        android:text="hdpi"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentTop="true"/>
+        android:layout_marginBottom="27dp"
+        android:layout_above="@+id/greeting"
+        android:layout_centerHorizontal="true" />
+
     <com.facebook.login.widget.ProfilePictureView
         android:id="@+id/profilePictureIntro"
         android:layout_width="wrap_content"

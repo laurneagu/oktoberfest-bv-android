@@ -13,7 +13,13 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.client.Firebase;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import larc.ludicon.R;
+import larc.ludicon.UserInfo.User;
 
 public class AskRange extends AppCompatActivity {
 
@@ -55,7 +61,8 @@ public class AskRange extends AppCompatActivity {
         final Button button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //TODO Save Range ( seekBar.getProgress() ) in FireBase
+                Firebase rangeRef = User.firebaseRef.child("users").child(User.uid).child("range");
+                rangeRef.setValue(seekBar.getProgress());
                 jumpToMainActivity();
             }
         });
@@ -72,7 +79,7 @@ public class AskRange extends AppCompatActivity {
                 startActivity(goToNextActivity);
                 finish();
             }
-        }, 3000); // Delay time for transition to next activity -> insert any time wanted here instead of 5000
+        }, 0); // Delay time for transition to next activity -> insert any time wanted here instead of 5000
     }
 
     @Override
