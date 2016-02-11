@@ -23,5 +23,16 @@
         android:id="@+id/logout"
         android:layout_marginBottom="10dp"
         />
+
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/listView"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="67dp"
+            android:layout_above="@+id/logout"
+            android:layout_alignRight="@+id/logout"
+            android:layout_alignEnd="@+id/logout" />
+
     </RelativeLayout>
 </android.support.v4.widget.DrawerLayout>

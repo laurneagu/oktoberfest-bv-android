@@ -1,21 +1,29 @@
 package larc.ludicon.Activities;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
 import com.firebase.client.DataSnapshot;
@@ -32,13 +40,14 @@ import larc.ludicon.R;
 import larc.ludicon.UserInfo.User;
 
 /**
- * Created by LaurUser on 12/29/2015.
+ * Created by Laur User on 12/29/2015.
  */
 public class SettingsActivity  extends Activity {
 
+    MyCustomAdapter dataAdapter = null;
+
     // Left side panel
     private ListView mDrawerList;
-
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
 
@@ -47,28 +56,7 @@ public class SettingsActivity  extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings);
 
-        ////// Asa fac lista:
-        final ArrayList<Sport> sportsList = new ArrayList<Sport>();
-        // Asa iau datele din cloud
-        Firebase sportRed = User.firebaseRef.child("sports"); // chech user
-        sportRed.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-
-                for (DataSnapshot sport: snapshot.getChildren()) {
-                    sportsList.add(new Sport(sport.getKey(),sport.child("id").getValue().toString(),false));
-                }
-                //User.firebaseRef.child(sportsList.get(0).name).setValue(sportsList.get(0).id);
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                //User.firebaseRef.child("msge").setValue("The read failed: " + firebaseError.getMessage());
-            }
-        });
-
-
-
+        displayListView();
 
         TextView hello_message = (TextView) findViewById(R.id.hello_message_activity);
         hello_message.setText("Settings");
@@ -101,6 +89,126 @@ public class SettingsActivity  extends Activity {
                 startActivity(goToIntro);
             }
         });
+
+    }
+    public static void setSportsList ( ArrayList<Sport> sourceList, ArrayList<Sport> destList)
+    {
+        for ( Sport s : sourceList)
+            destList.add(s);
+    }
+    private void displayListView() {
+        //Array list of sports : name, id, isChecked
+        // Asa iau datele din cloud
+
+        Firebase sportRed = User.firebaseRef.child("sports"); // chech user
+        sportRed.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                ArrayList<Sport> sportsList = new ArrayList<Sport>();
+
+                for (DataSnapshot sport: snapshot.getChildren()) {
+                   sportsList.add(new Sport(sport.getKey(),sport.child("id").getValue().toString(),false));
+                }
+
+                //create an ArrayAdaptor from the Sport Array
+                dataAdapter = new MyCustomAdapter(getApplicationContext(), R.layout.sport_info, sportsList);
+                ListView listView = (ListView) findViewById(R.id.listView);
+                // Assign adapter to ListView
+                listView.setAdapter(dataAdapter);
+
+
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    public void onItemClick(AdapterView<?> parent, View view,
+                                            int position, long id) {
+                        // When clicked, show a toast with the TextView text
+                        Sport sport = (Sport) parent.getItemAtPosition(position);
+                        Toast.makeText(getApplicationContext(),
+                                "Clicked on Row: " + sport.name,
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                //User.firebaseRef.child("msge").setValue("The read failed: " + firebaseError.getMessage());
+            }
+        });
+
+        /*  //create an ArrayAdaptor from the Sport Array
+        dataAdapter = new MyCustomAdapter(getApplicationContext(), R.layout.sport_info, sportsList);
+        ListView listView = (ListView) findViewById(R.id.listView);
+        // Assign adapter to ListView
+        listView.setAdapter(dataAdapter);
+
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                // When clicked, show a toast with the TextView text
+                Sport sport = (Sport) parent.getItemAtPosition(position);
+                Toast.makeText(getApplicationContext(),
+                        "Clicked on Row: " + sport.name,
+                        Toast.LENGTH_LONG).show();
+            }
+        });*/
+
+    }
+
+    private class MyCustomAdapter extends ArrayAdapter<Sport> {
+
+        private ArrayList<Sport> sportsList;
+
+        public MyCustomAdapter(Context context, int textViewResourceId,
+                               ArrayList<Sport> sList) {
+            super(context, textViewResourceId, sList);
+            this.sportsList = new ArrayList<Sport>();
+            this.sportsList.addAll(sList);
+        }
+
+        private class ViewHolder {
+            ImageView image;
+            TextView text;
+            CheckBox box;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+
+            ViewHolder holder = null;
+            Log.v("ConvertView", String.valueOf(position));
+
+            if (convertView == null) {
+                LayoutInflater vi = (LayoutInflater) getSystemService(
+                        Context.LAYOUT_INFLATER_SERVICE);
+                convertView = vi.inflate(R.layout.sport_info, null);
+
+                holder = new ViewHolder();
+                holder.text = (TextView) convertView.findViewById(R.id.code);
+                holder.box = (CheckBox) convertView.findViewById(R.id.checkBox1);
+                convertView.setTag(holder);
+
+                holder.box.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        CheckBox cb = (CheckBox) v;
+                        Sport sport = (Sport) cb.getTag();
+                        sport.setSelected(cb.isChecked());
+                    }
+                });
+            } else {
+                holder = (ViewHolder) convertView.getTag();
+            }
+
+            Sport sport = sportsList.get(position);
+            holder.text.setText("");
+            holder.box.setText(sport.name);
+            holder.box.setChecked(sport.isChecked);
+            holder.box.setTag(sport);
+
+            return convertView;
+
+        }
 
     }
 
