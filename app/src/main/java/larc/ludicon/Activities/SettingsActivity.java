@@ -22,6 +22,7 @@ import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +31,8 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -50,6 +53,9 @@ public class SettingsActivity  extends Activity {
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
+    private TextView progressText;
+    private SeekBar seekBar;
+    private Button saveButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,6 +75,33 @@ public class SettingsActivity  extends Activity {
         Drawable d = new BitmapDrawable(getResources(), User.image);
         userPic.setImageDrawable(d);
 
+        //TODO Get Range from FireBase and put it in savedProgress
+        int savedProgress = 0;
+        progressText = (TextView) findViewById(R.id.progressText);
+        progressText.setText(savedProgress + " km");
+        seekBar = (SeekBar) findViewById(R.id.seekBar2);
+        seekBar.setProgress(savedProgress);
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+            int progress = 0;
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
+                progress = progressValue;
+                progressText.setText(progress + " km");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                progressText.setText(progress + " km");
+            }
+        });
+
         displayListView();
 
         TextView hello_message = (TextView) findViewById(R.id.hello_message_activity);
@@ -83,6 +116,15 @@ public class SettingsActivity  extends Activity {
                 Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
                 startActivity(intent);
                 //finish();
+            }
+        });
+        // Save button
+        saveButton = (Button) findViewById(R.id.logout);
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO Save Range + Sports in FireBase
+
             }
         });
 
@@ -102,11 +144,6 @@ public class SettingsActivity  extends Activity {
             }
         });
 
-    }
-    public static void setSportsList ( ArrayList<Sport> sourceList, ArrayList<Sport> destList)
-    {
-        for ( Sport s : sourceList)
-            destList.add(s);
     }
     private void displayListView() {
         //Array list of sports : name, id, isChecked

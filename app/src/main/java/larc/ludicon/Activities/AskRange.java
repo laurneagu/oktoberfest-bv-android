@@ -1,9 +1,13 @@
 package larc.ludicon.Activities;
 
+import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -48,6 +52,27 @@ public class AskRange extends AppCompatActivity {
                 progressText.setText(progress + " km");
             }
         });
+        final Button button = (Button) findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                //TODO Save Range ( seekBar.getProgress() ) in FireBase
+                jumpToMainActivity();
+            }
+        });
+    }
+    /**
+     * Method that jumps to the MainActivity
+     */
+    public void jumpToMainActivity() {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                // Actions to do after 5 seconds
+                Intent goToNextActivity = new Intent(getApplicationContext(), MainActivity.class); //AskPreferences.class);
+                startActivity(goToNextActivity);
+                finish();
+            }
+        }, 3000); // Delay time for transition to next activity -> insert any time wanted here instead of 5000
     }
 
     @Override
