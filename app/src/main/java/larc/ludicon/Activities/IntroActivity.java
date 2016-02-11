@@ -187,7 +187,19 @@ public class IntroActivity extends Activity {
         handler.postDelayed(new Runnable() {
             public void run() {
                 // Actions to do after 5 seconds
-                Intent goToNextActivity = new Intent(getApplicationContext(), AskRange.class); //AskPreferences.class);
+                Intent goToNextActivity = new Intent(getApplicationContext(), MainActivity.class); //AskPreferences.class);
+                startActivity(goToNextActivity);
+                finish();
+            }
+        }, 3000); // Delay time for transition to next activity -> insert any time wanted here instead of 5000
+    }
+
+    public void jumpToPrefActivity() {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                // Actions to do after 5 seconds
+                Intent goToNextActivity = new Intent(getApplicationContext(), AskPreferences.class); //AskPreferences.class);
                 startActivity(goToNextActivity);
                 finish();
             }
@@ -290,7 +302,7 @@ public class IntroActivity extends Activity {
 
 
                     final String uid = authData.getUid();
-
+                    User.uid = uid;
 
                     profilePictureView.setVisibility(View.VISIBLE);
                     LoginButton login_button = (LoginButton) findViewById(R.id.login_button);
@@ -312,8 +324,7 @@ public class IntroActivity extends Activity {
                                 User.firebaseRef.child("mesg").setValue("User nou");
                                 User.firebaseRef.child("users").child(uid).setValue(map);
 
-                                // TODO GOTO ASK PREF - Choose pref sports
-                                jumpToMainActivity();
+                                jumpToPrefActivity();
 
                             } else { // old user
                                 User.firebaseRef.child("mesg").setValue("User vechi");

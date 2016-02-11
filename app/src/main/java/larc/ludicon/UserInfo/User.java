@@ -27,9 +27,9 @@ public class User {
     public static  String firstName = "firstName";
     public static  String lastName= "lastName";
     public static  String email= "email";
-
     public static  String gender = "unknown";
     public static  Date birthDate = new Date();
+    public static String uid = "";
 
     // FirebaseRef
     public static Firebase firebaseRef;
