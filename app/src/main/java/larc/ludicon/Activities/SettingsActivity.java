@@ -56,6 +56,19 @@ public class SettingsActivity  extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings);
 
+        mDrawerList = (ListView) findViewById(R.id.leftMenu);
+        initializeLeftSidePanel();
+
+        User.setImage();
+
+        // User picture and name for HEADER MENU
+        TextView userName = (TextView) findViewById(R.id.userName);
+        userName.setText(User.getFirstName(getApplicationContext()) + " " + User.getLastName(getApplicationContext()));
+
+        ImageView userPic = (ImageView) findViewById(R.id.userPicture);
+        Drawable d = new BitmapDrawable(getResources(), User.image);
+        userPic.setImageDrawable(d);
+
         displayListView();
 
         TextView hello_message = (TextView) findViewById(R.id.hello_message_activity);
@@ -189,6 +202,38 @@ public class SettingsActivity  extends Activity {
             return convertView;
 
         }
+
+    }// Left side menu
+    public void initializeLeftSidePanel() {
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_settings);
+        mDrawerList = (ListView) findViewById(R.id.leftMenu);
+
+        // Set the adapter for the list view
+        mDrawerList.setAdapter(new LeftSidePanelAdapter(this, SettingsActivity.this));
+        // Set the list's click listener
+        LeftPanelItemClicker.OnItemClick(mDrawerList, getApplicationContext(), SettingsActivity.this);
+
+        final ImageButton showPanel = (ImageButton) findViewById(R.id.showPanel);
+        showPanel.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Perform action on click
+                mDrawerLayout.openDrawer(Gravity.LEFT);
+            }
+        });
+
+        // Toggle efect on left side panel
+        mDrawerToggle = new android.support.v4.app.ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+        };
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
 
     }
 
