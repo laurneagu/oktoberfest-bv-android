@@ -32,7 +32,6 @@
             />
         <ImageView android:layout_width="40dp"
             android:layout_height="40dp"
-            android:background="@drawable/logo2"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"

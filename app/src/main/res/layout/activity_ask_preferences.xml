@@ -2,30 +2,49 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:id="@+id/askprefs"
+    android:background="@drawable/intro_bg">
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="110dp"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:layout_gravity="center_horizontal" />
 
     <TextView
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:text=""
-        android:textSize="20sp" />
-    <Button
-        android:id="@+id/selectSportsButton"
-        android:layout_width="match_parent"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Favourite Sports"
+        android:id="@+id/textView3"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Selecteaza sporturile" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Pick what sports would you like to play"
+        android:id="@+id/textView4"
+        android:layout_gravity="center_horizontal" />
 
     <ListView
+        android:layout_width="358dp"
+        android:layout_height="148dp"
         android:id="@+id/listView1"
-        android:layout_width="165dp"
-        android:layout_height="331dp" />
+        android:layout_gravity="center_horizontal" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Ce am selectat?"
-        android:id="@+id/findSelected"
+        android:text="OK"
+        android:id="@+id/button2"
         android:layout_gravity="center_horizontal" />
+
 
 </LinearLayout>

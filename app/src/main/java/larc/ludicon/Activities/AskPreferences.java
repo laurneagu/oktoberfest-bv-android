@@ -55,7 +55,7 @@ class Sport {
 }
 
 public class AskPreferences extends Activity {
-
+    private ImageView logo;
     MyCustomAdapter dataAdapter = null;
 
     public class Sport {
@@ -78,46 +78,11 @@ public class AskPreferences extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ask_preferences);
+        logo = (ImageView) findViewById(R.id.logo);
+        logo.setImageResource(R.drawable.logo);
         //Generate list View from ArrayList
 
         displayListView();
-
-        Button selectSportsButton = (Button) findViewById(R.id.selectSportsButton);
-        selectSportsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //  INSERT PARSE PREFERENCES UPDATE METHOD
-                // USE sportsList below(array with sports containing name, id, isChecked )
-                ArrayList<Sport> sportsList = dataAdapter.sportsList;
-                //List<String> sportArray = new ArrayList<String>();
-//                try {
-//                    ParseQuery<ParseUser> userQuery = ParseUser.getQuery();
-//                    userQuery.whereEqualTo("email", User.getEmail(getApplicationContext()));
-//                    List<ParseUser> userResults = userQuery.find();
-//                    for ( ParseObject pU : userResults )
-//                    {
-//                        for ( Sport s : sportsList )
-//                        {
-//                            if( s.isChecked == true ) {
-//                                pU.addUnique("sports",s.id);
-//                            }
-//                           /* else
-//                            {   List<String> list = new ArrayList<String>();
-//                                list.add(s.name);
-//                                pU.removeAll("sports",list);
-//                            }*/
-//
-//                        }
-//                        pU.save();
-//                    }
-//                }
-//                catch(Exception exc)
-//                {}
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
-            }
-        });
-
-        checkButtonClick(); // Button which checks if it's ok
     }
 
     private void displayListView() {
@@ -248,32 +213,5 @@ public class AskPreferences extends Activity {
 
     }
 
-    // Method which verifies if the items have been selected
-    private void checkButtonClick() {
 
-
-        Button myButton = (Button) findViewById(R.id.findSelected);
-        myButton.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                StringBuffer responseText = new StringBuffer();
-                responseText.append("The following were selected...\n");
-
-                ArrayList<Sport> sportsList = dataAdapter.sportsList;
-                for (int i = 0; i < sportsList.size(); i++) {
-                    Sport sport = sportsList.get(i);
-                    if (sport.isChecked == true) {
-                        responseText.append("\n" + sport.name);
-                    }
-                }
-
-                Toast.makeText(getApplicationContext(),
-                        responseText, Toast.LENGTH_LONG).show();
-
-            }
-        });
-
-    }
 }
