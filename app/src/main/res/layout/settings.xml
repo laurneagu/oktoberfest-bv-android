@@ -11,20 +11,22 @@
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@drawable/app_bg"
+        android:id="@+id/relLayout">
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:background="@android:color/transparent"
-        android:layout_centerHorizontal="true"
         android:text="Log out"
         android:textSize="20dp"
         android:id="@+id/logout"
-        android:layout_marginBottom="10dp"
-        />
+        android:layout_alignParentBottom="true"
+        android:layout_alignLeft="@+id/saveButton"
+        android:layout_alignStart="@+id/saveButton" />
 
         <ListView
+            android:paddingTop="50dp"
             android:layout_width="wrap_content"
             android:layout_height="200dp"
             android:id="@+id/listView"
@@ -48,15 +50,54 @@
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:id="@+id/seekBar2"
-            android:layout_above="@+id/saveButton"
+            android:layout_marginTop="54dp"
+            android:layout_below="@+id/textView9"
             android:layout_centerHorizontal="true" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Favourite Sports"
+            android:id="@+id/textView6"
+            android:layout_alignTop="@+id/listView"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Pick what sports would you like to play"
+            android:id="@+id/textView7"
+            android:layout_below="@+id/textView6"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:paddingTop="90dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Range"
+            android:id="@+id/textView8"
+            android:layout_below="@+id/listView"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="This is the area of discovering friends"
+            android:id="@+id/textView9"
+            android:layout_below="@+id/textView8"
+            android:layout_alignLeft="@+id/textView7"
+            android:layout_alignStart="@+id/textView7" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
             android:id="@+id/progressText"
-            android:layout_above="@+id/seekBar2"
+            android:layout_above="@+id/saveButton"
             android:layout_centerHorizontal="true" />
 
     </RelativeLayout>

@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     xmlns:facebook="http://schemas.android.com/apk/res-auto"
     tools:context="larc.ludicon.Activities.IntroActivity"
-    android:id="@+id/intro">
+    android:id="@+id/intro"
+    android:background="@drawable/intro_bg">
 
     <ImageView
         android:id="@+id/bg"
@@ -57,8 +58,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="121dp"
-        android:layout_alignParentBottom="true"
+        android:layout_alignTop="@+id/profilePictureIntro"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
