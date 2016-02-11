@@ -130,7 +130,7 @@ public class IntroActivity extends Activity {
 
         setContentView(R.layout.activity_intro);
 
-        // TODO relative to the phone screen, not hardoded
+        // TODO relative to the phone screen, not hardcoded
         logo = (ImageView) findViewById(R.id.logo);
         logo.getLayoutParams().height = 300;
         logo.getLayoutParams().width = 300;
@@ -284,8 +284,9 @@ public class IntroActivity extends Activity {
                     String gmtTime = df.format(new Date());
                     map.put("lastLogInTime", gmtTime);
 
+
                     final String uid = authData.getUid();
-                    User.firebaseRef.child("users").child(uid).updateChildren(map);
+
 
                     profilePictureView.setVisibility(View.VISIBLE);
                     LoginButton login_button = (LoginButton) findViewById(R.id.login_button);
@@ -294,7 +295,36 @@ public class IntroActivity extends Activity {
                     greeting.setVisibility(View.VISIBLE);
                     greeting.setText(getString(R.string.hello_user, profile.getFirstName()));
 
-                    jumpToMainActivity();
+                    // Check user exists
+                    Firebase userRef = User.firebaseRef.child("users").child(uid); // check user
+                    userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+
+                            //  for (DataSnapshot sport : snapshot.getChildren()) {
+                            // }
+
+                            if (snapshot.getValue() == null) { // new user
+                                User.firebaseRef.child("mesg").setValue("User nou");
+                                User.firebaseRef.child("users").child(uid).setValue(map);
+
+                                // TODO GOTO ASK PREF - Choose pref sports
+                                jumpToMainActivity();
+
+                            } else { // old user
+                                User.firebaseRef.child("mesg").setValue("User vechi");
+                                User.firebaseRef.child("users").child(uid).updateChildren(map);
+                                jumpToMainActivity();
+                            }
+
+
+                        }
+
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
+                            //User.firebaseRef.child("msge").setValue("The read failed: " + firebaseError.getMessage());
+                        }
+                    });
 
                 }
 

@@ -10,9 +10,7 @@ import android.widget.ImageView;
 import com.facebook.Profile;
 import com.facebook.login.widget.ProfilePictureView;
 import com.firebase.client.Firebase;
-//import com.parse.ParseException;
-//import com.parse.ParseFile;
-//import com.parse.ParseUser;
+
 
 import java.io.ByteArrayOutputStream;
 import java.util.Date;
@@ -30,7 +28,7 @@ public class User {
     public static  String lastName= "lastName";
     public static  String email= "email";
 
-    public static  String sex = "unknown";
+    public static  String gender = "unknown";
     public static  Date birthDate = new Date();
 
     // FirebaseRef
