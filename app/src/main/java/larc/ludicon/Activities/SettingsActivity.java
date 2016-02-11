@@ -18,6 +18,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.facebook.login.LoginManager;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.Map;
 
 import larc.ludicon.Adapters.LeftPanelItemClicker;
 import larc.ludicon.Adapters.LeftSidePanelAdapter;
@@ -39,6 +46,29 @@ public class SettingsActivity  extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings);
+
+        ////// Asa fac lista:
+        final ArrayList<Sport> sportsList = new ArrayList<Sport>();
+        // Asa iau datele din cloud
+        Firebase sportRed = User.firebaseRef.child("sports"); // chech user
+        sportRed.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                for (DataSnapshot sport: snapshot.getChildren()) {
+                    sportsList.add(new Sport(sport.getKey(),sport.child("id").getValue().toString(),false));
+                }
+                //User.firebaseRef.child(sportsList.get(0).name).setValue(sportsList.get(0).id);
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                //User.firebaseRef.child("msge").setValue("The read failed: " + firebaseError.getMessage());
+            }
+        });
+
+
+
 
         TextView hello_message = (TextView) findViewById(R.id.hello_message_activity);
         hello_message.setText("Settings");
@@ -64,7 +94,7 @@ public class SettingsActivity  extends Activity {
                 LoginManager.getInstance().logOut();
                 //clear UserInfo when logout
                 User.clear(getApplicationContext());
-                if (User.parseUser != null) User.parseUser.logOut();
+                //if (User.parseUser != null) User.parseUser.logOut();
                 //go back to IntroActivity
                 Intent goToIntro = new Intent(getApplicationContext(), IntroActivity.class);
                 goToIntro.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

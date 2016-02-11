@@ -1,12 +1,16 @@
 package larc.ludicon.Activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Application;
 import android.app.DialogFragment;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.Image;
 import android.os.Handler;
 import android.os.Bundle;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,9 +38,25 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.facebook.login.widget.ProfilePictureView;
+
+import com.firebase.client.AuthData;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
+
 import org.json.JSONObject;
 
+import java.security.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.TimeZone;
 
 public class IntroActivity extends Activity {
 
@@ -47,9 +67,17 @@ public class IntroActivity extends Activity {
     private TextView greeting;
     private ImageView logo;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        /* Firebase Context */
+        Firebase.setAndroidContext(this);
+        /* Firebase Reference */
+        User.firebaseRef = new Firebase("https://ludicon.firebaseio.com/");
+        //firebaseRef.child("message").setValue("Do you have data? You'll love Firebase.");
+
 
         if (isNetworkConnected() == false) {
             openNoInternetConnectionDialog();
@@ -103,7 +131,7 @@ public class IntroActivity extends Activity {
         setContentView(R.layout.activity_intro);
 
         // TODO relative to the phone screen, not hardoded
-        logo = (ImageView)findViewById(R.id.logo);
+        logo = (ImageView) findViewById(R.id.logo);
         logo.getLayoutParams().height = 300;
         logo.getLayoutParams().width = 300;
 
@@ -150,7 +178,7 @@ public class IntroActivity extends Activity {
     /**
      * Method that jumps to the MainActivity
      */
-    public void jumpToMainActivity(){
+    public void jumpToMainActivity() {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
@@ -159,7 +187,7 @@ public class IntroActivity extends Activity {
                 startActivity(goToNextActivity);
                 finish();
             }
-        }, 5000); // Delay time for transition to next activity -> insert any time wanted here instead of 5000
+        }, 3000); // Delay time for transition to next activity -> insert any time wanted here instead of 5000
     }
 
 
@@ -174,7 +202,7 @@ public class IntroActivity extends Activity {
     private void updateUI() {
 
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        Profile profile = Profile.getCurrentProfile();
+        final Profile profile = Profile.getCurrentProfile();
         if (accessToken != null && profile != null) // If user has successfully logged in
         {
             profilePictureView.setDrawingCacheEnabled(true);
@@ -187,21 +215,105 @@ public class IntroActivity extends Activity {
 //            Bitmap    bitmap  = ( (BitmapDrawable) fbImage.getDrawable()).getBitmap();
 //            User.setImage(bitmap);
 
-            profilePictureView.setVisibility(View.VISIBLE);
-            LoginButton login_button = (LoginButton) findViewById(R.id.login_button);
-            login_button.setVisibility(View.INVISIBLE);
+            // Firebase Login - insert data to dataBase (for a new user)
+            User.firebaseRef.authWithOAuthToken("facebook", accessToken.getToken(), new Firebase.AuthResultHandler() {
+                @Override
+                public void onAuthenticated(AuthData authData) {
+                    final Map<String, Object> map = new HashMap<String, Object>();
 
-            greeting.setVisibility(View.VISIBLE);
-            greeting.setText(getString(R.string.hello_user, profile.getFirstName()));
+                    //  provider
+                    map.put("provider", authData.getProvider());
 
-            jumpToMainActivity();
-            
+                    //email
+                    if (authData.getProviderData().containsKey("email")) {
+                        map.put("email", authData.getProviderData().get("email").toString());
+                    }
 
-        }
-        else { // Login FAILED
-                    greeting.setText("");
+                    //profileImageURL
+                    if (authData.getProviderData().containsKey("profileImageURL")) {
+                        map.put("profileImageURL", authData.getProviderData().get("profileImageURL").toString());
+                    }
+
+                    String id = "NO_ID";
+                    //id
+                    if (authData.getProviderData().containsKey("id")) {
+                        map.put("id", authData.getProviderData().get("id").toString());
+                        id = authData.getProviderData().get("id").toString();
+                    }
+
+                    HashMap<String, Object> cachedInfo = (HashMap<String, Object>) authData.getProviderData().get("cachedUserProfile");
+
+                    //picture
+                    if (cachedInfo.containsKey("picture")) {
+                        map.put("picture", cachedInfo.get("picture").toString());
+                    }
+
+                    //name
+                    if (cachedInfo.containsKey("name")) {
+                        map.put("name", cachedInfo.get("name").toString());
+                    }
+
+                    //first_name
+                    if (cachedInfo.containsKey("first_name")) {
+                        map.put("firstName", cachedInfo.get("first_name").toString());
+                    }
+
+                    //last_name
+                    if (cachedInfo.containsKey("last_name")) {
+                        map.put("lastName", cachedInfo.get("last_name").toString());
+                    }
+
+                    //gender
+                    if (cachedInfo.containsKey("gender")) {
+                        map.put("gender", cachedInfo.get("gender").toString());
+                    }
+
+                    //age_range
+                    if (cachedInfo.containsKey("age_range")) {
+                        map.put("ageRange", cachedInfo.get("age_range").toString());
+                    }
+
+                    //timezone
+                    if (cachedInfo.containsKey("timezone")) {
+                        map.put("timezone", cachedInfo.get("timezone").toString());
+                    }
+
+                    //lastLogIn - GMT
+                    DateFormat df = DateFormat.getDateTimeInstance();
+                    df.setTimeZone(TimeZone.getTimeZone("gmt"));
+                    String gmtTime = df.format(new Date());
+                    map.put("lastLogInTime", gmtTime);
+
+                    final String uid = authData.getUid();
+                    User.firebaseRef.child("users").child(uid).updateChildren(map);
+
+                    profilePictureView.setVisibility(View.VISIBLE);
+                    LoginButton login_button = (LoginButton) findViewById(R.id.login_button);
+                    login_button.setVisibility(View.INVISIBLE);
+
+                    greeting.setVisibility(View.VISIBLE);
+                    greeting.setText(getString(R.string.hello_user, profile.getFirstName()));
+
+                    jumpToMainActivity();
+
+                }
+
+                @Override
+                public void onAuthenticationError(FirebaseError firebaseError) {
+                    // TODO Log out from facebook account
+                }
+            });
+
+
+
+
+
+        } else { // Login FAILED
+            User.firebaseRef.unauth();
+            greeting.setText("");
         }
     }
+
     public void openNoInternetConnectionDialog() {
         DialogFragment newFragment = new MessageDialog();
         newFragment.show(getFragmentManager(), "message");
@@ -232,11 +344,12 @@ public class IntroActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK) {
             super.onActivityResult(requestCode, resultCode, data);
             callbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
+
     @Override
     public void onDestroy() {
         super.onDestroy();

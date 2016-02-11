@@ -16,11 +16,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.facebook.Profile;
-import com.parse.ParseException;
-import com.parse.ParseUser;
-import com.parse.SignUpCallback;
-
 import larc.ludicon.Adapters.LeftPanelItemClicker;
 import larc.ludicon.Adapters.LeftSidePanelAdapter;
 import larc.ludicon.R;
@@ -43,40 +38,7 @@ public class MainActivity extends Activity {
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
         initializeLeftSidePanel();
 
-        try {
-            ParseUser.logIn(User.getEmail(getApplicationContext()), User.getPassword(getApplicationContext()));
-        } catch (ParseException e) { // User doesn't exist
-            Log.v("CactchEntry", "A intrat" + User.getEmail(getApplicationContext()));
-            ParseUser user = new ParseUser();
-            user.setUsername(User.getEmail(getApplicationContext()));
-            user.setPassword(User.getPassword(getApplicationContext()));
-            user.setEmail(User.getEmail(getApplicationContext()));
-            // Use thisKindOfNaming for column name
-            user.put("firstName", User.getFirstName(getApplicationContext()));
-            user.put("lastName", User.getLastName(getApplicationContext()));
-
-            Profile p = Profile.getCurrentProfile();
-
-            // TODO - add Birthday
-
-            user.signUpInBackground(new SignUpCallback() {
-                public void done(ParseException e) {
-                    if (e == null) {
-                        // Hooray! Let them use the app now.
-                    } else {
-                        // Sign up didn't succeed. Look at the ParseException
-                        // to figure out what went wrong
-                    }
-                }
-            });
-
-        }
-
-        User.parseUser = ParseUser.getCurrentUser();
         User.setImage();
-        User.updateParseImage(this.getApplicationContext());
-        User.parseUser.saveInBackground();
-
 
         // User picture and name for HEADER MENU
         TextView userName = (TextView) findViewById(R.id.userName);

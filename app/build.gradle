@@ -17,6 +17,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE-FIREBASE.txt'
+        exclude 'META-INF/NOTICE'
+    }
 }
 
 repositories {
@@ -31,9 +36,13 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:2.0.0'
 }
 
+//dependencies {
+//    compile 'com.parse.bolts:bolts-android:1.+'
+//    compile 'com.parse:parse-android:1.11.0'
+//}
+
 dependencies {
-    compile 'com.parse.bolts:bolts-android:1.+'
-    compile 'com.parse:parse-android:1.11.0'
+    compile 'com.firebase:firebase-client-android:2.5.0+'
 }
 dependencies {
     compile 'com.android.support:support-v4:23.+'

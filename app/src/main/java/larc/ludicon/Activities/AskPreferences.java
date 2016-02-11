@@ -10,6 +10,8 @@ import larc.ludicon.UserInfo.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import android.content.Context;
 import android.util.Log;
@@ -26,25 +28,48 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-import com.parse.ParseUser;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
+
+//import com.parse.ParseObject;
+//import com.parse.ParseQuery;
+//import com.parse.ParseUser;
+
+
+class Sport {
+    public String name;
+    public String id;
+    public boolean isChecked;
+
+    public Sport(String name, String id, boolean isChecked) {
+        this.name = name;
+        this.id = id;
+        this.isChecked = isChecked;
+    }
+
+    public void setSelected(boolean value) {
+        this.isChecked = value;
+    }
+}
 
 public class AskPreferences extends Activity {
 
     MyCustomAdapter dataAdapter = null;
-    public class Sport{
+
+    public class Sport {
         public String name;
         public String id;
         public boolean isChecked;
-        public Sport (String name, String id, boolean isChecked)
-        {
+
+        public Sport(String name, String id, boolean isChecked) {
             this.name = name;
             this.id = id;
             this.isChecked = isChecked;
         }
-        public void setSelected(boolean value)
-        {
+
+        public void setSelected(boolean value) {
             this.isChecked = value;
         }
     }
@@ -57,7 +82,7 @@ public class AskPreferences extends Activity {
 
         displayListView();
 
-        Button selectSportsButton = (Button)findViewById(R.id.selectSportsButton);
+        Button selectSportsButton = (Button) findViewById(R.id.selectSportsButton);
         selectSportsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,29 +90,29 @@ public class AskPreferences extends Activity {
                 // USE sportsList below(array with sports containing name, id, isChecked )
                 ArrayList<Sport> sportsList = dataAdapter.sportsList;
                 //List<String> sportArray = new ArrayList<String>();
-                try {
-                    ParseQuery<ParseUser> userQuery = ParseUser.getQuery();
-                    userQuery.whereEqualTo("email", User.getEmail(getApplicationContext()));
-                    List<ParseUser> userResults = userQuery.find();
-                    for ( ParseObject pU : userResults )
-                    {
-                        for ( Sport s : sportsList )
-                        {
-                            if( s.isChecked == true ) {
-                                pU.addUnique("sports",s.id);
-                            }
-                           /* else
-                            {   List<String> list = new ArrayList<String>();
-                                list.add(s.name);
-                                pU.removeAll("sports",list);
-                            }*/
-
-                        }
-                        pU.save();
-                    }
-                }
-                catch(Exception exc)
-                {}
+//                try {
+//                    ParseQuery<ParseUser> userQuery = ParseUser.getQuery();
+//                    userQuery.whereEqualTo("email", User.getEmail(getApplicationContext()));
+//                    List<ParseUser> userResults = userQuery.find();
+//                    for ( ParseObject pU : userResults )
+//                    {
+//                        for ( Sport s : sportsList )
+//                        {
+//                            if( s.isChecked == true ) {
+//                                pU.addUnique("sports",s.id);
+//                            }
+//                           /* else
+//                            {   List<String> list = new ArrayList<String>();
+//                                list.add(s.name);
+//                                pU.removeAll("sports",list);
+//                            }*/
+//
+//                        }
+//                        pU.save();
+//                    }
+//                }
+//                catch(Exception exc)
+//                {}
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
             }
         });
@@ -97,41 +122,58 @@ public class AskPreferences extends Activity {
 
     private void displayListView() {
         //Array list of sports : name, id, isChecked
-        ArrayList <Sport> sportsList = new ArrayList<Sport>();
 
-        //Query in Sports Table and add all of them to sportsList with ( name, id, isChecked = false )
-        ParseQuery <ParseObject> sportsQuery = ParseQuery.getQuery("Sport");
-        try {
-            List<ParseObject> results = sportsQuery.find();
-            for ( ParseObject pObj : results)
-            {
-                    sportsList.add(new Sport( (String)(pObj.get("name")),pObj.getObjectId(),false));
+
+        ArrayList<Sport> sportsList = new ArrayList<Sport>();
+        // Asa iau datele din cloud
+        Firebase sportRed = User.firebaseRef.child("sports"); // chech user
+        sportRed.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+
             }
-        }
-        catch(Exception exc)
-        {}
-        // Query in User Table and see which sports are preferred by User and mark them with isChecked = true
-        try {
-            ParseQuery<ParseUser> userQuery = ParseUser.getQuery();
-            userQuery.whereEqualTo("email", User.getEmail(getApplicationContext()));
-            List<ParseUser> userResults = userQuery.find();
-            for ( ParseUser pU : userResults )
-            {
-                List<String> userSportList = pU.getList("sports");
-                for ( String str : userSportList )
-                {
-                    for ( Sport s : sportsList )
-                    {
-                        if ( str.equalsIgnoreCase(s.id) )
-                                s.isChecked = true;
-                    }
-                }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                //User.firebaseRef.child("msge").setValue("The read failed: " + firebaseError.getMessage());
             }
-        }
-        catch(Exception exc)
-        {}
+        });
+
+
+//        //Query in Sports Table and add all of them to sportsList with ( name, id, isChecked = false )
+//        ParseQuery <ParseObject> sportsQuery = ParseQuery.getQuery("Sport");
+//        try {
+//            List<ParseObject> results = sportsQuery.find();
+//            for ( ParseObject pObj : results)
+//            {
+//                    sportsList.add(new Sport( (String)(pObj.get("name")),pObj.getObjectId(),false));
+//            }
+//        }
+//        catch(Exception exc)
+//        {}
+//        // Query in User Table and see which sports are preferred by User and mark them with isChecked = true
+//        try {
+//            ParseQuery<ParseUser> userQuery = ParseUser.getQuery();
+//            userQuery.whereEqualTo("email", User.getEmail(getApplicationContext()));
+//            List<ParseUser> userResults = userQuery.find();
+//            for ( ParseUser pU : userResults )
+//            {
+//                List<String> userSportList = pU.getList("sports");
+//                for ( String str : userSportList )
+//                {
+//                    for ( Sport s : sportsList )
+//                    {
+//                        if ( str.equalsIgnoreCase(s.id) )
+//                                s.isChecked = true;
+//                    }
+//                }
+//            }
+//        }
+//        catch(Exception exc)
+//        {}
         //create an ArrayAdaptor from the Sport Array
-        dataAdapter = new MyCustomAdapter(getApplicationContext() , R.layout.sport_info, sportsList);
+        dataAdapter = new MyCustomAdapter(getApplicationContext(), R.layout.sport_info, sportsList);
         ListView listView = (ListView) findViewById(R.id.listView1);
         // Assign adapter to ListView
         listView.setAdapter(dataAdapter);
@@ -174,7 +216,7 @@ public class AskPreferences extends Activity {
             Log.v("ConvertView", String.valueOf(position));
 
             if (convertView == null) {
-                LayoutInflater vi = (LayoutInflater)getSystemService(
+                LayoutInflater vi = (LayoutInflater) getSystemService(
                         Context.LAYOUT_INFLATER_SERVICE);
                 convertView = vi.inflate(R.layout.sport_info, null);
 
@@ -183,15 +225,14 @@ public class AskPreferences extends Activity {
                 holder.box = (CheckBox) convertView.findViewById(R.id.checkBox1);
                 convertView.setTag(holder);
 
-                holder.box.setOnClickListener( new View.OnClickListener() {
+                holder.box.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
-                        CheckBox cb = (CheckBox) v ;
+                        CheckBox cb = (CheckBox) v;
                         Sport sport = (Sport) cb.getTag();
                         sport.setSelected(cb.isChecked());
                     }
                 });
-            }
-            else {
+            } else {
                 holder = (ViewHolder) convertView.getTag();
             }
 
@@ -206,6 +247,7 @@ public class AskPreferences extends Activity {
         }
 
     }
+
     // Method which verifies if the items have been selected
     private void checkButtonClick() {
 
@@ -220,9 +262,9 @@ public class AskPreferences extends Activity {
                 responseText.append("The following were selected...\n");
 
                 ArrayList<Sport> sportsList = dataAdapter.sportsList;
-                for(int i=0;i<sportsList.size();i++){
+                for (int i = 0; i < sportsList.size(); i++) {
                     Sport sport = sportsList.get(i);
-                    if(sport.isChecked == true){
+                    if (sport.isChecked == true) {
                         responseText.append("\n" + sport.name);
                     }
                 }

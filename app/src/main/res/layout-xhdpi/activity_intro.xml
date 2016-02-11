@@ -14,7 +14,7 @@
         android:layout_centerVertical="true"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
-        android:background="@drawable/intro_bg"/>
+        />
 
     <ImageView
         android:id="@+id/logo"
@@ -25,7 +25,7 @@
         android:layout_marginTop="130dp"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
-        android:background="@drawable/logo"/>
+       />
     <TextView
         android:id="@+id/dpi"
         android:layout_width="wrap_content"
