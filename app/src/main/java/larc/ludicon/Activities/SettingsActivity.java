@@ -60,7 +60,7 @@ public class SettingsActivity extends Activity {
     private ArrayList<Sport> sportsList = new ArrayList<Sport>();
     Firebase rangeRef = User.firebaseRef.child("users").child(User.uid).child("range");
     Firebase userSports = User.firebaseRef.child("users").child(User.uid).child("sports");
-    final Firebase sportRed = User.firebaseRef.child("sports"); // chech user
+    final Firebase sportRed = User.firebaseRef.child("sports"); // check user
     private int savedProgress = 0;
 
     @Override
@@ -307,7 +307,9 @@ public class SettingsActivity extends Activity {
 
         }
 
-    }// Left side menu
+    }
+
+    // Left side menu
 
     public void initializeLeftSidePanel() {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_settings);

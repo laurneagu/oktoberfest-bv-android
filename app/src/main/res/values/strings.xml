@@ -24,4 +24,7 @@
     <string name="drawer_close">Close navigation drawer</string>
 
     <string name="title_activity_ask_range">AskRange</string>
+    <string name="title_activity_friends">FriendsActivity</string>
+
+    <string name="title_activity_create_new">CreateNewActivity</string>
 </resources>

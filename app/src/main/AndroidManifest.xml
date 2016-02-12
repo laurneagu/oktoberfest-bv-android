@@ -4,6 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:name=".Utils.UseParse"
@@ -29,6 +31,12 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAlcEKCo_BjVBuya9kJ702WsiYsqI3diq4" />
 
         <activity
             android:name=".Activities.MainActivity"
@@ -55,6 +63,18 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="larc.ludicon.Activities.AskPreferences" />
+        </activity>
+        <activity
+            android:name=".Activities.FriendsActivity"
+            android:label="@string/title_activity_friends" >
+        </activity>
+        <activity
+            android:name=".Activities.CreateNewActivity"
+            android:label="@string/title_activity_create_new"
+            android:parentActivityName=".Activities.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="larc.ludicon.Activities.MainActivity" />
         </activity>
     </application>
 

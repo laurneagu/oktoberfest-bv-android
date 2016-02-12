@@ -12,10 +12,10 @@ public class LeftSideElement {
     public static List<LeftSidePanelElements> Init(){
         List<LeftSidePanelElements> elems =  new ArrayList<LeftSidePanelElements>();
 
-        String[] elemNames = new String[]{"Statistics", "Friends", "Chats", "Rankings", "Settings"};
-        int[] elemPicRes = new int[]{R.drawable.stats, R.drawable.friends,  R.drawable.chat, R.drawable.ranks, R.drawable.settings };
+        String[] elemNames = new String[]{"New Activity", "Statistics", "Friends", "Chats", "Rankings", "Settings"};
+        int[] elemPicRes = new int[]{R.drawable.stats,R.drawable.stats, R.drawable.friends,  R.drawable.chat, R.drawable.ranks, R.drawable.settings };
 
-        for(int i = 0; i < 5 ; i++ ){
+        for(int i = 0; i < 6 ; i++ ){
             elems.add(new LeftSidePanelElements(elemNames[i],elemPicRes[i]));
         }
 

@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.media.Image;
 import android.os.Handler;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.Menu;
@@ -17,6 +18,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.facebook.GraphRequestAsyncTask;
+import com.facebook.HttpMethod;
 
 import larc.ludicon.R;
 import larc.ludicon.UserInfo.User;
@@ -45,11 +48,14 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.security.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -112,7 +118,6 @@ public class IntroActivity extends Activity {
                         parameters.putString("fields", "id,name,email");
                         request.setParameters(parameters);
                         request.executeAsync();
-
                         updateUI();
                     }
 
