@@ -317,6 +317,7 @@ public class IntroActivity extends Activity {
                     greeting.setText(getString(R.string.hello_user, profile.getFirstName()));
 
                     // Check user exists
+                    Log.v("UID",uid);
                     Firebase userRef = User.firebaseRef.child("users").child(uid); // check user
                     userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override

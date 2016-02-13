@@ -66,6 +66,7 @@
         </activity>
         <activity
             android:name=".Activities.FriendsActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
             android:label="@string/title_activity_friends" >
         </activity>
         <activity
@@ -75,6 +76,16 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="larc.ludicon.Activities.MainActivity" />
+        </activity>
+        <activity
+            android:name=".Activities.ProfileActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_profile"
+            android:parentActivityName=".Activities.FriendsActivity"
+            android:theme="@android:style/Theme.NoTitleBar" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="larc.ludicon.Activities.FriendsActivity" />
         </activity>
     </application>
 

@@ -364,6 +364,10 @@ public class SettingsActivity extends Activity {
         }
 
 
+        // Left side panel
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
 
 
         return super.onOptionsItemSelected(item);
