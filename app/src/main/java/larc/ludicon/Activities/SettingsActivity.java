@@ -54,6 +54,8 @@ public class SettingsActivity extends Activity {
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
+
+
     private TextView progressText;
     private SeekBar seekBar;
     private Button saveButton;

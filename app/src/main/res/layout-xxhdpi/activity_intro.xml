@@ -15,15 +15,6 @@
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
         android:background="@drawable/bg2"/>
-    <TextView
-        android:id="@+id/dpi"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#FFFFFF"
-        android:textSize="36sp"
-        android:text="xxhdpi"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentTop="true"/>
     <com.facebook.login.widget.ProfilePictureView
         android:id="@+id/profilePictureIntro"
         android:layout_width="wrap_content"

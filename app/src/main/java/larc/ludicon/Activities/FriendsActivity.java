@@ -75,7 +75,7 @@ public class FriendsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends);
         TextView header = (TextView) findViewById(R.id.hello_message_activity);
-        header.setText("Friends");
+        //header.setText("Friends");
         /*
         // Left side panel
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
@@ -185,7 +185,7 @@ public class FriendsActivity extends Activity {
             moreButton.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getBaseContext(), ProfileActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
                     intent.putExtra("uid", list.get(position).uid);
                     startActivity(intent);
                 }

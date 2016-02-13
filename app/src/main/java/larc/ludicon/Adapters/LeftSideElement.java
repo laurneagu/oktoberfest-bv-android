@@ -13,7 +13,7 @@ public class LeftSideElement {
         List<LeftSidePanelElements> elems =  new ArrayList<LeftSidePanelElements>();
 
         String[] elemNames = new String[]{"New Activity", "Statistics", "Friends", "Chats", "Rankings", "Settings"};
-        int[] elemPicRes = new int[]{R.drawable.stats,R.drawable.stats, R.drawable.friends,  R.drawable.chat, R.drawable.ranks, R.drawable.settings };
+        int[] elemPicRes = new int[]{R.drawable.create,R.drawable.stats, R.drawable.friends,  R.drawable.chat, R.drawable.ranks, R.drawable.settings };
 
         for(int i = 0; i < 6 ; i++ ){
             elems.add(new LeftSidePanelElements(elemNames[i],elemPicRes[i]));

@@ -8,7 +8,7 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="60dp"
-        android:background="#8E2323"
+        android:background="#8f2525"
         android:id="@+id/headerMenu">
 
         <ImageButton android:layout_width="30dp"
@@ -25,7 +25,7 @@
             android:textColor="#FFFFFF"
             android:layout_marginLeft="100dp"
             android:layout_toRightOf="@+id/showPanel"
-            android:textSize="20dp"
+            android:textSize="23dp"
             android:gravity="center|left"
             android:layout_centerInParent="true"
             android:id="@+id/hello_message_activity"
