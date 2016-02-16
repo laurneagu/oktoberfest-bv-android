@@ -3,7 +3,8 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+    android:background="@drawable/app_bg">
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -14,6 +15,14 @@
             android:layout_below="@+id/headerMenu">
 
           </ScrollView>
+            <ListView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/events_listView"
+                android:layout_below="@+id/scrollView"
+                android:layout_toRightOf="@+id/scrollView"
+                android:layout_toEndOf="@+id/scrollView"
+                android:layout_marginTop="58dp" />
         </RelativeLayout>
 
         <include layout="@layout/header"/>

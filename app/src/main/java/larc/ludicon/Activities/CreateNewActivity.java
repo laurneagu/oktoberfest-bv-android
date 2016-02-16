@@ -95,7 +95,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
         // Left side panel initializing
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
-        initializeLeftSidePanel();
+        // initializeLeftSidePanel();
 
         User.setImage();
 
@@ -245,7 +245,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
     }
 
     // Left side menu
-
+    /*
     public void initializeLeftSidePanel() {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_createnew);
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
@@ -278,7 +278,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
     }
-
+    */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

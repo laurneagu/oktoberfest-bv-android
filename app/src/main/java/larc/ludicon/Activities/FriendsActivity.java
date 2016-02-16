@@ -64,9 +64,9 @@ public class FriendsActivity extends Activity {
 
     String auxiliarURL;
     Boolean ok;
+
     // Left side panel
     private ListView mDrawerList;
-
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
 
@@ -75,9 +75,9 @@ public class FriendsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends);
         TextView header = (TextView) findViewById(R.id.hello_message_activity);
-        //header.setText("Friends");
-        /*
-        // Left side panel
+        header.setText("Friends");
+
+
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
         initializeLeftSidePanel();
 
@@ -90,7 +90,6 @@ public class FriendsActivity extends Activity {
         ImageView userPic = (ImageView) findViewById(R.id.userPicture);
         Drawable d = new BitmapDrawable(getResources(), User.image);
         userPic.setImageDrawable(d);
-        */
 
         new GraphRequest(
                 AccessToken.getCurrentAccessToken(),
@@ -159,20 +158,24 @@ public class FriendsActivity extends Activity {
                 view = inflater.inflate(R.layout.friends_layout, null);
             }
 
-            TextView textName = (TextView) view.findViewById(R.id.list_item_string);
+            final TextView textName = (TextView) view.findViewById(R.id.list_item_string);
             final ImageView imageView = (ImageView) view.findViewById(R.id.profileImageView);
             ImageButton moreButton = (ImageButton) view.findViewById(R.id.more_btn);
             ImageButton chatButton = (ImageButton) view.findViewById(R.id.chat_btn);
+            final TextView numberSports = (TextView) view.findViewById(R.id.numberSports);
             // Set name in TextView
             textName.setText(list.get(position).name);
             // Set Image in ImageView
             Firebase userRef = User.firebaseRef.child("users").child(list.get(position).uid).child("profileImageURL");
+            Log.v("Position",position+"");
             userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
                     if(snapshot.getValue() != null) {
+                        String label = textName.getText().toString();
                         String strURL = snapshot.getValue().toString();
-                        new DownloadImageTask(imageView).execute(strURL);
+                        if( (list.get(position).name).compareTo(label) == 0)
+                            new DownloadImageTask(imageView).execute(strURL);
                     }
                     else
                         imageView.setImageResource(R.drawable.logo);
@@ -181,6 +184,20 @@ public class FriendsActivity extends Activity {
                 public void onCancelled(FirebaseError firebaseError) {
                 }
             });
+            Firebase userSports = User.firebaseRef.child("users").child(list.get(position).uid).child("sports");
+            userSports.addListenerForSingleValueEvent(new ValueEventListener() { // get user sports
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    if( snapshot != null ) {
+                        String label = textName.getText().toString();
+                        if( (list.get(position).name).compareTo(label) == 0)
+                               numberSports.setText(snapshot.getChildrenCount() + " sports");
+                    }
+                }
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+                    }
+                });
             // Buttons behaviour
             moreButton.setOnClickListener(new View.OnClickListener(){
                 @Override
@@ -246,10 +263,11 @@ public class FriendsActivity extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
-    /*
+
     // Left side menu
+
     public void initializeLeftSidePanel() {
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_settings);
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
 
         // Set the adapter for the list view
@@ -280,5 +298,4 @@ public class FriendsActivity extends Activity {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
     }
-    */
 }
