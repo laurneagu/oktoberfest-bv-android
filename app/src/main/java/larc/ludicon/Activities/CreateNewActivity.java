@@ -7,28 +7,24 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.TimePicker;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -36,16 +32,18 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import larc.ludicon.Adapters.LeftPanelItemClicker;
@@ -58,6 +56,9 @@ import larc.ludicon.Utils.util.UniqueIDCreator;
 
 public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
+    static public int ASK_COORDS = 1000;
+    static public int ASK_COORDS_DONE = 1001;
+
     // Left side panel
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -65,9 +66,15 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
     private MyLocationListener locationListener;
     private LocationManager lm;
+    private GoogleMap m_gmap;
+
+    private double latitude=0;
+    private double longitude=0;
 
     @Override
     public void onMapReady(GoogleMap map) {
+        m_gmap = map;
+
         locationListener = new MyLocationListener();
         locationListener.BindMap(map);
         lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -85,6 +92,16 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         } catch (SecurityException exc) {
             exc.printStackTrace();
         }
+
+        MapFragment mapFragment = (MapFragment) getFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMap().setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                Intent goToNextActivity = new Intent(getApplicationContext(), GMapsFullActivity.class); //AskPreferences.class);
+                startActivityForResult(goToNextActivity,ASK_COORDS);
+            }
+        });
 
     }
 
@@ -155,6 +172,14 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
     }
 
     public void OnCreateEvent(View view) {
+        DatePicker datePicker = (DatePicker) findViewById(R.id.date_picker);
+        TimePicker timePicker = (TimePicker) findViewById(R.id.time_picker);
+        Calendar calendar = new GregorianCalendar(datePicker.getYear(),
+                datePicker.getMonth(),
+                datePicker.getDayOfMonth(),
+                timePicker.getCurrentHour(),
+                timePicker.getCurrentMinute());
+
         UniqueIDCreator idCreator = new UniqueIDCreator();
         final String id = idCreator.nextSessionId();
 
@@ -164,7 +189,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         map.put("id", id);
 
         // Set date it will be played
-        map.put("date",  java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime()));
+        map.put("date",  java.text.DateFormat.getDateTimeInstance().format(calendar.getTime()));
 
         // Set privacy
         Button privacy = (Button) findViewById(R.id.publicBut);
@@ -175,14 +200,21 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         }
 
         // Set location
-        map.put("place","Latitude: " + GPS_Positioning.getLatLng().latitude + " Longitude: " + GPS_Positioning.getLatLng().longitude);
+        if (latitude == 0 || longitude == 0) {
+            map.put("place", "Latitude: " + GPS_Positioning.getLatLng().latitude + " Longitude: " + GPS_Positioning.getLatLng().longitude);
+        }
+        else{
+            map.put("place", "Latitude: " + latitude + " Longitude: " + longitude);
+        }
 
         // Set sport
         Spinner spinner = (Spinner) findViewById(R.id.sports_spinner);
         map.put("sport", spinner.getSelectedItem().toString());
 
         // Set users - currently only the one enrolled
-        map.put("users", User.uid);
+        List<String> usersAttending = new ArrayList<>();
+        usersAttending.add(User.uid);
+        map.put("users", usersAttending);
 
         // Check Events exists
         Firebase newEventRef = User.firebaseRef.child("events"); // check user
@@ -204,6 +236,18 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
                     */
                 }
                 User.firebaseRef.child("events").child(id).setValue(map);
+
+                try {
+                    if(lm != null)
+                        lm.removeUpdates(locationListener);
+                } catch (SecurityException exc) {
+                    exc.printStackTrace();
+                }
+
+                // Sanity checks
+                lm = null;
+                locationListener =null;
+
                 jumpToMainActivity();
             }
 
@@ -242,6 +286,35 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         lm = null;
         locationListener =null;
         finish();
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        latitude = data.getDoubleExtra("latitude", 0);
+        longitude = data.getDoubleExtra("longitude", 0);
+
+        try {
+            if(lm != null)
+                lm.removeUpdates(locationListener);
+        } catch (SecurityException exc) {
+            exc.printStackTrace();
+        }
+
+        // Sanity checks
+        lm = null;
+        locationListener =null;
+
+        LatLng latLng = new LatLng(latitude, longitude);
+
+        m_gmap.clear();
+
+        m_gmap.addMarker(new MarkerOptions()
+                .position(latLng)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.soccerball))
+                .title("This is your selected area"));
+        m_gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+
     }
 
     // Left side menu

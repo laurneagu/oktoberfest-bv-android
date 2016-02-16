@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- HEADER PANEL -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:background="#8f2525"
+        android:id="@+id/headerMenu">
+
+        <ImageButton android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/ic_drawer"
+            android:layout_marginLeft="30dp"
+            android:layout_centerVertical="true"
+            android:id="@+id/showPanel"
+            />
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Activities"
+            android:textColor="#FFFFFF"
+            android:layout_marginLeft="100dp"
+            android:layout_toRightOf="@+id/showPanel"
+            android:textSize="23dp"
+            android:gravity="center|left"
+            android:layout_centerInParent="true"
+            android:id="@+id/hello_message_activity"
+            />
+        <ImageView android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:id="@+id/logoHeader"
+            />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView" />
+    </RelativeLayout>
+</LinearLayout>
+
+    <!-- HEADER PANEL END -->

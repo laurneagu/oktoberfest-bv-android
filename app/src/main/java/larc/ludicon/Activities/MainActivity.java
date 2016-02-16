@@ -65,7 +65,8 @@ public class MainActivity extends Activity {
         ArrayList<String> usersUID = new ArrayList<>();
         Date date;
         String sport;
-        Address place;
+        //Address place;
+        String place;
         String id;
         public String getFirstUser() {
             if (usersUID.size() > 0) return usersUID.get(0);
@@ -128,7 +129,8 @@ public class MainActivity extends Activity {
                                 List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
                                 if(addresses.size()>0) {
                                     Log.v("Address", addresses.get(0).toString());
-                                    event.place = addresses.get(0);
+                                    event.place = latitude + " - " + longitude;
+                                            //addresses.get(0);
                                 }
                             }
                             catch(IOException exc){}

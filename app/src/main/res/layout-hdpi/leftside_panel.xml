@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- LEFT SIDE PANEL -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="250dp"
+    android:layout_gravity="start"
+    android:dividerHeight="0dp"
+    android:background="#D3D3D3">
+
+    <RelativeLayout android:layout_width="300dp"
+        android:layout_height="130dp"
+        android:id="@+id/imgProfile"
+        android:background="@drawable/leftside_header"
+        android:scaleType="fitXY"
+        android:adjustViewBounds="true"
+        >
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/userPicture"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginLeft="10dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/profile_pic"
+            />
+
+        <TextView android:layout_width="120dp"
+            android:layout_height="80dp"
+            android:id="@+id/userName"
+            android:gravity="center"
+            android:textSize="20dp"
+            android:layout_toRightOf="@+id/userPicture"
+            android:layout_marginLeft="10dp"
+            android:text="Anonymous User"
+            android:layout_centerVertical="true"
+            android:textColor="#D3D3D3"
+            />
+    </RelativeLayout>
+    <ListView android:id="@+id/leftMenu"
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:choiceMode="singleChoice"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/imgProfile"/>
+</RelativeLayout>
+    <!-- LEFT SIDE PANEL END -->
