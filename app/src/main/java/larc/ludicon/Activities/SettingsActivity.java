@@ -247,7 +247,7 @@ public class SettingsActivity extends Activity {
 
                         for (DataSnapshot sport : snapshot.getChildren()) {
                             if (!exist.containsKey(sport.getKey())) {
-                                String uri = "@drawable/" + sport.getKey().toLowerCase().replace("-", "");
+                                String uri = "@drawable/" + sport.getKey();
                                 int imageResource = getResources().getIdentifier(uri, null, getPackageName());
                                 Drawable res = getResources().getDrawable(imageResource);
                                 sportsList.add(new Sport(sport.child("name").getValue().toString(), sport.child("id").getValue().toString(),
