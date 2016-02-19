@@ -122,7 +122,7 @@ public class SettingsActivity extends Activity {
             public void onCancelled(FirebaseError firebaseError) {
             }
         });
-        
+
         int barOffset = (savedProgress + 5) / 10;
         if (barOffset < 1) {
             barOffset = 1;
@@ -247,10 +247,10 @@ public class SettingsActivity extends Activity {
 
                         for (DataSnapshot sport : snapshot.getChildren()) {
                             if (!exist.containsKey(sport.getKey())) {
-                                String uri = "@drawable/" + sport.getKey().toLowerCase().replace(" ", "");
+                                String uri = "@drawable/" + sport.getKey().toLowerCase().replace("-", "");
                                 int imageResource = getResources().getIdentifier(uri, null, getPackageName());
                                 Drawable res = getResources().getDrawable(imageResource);
-                                sportsList.add(new Sport(sport.getKey(), sport.child("id").toString(),
+                                sportsList.add(new Sport(sport.child("name").getValue().toString(), sport.child("id").getValue().toString(),
                                         false, ((BitmapDrawable)res).getBitmap()));
                             }
                         }

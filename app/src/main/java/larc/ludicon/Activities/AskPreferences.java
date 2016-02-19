@@ -121,7 +121,7 @@ public class AskPreferences extends Activity {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot sport: snapshot.getChildren()) {
-                    String uri = "@drawable/" + sport.getKey().toLowerCase().replace(" ", "");
+                    String uri = "@drawable/" + sport.getKey().toLowerCase().replace("-", "");
                     int imageResource = getResources().getIdentifier(uri, null, getPackageName());
                     Drawable res = getResources().getDrawable(imageResource);
                     sports.add(new Sport(sport.getKey(), sport.child("id").getValue().toString(),
