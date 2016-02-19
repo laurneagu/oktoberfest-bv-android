@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
@@ -113,16 +115,17 @@ public class AskPreferences extends Activity {
     }
 
     private void displayListView() {
-        //Array list of sports : name, id, isChecked
+        //Array list of sports : name, id, isChecked, icon
         Firebase sportRef = User.firebaseRef.child("sports"); // check user
         sportRef.addListenerForSingleValueEvent(new ValueEventListener() { // get sports
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot sport: snapshot.getChildren()) {
-                    byte[] imageAsBytes = Base64.decode(sport.child("icon").getValue().toString(),
-                            Base64.DEFAULT);
+                    String uri = "@drawable/" + sport.getKey().toLowerCase().replace(" ", "");
+                    int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+                    Drawable res = getResources().getDrawable(imageResource);
                     sports.add(new Sport(sport.getKey(), sport.child("id").getValue().toString(),
-                            false, BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length)));
+                            false, ((BitmapDrawable) res).getBitmap()));
                 }
 
 
