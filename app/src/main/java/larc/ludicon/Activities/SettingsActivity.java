@@ -227,12 +227,11 @@ public class SettingsActivity extends Activity {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot sport : snapshot.getChildren()) {
-                    //this
-                    byte[] imageAsBytes = Base64.decode(sportRed.child(sport.getKey() + "/icon").toString(),
-                            Base64.DEFAULT);
-
+                    String uri = "@drawable/" + sport.getKey().toLowerCase().replace(" ", "");
+                    int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+                    Drawable res = getResources().getDrawable(imageResource);
                     sportsList.add(new Sport(sport.getKey(), sport.getValue().toString(),
-                            true, BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length)));
+                            true, ((BitmapDrawable)res).getBitmap()));
                     exist.put(sport.getKey(), true);
                 }
 
@@ -242,11 +241,11 @@ public class SettingsActivity extends Activity {
 
                         for (DataSnapshot sport : snapshot.getChildren()) {
                             if (!exist.containsKey(sport.getKey())) {
-                                // and this
-                                byte[] imageAsBytes = Base64.decode(sportRed.child("icon").toString(),
-                                        Base64.DEFAULT);
+                                String uri = "@drawable/" + sport.getKey().toLowerCase().replace(" ", "");
+                                int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+                                Drawable res = getResources().getDrawable(imageResource);
                                 sportsList.add(new Sport(sport.getKey(), sport.child("id").toString(),
-                                        false, BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length)));
+                                        false, ((BitmapDrawable)res).getBitmap()));
                             }
                         }
 

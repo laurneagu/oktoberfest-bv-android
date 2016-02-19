@@ -4,21 +4,23 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="20dip" >
+    android:padding="10dp">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentLeft="true"
         android:id="@+id/sport_bg"
-        android:layout_alignRight="@+id/checkBox1"
-        android:padding="10dip" />
+        android:padding="10dp" />
 
     <CheckBox
         android:id="@+id/checkBox1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:layout_centerInParent="true"
         android:focusable="false"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:focusableInTouchMode="false"
         android:text="CheckBox" />
 
@@ -34,6 +36,10 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:maxWidth="35dp"
+        android:maxHeight="35dp"
+        android:scaleType="fitCenter"
         android:id="@+id/icon"
-        android:layout_alignRight="@+id/checkBox1"  />
+        android:layout_alignParentLeft="true" />
 </RelativeLayout>
