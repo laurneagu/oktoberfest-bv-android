@@ -122,9 +122,15 @@ public class SettingsActivity extends Activity {
             public void onCancelled(FirebaseError firebaseError) {
             }
         });
-
+        
+        int barOffset = (savedProgress + 5) / 10;
+        if (barOffset < 1) {
+            barOffset = 1;
+        } else if (barOffset > 9) {
+            barOffset = 9;
+        }
         progressText = (TextView) findViewById(R.id.progressText);
-        progressText.setText(savedProgress + " km");
+        progressText.setText(barOffset * 10 + " km");
         seekBar = (SeekBar) findViewById(R.id.seekBar2);
         seekBar.setProgress(savedProgress);
 
@@ -157,7 +163,7 @@ public class SettingsActivity extends Activity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                progressText.setText(progress + " km");
+                //progressText.setText(barOffset * 10 + " km");
             }
         });
 
