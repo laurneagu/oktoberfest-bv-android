@@ -28,6 +28,14 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="57dp" />
 
+    <ImageView
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/visibleSeekBar"
+        android:layout_below="@+id/textView2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="57dp" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

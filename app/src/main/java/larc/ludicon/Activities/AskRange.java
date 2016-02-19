@@ -1,6 +1,7 @@
 package larc.ludicon.Activities;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ public class AskRange extends AppCompatActivity {
     private ImageView logo;
     private TextView progressText;
     private SeekBar seekBar;
+    private ImageView pseudoSeekBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +38,14 @@ public class AskRange extends AppCompatActivity {
         logo.setImageResource(R.drawable.logo);
 
         seekBar = (SeekBar) findViewById(R.id.seekBar);
+        seekBar.setAlpha(0);
         progressText = (TextView) findViewById(R.id.textView5);
-        progressText.setText("0 km");
+        progressText.setText("10 km");
+        pseudoSeekBar = (ImageView) findViewById(R.id.visibleSeekBar2);
+        String uri = "@drawable/range10";
+        int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+        Drawable res = getResources().getDrawable(imageResource);
+        pseudoSeekBar.setImageDrawable(res);
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
@@ -46,7 +54,17 @@ public class AskRange extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
                 progress = progressValue;
-                progressText.setText(progress + " km");
+                int barOffset = (progress + 5) / 10;
+                if (barOffset < 1) {
+                    barOffset = 1;
+                } else if (barOffset > 9) {
+                    barOffset = 9;
+                }
+                progressText.setText(barOffset * 10 + " km");
+                String uri = "@drawable/range" + barOffset + "0";
+                int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+                Drawable res = getResources().getDrawable(imageResource);
+                pseudoSeekBar.setImageDrawable(res);
             }
 
             @Override

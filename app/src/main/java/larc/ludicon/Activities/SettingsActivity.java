@@ -3,11 +3,15 @@ package larc.ludicon.Activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,7 +25,9 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,6 +64,7 @@ public class SettingsActivity extends Activity {
 
     private TextView progressText;
     private SeekBar seekBar;
+    private ImageView pseudoSeekBar;
     private Button saveButton;
     private ArrayList<Sport> sportsList = new ArrayList<Sport>();
     Firebase rangeRef = User.firebaseRef.child("users").child(User.uid).child("range");
@@ -90,10 +97,25 @@ public class SettingsActivity extends Activity {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 savedProgress = Integer.parseInt(snapshot.getValue().toString());
+                int barOffset = (savedProgress + 5) / 10;
+                if (barOffset < 1) {
+                    barOffset = 1;
+                } else if (barOffset > 9) {
+                    barOffset = 9;
+                }
                 progressText = (TextView) findViewById(R.id.progressText);
-                progressText.setText(savedProgress + " km");
+                progressText.setText(barOffset * 10 + " km");
                 seekBar = (SeekBar) findViewById(R.id.seekBar2);
-                seekBar.setProgress(savedProgress);
+                seekBar.setProgress(barOffset * 10);
+                seekBar.setAlpha(0);
+
+
+                pseudoSeekBar = (ImageView) findViewById(R.id.visibleSeekBar2);
+
+                String uri = "@drawable/range" + barOffset + "0";
+                int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+                Drawable res = getResources().getDrawable(imageResource);
+                pseudoSeekBar.setImageDrawable(res);
             }
 
             @Override
@@ -113,8 +135,20 @@ public class SettingsActivity extends Activity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
                 progress = progressValue;
-                rangeRef.setValue(progressValue);
-                progressText.setText(progress + " km");
+                int barOffset = (progress + 5) / 10;
+                if (barOffset < 1) {
+                    barOffset = 1;
+                } else if (barOffset > 9) {
+                    barOffset = 9;
+                }
+                rangeRef.setValue(barOffset * 10);
+                progressText.setText(barOffset * 10 + " km");
+                pseudoSeekBar = (ImageView) findViewById(R.id.visibleSeekBar2);
+
+                String uri = "@drawable/range" + barOffset + "0";
+                int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+                Drawable res = getResources().getDrawable(imageResource);
+                pseudoSeekBar.setImageDrawable(res);
             }
 
             @Override
@@ -184,7 +218,7 @@ public class SettingsActivity extends Activity {
     }
 
     private void displayListView() {
-        //Array list of sports : name, id, isChecked
+        //Array list of sports : name, id, isChecked, icon
         // Asa iau datele din cloud
 
 
@@ -192,30 +226,38 @@ public class SettingsActivity extends Activity {
         userSports.addListenerForSingleValueEvent(new ValueEventListener() { // get user sports
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-
                 for (DataSnapshot sport : snapshot.getChildren()) {
-                    sportsList.add(new Sport(sport.getKey(), sport.getValue().toString(), true));
+                    //this
+                    byte[] imageAsBytes = Base64.decode(sportRed.child(sport.getKey() + "/icon").toString(),
+                            Base64.DEFAULT);
+
+                    sportsList.add(new Sport(sport.getKey(), sport.getValue().toString(),
+                            true, BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length)));
                     exist.put(sport.getKey(), true);
                 }
 
-                sportRed.addListenerForSingleValueEvent(new ValueEventListener() { // get all sports
+                sportRed.addListenerForSingleValueEvent(new ValueEventListener() { // get the rest of the sports
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
 
                         for (DataSnapshot sport : snapshot.getChildren()) {
                             if (!exist.containsKey(sport.getKey())) {
-                                sportsList.add(new Sport(sport.getKey(), sport.child("id").getValue().toString(), false));
+                                // and this
+                                byte[] imageAsBytes = Base64.decode(sportRed.child("icon").toString(),
+                                        Base64.DEFAULT);
+                                sportsList.add(new Sport(sport.getKey(), sport.child("id").toString(),
+                                        false, BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length)));
                             }
                         }
 
                         //create an ArrayAdaptor from the Sport Array
                         dataAdapter = new MyCustomAdapter(getApplicationContext(), R.layout.sport_info, sportsList);
-                        ListView listView = (ListView) findViewById(R.id.listView);
+                        GridView gridView = (GridView) findViewById(R.id.gridView);
                         // Assign adapter to ListView
-                        listView.setAdapter(dataAdapter);
+                        gridView.setAdapter(dataAdapter);
 
 
-                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             public void onItemClick(AdapterView<?> parent, View view,
                                                     int position, long id) {
                                 // When clicked, show a toast with the TextView text
@@ -277,6 +319,7 @@ public class SettingsActivity extends Activity {
                 holder = new ViewHolder();
                 holder.text = (TextView) convertView.findViewById(R.id.code);
                 holder.box = (CheckBox) convertView.findViewById(R.id.checkBox1);
+                holder.image = (ImageView) convertView.findViewById(R.id.icon);
                 convertView.setTag(holder);
 
                 holder.box.setOnClickListener(new View.OnClickListener() {
@@ -304,6 +347,7 @@ public class SettingsActivity extends Activity {
             holder.box.setText(sport.name);
             holder.box.setChecked(sport.isChecked);
             holder.box.setTag(sport);
+            holder.image.setImageBitmap(sport.icon);
 
             return convertView;
 

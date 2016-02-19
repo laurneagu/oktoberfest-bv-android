@@ -311,7 +311,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
         m_gmap.addMarker(new MarkerOptions()
                 .position(latLng)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.soccerball))
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.football))
                 .title("This is your selected area"));
         m_gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
 

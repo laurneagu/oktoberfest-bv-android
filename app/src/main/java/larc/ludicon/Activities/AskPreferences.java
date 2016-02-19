@@ -2,8 +2,12 @@ package larc.ludicon.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Base64;
 import android.view.View;
 
 import larc.ludicon.R;
@@ -24,6 +28,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -45,11 +50,13 @@ class Sport {
     public String name;
     public String id;
     public boolean isChecked;
+    public Bitmap icon;
 
-    public Sport(String name, String id, boolean isChecked) {
+    public Sport(String name, String id, boolean isChecked, Bitmap icon) {
         this.name = name;
         this.id = id;
         this.isChecked = isChecked;
+        this.icon = icon;
     }
 
     public void setSelected(boolean value) {
@@ -112,17 +119,21 @@ public class AskPreferences extends Activity {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot sport: snapshot.getChildren()) {
-                    sports.add(new Sport(sport.getKey(),sport.child("id").getValue().toString(),false));
+                    byte[] imageAsBytes = Base64.decode(sport.child("icon").getValue().toString(),
+                            Base64.DEFAULT);
+                    sports.add(new Sport(sport.getKey(), sport.child("id").getValue().toString(),
+                            false, BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length)));
                 }
 
 
 
-                dataAdapter = new MyCustomAdapter(getApplicationContext(), R.layout.sport_info, sports);
-                ListView listView = (ListView) findViewById(R.id.listView1);
-                // Assign adapter to ListView
-                listView.setAdapter(dataAdapter);
 
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                dataAdapter = new MyCustomAdapter(getApplicationContext(), R.layout.sport_info, sports);
+                GridView gridView = (GridView) findViewById(R.id.gridView1);
+                // Assign adapter to ListView
+                gridView.setAdapter(dataAdapter);
+
+                gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     public void onItemClick(AdapterView<?> parent, View view,
                                             int position, long id) {
                         // When clicked, show a toast with the TextView text
@@ -208,6 +219,7 @@ public class AskPreferences extends Activity {
                 holder = new ViewHolder();
                 holder.text = (TextView) convertView.findViewById(R.id.code);
                 holder.box = (CheckBox) convertView.findViewById(R.id.checkBox1);
+                holder.image = (ImageView) convertView.findViewById(R.id.icon);
                 convertView.setTag(holder);
 
                 holder.box.setOnClickListener(new View.OnClickListener() {
@@ -225,6 +237,7 @@ public class AskPreferences extends Activity {
             holder.text.setText("");
             holder.box.setText(sport.name);
             holder.box.setChecked(sport.isChecked);
+            holder.image.setImageBitmap(sport.icon);
             holder.box.setTag(sport);
 
             return convertView;
