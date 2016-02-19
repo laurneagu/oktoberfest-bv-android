@@ -28,9 +28,17 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="57dp" />
 
+    <ImageView
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/visibleSeekBar"
+        android:layout_below="@+id/textView2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="57dp" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="#ffffff"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Range"
         android:id="@+id/textView"
@@ -39,6 +47,7 @@
 
     <TextView
         android:layout_width="wrap_content"
+        android:textColor="#ffffff"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Pick the area range for your activities"
@@ -57,6 +66,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="#ffffff"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Medium Text"
         android:id="@+id/textView5"

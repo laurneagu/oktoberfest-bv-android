@@ -22,12 +22,14 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Favourite Sports"
+        android:textColor="#ffffff"
         android:id="@+id/textView3"
         android:layout_gravity="center_horizontal" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="#ffffff"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Pick what sports you would like to play"
         android:id="@+id/textView4"

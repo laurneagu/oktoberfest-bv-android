@@ -41,7 +41,7 @@ public class AskRange extends AppCompatActivity {
         seekBar.setAlpha(0);
         progressText = (TextView) findViewById(R.id.textView5);
         progressText.setText("10 km");
-        pseudoSeekBar = (ImageView) findViewById(R.id.visibleSeekBar2);
+        pseudoSeekBar = (ImageView) findViewById(R.id.visibleSeekBar);
         String uri = "@drawable/range10";
         int imageResource = getResources().getIdentifier(uri, null, getPackageName());
         Drawable res = getResources().getDrawable(imageResource);
@@ -73,14 +73,14 @@ public class AskRange extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                progressText.setText(progress + " km");
+                //progressText.setText(progress + " km");
             }
         });
         final Button button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Firebase rangeRef = User.firebaseRef.child("users").child(User.uid).child("range");
-                rangeRef.setValue(seekBar.getProgress());
+                rangeRef.setValue(Integer.parseInt(progressText.getText().subSequence(0, 2).toString()));
                 jumpToMainActivity();
             }
         });

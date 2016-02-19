@@ -21,9 +21,7 @@
     <SeekBar
         android:layout_height="wrap_content"
         android:id="@+id/seekBar"
-        android:max="50"
         android:layout_width="300dp"
-        android:indeterminate="false"
         android:layout_below="@+id/textView2"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="57dp" />
@@ -41,6 +39,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Range"
+        android:textColor="#ffffff"
         android:id="@+id/textView"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
@@ -48,6 +47,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="#ffffff"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Pick the area range for your activities"
         android:id="@+id/textView2"
@@ -68,6 +68,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Medium Text"
         android:id="@+id/textView5"
+        android:textColor="#ffffff"
         android:layout_below="@+id/seekBar"
         android:layout_alignLeft="@+id/textView"
         android:layout_alignStart="@+id/textView" />

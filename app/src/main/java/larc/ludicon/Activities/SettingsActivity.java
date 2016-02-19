@@ -250,7 +250,7 @@ public class SettingsActivity extends Activity {
                                 String uri = "@drawable/" + sport.getKey();
                                 int imageResource = getResources().getIdentifier(uri, null, getPackageName());
                                 Drawable res = getResources().getDrawable(imageResource);
-                                sportsList.add(new Sport(sport.child("name").getValue().toString(), sport.child("id").getValue().toString(),
+                                sportsList.add(new Sport(sport.getKey(), sport.child("id").getValue().toString(),
                                         false, ((BitmapDrawable)res).getBitmap()));
                             }
                         }
