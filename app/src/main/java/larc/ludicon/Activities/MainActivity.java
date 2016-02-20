@@ -29,6 +29,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.batch.android.Batch;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -83,6 +84,13 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Batch.onStart(this);
+
+        Batch.User.getEditor()
+                .setIdentifier(User.uid)
+                .save(); // Don't forget to save the changes!
+
+
         setContentView(R.layout.activity_main);
         final Locale locale = Locale.getDefault();
 

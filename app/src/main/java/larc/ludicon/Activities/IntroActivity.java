@@ -18,6 +18,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.batch.android.Batch;
+import com.batch.android.Config;
 import com.facebook.GraphRequestAsyncTask;
 import com.facebook.HttpMethod;
 
@@ -79,10 +82,16 @@ public class IntroActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        /* Batch Init - NOW IS IN UseParse*/
+       // Batch.Push.setGCMSenderId("458732166636");
+       // Batch.setConfig(new Config("DEV56C87CCE0350BE0F6C4A19C18E5"));
+
         /* Firebase Context */
         Firebase.setAndroidContext(this);
         /* Firebase Reference */
         User.firebaseRef = new Firebase("https://ludicon.firebaseio.com/");
+
+
         //firebaseRef.child("message").setValue("Do you have data? You'll love Firebase.");
 
 
@@ -240,6 +249,9 @@ public class IntroActivity extends Activity {
             User.firebaseRef.authWithOAuthToken("facebook", accessToken.getToken(), new Firebase.AuthResultHandler() {
                 @Override
                 public void onAuthenticated(AuthData authData) {
+
+
+
                     final Map<String, Object> map = new HashMap<String, Object>();
 
                     //  provider
@@ -337,6 +349,9 @@ public class IntroActivity extends Activity {
                                 User.firebaseRef.child("users").child(uid).updateChildren(map);
                                 jumpToMainActivity();
                             }
+
+
+
 
 
                         }
