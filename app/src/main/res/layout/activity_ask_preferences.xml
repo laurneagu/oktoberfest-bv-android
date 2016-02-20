@@ -37,7 +37,7 @@
 
     <GridView
         android:layout_width="358dp"
-        android:layout_height="148dp"
+        android:layout_height="200dp"
         android:id="@+id/gridView1"
         android:numColumns="2"
         android:layout_gravity="center_horizontal" />

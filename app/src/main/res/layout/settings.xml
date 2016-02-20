@@ -3,9 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:id="@+id/drawer_layout_settings"
+    android:background="@drawable/app_bg"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/app_bg">
+    android:layout_height="match_parent">
 
     <include layout="@layout/header"/>
     <include layout="@layout/leftside_panel"/>
@@ -78,7 +78,7 @@
             android:layout_centerHorizontal="true" />
 
         <TextView
-            android:paddingTop="90dp"
+            android:paddingTop="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
@@ -103,6 +103,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:id="@+id/progressText"
             android:layout_centerHorizontal="true"
+            android:layout_marginBottom="40dp"
             android:layout_above="@+id/logout" />
 
     </RelativeLayout>

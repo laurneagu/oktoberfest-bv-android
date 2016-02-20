@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
@@ -33,6 +34,7 @@ import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
@@ -53,12 +55,14 @@ class Sport {
     public String id;
     public boolean isChecked;
     public Bitmap icon;
+    public Bitmap desaturated_icon;
 
-    public Sport(String name, String id, boolean isChecked, Bitmap icon) {
+    public Sport(String name, String id, boolean isChecked, Bitmap icon, Bitmap desaturated_icon) {
         this.name = name;
         this.id = id;
         this.isChecked = isChecked;
         this.icon = icon;
+        this.desaturated_icon = desaturated_icon;
     }
 
     public void setSelected(boolean value) {
@@ -123,9 +127,13 @@ public class AskPreferences extends Activity {
                 for (DataSnapshot sport: snapshot.getChildren()) {
                     String uri = "@drawable/" + sport.getKey();
                     int imageResource = getResources().getIdentifier(uri, null, getPackageName());
-                    Drawable res = getResources().getDrawable(imageResource);
+                    Drawable res1 = getResources().getDrawable(imageResource);
+                    uri = "@drawable/desaturated_" + sport.getKey();
+                    imageResource = getResources().getIdentifier(uri, null, getPackageName());
+                    Drawable res2 = getResources().getDrawable(imageResource);
+
                     sports.add(new Sport(sport.getKey(), sport.child("id").getValue().toString(),
-                            false, ((BitmapDrawable) res).getBitmap()));
+                            false, ((BitmapDrawable) res1).getBitmap(), ((BitmapDrawable) res1).getBitmap()));
                 }
 
 
@@ -203,6 +211,7 @@ public class AskPreferences extends Activity {
         }
 
         private class ViewHolder {
+            RelativeLayout rl;
             ImageView image;
             TextView text;
             CheckBox box;
@@ -220,6 +229,7 @@ public class AskPreferences extends Activity {
                 convertView = vi.inflate(R.layout.sport_info, null);
 
                 holder = new ViewHolder();
+                holder.rl = (RelativeLayout) convertView.findViewById(R.id.irLayout);
                 holder.text = (TextView) convertView.findViewById(R.id.code);
                 holder.box = (CheckBox) convertView.findViewById(R.id.checkBox1);
                 holder.image = (ImageView) convertView.findViewById(R.id.icon);
@@ -230,6 +240,15 @@ public class AskPreferences extends Activity {
                         CheckBox cb = (CheckBox) v;
                         Sport sport = (Sport) cb.getTag();
                         sport.setSelected(cb.isChecked());
+                        RelativeLayout rl = (RelativeLayout)cb.getParent();
+                        sport.setSelected(cb.isChecked());
+                        if(cb.isChecked()) {
+                            rl.setBackgroundColor(Color.parseColor("#aaaaaa"));
+                            ((ImageView)rl.getChildAt(2)).setImageBitmap(sport.icon);
+                        } else {
+                            rl.setBackgroundColor(Color.parseColor("#cccccc"));
+                            ((ImageView)rl.getChildAt(2)).setImageBitmap(sport.desaturated_icon);
+                        }
                     }
                 });
             } else {
@@ -240,8 +259,15 @@ public class AskPreferences extends Activity {
             holder.text.setText("");
             holder.box.setText(sport.name);
             holder.box.setChecked(sport.isChecked);
-            holder.image.setImageBitmap(sport.icon);
             holder.box.setTag(sport);
+            if(holder.box.isChecked()) {
+                holder.rl.setBackgroundColor(Color.parseColor("#aaaaaa"));
+                holder.image.setImageBitmap(sport.icon);
+            } else {
+
+                holder.rl.setBackgroundColor(Color.parseColor("#cccccc"));
+                holder.image.setImageBitmap(sport.desaturated_icon);
+            }
 
             return convertView;
 

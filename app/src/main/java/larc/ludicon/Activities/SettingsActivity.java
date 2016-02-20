@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -234,10 +235,15 @@ public class SettingsActivity extends Activity {
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot sport : snapshot.getChildren()) {
                     String uri = "@drawable/" + sport.getKey().toLowerCase().replace(" ", "");
+                    ;
                     int imageResource = getResources().getIdentifier(uri, null, getPackageName());
-                    Drawable res = getResources().getDrawable(imageResource);
+                    Drawable res1 = getResources().getDrawable(imageResource);
+                    uri = "@drawable/desaturated_" + sport.getKey().toLowerCase().replace(" ", "");
+                    ;
+                    imageResource = getResources().getIdentifier(uri, null, getPackageName());
+                    Drawable res2 = getResources().getDrawable(imageResource);
                     sportsList.add(new Sport(sport.getKey(), sport.getValue().toString(),
-                            true, ((BitmapDrawable)res).getBitmap()));
+                            true, ((BitmapDrawable) res1).getBitmap(), ((BitmapDrawable) res2).getBitmap()));
                     exist.put(sport.getKey(), true);
                 }
 
@@ -249,9 +255,12 @@ public class SettingsActivity extends Activity {
                             if (!exist.containsKey(sport.getKey())) {
                                 String uri = "@drawable/" + sport.getKey();
                                 int imageResource = getResources().getIdentifier(uri, null, getPackageName());
-                                Drawable res = getResources().getDrawable(imageResource);
+                                Drawable res1 = getResources().getDrawable(imageResource);
+                                uri = "@drawable/desaturated_" + sport.getKey();
+                                imageResource = getResources().getIdentifier(uri, null, getPackageName());
+                                Drawable res2 = getResources().getDrawable(imageResource);
                                 sportsList.add(new Sport(sport.getKey(), sport.child("id").getValue().toString(),
-                                        false, ((BitmapDrawable)res).getBitmap()));
+                                        false, ((BitmapDrawable) res1).getBitmap(), ((BitmapDrawable) res2).getBitmap()));
                             }
                         }
 
@@ -305,6 +314,7 @@ public class SettingsActivity extends Activity {
         }
 
         private class ViewHolder {
+            RelativeLayout rl;
             ImageView image;
             TextView text;
             CheckBox box;
@@ -322,16 +332,26 @@ public class SettingsActivity extends Activity {
                 convertView = vi.inflate(R.layout.sport_info, null);
 
                 holder = new ViewHolder();
-                holder.text = (TextView) convertView.findViewById(R.id.code);
+                holder.rl = (RelativeLayout) convertView.findViewById(R.id.irLayout);
                 holder.box = (CheckBox) convertView.findViewById(R.id.checkBox1);
+                holder.text = (TextView) convertView.findViewById(R.id.code);
                 holder.image = (ImageView) convertView.findViewById(R.id.icon);
+
                 convertView.setTag(holder);
 
                 holder.box.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         CheckBox cb = (CheckBox) v;
                         Sport sport = (Sport) cb.getTag();
+                        RelativeLayout rl = (RelativeLayout) cb.getParent();
                         sport.setSelected(cb.isChecked());
+                        if (cb.isChecked()) {
+                            rl.setBackgroundColor(Color.parseColor("#aaaaaa"));
+                            ((ImageView) rl.getChildAt(2)).setImageBitmap(sport.icon);
+                        } else {
+                            rl.setBackgroundColor(Color.parseColor("#cccccc"));
+                            ((ImageView) rl.getChildAt(2)).setImageBitmap(sport.desaturated_icon);
+                        }
 
                         // Update firebase
                         Map<String, Object> map = new HashMap<String, Object>();
@@ -352,7 +372,14 @@ public class SettingsActivity extends Activity {
             holder.box.setText(sport.name);
             holder.box.setChecked(sport.isChecked);
             holder.box.setTag(sport);
-            holder.image.setImageBitmap(sport.icon);
+            if (holder.box.isChecked()) {
+                holder.rl.setBackgroundColor(Color.parseColor("#aaaaaa"));
+                holder.image.setImageBitmap(sport.icon);
+            } else {
+
+                holder.rl.setBackgroundColor(Color.parseColor("#cccccc"));
+                holder.image.setImageBitmap(sport.desaturated_icon);
+            }
 
             return convertView;
 
