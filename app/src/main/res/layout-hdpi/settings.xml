@@ -28,11 +28,6 @@
         android:layout_alignLeft="@+id/textView6"
         android:layout_alignStart="@+id/textView6" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="hdpi"
-            android:layout_centerHorizontal="true" />
         <GridView
             android:paddingTop="50dp"
             android:paddingLeft="50dp"
@@ -43,7 +38,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="70dp"
+            android:layout_marginTop="100dp"
             android:layout_toStartOf="@+id/logout"
             android:numColumns="2"
             android:layout_alignParentRight="true"
@@ -51,7 +46,7 @@
             android:layout_above="@+id/textView8" />
 
         <SeekBar
-            android:layout_width="300dp"
+            android:layout_width="400dp"
             android:layout_height="wrap_content"
             android:id="@+id/seekBar2"
             android:layout_above="@+id/progressText"
@@ -79,6 +74,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Pick what sports you would like to play"
             android:id="@+id/textView7"
+            android:layout_marginBottom="30dp"
             android:layout_below="@+id/textView6"
             android:layout_centerHorizontal="true" />
 
@@ -108,6 +104,7 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:id="@+id/progressText"
             android:layout_centerHorizontal="true"
+            android:layout_marginBottom="270dp"
             android:layout_above="@+id/logout" />
 
     </RelativeLayout>

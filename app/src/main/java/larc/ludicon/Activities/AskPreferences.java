@@ -243,11 +243,13 @@ public class AskPreferences extends Activity {
                         RelativeLayout rl = (RelativeLayout)cb.getParent();
                         sport.setSelected(cb.isChecked());
                         if(cb.isChecked()) {
-                            rl.setBackgroundColor(Color.parseColor("#aaaaaa"));
+                            rl.setBackgroundColor(Color.parseColor("#777777"));
                             ((ImageView)rl.getChildAt(2)).setImageBitmap(sport.icon);
+                            cb.setAlpha(1);
                         } else {
-                            rl.setBackgroundColor(Color.parseColor("#cccccc"));
+                            rl.setBackgroundColor(Color.parseColor("#bbbbbb"));
                             ((ImageView)rl.getChildAt(2)).setImageBitmap(sport.desaturated_icon);
+                            cb.setAlpha((float) 0.5);
                         }
                     }
                 });
@@ -261,12 +263,14 @@ public class AskPreferences extends Activity {
             holder.box.setChecked(sport.isChecked);
             holder.box.setTag(sport);
             if(holder.box.isChecked()) {
-                holder.rl.setBackgroundColor(Color.parseColor("#aaaaaa"));
+                holder.rl.setBackgroundColor(Color.parseColor("#777777"));
                 holder.image.setImageBitmap(sport.icon);
+                holder.box.setAlpha(1);
             } else {
 
-                holder.rl.setBackgroundColor(Color.parseColor("#cccccc"));
+                holder.rl.setBackgroundColor(Color.parseColor("#bbbbbb"));
                 holder.image.setImageBitmap(sport.desaturated_icon);
+                holder.box.setAlpha((float)0.5);
             }
 
             return convertView;

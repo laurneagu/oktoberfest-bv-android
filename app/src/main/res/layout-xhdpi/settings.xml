@@ -103,7 +103,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:id="@+id/progressText"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="40dp"
+            android:layout_marginBottom="130dp"
             android:layout_above="@+id/logout" />
 
     </RelativeLayout>

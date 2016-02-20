@@ -346,11 +346,13 @@ public class SettingsActivity extends Activity {
                         RelativeLayout rl = (RelativeLayout) cb.getParent();
                         sport.setSelected(cb.isChecked());
                         if (cb.isChecked()) {
-                            rl.setBackgroundColor(Color.parseColor("#aaaaaa"));
+                            rl.setBackgroundColor(Color.parseColor("#999999"));
                             ((ImageView) rl.getChildAt(2)).setImageBitmap(sport.icon);
+                            cb.setAlpha((float) 0.9);
                         } else {
                             rl.setBackgroundColor(Color.parseColor("#cccccc"));
                             ((ImageView) rl.getChildAt(2)).setImageBitmap(sport.desaturated_icon);
+                            cb.setAlpha((float) 0.5);
                         }
 
                         // Update firebase
@@ -373,12 +375,14 @@ public class SettingsActivity extends Activity {
             holder.box.setChecked(sport.isChecked);
             holder.box.setTag(sport);
             if (holder.box.isChecked()) {
-                holder.rl.setBackgroundColor(Color.parseColor("#aaaaaa"));
+                holder.rl.setBackgroundColor(Color.parseColor("#999999"));
                 holder.image.setImageBitmap(sport.icon);
+                holder.box.setAlpha((float) 0.9);
             } else {
 
                 holder.rl.setBackgroundColor(Color.parseColor("#cccccc"));
                 holder.image.setImageBitmap(sport.desaturated_icon);
+                holder.box.setAlpha((float) 0.5);
             }
 
             return convertView;

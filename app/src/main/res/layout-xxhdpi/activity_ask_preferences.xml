@@ -36,11 +36,11 @@
         android:layout_gravity="center_horizontal" />
 
     <GridView
-        android:paddingTop="50dp"
+        android:paddingTop="30dp"
         android:paddingLeft="50dp"
         android:paddingRight="50dp"
         android:layout_width="wrap_content"
-        android:layout_height="200dp"
+        android:layout_height="220dp"
         android:id="@+id/gridView1"
         android:numColumns="2"
         android:layout_gravity="center_horizontal" />

@@ -28,17 +28,12 @@
         android:layout_alignLeft="@+id/textView6"
         android:layout_alignStart="@+id/textView6" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="mdpi"
-            android:layout_centerHorizontal="true" />
         <GridView
-            android:paddingTop="50dp"
-            android:paddingLeft="50dp"
-            android:paddingRight="50dp"
+            android:paddingTop="80dp"
+            android:paddingLeft="100dp"
+            android:paddingRight="100dp"
             android:layout_width="wrap_content"
-            android:layout_height="200dp"
+            android:layout_height="300dp"
             android:id="@+id/gridView"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
@@ -51,7 +46,7 @@
             android:layout_above="@+id/textView8" />
 
         <SeekBar
-            android:layout_width="300dp"
+            android:layout_width="400dp"
             android:layout_height="wrap_content"
             android:id="@+id/seekBar2"
             android:layout_above="@+id/progressText"
@@ -107,6 +102,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:id="@+id/progressText"
+            android:layout_marginBottom="550dp"
             android:layout_centerHorizontal="true"
             android:layout_above="@+id/logout" />
 
