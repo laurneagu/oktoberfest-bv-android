@@ -185,35 +185,41 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
         final Map<String, Object> map = new HashMap<String, Object>();
 
-        //  Set id for the event
-        map.put("id", id);
+
 
         // Set date it will be played
+        // TODO GMT format
         map.put("date",  java.text.DateFormat.getDateTimeInstance().format(calendar.getTime()));
 
         // Set privacy
         Button privacy = (Button) findViewById(R.id.publicBut);
         if (privacy.getAlpha() == 1) {
-            map.put("privacy", "Public");
+            map.put("privacy", "public");
         } else {
-            map.put("privacy", "Private");
+            map.put("privacy", "private");
         }
+
 
         // Set location
+        final Map<String, Double> mapAux = new HashMap<String, Double>();
         if (latitude == 0 || longitude == 0) {
-            map.put("place", "Latitude: " + GPS_Positioning.getLatLng().latitude + " Longitude: " + GPS_Positioning.getLatLng().longitude);
+            mapAux.put("latitude",GPS_Positioning.getLatLng().latitude);
+            mapAux.put("longitude", GPS_Positioning.getLatLng().longitude);
         }
         else{
-            map.put("place", "Latitude: " + latitude + " Longitude: " + longitude);
+            mapAux.put("latitude",latitude);
+            mapAux.put("longitude", longitude);
         }
+        map.put("place", mapAux);
 
         // Set sport
+        // TODO Get sport key
         Spinner spinner = (Spinner) findViewById(R.id.sports_spinner);
         map.put("sport", spinner.getSelectedItem().toString());
 
         // Set users - currently only the one enrolled
-        List<String> usersAttending = new ArrayList<>();
-        usersAttending.add(User.uid);
+        Map<String, Boolean> usersAttending = new HashMap<String, Boolean>();
+        usersAttending.put(User.uid,true);
         map.put("users", usersAttending);
 
         // Check Events exists
@@ -311,7 +317,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
         m_gmap.addMarker(new MarkerOptions()
                 .position(latLng)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.football))
+                //.icon(BitmapDescriptorFactory.fromResource(R.drawable.football))
                 .title("This is your selected area"));
         m_gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
 

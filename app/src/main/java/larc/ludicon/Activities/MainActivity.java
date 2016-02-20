@@ -62,15 +62,20 @@ public class MainActivity extends Activity {
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     class Event {
-        ArrayList<String> usersUID = new ArrayList<>();
+        Map<String, Boolean> usersUID = new HashMap<String,Boolean>();
         Date date;
         String sport;
         //Address place;
-        String place;
+        double latitude;
+        double longitude;
         String id;
         public String getFirstUser() {
-            if (usersUID.size() > 0) return usersUID.get(0);
-            else return "";
+            for(Map.Entry<String,Boolean> e : usersUID.entrySet()){
+                if(e.getValue()){
+                    return e.getKey();
+                }
+            }
+            return null;
         }
     }
 
@@ -105,54 +110,66 @@ public class MainActivity extends Activity {
                     Event event = new Event();
                     boolean isPublic = true;
                     boolean doIParticipate = false;
-                    ArrayList<String> participants = new ArrayList<String>();
+                    event.id = data.getKey();
+                    Map<String, Boolean> participants = new HashMap<String, Boolean>();
+
+
+
                     for( DataSnapshot details : data.getChildren() ) {
-                        if(details.getKey().toString().equalsIgnoreCase("id"))
-                            event.id = details.getValue().toString();
+
                         if(details.getKey().toString().equalsIgnoreCase("privacy"))
                             if( details.getValue().toString().equalsIgnoreCase("private"))
                                 isPublic = false;
-                        if (details.getKey().toString().equalsIgnoreCase("id"))
-                            event.id = details.getValue().toString();
+
                         if (details.getKey().toString().equalsIgnoreCase("sport"))
                             event.sport = details.getValue().toString();
+
                         if (details.getKey().toString().equalsIgnoreCase("date"))
                             event.date = new Date(details.getValue().toString());
+
                         if (details.getKey().toString().equalsIgnoreCase("place"))
                         {
                             Geocoder geocoder = new Geocoder(getApplicationContext(), locale);
-                            String[] splitStrings = details.getValue().toString().split(" ");
-                            double latitude = Double.parseDouble(splitStrings[1]);
-                            double longitude = Double.parseDouble(splitStrings[3]);
+                            Map<String,Double> position = ( Map<String,Double>) details.getValue();
+                            double latitude = position.get("latitude");
+                            double longitude = position.get("longitude");
+
                             Log.v("LAT-LONG",latitude + " " + longitude);
                             try {
                                 List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
                                 if(addresses.size()>0) {
                                     Log.v("Address", addresses.get(0).toString());
-                                    event.place = latitude + " - " + longitude;
+                                    event.latitude = latitude;
+                                    event.longitude = longitude;
                                             //addresses.get(0);
                                 }
                             }
                             catch(IOException exc){}
 
                         }
+
                         if(details.getKey().toString().equalsIgnoreCase("users"))
                         {
                             for( DataSnapshot user : details.getChildren())
                             {
-                                String userID = user.getValue().toString();
+                                String userID = user.getKey().toString();
                                 if( userID.equalsIgnoreCase(User.uid))
                                 {
+                                    // TODO check if I have accepted
                                     doIParticipate = true;
+                                    participants.put(user.getKey().toString(), (Boolean) user.getValue());
                                     break;
                                 }
                                 else
                                 {
-                                    participants.add(user.getValue().toString());
+                                    participants.put(user.getKey().toString(), (Boolean) user.getValue());
                                 }
                             }
                         }
                     }
+
+
+
                     if( doIParticipate == false && new Date().before(event.date)  && isPublic )
                     {
                         event.usersUID = participants;
@@ -242,10 +259,11 @@ public class MainActivity extends Activity {
                 public void onCancelled(FirebaseError firebaseError) {
                 }
             });
+
             firstPart.setText("Will play " + list.get(position).sport);
             secondPart.setText(" with " + ( list.get(position).usersUID.size()-1 ) + " others");
-            if(list.get(position).place != null )
-                place.setText(list.get(position).place.toString());
+            if(list.get(position) != null )
+                place.setText(String.valueOf(list.get(position).longitude) + " " +list.get(position).latitude);
             else
                 place.setText("Unknown");
             Calendar c = Calendar.getInstance();
@@ -281,16 +299,14 @@ public class MainActivity extends Activity {
                         public void onDataChange(DataSnapshot snapshot) {
                             Map<String, Object> map = new HashMap<>();
                             if (snapshot == null) Log.v("NULL", "Snapshot e null");
-                            int counter = 0;
                             for (DataSnapshot data : snapshot.getChildren()) {
 
                                 map.put(data.getKey(), data.getValue());
-                                counter++;
                             }
-                            map.put(counter + "", User.uid);
+                            map.put(User.uid,true);
                             // NOTE: I need userRef to set the map value
                             Firebase userRef = User.firebaseRef.child("events").child(list.get(position).id).child("users");
-                            userRef.setValue(map);
+                            userRef.updateChildren(map);
                             // TODO Reload Listview - Not working yet
                             if(listView != null)
                                 listView.invalidateViews();
