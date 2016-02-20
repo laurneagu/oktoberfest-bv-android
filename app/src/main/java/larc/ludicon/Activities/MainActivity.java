@@ -307,6 +307,12 @@ public class MainActivity extends Activity {
                             // NOTE: I need userRef to set the map value
                             Firebase userRef = User.firebaseRef.child("events").child(list.get(position).id).child("users");
                             userRef.updateChildren(map);
+
+                            Map<String,Object> ev =  new HashMap<String,Object>();
+                            ev.put(list.get(position).id, true);
+                            User.firebaseRef.child("users").child(User.uid).child("events").updateChildren(ev);
+
+
                             // TODO Reload Listview - Not working yet
                             if(listView != null)
                                 listView.invalidateViews();

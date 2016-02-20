@@ -215,7 +215,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         // Set sport
         // TODO Get sport key
         Spinner spinner = (Spinner) findViewById(R.id.sports_spinner);
-        map.put("sport", spinner.getSelectedItem().toString());
+        map.put("sport", spinner.getSelectedItem().toString().toLowerCase().replaceAll("\\s+", ""));
 
         // Set users - currently only the one enrolled
         Map<String, Boolean> usersAttending = new HashMap<String, Boolean>();
@@ -242,6 +242,11 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
                     */
                 }
                 User.firebaseRef.child("events").child(id).setValue(map);
+
+                // Each user has an "events" field which has a list of event ids
+                Map<String,Object> ev =  new HashMap<String,Object>();
+                ev.put(id, true);
+                User.firebaseRef.child("users").child(User.uid).child("events").updateChildren(ev);
 
                 try {
                     if(lm != null)
