@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,6 +46,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
@@ -191,11 +193,10 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
         // Set date it will be played
         // TODO GMT format
-        DateFormat df = DateFormat.getDateTimeInstance();
+        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM,DateFormat.MEDIUM,new Locale("ENGLISH"));
         df.setTimeZone(TimeZone.getTimeZone("gmt"));
-        String gmtTime = df.format(new Date());
-        map.put("date",  gmtTime);
-        //map.put("date",  java.text.DateFormat.getDateTimeInstance().format(calendar.getTime()));
+        String gmtTime = df.format(calendar.getTime());
+        map.put("date", gmtTime);
 
         // Set privacy
         Button privacy = (Button) findViewById(R.id.publicBut);
