@@ -166,6 +166,7 @@ public class FriendsActivity extends Activity {
             final TextView numberSports = (TextView) view.findViewById(R.id.numberSports);
             // Set name in TextView
             textName.setText(list.get(position).name);
+
             // Set Image in ImageView
             Firebase userRef = User.firebaseRef.child("users").child(list.get(position).uid).child("profileImageURL");
             Log.v("Position",position+"");

@@ -17,10 +17,12 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:paddingTop="10dp"
-        android:paddingLeft="30dp"
+        android:paddingLeft="80dp"
         android:textSize="20sp"
         android:textColor="#008000"
         android:text="Nume"
+        android:singleLine="false"
+        android:ellipsize="end"
         android:id="@+id/list_item_string"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />

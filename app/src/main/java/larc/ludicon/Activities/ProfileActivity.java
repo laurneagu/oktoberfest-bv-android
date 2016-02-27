@@ -101,6 +101,7 @@ public class ProfileActivity extends Activity {
             public void onCancelled(FirebaseError firebaseError) {
             }
         });
+
         final RecyclerView listOfSports = (RecyclerView) findViewById(R.id.listOfSports);
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);

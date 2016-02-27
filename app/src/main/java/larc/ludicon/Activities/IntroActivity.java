@@ -322,7 +322,10 @@ public class IntroActivity extends Activity {
                     final String uid = authData.getUid();
                     User.uid = uid;
 
-                    profilePictureView.setVisibility(View.VISIBLE);
+                    //profilePictureView.setVisibility(View.VISIBLE);
+                    ImageView profilePicture = (ImageView) findViewById(R.id.profileImageView);
+                    profilePicture.setImageBitmap(profilePictureView.getDrawingCache());
+
                     LoginButton login_button = (LoginButton) findViewById(R.id.login_button);
                     login_button.setVisibility(View.INVISIBLE);
 

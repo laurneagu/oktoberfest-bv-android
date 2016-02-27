@@ -4,14 +4,6 @@
     android:layout_height="match_parent"
     android:id="@+id/frRelLayout">
 
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:id="@+id/linearLayout2"
-    android:layout_alignParentTop="true"
-    android:layout_toLeftOf="@+id/chat_btn"
-    android:layout_toStartOf="@+id/chat_btn">
-
-
     <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/profileImageView"
         android:layout_width="80dp"
@@ -26,7 +18,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:paddingTop="10dp"
         android:paddingLeft="30dp"
-        android:textSize="20dp"
+        android:textSize="20sp"
         android:textColor="#008000"
         android:text="Nume"
         android:id="@+id/list_item_string"
@@ -44,22 +36,21 @@
         android:layout_alignStart="@+id/more_btn"
         android:paddingTop="50dp">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/profileImageView"
             android:layout_toRightOf="@+id/more_btn"
             android:layout_toEndOf="@+id/more_btn"
-            android:id="@+id/relativeLayout">
+            android:id="@+id/linearLayout">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#808080"
                 android:text="Points"
-                android:textSize="18dp"
+                android:textSize="18sp"
                 android:paddingLeft="50dp"
-                android:layout_centerInParent="true"
                 android:id="@+id/pointsText" />
 
             <ImageView
@@ -70,9 +61,9 @@
                 android:layout_toEndOf="@id/pointsText"
                 android:layout_toRightOf="@id/pointsText" />
 
-        </RelativeLayout>
+        </LinearLayout>
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="25dp">
@@ -93,7 +84,7 @@
                 android:id="@+id/ballImage"
                 android:background="@drawable/ball"
                 android:layout_toRightOf="@id/numberSports" />
-        </RelativeLayout>
+        </LinearLayout>
     </LinearLayout>
 
     <ImageButton

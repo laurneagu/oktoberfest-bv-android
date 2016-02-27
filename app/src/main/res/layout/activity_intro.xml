@@ -15,6 +15,7 @@
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
         android:background="@drawable/intro_bg" />
+
     <com.facebook.login.widget.ProfilePictureView
         android:id="@+id/profilePictureIntro"
         android:layout_width="wrap_content"
@@ -30,6 +31,7 @@
         android:layout_above="@+id/greeting"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="42dp" />
+
     <TextView
         android:id="@+id/greeting"
         android:layout_width="wrap_content"
@@ -39,7 +41,7 @@
         android:visibility="visible"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="105dp"
-        android:layout_alignParentBottom="true"/>
+        android:layout_alignParentBottom="true" />
 
     <com.facebook.login.widget.LoginButton
         android:id="@+id/login_button"
