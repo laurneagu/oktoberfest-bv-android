@@ -42,9 +42,12 @@ public class ChatActivity extends ListActivity {
         // Make sure we have a mUsername
         setupUsername();
 
+        /*
         setTitle("Chatting as " + mUsername);
+        */
 
         // Setup our Firebase mFirebaseRef
+        // TODO Each event to have own chat ( not a general chat )
         mFirebaseRef = new Firebase(FIREBASE_URL).child("chat");
 
         // Setup our input methods. Enter key on the keyboard or pushing the send button

@@ -46,6 +46,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
@@ -192,7 +193,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
         // Set date it will be played
         // TODO GMT format
-        DateFormat df = DateFormat.getDateTimeInstance();
+        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM,DateFormat.MEDIUM,new Locale("English"));
         df.setTimeZone(TimeZone.getTimeZone("gmt"));
         String gmtTime = df.format(new Date());
         map.put("date",  gmtTime);
