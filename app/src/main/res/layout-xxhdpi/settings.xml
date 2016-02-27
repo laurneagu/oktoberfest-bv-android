@@ -23,6 +23,7 @@
         android:id="@+id/logout"
         android:layout_alignParentBottom="true"
         android:textColor="#ffffff"
+        android:layout_marginBottom="20dp"
         android:layout_alignRight="@+id/textView6"
         android:layout_alignEnd="@+id/textView6"
         android:layout_alignLeft="@+id/textView6"
@@ -53,7 +54,7 @@
             android:layout_centerHorizontal="true" />
 
         <ImageView
-            android:layout_width="400dp"
+            android:layout_width="350dp"
             android:layout_height="wrap_content"
             android:id="@+id/visibleSeekBar2"
             android:layout_above="@+id/progressText"
@@ -103,7 +104,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:id="@+id/progressText"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="100dp"
+            android:layout_marginBottom="80dp"
             android:layout_above="@+id/logout" />
 
     </RelativeLayout>

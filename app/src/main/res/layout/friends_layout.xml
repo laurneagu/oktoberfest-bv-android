@@ -11,7 +11,16 @@
         android:layout_toLeftOf="@+id/chat_btn"
         android:layout_toStartOf="@+id/chat_btn">
 
-        <TextView
+
+    <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/profileImageView"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
@@ -24,26 +33,7 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true" />
 
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/more_btn"
-        android:paddingLeft="40dp"
-        android:background="@drawable/more"
-        android:layout_below="@+id/profileImageView"
-        android:layout_toLeftOf="@+id/chat_btn"
-        android:layout_toStartOf="@+id/chat_btn" />
 
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/chat_btn"
-        android:background="@drawable/chatbtn"
-        android:layout_marginRight="51dp"
-        android:layout_marginEnd="51dp"
-        android:layout_alignTop="@+id/more_btn"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -89,8 +79,7 @@
         android:text="Sports"
         android:textSize="18dp"
         android:layout_alignTop="@+id/linearLayout"
-        android:layout_alignLeft="@+id/more_btn"
-        android:layout_alignStart="@+id/more_btn" />
+            android:layout_alignLeft="@+id/more_btn" />
 
         <ImageView
             android:layout_width="20dp"
@@ -101,11 +90,25 @@
     </LinearLayout>
 </LinearLayout>
 
-    <ImageView
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:id="@+id/profileImageView"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/more_btn"
+        android:background="@drawable/more"
+        android:layout_below="@+id/profileImageView"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
+        android:paddingRight="10dp"
+        android:layout_marginTop="10dp" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/chat_btn"
+        android:background="@drawable/chatbtn"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:paddingLeft="10dp"
+        android:layout_alignTop="@+id/more_btn"
+        android:layout_alignParentRight="true" />
 </RelativeLayout>
