@@ -27,10 +27,10 @@ public class BackgroundService extends IntentService {
         // Gets data from the incoming Intent
         int i = 0;
         while(true){
-            User.firebaseRef.child("mesg").child(User.uid).child("backgroundService").setValue(i + " sec");
+            User.firebaseRef.child("mesg").child(User.uid).child("backgroundService").setValue(i + " times");
             i++;
             try {
-                Thread.sleep(3000);
+                Thread.sleep(7000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

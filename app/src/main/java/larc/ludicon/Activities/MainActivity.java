@@ -98,13 +98,13 @@ public class MainActivity extends Activity {
 
         // Background Task:
 
-        AsyncBackgroundTask backgroundTask = new AsyncBackgroundTask(getApplicationContext());
-        backgroundTask.execute();
+        //AsyncBackgroundTask backgroundTask = new AsyncBackgroundTask(getApplicationContext());
+        //backgroundTask.execute();
 
         // Background Service:
-        Intent mServiceIntent = new Intent(this, BackgroundService.class);
-        mServiceIntent.setData(null);
-        this.startService(mServiceIntent);
+        ///Intent mServiceIntent = new Intent(this, BackgroundService.class);
+        //mServiceIntent.setData(null);
+        //this.startService(mServiceIntent);
 
 
         // Left side panel
