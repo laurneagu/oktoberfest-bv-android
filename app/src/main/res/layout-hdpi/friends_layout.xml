@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:paddingTop="10dp"
-        android:paddingLeft="30dp"
+        android:paddingLeft="60dp"
         android:textSize="20sp"
         android:textColor="#008000"
         android:text="Nume"
@@ -87,27 +87,27 @@
     </LinearLayout>
 
     <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="140dp"
+        android:layout_height="30dp"
         android:id="@+id/more_btn"
         android:background="@drawable/more"
         android:layout_below="@+id/profileImageView"
         android:layout_marginRight="10dp"
         android:layout_marginEnd="10dp"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="30dp"
         android:paddingRight="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp" />
 
     <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="140dp"
+        android:layout_height="30dp"
         android:id="@+id/chat_btn"
         android:background="@drawable/chatbtn"
         android:layout_marginLeft="10dp"
         android:layout_marginStart="10dp"
         android:paddingLeft="10dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginRight="30dp"
         android:layout_alignTop="@+id/more_btn"
         android:layout_alignParentRight="true" />
 </RelativeLayout>
