@@ -38,6 +38,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -45,6 +46,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import larc.ludicon.Adapters.LeftPanelItemClicker;
 import larc.ludicon.Adapters.LeftSidePanelAdapter;
@@ -189,7 +191,11 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
         // Set date it will be played
         // TODO GMT format
-        map.put("date",  java.text.DateFormat.getDateTimeInstance().format(calendar.getTime()));
+        DateFormat df = DateFormat.getDateTimeInstance();
+        df.setTimeZone(TimeZone.getTimeZone("gmt"));
+        String gmtTime = df.format(new Date());
+        map.put("date",  gmtTime);
+        //map.put("date",  java.text.DateFormat.getDateTimeInstance().format(calendar.getTime()));
 
         // Set privacy
         Button privacy = (Button) findViewById(R.id.publicBut);
