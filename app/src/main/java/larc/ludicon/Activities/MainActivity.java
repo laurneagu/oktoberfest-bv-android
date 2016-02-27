@@ -145,8 +145,9 @@ public class MainActivity extends Activity {
                         if (details.getKey().toString().equalsIgnoreCase("sport"))
                             event.sport = details.getValue().toString();
 
-                        if (details.getKey().toString().equalsIgnoreCase("date"))
+                        if (details.getKey().toString().equalsIgnoreCase("date")) {
                             event.date = new Date(details.getValue().toString());
+                        }
 
                         if (details.getKey().toString().equalsIgnoreCase("place"))
                         {

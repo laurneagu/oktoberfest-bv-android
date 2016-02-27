@@ -228,7 +228,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 if (snapshot.getValue() == null) { // flush the database everything is crazy
-                    User.firebaseRef.child("mesg").setValue("World is on fire");
+                    //User.firebaseRef.child("mesg").setValue("World is on fire");
 
                     /*
                     User.firebaseRef.child("sports").child("Football").child("id").setValue("0");
