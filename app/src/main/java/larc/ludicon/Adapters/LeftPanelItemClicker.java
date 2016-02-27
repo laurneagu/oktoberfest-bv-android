@@ -9,6 +9,7 @@ import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import larc.ludicon.Activities.ChatActivity;
 import larc.ludicon.Activities.CreateNewActivity;
 import larc.ludicon.Activities.FriendsActivity;
 import larc.ludicon.Activities.SettingsActivity;
@@ -34,7 +35,8 @@ public class LeftPanelItemClicker {
                                 i_currActivity.startActivity(friendIntent);
                                 break;
                             case 3:
-                                Toast.makeText(i_context, "Hei, wait for it..", Toast.LENGTH_SHORT).show();
+                                Intent chatIntent = new Intent(i_currActivity, ChatActivity.class);
+                                i_currActivity.startActivity(chatIntent);
                                 break;
                             case 4:
                                 Toast.makeText(i_context, "Hei, wait for it..", Toast.LENGTH_SHORT).show();

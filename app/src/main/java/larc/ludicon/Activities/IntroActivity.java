@@ -7,6 +7,7 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.Image;
 import android.os.Handler;
 import android.os.Bundle;
@@ -284,6 +285,8 @@ public class IntroActivity extends Activity {
                     //name
                     if (cachedInfo.containsKey("name")) {
                         map.put("name", cachedInfo.get("name").toString());
+                        SharedPreferences prefs = getApplication().getSharedPreferences("ChatPrefs", 0);
+                        prefs.edit().putString("username", cachedInfo.get("name").toString()).commit();
                     }
 
                     //first_name
