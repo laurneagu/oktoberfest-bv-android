@@ -1,6 +1,7 @@
 package larc.ludicon.Activities;
 
 import android.app.Activity;
+import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -55,6 +56,8 @@ import larc.ludicon.Adapters.LeftPanelItemClicker;
 import larc.ludicon.Adapters.LeftSidePanelAdapter;
 import larc.ludicon.R;
 import larc.ludicon.UserInfo.User;
+import larc.ludicon.Utils.util.AsyncBackgroundTask;
+import larc.ludicon.Utils.util.BackgroundService;
 
 public class MainActivity extends Activity {
 
@@ -90,9 +93,19 @@ public class MainActivity extends Activity {
                 .setIdentifier(User.uid)
                 .save(); // Don't forget to save the changes!
 
-
         setContentView(R.layout.activity_main);
         final Locale locale = Locale.getDefault();
+
+        // Background Task:
+
+        AsyncBackgroundTask backgroundTask = new AsyncBackgroundTask(getApplicationContext());
+        backgroundTask.execute();
+
+        // Background Service:
+        Intent mServiceIntent = new Intent(this, BackgroundService.class);
+        mServiceIntent.setData(null);
+        this.startService(mServiceIntent);
+
 
         // Left side panel
         mDrawerList = (ListView) findViewById(R.id.leftMenu);

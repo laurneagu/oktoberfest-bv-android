@@ -339,13 +339,13 @@ public class IntroActivity extends Activity {
                             // }
 
                             if (snapshot.getValue() == null) { // new user
-                                User.firebaseRef.child("mesg").setValue("User nou");
+                                User.firebaseRef.child("mesg").child("user info").setValue("User nou");
                                 User.firebaseRef.child("users").child(uid).setValue(map);
 
                                 jumpToPrefActivity();
 
                             } else { // old user
-                                User.firebaseRef.child("mesg").setValue("User vechi");
+                                User.firebaseRef.child("mesg").child("user info").setValue("User vechi");
                                 User.firebaseRef.child("users").child(uid).updateChildren(map);
                                 jumpToMainActivity();
                             }

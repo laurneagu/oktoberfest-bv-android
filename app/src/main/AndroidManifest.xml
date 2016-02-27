@@ -105,6 +105,10 @@
             android:screenOrientation="portrait" >
         </activity>
 
+        <service
+            android:name=".Utils.util.BackgroundService"
+            android:exported="false"/>
+
 
 
     </application>
