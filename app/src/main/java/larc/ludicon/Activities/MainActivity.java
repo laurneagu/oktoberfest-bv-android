@@ -122,7 +122,7 @@ public class MainActivity extends Activity {
         userPic.setImageDrawable(d);
         // -------------------------------------------------------------------------------------------------------------
         Firebase userRef = User.firebaseRef.child("events"); // check events
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 ArrayList<Event> eventList = new ArrayList<>();

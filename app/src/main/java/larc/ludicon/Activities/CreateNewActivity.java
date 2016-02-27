@@ -46,7 +46,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
@@ -193,10 +192,12 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
         // Set date it will be played
         // TODO GMT format
-        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM,DateFormat.MEDIUM,new Locale("ENGLISH"));
+        DateFormat df = DateFormat.getDateTimeInstance();
         df.setTimeZone(TimeZone.getTimeZone("gmt"));
-        String gmtTime = df.format(calendar.getTime());
-        map.put("date", gmtTime);
+        String gmtTime = df.format(new Date());
+        map.put("date",  gmtTime);
+        //map.put("date",  java.text.DateFormat.getDateTimeInstance().format(calendar.getTime()));
+        Log.v("date", java.text.DateFormat.getDateTimeInstance().format(calendar.getTime()) );
 
         // Set privacy
         Button privacy = (Button) findViewById(R.id.publicBut);
