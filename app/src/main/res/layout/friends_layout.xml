@@ -4,12 +4,12 @@
     android:layout_height="match_parent"
     android:id="@+id/frRelLayout">
 
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/linearLayout2"
-        android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/chat_btn"
-        android:layout_toStartOf="@+id/chat_btn">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/linearLayout2"
+    android:layout_alignParentTop="true"
+    android:layout_toLeftOf="@+id/chat_btn"
+    android:layout_toStartOf="@+id/chat_btn">
 
 
     <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -30,8 +30,8 @@
         android:textColor="#008000"
         android:text="Nume"
         android:id="@+id/list_item_string"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
 
 
@@ -43,52 +43,58 @@
         android:layout_alignLeft="@+id/more_btn"
         android:layout_alignStart="@+id/more_btn"
         android:paddingTop="50dp">
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/profileImageView"
-        android:layout_toRightOf="@+id/more_btn"
-        android:layout_toEndOf="@+id/more_btn"
-        android:id="@+id/linearLayout">
-        <TextView
+
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#808080"
-            android:text="Points"
-            android:textSize="18dp"
-            android:paddingLeft="40dp"
-            android:id="@+id/pointsText"/>
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@drawable/flag"
-            android:paddingRight="40dp"
-            android:layout_toEndOf="@id/pointsText"
-            android:layout_toRightOf="@id/pointsText"/>
+            android:layout_alignBottom="@+id/profileImageView"
+            android:layout_toRightOf="@+id/more_btn"
+            android:layout_toEndOf="@+id/more_btn"
+            android:id="@+id/relativeLayout">
 
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="40dp">
-        <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/numberSports"
-        android:textColor="#808080"
-        android:text="Sports"
-        android:textSize="18dp"
-        android:layout_alignTop="@+id/linearLayout"
-            android:layout_alignLeft="@+id/more_btn" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#808080"
+                android:text="Points"
+                android:textSize="18dp"
+                android:paddingLeft="50dp"
+                android:layout_centerInParent="true"
+                android:id="@+id/pointsText" />
 
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:id="@+id/ballImage"
-            android:background="@drawable/ball"
-            android:layout_toRightOf="@id/numberSports"/>
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@drawable/flag"
+                android:paddingRight="40dp"
+                android:layout_toEndOf="@id/pointsText"
+                android:layout_toRightOf="@id/pointsText" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="25dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/numberSports"
+                android:textColor="#808080"
+                android:text="Sports"
+                android:textSize="18dp"
+                android:layout_alignTop="@+id/linearLayout"
+                android:layout_alignLeft="@+id/more_btn" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:id="@+id/ballImage"
+                android:background="@drawable/ball"
+                android:layout_toRightOf="@id/numberSports" />
+        </RelativeLayout>
     </LinearLayout>
-</LinearLayout>
 
     <ImageButton
         android:layout_width="wrap_content"
@@ -98,8 +104,10 @@
         android:layout_below="@+id/profileImageView"
         android:layout_marginRight="10dp"
         android:layout_marginEnd="10dp"
+        android:layout_marginLeft="50dp"
         android:paddingRight="10dp"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp" />
 
     <ImageButton
         android:layout_width="wrap_content"
@@ -109,6 +117,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginStart="10dp"
         android:paddingLeft="10dp"
+        android:layout_marginRight="50dp"
         android:layout_alignTop="@+id/more_btn"
         android:layout_alignParentRight="true" />
 </RelativeLayout>

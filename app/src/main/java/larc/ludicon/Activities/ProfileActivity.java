@@ -13,12 +13,16 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -97,20 +101,28 @@ public class ProfileActivity extends Activity {
             public void onCancelled(FirebaseError firebaseError) {
             }
         });
-        final TextView listOfSports = (TextView) findViewById(R.id.listOfSports);
+        final RecyclerView listOfSports = (RecyclerView) findViewById(R.id.listOfSports);
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        listOfSports.setLayoutManager(layoutManager);
+
         Firebase userSports = User.firebaseRef.child("users").child(uid).child("sports");
-        final ArrayList<String> sportsList = new ArrayList<>();
+        final ArrayList<Drawable> sportsList = new ArrayList<>();
+
         userSports.addListenerForSingleValueEvent(new ValueEventListener() { // get user sports
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 if( snapshot != null ) {
-                    for(DataSnapshot data : snapshot.getChildren()){
-                        sportsList.add(data.getKey().toString());
+                    for (DataSnapshot sport : snapshot.getChildren()) {
+                        String uri = "@drawable/" + sport.getKey().toLowerCase().replace(" ", "");
+
+                        int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+                        Drawable res = getResources().getDrawable(imageResource);
+                        sportsList.add(res);
                     }
-                    String sports = "";
-                    for( String s: sportsList) sports +=" " + s;
-                    listOfSports.setText(sports);
                 }
+
+                listOfSports.setAdapter(new MyAdapter(sportsList));
             }
             @Override
             public void onCancelled(FirebaseError firebaseError) {
@@ -118,6 +130,57 @@ public class ProfileActivity extends Activity {
         });
     }
 
+    public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
+        private ArrayList<Drawable> icons;
+
+        public MyAdapter(ArrayList<Drawable> icons) {
+            this.icons = icons;
+        }
+
+        // Create new views (invoked by the layout manager)
+        @Override
+        public MyAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
+                                                       int viewType) {
+            // create a new view
+            View itemLayoutView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.icon_layout, null);
+
+            // create ViewHolder
+
+            ViewHolder viewHolder = new ViewHolder(itemLayoutView);
+            return viewHolder;
+        }
+
+        // Replace the contents of a view (invoked by the layout manager)
+        @Override
+        public void onBindViewHolder(ViewHolder viewHolder, int position) {
+
+            // - get data from your itemsData at this position
+            // - replace the contents of the view with that itemsData
+
+            viewHolder.imgViewIcon.setImageDrawable(icons.get(position));
+
+
+        }
+
+        // inner class to hold a reference to each item of RecyclerView
+        public class ViewHolder extends RecyclerView.ViewHolder {
+
+            public ImageView imgViewIcon;
+
+            public ViewHolder(View itemLayoutView) {
+                super(itemLayoutView);
+                imgViewIcon = (ImageView) itemLayoutView.findViewById(R.id.item_icon);
+            }
+        }
+
+
+        // Return the size of your itemsData (invoked by the layout manager)
+        @Override
+        public int getItemCount() {
+            return icons.size();
+        }
+    }
 
     // Method which downloads Image from URL
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {

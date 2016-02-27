@@ -235,11 +235,11 @@ public class SettingsActivity extends Activity {
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot sport : snapshot.getChildren()) {
                     String uri = "@drawable/" + sport.getKey().toLowerCase().replace(" ", "");
-                    ;
+
                     int imageResource = getResources().getIdentifier(uri, null, getPackageName());
                     Drawable res1 = getResources().getDrawable(imageResource);
                     uri = "@drawable/desaturated_" + sport.getKey().toLowerCase().replace(" ", "");
-                    ;
+
                     imageResource = getResources().getIdentifier(uri, null, getPackageName());
                     Drawable res2 = getResources().getDrawable(imageResource);
                     sportsList.add(new Sport(sport.getKey(), sport.getValue().toString(),
