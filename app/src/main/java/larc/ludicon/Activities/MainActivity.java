@@ -335,10 +335,10 @@ public class MainActivity extends Activity {
 
 
                             // TODO Reload Listview - Not working yet
-                            if(listView != null)
-                                listView.invalidateViews();
-                            finish();
-                            startActivity(getIntent());
+                            //if(listView != null)
+                            //    listView.invalidateViews();
+                            //finish();
+                            //startActivity(getIntent());
                         }
 
                         @Override
