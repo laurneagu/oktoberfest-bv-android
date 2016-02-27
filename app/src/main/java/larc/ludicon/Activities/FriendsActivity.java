@@ -91,6 +91,13 @@ public class FriendsActivity extends Activity {
         ImageView userPic = (ImageView) findViewById(R.id.userPicture);
         Drawable d = new BitmapDrawable(getResources(), User.image);
         userPic.setImageDrawable(d);
+        userPic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                FriendsActivity.this.startActivity(mainIntent);
+            }
+        });
 
         new GraphRequest(
                 AccessToken.getCurrentAccessToken(),

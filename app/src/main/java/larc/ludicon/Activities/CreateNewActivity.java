@@ -116,7 +116,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
         // Left side panel initializing
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
-        // initializeLeftSidePanel();
+        initializeLeftSidePanel();
 
         User.setImage();
 
@@ -127,7 +127,13 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         ImageView userPic = (ImageView) findViewById(R.id.userPicture);
         Drawable d = new BitmapDrawable(getResources(), User.image);
         userPic.setImageDrawable(d);
-
+        userPic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                CreateNewActivity.this.startActivity(mainIntent);
+            }
+        });
 
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
@@ -338,7 +344,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
     }
 
     // Left side menu
-    /*
+
     public void initializeLeftSidePanel() {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_createnew);
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
@@ -371,7 +377,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
     }
-    */
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

@@ -3,6 +3,7 @@ package larc.ludicon.Activities;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -65,6 +66,13 @@ public class ProfileActivity extends Activity {
         ImageView userPic = (ImageView) findViewById(R.id.userPicture);
         Drawable d = new BitmapDrawable(getResources(), User.image);
         userPic.setImageDrawable(d);
+        userPic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                ProfileActivity.this.startActivity(mainIntent);
+            }
+        });
 
         Bundle extras = getIntent().getExtras();
         final String uid = extras.getString("uid");

@@ -6,9 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/header"/>
-    <include layout="@layout/leftside_panel"/>
-
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
@@ -190,8 +187,9 @@
             android:onClick="OnCreateEvent"
             />
 
-
 </RelativeLayout>
     </ScrollView>
 
+    <include layout="@layout/header"/>
+    <include layout="@layout/leftside_panel"/>
 </android.support.v4.widget.DrawerLayout>

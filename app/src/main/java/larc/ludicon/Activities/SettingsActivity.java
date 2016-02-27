@@ -78,21 +78,24 @@ public class SettingsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings);
 
-        mDrawerList = (ListView) findViewById(R.id.leftMenu);
         initializeLeftSidePanel();
 
         User.setImage();
 
-        // User picture and name for HEADER MENU
+        // User picture and name for Left side Panel
         TextView userName = (TextView) findViewById(R.id.userName);
         userName.setText(User.getFirstName(getApplicationContext()) + " " + User.getLastName(getApplicationContext()));
 
         ImageView userPic = (ImageView) findViewById(R.id.userPicture);
         Drawable d = new BitmapDrawable(getResources(), User.image);
         userPic.setImageDrawable(d);
-
-        //TODO Get Range from FireBase and put it in savedProgress
-
+        userPic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                SettingsActivity.this.startActivity(mainIntent);
+            }
+        });
 
         rangeRef.addListenerForSingleValueEvent(new ValueEventListener() { // get all sports
             @Override
@@ -172,18 +175,6 @@ public class SettingsActivity extends Activity {
 
         TextView hello_message = (TextView) findViewById(R.id.hello_message_activity);
         hello_message.setText("Settings");
-
-        ImageButton showPanel = (ImageButton) findViewById(R.id.showPanel);
-        showPanel.setBackground(null);
-        showPanel.setBackgroundResource(R.drawable.back_arr);
-        showPanel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
-                startActivity(intent);
-                //finish();
-            }
-        });
 
         /*// Save button
         saveButton = (Button) findViewById(R.id.saveButton);
@@ -309,7 +300,7 @@ public class SettingsActivity extends Activity {
         public MyCustomAdapter(Context context, int textViewResourceId,
                                ArrayList<Sport> sList) {
             super(context, textViewResourceId, sList);
-            this.sportsList = new ArrayList<Sport>();
+            this.sportsList = new ArrayList<>();
             this.sportsList.addAll(sList);
         }
 
@@ -388,17 +379,17 @@ public class SettingsActivity extends Activity {
             return convertView;
 
         }
-
     }
 
     // Left side menu
-
     public void initializeLeftSidePanel() {
+
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_settings);
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
 
         // Set the adapter for the list view
         mDrawerList.setAdapter(new LeftSidePanelAdapter(this, SettingsActivity.this));
+
         // Set the list's click listener
         LeftPanelItemClicker.OnItemClick(mDrawerList, getApplicationContext(), SettingsActivity.this);
 
@@ -415,6 +406,8 @@ public class SettingsActivity extends Activity {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
+                mDrawerList.bringToFront();
+                mDrawerLayout.requestLayout();
             }
 
             @Override
