@@ -14,42 +14,23 @@
         android:layout_centerVertical="true"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
-        />
-
-    <ImageView
-        android:id="@+id/logo"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="130dp"
-        android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
-       />
-    <TextView
-        android:id="@+id/dpi"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#FFFFFF"
-        android:textSize="36sp"
-        android:text="xhdpi"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentTop="true"/>
+        android:background="@drawable/intro_bg" />
     <com.facebook.login.widget.ProfilePictureView
         android:id="@+id/profilePictureIntro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="40dp"
-        android:layout_centerHorizontal="true" />
+        android:layout_above="@+id/greeting"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="42dp" />
     <TextView
         android:id="@+id/greeting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
+        android:visibility="visible"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="175dp"
+        android:layout_marginBottom="105dp"
         android:layout_alignParentBottom="true"/>
 
     <com.facebook.login.widget.LoginButton
@@ -57,8 +38,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="121dp"
-        android:layout_alignParentBottom="true"
+        android:layout_above="@+id/greeting"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:id="@+id/logo"
+        android:layout_marginTop="100dp"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

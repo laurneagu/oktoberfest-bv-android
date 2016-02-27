@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/greeting"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="42dp" />
+        android:layout_marginBottom="30dp" />
     <TextView
         android:id="@+id/greeting"
         android:layout_width="wrap_content"
@@ -30,7 +30,7 @@
         android:textSize="24sp"
         android:visibility="visible"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="105dp"
+        android:layout_marginBottom="75dp"
         android:layout_alignParentBottom="true"/>
 
     <com.facebook.login.widget.LoginButton
@@ -42,8 +42,8 @@
         android:layout_centerHorizontal="true" />
 
     <ImageView
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:id="@+id/logo"
         android:layout_marginTop="100dp"
         android:layout_centerHorizontal="true" />

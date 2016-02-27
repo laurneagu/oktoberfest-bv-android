@@ -23,7 +23,6 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="#ffffff"
         android:text="Favourite Sports"
-        android:layout_marginTop="100dp"
         android:id="@+id/textView3"
         android:layout_gravity="center_horizontal" />
 
@@ -37,11 +36,11 @@
         android:layout_gravity="center_horizontal" />
 
     <GridView
-        android:paddingTop="50dp"
-        android:paddingLeft="50dp"
-        android:paddingRight="50dp"
+        android:paddingTop="25dp"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp"
         android:layout_width="wrap_content"
-        android:layout_height="300dp"
+        android:layout_height="240dp"
         android:id="@+id/gridView1"
         android:numColumns="2"
         android:layout_gravity="center_horizontal" />
