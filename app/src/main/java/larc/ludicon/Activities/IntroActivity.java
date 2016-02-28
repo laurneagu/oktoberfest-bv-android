@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Application;
 import android.app.DialogFragment;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -88,6 +89,10 @@ public class IntroActivity extends Activity {
        // Batch.Push.setGCMSenderId("458732166636");
        // Batch.setConfig(new Config("DEV56C87CCE0350BE0F6C4A19C18E5"));
 
+
+        // Clear notification Stack
+        NotificationManager notifManager= (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        notifManager.cancelAll();
 
         /* Firebase Context */
         Firebase.setAndroidContext(this);

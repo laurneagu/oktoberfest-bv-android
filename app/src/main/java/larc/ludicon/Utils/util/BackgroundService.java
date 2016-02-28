@@ -8,6 +8,8 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -32,6 +34,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
+import larc.ludicon.Activities.IntroActivity;
 import larc.ludicon.Activities.MainActivity;
 import larc.ludicon.R;
 import larc.ludicon.UserInfo.ActivityInfo;
@@ -48,7 +51,8 @@ public class BackgroundService extends Service {
         NotificationManager manager;
         Notification myNotification;
         manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        Intent intent = new Intent("com.rj.notitfications.SECACTIVITY");
+        //Intent intent = new Intent("com.rj.notitfications.SECACTIVITY");
+        Intent intent = new Intent(this, IntroActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(BackgroundService.this, 1, intent, 0);
         Notification.Builder builder = new Notification.Builder(BackgroundService.this);
 
@@ -58,8 +62,12 @@ public class BackgroundService extends Service {
         builder.setContentTitle(sport + " activity remainder");
         builder.setContentText("In less than " + minutesToEvent + " minutes you will play " + sport.toLowerCase() + " with " + otherPlayers + " other player" + (otherPlayers != 1 ? "s" : "") + " at " + place);
         builder.setSmallIcon(R.drawable.logo);
+
+        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.logo);
+        builder.setLargeIcon(largeIcon);
+
         builder.setContentIntent(pendingIntent);
-        builder.setOngoing(true);
+        //builder.setOngoing(true);
         builder.setSubText("Have fun!");   //API level 16
         //builder.setNumber(number * 100);
         builder.build();
