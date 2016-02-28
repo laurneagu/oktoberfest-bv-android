@@ -5,6 +5,7 @@ import android.app.ListActivity;
 import android.content.SharedPreferences;
 import android.database.DataSetObserver;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -19,14 +20,11 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import larc.ludicon.ChatUtils.*;
 
-import java.util.Random;
-
 import larc.ludicon.R;
-import larc.ludicon.UserInfo.User;
 
-public class ChatActivity extends ListActivity {
+public class GeneralChatActivity extends ListActivity {
 
-    // TODO: change this to your own Firebase URL
+
     private static final String FIREBASE_URL = "https://ludicon.firebaseio.com/";
 
     private String mUsername;
@@ -47,8 +45,8 @@ public class ChatActivity extends ListActivity {
         */
 
         // Setup our Firebase mFirebaseRef
-        // TODO Each event to have own chat ( not a general chat )
-        mFirebaseRef = new Firebase(FIREBASE_URL).child("chat");
+        // TODO User to User Chat
+        mFirebaseRef = new Firebase(FIREBASE_URL).child("globalChat");
 
         // Setup our input methods. Enter key on the keyboard or pushing the send button
         EditText inputText = (EditText) findViewById(R.id.messageInput);
@@ -69,6 +67,12 @@ public class ChatActivity extends ListActivity {
             }
         });
 
+        Firebase firebaseRef = new Firebase(FIREBASE_URL).child("chat");
+        //firebaseRef.push();
+
+        Firebase newRef = firebaseRef.push();
+        newRef.setValue(1);
+        Log.v("impossible", newRef.getKey());
     }
 
     @Override
@@ -93,9 +97,9 @@ public class ChatActivity extends ListActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 boolean connected = (Boolean) dataSnapshot.getValue();
                 if (connected) {
-                    Toast.makeText(ChatActivity.this, "Connected to Firebase", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(GeneralChatActivity.this, "Connected to Firebase", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(ChatActivity.this, "Disconnected from Firebase", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(GeneralChatActivity.this, "Disconnected from Firebase", Toast.LENGTH_SHORT).show();
                 }
             }
 

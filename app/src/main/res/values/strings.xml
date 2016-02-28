@@ -39,4 +39,6 @@
         <item>Jogging</item>
     </string-array>
     <string name="title_activity_chat">ChatActivity</string>
+    <string name="title_activity_chat_template">ChatTemplateActivity</string>
+    <string name="title_activity_chat_list">ChatListActivity</string>
 </resources>

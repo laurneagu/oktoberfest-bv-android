@@ -5,11 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import larc.ludicon.Activities.ChatActivity;
+import larc.ludicon.Activities.ChatListActivity;
+import larc.ludicon.Activities.GeneralChatActivity;
 import larc.ludicon.Activities.CreateNewActivity;
 import larc.ludicon.Activities.FriendsActivity;
 import larc.ludicon.Activities.SettingsActivity;
@@ -35,7 +35,7 @@ public class LeftPanelItemClicker {
                                 i_currActivity.startActivity(friendIntent);
                                 break;
                             case 3:
-                                Intent chatIntent = new Intent(i_currActivity, ChatActivity.class);
+                                Intent chatIntent = new Intent(i_currActivity, ChatListActivity.class);
                                 i_currActivity.startActivity(chatIntent);
                                 break;
                             case 4:

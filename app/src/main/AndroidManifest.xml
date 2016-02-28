@@ -117,8 +117,24 @@
             android:name=".Utils.util.BackgroundService" />
 
         <activity
-            android:name=".Activities.ChatActivity"
+            android:name=".Activities.GeneralChatActivity"
             android:label="@string/title_activity_chat"
+            android:parentActivityName=".Activities.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="larc.ludicon.Activities.MainActivity" />
+        </activity>
+        <activity
+            android:name=".Activities.ChatTemplateActivity"
+            android:label="@string/title_activity_chat_template"
+            android:parentActivityName=".Activities.GeneralChatActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activities.GeneralChatActivity" />
+        </activity>
+        <activity
+            android:name=".Activities.ChatListActivity"
+            android:label="@string/title_activity_chat_list"
             android:parentActivityName=".Activities.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

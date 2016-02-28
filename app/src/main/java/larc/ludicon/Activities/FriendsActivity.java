@@ -219,7 +219,31 @@ public class FriendsActivity extends Activity {
             chatButton.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(getApplicationContext(), "Hei, wait for it..", Toast.LENGTH_SHORT).show();
+
+                    Firebase userRef = User.firebaseRef.child("users").child(User.uid).child("chats");
+                    userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            // check if it's the first connection
+                            boolean firstConnection = true;
+                            String chatID = "";
+                            for ( DataSnapshot data : snapshot.getChildren() )
+                            {
+                                if( data.getKey().equalsIgnoreCase(list.get(position).uid) )
+                                    firstConnection = false;
+                                    chatID = data.getValue().toString();
+                            }
+                            Intent intent = new Intent(getApplicationContext(), ChatTemplateActivity.class);
+                            intent.putExtra("uid", list.get(position).uid);
+                            intent.putExtra("firstConnection", firstConnection);
+                            intent.putExtra("otherName", list.get(position).name);
+                            intent.putExtra("chatID", chatID);
+                            startActivity(intent);
+                        }
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
+                        }
+                    });
                 }
             });
             return view;
