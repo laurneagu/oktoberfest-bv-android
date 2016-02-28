@@ -27,7 +27,7 @@ public class AsyncBackgroundTask extends AsyncTask<Void, Void, Void> {
             User.firebaseRef.child("mesg").child(User.uid).child("backgroundTask").setValue(i + " times");
             i++;
             try {
-                Thread.sleep(7000);
+                Thread.sleep(4000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

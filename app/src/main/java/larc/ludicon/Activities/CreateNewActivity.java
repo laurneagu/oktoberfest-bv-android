@@ -3,6 +3,7 @@ package larc.ludicon.Activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -38,7 +39,10 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -53,6 +57,7 @@ import java.util.TimeZone;
 import larc.ludicon.Adapters.LeftPanelItemClicker;
 import larc.ludicon.Adapters.LeftSidePanelAdapter;
 import larc.ludicon.R;
+import larc.ludicon.UserInfo.ActivityInfo;
 import larc.ludicon.UserInfo.User;
 import larc.ludicon.Utils.Location_GPS.GPS_Positioning;
 import larc.ludicon.Utils.Location_GPS.MyLocationListener;
@@ -196,15 +201,14 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         final Map<String, Object> map = new HashMap<String, Object>();
 
 
-
         // Set date it will be played
         // TODO GMT format
-        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM,DateFormat.MEDIUM,new Locale("English"));
+        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, new Locale("English"));
         df.setTimeZone(TimeZone.getTimeZone("gmt"));
-        String gmtTime = df.format(new Date());
+        String gmtTime = df.format(calendar.getTime());
         map.put("date",  gmtTime);
         //map.put("date",  java.text.DateFormat.getDateTimeInstance().format(calendar.getTime()));
-        Log.v("date", java.text.DateFormat.getDateTimeInstance().format(calendar.getTime()) );
+        //Log.v("date", java.text.DateFormat.getDateTimeInstance().format(calendar.getTime()) );
 
         // Set privacy
         Button privacy = (Button) findViewById(R.id.publicBut);
@@ -220,17 +224,20 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         if (latitude == 0 || longitude == 0) {
             mapAux.put("latitude",GPS_Positioning.getLatLng().latitude);
             mapAux.put("longitude", GPS_Positioning.getLatLng().longitude);
+
         }
         else{
             mapAux.put("latitude",latitude);
             mapAux.put("longitude", longitude);
         }
         map.put("place", mapAux);
+        // TODO Find a known place by coordinates
 
         // Set sport
         // TODO Get sport key
         Spinner spinner = (Spinner) findViewById(R.id.sports_spinner);
-        map.put("sport", spinner.getSelectedItem().toString().toLowerCase().replaceAll("\\s+", ""));
+        String sportName = spinner.getSelectedItem().toString().toLowerCase().replaceAll("\\s+", "");
+        map.put("sport", sportName);
 
         // Set users - currently only the one enrolled
         Map<String, Boolean> usersAttending = new HashMap<String, Boolean>();
@@ -262,6 +269,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
                 Map<String,Object> ev =  new HashMap<String,Object>();
                 ev.put(id, true);
                 User.firebaseRef.child("users").child(User.uid).child("events").updateChildren(ev);
+
 
                 try {
                     if(lm != null)

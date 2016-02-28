@@ -24,16 +24,16 @@ android {
     }
 }
 
-repositories {
-    mavenCentral()
-    maven {
-        url "http://maven.batch.com/release"
-    }
-}
+//repositories {
+//    mavenCentral()
+//    maven {
+//        url "http://maven.batch.com/release"
+//    }
+//}
 
-dependencies {
-    compile 'com.batch.android:batch-sdk:1.5+'
-}
+//dependencies {
+//    compile 'com.batch.android:batch-sdk:1.5+'
+//}
 
 repositories {
     mavenCentral()
@@ -47,10 +47,9 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:2.0.0'
 }
 
-//dependencies {
-//    compile 'com.parse.bolts:bolts-android:1.+'
-//    compile 'com.parse:parse-android:1.11.0'
-//}
+dependencies {
+    compile 'com.google.code.gson:gson:2.5'
+}
 dependencies {
     compile 'com.firebase:firebase-client-android:2.5.0+'
 }
@@ -76,3 +75,5 @@ dependencies {
 dependencies {
     compile 'com.android.support:support-v4:23.+'
 }
+
+

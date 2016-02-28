@@ -20,8 +20,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.batch.android.Batch;
-import com.batch.android.Config;
+//import com.batch.android.Batch;
+//import com.batch.android.Config;
 import com.facebook.GraphRequestAsyncTask;
 import com.facebook.HttpMethod;
 
@@ -51,6 +51,7 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -86,6 +87,7 @@ public class IntroActivity extends Activity {
         /* Batch Init - NOW IS IN UseParse*/
        // Batch.Push.setGCMSenderId("458732166636");
        // Batch.setConfig(new Config("DEV56C87CCE0350BE0F6C4A19C18E5"));
+
 
         /* Firebase Context */
         Firebase.setAndroidContext(this);

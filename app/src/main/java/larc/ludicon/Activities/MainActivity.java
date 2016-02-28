@@ -1,14 +1,18 @@
 package larc.ludicon.Activities;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -27,17 +31,22 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.app.PendingIntent;
 
-import com.batch.android.Batch;
+
+//import com.batch.android.Batch;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -49,6 +58,7 @@ import java.util.Map;
 import larc.ludicon.Adapters.LeftPanelItemClicker;
 import larc.ludicon.Adapters.LeftSidePanelAdapter;
 import larc.ludicon.R;
+import larc.ludicon.UserInfo.ActivityInfo;
 import larc.ludicon.UserInfo.User;
 import larc.ludicon.Utils.util.AsyncBackgroundTask;
 import larc.ludicon.Utils.util.BackgroundService;
@@ -81,24 +91,117 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Batch.onStart(this);
+
+       /* Batch.onStart(this);
 
         Batch.User.getEditor()
                 .setIdentifier(User.uid)
                 .save(); // Don't forget to save the changes!
+        */
 
         setContentView(R.layout.activity_main);
         final Locale locale = Locale.getDefault();
 
-        // Background Task:
-
-        //AsyncBackgroundTask backgroundTask = new AsyncBackgroundTask(getApplicationContext());
-        //backgroundTask.execute();
-
         // Background Service:
-        ///Intent mServiceIntent = new Intent(this, BackgroundService.class);
-        //mServiceIntent.setData(null);
-        //this.startService(mServiceIntent);
+        Intent mServiceIntent = new Intent(this, BackgroundService.class);
+        startService(mServiceIntent);
+
+        //Clean up shared pref for events: just for debugging
+        SharedPreferences.Editor editor = getSharedPreferences("UserDetails", 0).edit();
+        String connectionsJSONString = new Gson().toJson(null);
+        editor.putString("events", connectionsJSONString);
+        editor.commit();
+
+
+        // Update sharedpref for events:
+        Firebase usersRef = User.firebaseRef.child("users").child(User.uid).child("events");
+        usersRef.addValueEventListener(new ValueEventListener() {
+                                           @Override
+                                           public void onDataChange(DataSnapshot snapshot) {
+                                               final List<ActivityInfo> activityInfos = new ArrayList<ActivityInfo>();
+
+                                               if (snapshot == null)
+                                                   Log.v("NULL", "Snapshot e null");
+                                               for (DataSnapshot data : snapshot.getChildren()) {
+
+
+                                                   if ((Boolean) data.getValue() == true) {
+                                                       Firebase eventRef = User.firebaseRef.child("events").child(data.getKey().toString());
+                                                       eventRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+                                                           @Override
+                                                           public void onDataChange(DataSnapshot dataSnapshot) {
+                                                               ActivityInfo ai = new ActivityInfo();
+
+                                                               for (DataSnapshot details : dataSnapshot.getChildren()) {
+                                                                   Log.v("Da", "Here");
+
+                                                                   if (details.getKey().toString().equalsIgnoreCase("users")) {
+                                                                       int count = 0;
+
+                                                                       for (DataSnapshot user : details.getChildren()) {
+                                                                           count++;
+                                                                       }
+                                                                       ai.others = count;
+
+                                                                   }
+                                                                   if (details.getKey().toString().equalsIgnoreCase("date")) {
+                                                                       ai.date = new Date(details.getValue().toString());
+                                                                   }
+                                                                   if (details.getKey().toString().equalsIgnoreCase("sport")) {
+                                                                       ai.sport = details.getValue().toString();
+                                                                   }
+                                                                   if (details.getKey().toString().equalsIgnoreCase("place")) {
+                                                                       // TODO get nown zone
+                                                                       ai.place = "Herastrau";
+                                                                   }
+                                                               }
+
+                                                               String connectionsJSONString = getSharedPreferences("UserDetails", 0).getString("events", null);
+                                                               Type type = new TypeToken< List <ActivityInfo>>() {}.getType();
+                                                               List < ActivityInfo > events = null;
+                                                               if(connectionsJSONString != null) {
+                                                                   events = new Gson().fromJson(connectionsJSONString, type);
+                                                               }
+                                                               if(events == null){
+                                                                   events = new ArrayList<ActivityInfo>();
+                                                                   events.add(ai);
+                                                               }
+                                                               else{
+                                                                   Boolean exist = false;
+                                                                   for(ActivityInfo act : events){
+                                                                       if(ai.date.compareTo(act.date) == 0){
+                                                                           exist = true;
+                                                                       }
+                                                                   }
+                                                                   if(!exist) {
+                                                                       events.add(ai);
+                                                                   }
+                                                               }
+
+                                                               SharedPreferences.Editor editor = getSharedPreferences("UserDetails", 0).edit();
+                                                               connectionsJSONString = new Gson().toJson(events);
+                                                               editor.putString("events", connectionsJSONString);
+                                                               editor.commit();
+
+                                                           }
+
+                                                           @Override
+                                                           public void onCancelled(FirebaseError firebaseError) {
+
+                                                           }
+                                                       });
+                                                   }
+                                               }
+
+                                           }
+
+                                           @Override
+                                           public void onCancelled(FirebaseError firebaseError) {
+                                           }
+                                       });
+
+
 
 
         // Left side panel
@@ -326,6 +429,10 @@ public class MainActivity extends Activity {
                             Map<String,Object> ev =  new HashMap<String,Object>();
                             ev.put(list.get(position).id, true);
                             User.firebaseRef.child("users").child(User.uid).child("events").updateChildren(ev);
+
+
+
+
 
 
                             // TODO Reload Listview - Not working yet

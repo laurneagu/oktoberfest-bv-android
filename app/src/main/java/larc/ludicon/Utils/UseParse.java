@@ -4,8 +4,8 @@ package larc.ludicon.Utils;
 //import com.parse.ParseInstallation;
 //import com.parse.ParseUser;
 
-import com.batch.android.Batch;
-import com.batch.android.Config;
+//import com.batch.android.Batch;
+//import com.batch.android.Config;
 
 /**
  * Created by Ciprian on 12/5/2015.
@@ -19,8 +19,8 @@ public class UseParse extends android.app.Application {
         super.onCreate();
 
         /* Batch Init */
-        Batch.Push.setGCMSenderId("458732166636");
-        Batch.setConfig(new Config("56C87CCE024DC2AEDE02625BFEABED"));
+       // Batch.Push.setGCMSenderId("458732166636");
+        //Batch.setConfig(new Config("56C87CCE024DC2AEDE02625BFEABED"));
 
 //        Parse.initialize(this, "7ynxx7uuHFrR4b5tEDDv3yEOPIFhcjsdSIUfDGxh", "sVYUFfdDYLmuqhxU9pxSVvdxRioC3jurlNJb41cw");
 //        ParseInstallation.getCurrentInstallation().saveInBackground();

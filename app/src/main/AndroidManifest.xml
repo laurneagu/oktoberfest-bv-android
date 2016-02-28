@@ -13,18 +13,18 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
-    <permission
-        android:name="larc.ludicon.permission.C2D_MESSAGE"
-        android:protectionLevel="signature" />
+    <!--<permission-->
+        <!--android:name="larc.ludicon.permission.C2D_MESSAGE"-->
+        <!--android:protectionLevel="signature" />-->
 
     <uses-permission android:name="larc.ludicon.permission.C2D_MESSAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
-    <android:uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <android:uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:name=".Utils.UseParse"
@@ -54,24 +54,24 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
+        <!--<meta-data-->
+            <!--android:name="com.google.android.gms.version"-->
+            <!--android:value="@integer/google_play_services_version" />-->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAlcEKCo_BjVBuya9kJ702WsiYsqI3diq4" />
 
-        <service android:name="com.batch.android.BatchPushService" />
+        <!--<service android:name="com.batch.android.BatchPushService" />-->
 
-        <receiver
-            android:name="com.batch.android.BatchPushReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND" >
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+        <!--<receiver-->
+            <!--android:name="com.batch.android.BatchPushReceiver"-->
+            <!--android:permission="com.google.android.c2dm.permission.SEND" >-->
+            <!--<intent-filter>-->
+                <!--<action android:name="com.google.android.c2dm.intent.RECEIVE" />-->
 
-                <category android:name="larc.ludicon" />
-            </intent-filter>
-        </receiver>
+                <!--<category android:name="larc.ludicon" />-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
 
         <activity
             android:name=".Activities.MainActivity"
@@ -114,8 +114,7 @@
         </activity>
 
         <service
-            android:name=".Utils.util.BackgroundService"
-            android:exported="false" />
+            android:name=".Utils.util.BackgroundService" />
 
         <activity
             android:name=".Activities.ChatActivity"
