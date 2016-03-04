@@ -78,12 +78,14 @@ public class MainActivity extends Activity {
         double longitude;
         String id;
         public String getFirstUser() {
+            String userCreatorName = null;
+
             for(Map.Entry<String,Boolean> e : usersUID.entrySet()){
                 if(e.getValue()){
-                    return e.getKey();
+                    userCreatorName = e.getKey();
                 }
             }
-            return null;
+            return userCreatorName;
         }
     }
 
@@ -249,8 +251,12 @@ public class MainActivity extends Activity {
                         {
                             Geocoder geocoder = new Geocoder(getApplicationContext(), locale);
                             Map<String,Double> position = ( Map<String,Double>) details.getValue();
-                            double latitude = position.get("latitude");
-                            double longitude = position.get("longitude");
+                            double latitude = 0, longitude = 0;
+                            try {
+                                latitude = position.get("latitude");
+                                longitude = position.get("longitude");
+                            } catch (Exception exc) {
+                            }
 
                             Log.v("LAT-LONG",latitude + " " + longitude);
                             try {
