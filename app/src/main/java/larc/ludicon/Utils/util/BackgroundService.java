@@ -115,7 +115,7 @@ public class BackgroundService extends Service {
                         //User.firebaseRef.child("mesgEventsLimit").setValue(limit.toString());
 
                         for(ActivityInfo ai : events){
-                           if(ai.date.after(now) && ai.date.before(limit) && !checkNotSent30.containsKey(ai.date)){
+                           if(ai.date != null && ai.date.after(now) && ai.date.before(limit) && !checkNotSent30.containsKey(ai.date)){
                                 checkNotSent30.put(ai.date, i);
                                sendNotification(i, 30, ai.sport, ai.others, ai.place, ai.date);
                                i++;

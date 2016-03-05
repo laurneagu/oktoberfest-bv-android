@@ -357,26 +357,17 @@ public class MainActivity extends Activity {
 
             // Set name and picture for the first user of the event
             final String userUID = list.get(position).getFirstUser();
-            Firebase userRef = User.firebaseRef.child("users").child(userUID).child("name"); // check user
+            Firebase userRef = User.firebaseRef.child("users").child(userUID);
             userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
 
-                    if (snapshot.getValue() != null) {
-                        name.setText(snapshot.getValue().toString());
-                        Firebase userRef = User.firebaseRef.child("users").child(userUID).child("profileImageURL");
-                        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot snapshot) {
-                                if (snapshot.getValue() != null) {
-                                    new DownloadImageTask(profilePicture).execute(snapshot.getValue().toString());
-                                }
-                            }
+                    for ( DataSnapshot data : snapshot.getChildren() ) {
 
-                            @Override
-                            public void onCancelled(FirebaseError firebaseError) {
-                            }
-                        });
+                        if( (data.getKey()).compareTo("name") == 0 )
+                            name.setText(data.getValue().toString());
+                        if( (data.getKey()).compareTo("profileImageURL") ==0 )
+                            new DownloadImageTask(profilePicture).execute(data.getValue().toString());
                     }
                 }
 

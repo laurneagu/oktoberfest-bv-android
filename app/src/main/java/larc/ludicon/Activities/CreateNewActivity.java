@@ -210,6 +210,8 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         String gmtTime = df.format(calendar.getTime());
         map.put("date",  gmtTime);
         map.put("createdBy", User.uid);
+        //map.put("creatorName", )
+        Log.v("Name", User.firstName + User.lastName);
         //map.put("date",  java.text.DateFormat.getDateTimeInstance().format(calendar.getTime()));
         //Log.v("date", java.text.DateFormat.getDateTimeInstance().format(calendar.getTime()) );
 
