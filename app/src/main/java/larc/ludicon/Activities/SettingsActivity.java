@@ -261,7 +261,7 @@ public class SettingsActivity extends Activity {
                         // Assign adapter to ListView
                         gridView.setAdapter(dataAdapter);
 
-
+/*
                         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             public void onItemClick(AdapterView<?> parent, View view,
                                                     int position, long id) {
@@ -273,7 +273,7 @@ public class SettingsActivity extends Activity {
 
 
                             }
-                        });
+                        });*/
                     }
 
                     @Override

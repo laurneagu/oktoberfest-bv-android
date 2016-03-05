@@ -143,7 +143,7 @@ public class AskPreferences extends Activity {
                 GridView gridView = (GridView) findViewById(R.id.gridView1);
                 // Assign adapter to ListView
                 gridView.setAdapter(dataAdapter);
-
+/*
                 gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     public void onItemClick(AdapterView<?> parent, View view,
                                             int position, long id) {
@@ -153,7 +153,7 @@ public class AskPreferences extends Activity {
                                 "Clicked on Row: " + sport.name,
                                 Toast.LENGTH_LONG).show();
                     }
-                });
+                });*/
             }
 
             @Override
