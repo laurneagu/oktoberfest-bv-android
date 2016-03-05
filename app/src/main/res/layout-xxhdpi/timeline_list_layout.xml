@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:text="Parc Crangasi"
-            android:textColor="#dbc13a"
+            android:textColor="#888888"
             android:textSize="14dp"
             android:id="@+id/placeText" />
 
@@ -89,7 +89,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#dbc13a"
+            android:textColor="#888888"
             android:text="Today at 19:00"
             android:textStyle="bold"
             android:textSize="14dp"

@@ -5,14 +5,18 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -33,11 +37,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 
+import larc.ludicon.Adapters.LeftPanelItemClicker;
+import larc.ludicon.Adapters.LeftSidePanelAdapter;
 import larc.ludicon.R;
 import larc.ludicon.UserInfo.User;
 
 public class ChatListActivity extends AppCompatActivity {
 
+    // Left side panel
+    private ListView mDrawerList;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private DrawerLayout mDrawerLayout;
     private static final String FIREBASE_URL = "https://ludicon.firebaseio.com/";
 
 
@@ -51,6 +61,19 @@ public class ChatListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_list);
+
+        mDrawerList = (ListView) findViewById(R.id.leftMenu);
+
+        initializeLeftSidePanel();
+
+        User.setImage();
+
+        // User picture and name for HEADER MENU
+        TextView userName = (TextView) findViewById(R.id.userName);
+        userName.setText(User.getFirstName(getApplicationContext()) + " " + User.getLastName(getApplicationContext()));
+
+        TextView hello_message = (TextView) findViewById(R.id.hello_message_activity);
+        hello_message.setText("Chats");
 
         Firebase firebaseRef = new Firebase(FIREBASE_URL).child("users").child(User.uid).child("chats");
         firebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -210,5 +233,38 @@ public class ChatListActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void initializeLeftSidePanel() {
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_chats);
+        mDrawerList = (ListView) findViewById(R.id.leftMenu);
+
+        // Set the adapter for the list view
+        mDrawerList.setAdapter(new LeftSidePanelAdapter(this, ChatListActivity.this));
+        // Set the list's click listener
+        LeftPanelItemClicker.OnItemClick(mDrawerList, getApplicationContext(), ChatListActivity.this);
+
+        final ImageButton showPanel = (ImageButton) findViewById(R.id.showPanel);
+        showPanel.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Perform action on click
+                mDrawerLayout.openDrawer(Gravity.LEFT);
+            }
+        });
+
+        // Toggle efect on left side panel
+        mDrawerToggle = new android.support.v4.app.ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+        };
+//        mDrawerLayout.setDrawerListener(mDrawerToggle);
+
     }
 }
