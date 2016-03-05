@@ -74,19 +74,21 @@ public class MainActivity extends Activity {
         Date date;
         String sport;
         //Address place;
+        String creator;
         String place;
         double latitude;
         double longitude;
         String id;
         public String getFirstUser() {
-            String userCreatorName = null;
+            /*String userCreatorName = null;
 
             for(Map.Entry<String,Boolean> e : usersUID.entrySet()){
                 if(e.getValue()){
                     userCreatorName = e.getKey();
                 }
             }
-            return userCreatorName;
+            return userCreatorName;*/
+            return creator;
         }
     }
 
@@ -244,6 +246,8 @@ public class MainActivity extends Activity {
 
                         if (details.getKey().toString().equalsIgnoreCase("sport"))
                             event.sport = details.getValue().toString();
+                        if (details.getKey().equalsIgnoreCase("createdBy"))
+                            event.creator = details.getValue().toString();
 
                         if (details.getKey().toString().equalsIgnoreCase("date"))
                             event.date = new Date(details.getValue().toString());
