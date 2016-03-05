@@ -74,6 +74,7 @@ public class MainActivity extends Activity {
         Date date;
         String sport;
         //Address place;
+        String place;
         double latitude;
         double longitude;
         String id;
@@ -251,25 +252,19 @@ public class MainActivity extends Activity {
                         {
                             Geocoder geocoder = new Geocoder(getApplicationContext(), locale);
                             Map<String,Double> position = ( Map<String,Double>) details.getValue();
-                            double latitude = 0, longitude = 0;
-                            try {
-                                latitude = position.get("latitude");
-                                longitude = position.get("longitude");
-                            } catch (Exception exc) {
-                            }
-
-                            Log.v("LAT-LONG",latitude + " " + longitude);
+                            double latitude = position.get("latitude");
+                            double longitude = position.get("longitude");
+                            event.latitude = latitude;
+                            event.longitude = longitude;
                             try {
                                 List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                                Log.v("Address",latitude + " " + longitude + " " +  addresses);
                                 if(addresses.size()>0) {
-                                    Log.v("Address", addresses.get(0).toString());
-                                    event.latitude = latitude;
-                                    event.longitude = longitude;
-                                            //addresses.get(0);
+                                    event.place = addresses.get(0).getAddressLine(0);
                                 }
+                                else event.place = "Parc Crangasi";
                             }
-                            catch(IOException exc){}
-
+                            catch(Exception exc){ event.place = "Unknown";}
                         }
 
                         if(details.getKey().toString().equalsIgnoreCase("users"))
@@ -354,14 +349,12 @@ public class MainActivity extends Activity {
 
             // Set name and picture for the first user of the event
             final String userUID = list.get(position).getFirstUser();
-            //Log.v("User",userUID);
             Firebase userRef = User.firebaseRef.child("users").child(userUID).child("name"); // check user
             userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
 
                     if (snapshot.getValue() != null) {
-                        //Log.v("Name",snapshot.getValue().toString());
                         name.setText(snapshot.getValue().toString());
                         Firebase userRef = User.firebaseRef.child("users").child(userUID).child("profileImageURL");
                         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -387,7 +380,7 @@ public class MainActivity extends Activity {
             firstPart.setText("Will play " + list.get(position).sport);
             secondPart.setText(" with " + ( list.get(position).usersUID.size()-1 ) + " others");
             if(list.get(position) != null )
-                place.setText(String.valueOf(list.get(position).longitude) + " " +list.get(position).latitude);
+                place.setText(list.get(position).place);
             else
                 place.setText("Unknown");
             Calendar c = Calendar.getInstance();
@@ -435,17 +428,6 @@ public class MainActivity extends Activity {
                             Map<String,Object> ev =  new HashMap<String,Object>();
                             ev.put(list.get(position).id, true);
                             User.firebaseRef.child("users").child(User.uid).child("events").updateChildren(ev);
-
-
-
-
-
-
-                            // TODO Reload Listview - Not working yet
-                            //if(listView != null)
-                            //    listView.invalidateViews();
-                            //finish();
-                            //startActivity(getIntent());
                         }
 
                         @Override
