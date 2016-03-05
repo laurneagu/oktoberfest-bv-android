@@ -251,11 +251,14 @@ public class MainActivity extends Activity {
                         if (details.getKey().toString().equalsIgnoreCase("place"))
                         {
                             Geocoder geocoder = new Geocoder(getApplicationContext(), locale);
-                            Map<String,Double> position = ( Map<String,Double>) details.getValue();
-                            double latitude = position.get("latitude");
-                            double longitude = position.get("longitude");
+                            Map<String,Object> position = ( Map<String,Object>) details.getValue();
+                            double latitude = (double) position.get("latitude");
+                            double longitude = (double) position.get("longitude");
+                            String addressName = (String) position.get("name");
+                            event.place = addressName;
                             event.latitude = latitude;
                             event.longitude = longitude;
+                            /*
                             try {
                                 List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
                                 Log.v("Address",latitude + " " + longitude + " " +  addresses);
@@ -265,6 +268,7 @@ public class MainActivity extends Activity {
                                 else event.place = "Parc Crangasi";
                             }
                             catch(Exception exc){ event.place = "Unknown";}
+                            */
                         }
 
                         if(details.getKey().toString().equalsIgnoreCase("users"))

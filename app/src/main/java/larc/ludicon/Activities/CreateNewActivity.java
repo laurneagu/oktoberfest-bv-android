@@ -7,7 +7,9 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
 import android.location.Criteria;
+import android.location.Geocoder;
 import android.location.LocationManager;
 import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -220,15 +222,26 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
 
         // Set location
-        final Map<String, Double> mapAux = new HashMap<String, Double>();
+        final Map<String, Object> mapAux = new HashMap<>();
         if (latitude == 0 || longitude == 0) {
             mapAux.put("latitude",GPS_Positioning.getLatLng().latitude);
             mapAux.put("longitude", GPS_Positioning.getLatLng().longitude);
 
         }
         else{
+            Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.ENGLISH );
+            String addressName = "Parc Crangasi";
+            try {
+                List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                if(addresses.size()>0) {
+                    addressName = addresses.get(0).getAddressLine(0);
+                }
+            }
+            catch(Exception exc){ addressName = "Unknown";}
+
             mapAux.put("latitude",latitude);
             mapAux.put("longitude", longitude);
+            mapAux.put("name", addressName);
         }
         map.put("place", mapAux);
         // TODO Find a known place by coordinates
