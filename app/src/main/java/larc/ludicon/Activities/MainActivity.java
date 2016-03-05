@@ -367,11 +367,10 @@ public class MainActivity extends Activity {
 
                         if( (data.getKey()).compareTo("name") == 0 )
                             name.setText(data.getValue().toString());
-                        if( (data.getKey()).compareTo("profileImageURL") ==0 )
+                        if( (data.getKey()).compareTo("profileImageURL") == 0 )
                             new DownloadImageTask(profilePicture).execute(data.getValue().toString());
                     }
                 }
-
                 @Override
                 public void onCancelled(FirebaseError firebaseError) {
                 }
@@ -464,7 +463,7 @@ public class MainActivity extends Activity {
             this.bmImage = bmImage;
         }
 
-        protected Bitmap doInBackground(String... urls) {
+        protected synchronized Bitmap doInBackground(String... urls) {
             String urldisplay = urls[0];
             Bitmap mIcon11 = null;
             try {
