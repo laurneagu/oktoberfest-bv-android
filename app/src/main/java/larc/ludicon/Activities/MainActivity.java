@@ -352,6 +352,7 @@ public class MainActivity extends Activity {
             final TextView secondPart = (TextView) view.findViewById(R.id.secondPartofText);
             final TextView time = (TextView) view.findViewById(R.id.timeText);
             final TextView place = (TextView) view.findViewById(R.id.placeText);
+            final ImageView icon = (ImageView) view.findViewById(R.id.sportIcon);
             final ImageButton details = (ImageButton) view.findViewById(R.id.details_btn);
             final ImageButton join = (ImageButton) view.findViewById(R.id.join_btn);
 
@@ -375,6 +376,12 @@ public class MainActivity extends Activity {
                 public void onCancelled(FirebaseError firebaseError) {
                 }
             });
+            String uri = "@drawable/" + list.get(position).sport.toLowerCase().replace(" ", "");
+
+            int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+            Drawable res = getResources().getDrawable(imageResource);
+
+            icon.setImageDrawable(res);
 
             firstPart.setText("Will play " + list.get(position).sport);
             secondPart.setText(" with " + ( list.get(position).usersUID.size()-1 ) + " others");
