@@ -384,8 +384,10 @@ public class MainActivity extends Activity {
             icon.setImageDrawable(res);
 
             firstPart.setText("Will play " + list.get(position).sport);
-            if ((list.get(position).usersUID.size() - 1) > 0) {
+            if ((list.get(position).usersUID.size() - 1) > 1) {
                 secondPart.setText(" with " + (list.get(position).usersUID.size() - 1) + " others");
+            } else if ((list.get(position).usersUID.size() - 1) == 1) {
+                secondPart.setText(" with 1 other");
             } else {
                 secondPart.setText(" with no others");
             }
