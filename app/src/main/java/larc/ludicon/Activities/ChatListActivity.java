@@ -1,5 +1,6 @@
 package larc.ludicon.Activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -17,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -42,14 +44,14 @@ import larc.ludicon.Adapters.LeftSidePanelAdapter;
 import larc.ludicon.R;
 import larc.ludicon.UserInfo.User;
 
-public class ChatListActivity extends AppCompatActivity {
+public class ChatListActivity extends Activity {
 
     // Left side panel
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
-    private static final String FIREBASE_URL = "https://ludicon.firebaseio.com/";
 
+    private static final String FIREBASE_URL = "https://ludicon.firebaseio.com/";
 
     public class Chat1to1{
         String userUID;
@@ -60,9 +62,8 @@ public class ChatListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_chat_list);
-
-        mDrawerList = (ListView) findViewById(R.id.leftMenu);
 
         initializeLeftSidePanel();
 
