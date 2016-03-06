@@ -73,6 +73,7 @@ public class MainActivity extends Activity {
     class Event {
         Map<String, Boolean> usersUID = new HashMap<String,Boolean>();
         Date date;
+        int noUsers;
         String sport;
         String creator;
         String place;
@@ -334,6 +335,10 @@ public class MainActivity extends Activity {
                             boolean doIParticipate = false;
                             if (data.getKey().toString().equalsIgnoreCase("users")) {
                                 for (DataSnapshot user : data.getChildren()) {
+                                    if( user != null)
+                                    {   if( events.get(i).usersUID.get(user.getKey().toString()) == null )
+                                             events.get(i).usersUID.put(user.getKey().toString(),true);
+                                    }
                                     String userID = user.getKey().toString();
                                     if (userID.equalsIgnoreCase(User.uid)) {
                                         // TODO check if I have accepted
@@ -342,6 +347,7 @@ public class MainActivity extends Activity {
                                     if( doIParticipate == true ) events.remove(i);
                                 }
                             }
+                            //events.get(i).noUsers = events.get(i).usersUID.size();
                         }
                     }
                 }
@@ -371,6 +377,10 @@ public class MainActivity extends Activity {
                     }
                     if (data.getKey().toString().equalsIgnoreCase("users")) {
                         for (DataSnapshot user : data.getChildren()) {
+                            if ( user != null )
+                            {
+                                auxEvent.usersUID.put(user.getKey().toString(),true);
+                            }
                             String userID = user.getKey().toString();
                             if (userID.equalsIgnoreCase(User.uid)) {
                                 // TODO check if I have accepted
@@ -378,7 +388,9 @@ public class MainActivity extends Activity {
                             }
                         }
                     }
+
                 }
+                auxEvent.noUsers = auxEvent.usersUID.size();
                 if (doIParticipate == false)
                     events.add(auxEvent);
                 listview.invalidateViews();
@@ -437,7 +449,7 @@ public class MainActivity extends Activity {
 
                     for ( DataSnapshot data : snapshot.getChildren() ) {
 
-                        if( (data.getKey()).compareTo("name") == 0 ) {
+                        if( (data.getKey()).compareTo("name") == 0) {
                             name.setText(data.getValue().toString());
                         }
                         if( (data.getKey()).compareTo("profileImageURL") == 0 )
@@ -454,7 +466,6 @@ public class MainActivity extends Activity {
             Drawable res = getResources().getDrawable(imageResource);
 
             icon.setImageDrawable(res);
-
             firstPart.setText("Will play " + list.get(position).sport);
             if ((list.get(position).usersUID.size() - 1) > 1) {
                 secondPart.setText(" with " + (list.get(position).usersUID.size() - 1) + " others");
@@ -463,6 +474,16 @@ public class MainActivity extends Activity {
             } else {
                 secondPart.setText(" with no others");
             }
+            /*
+            firstPart.setText("Will play " + list.get(position).sport);
+            if ((list.get(position).usersUID.size() - 1) > 1) {
+                secondPart.setText(" with " + (list.get(position).noUsers) + " others");
+            } else if (list.get(position).noUsers  == 1) {
+                secondPart.setText(" with 1 other");
+            } else {
+                secondPart.setText(" with no others");
+            }*/
+
             if(list.get(position) != null )
                 place.setText(list.get(position).place);
             else
