@@ -215,16 +215,16 @@ public class MainActivity extends Activity {
         Drawable d = new BitmapDrawable(getResources(), User.image);
         userPic.setImageDrawable(d);
         // -------------------------------------------------------------------------------------------------------------
+        /*
         final ArrayList<Event> eventList = new ArrayList<>();
         MyCustomAdapter adapter = new MyCustomAdapter(eventList, getApplicationContext());
         ListView listView = (ListView) findViewById(R.id.events_listView);
         if (listView != null)
             listView.setAdapter(adapter);
-        updateinBackground(listView, eventList);
-    }
-        /*
+        updateinBackground(listView, eventList);*/
+
         Firebase userRef = User.firebaseRef.child("events"); // check events
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        userRef.addValueEventListener(new ValueEventListener() {
         @Override
             public void onDataChange(DataSnapshot snapshot) {
                 final ArrayList<Event> eventList = new ArrayList<>();
@@ -286,14 +286,14 @@ public class MainActivity extends Activity {
                 ListView listView = (ListView) findViewById(R.id.events_listView);
                 if (listView != null)
                     listView.setAdapter(adapter);
-                updateinBackground(listView,eventList);
+                //updateinBackground(listView,eventList);
             }
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
             }
         });
-    }*/
+    }
     public void updateinBackground(final ListView listview, final ArrayList<Event> events)
     {
         Firebase userRef = User.firebaseRef.child("events"); // check events
