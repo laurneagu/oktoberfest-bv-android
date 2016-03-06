@@ -218,12 +218,11 @@ public class FriendsActivity extends Activity {
             });
             chatButton.setOnClickListener(new View.OnClickListener(){
                 @Override
-                public void onClick(View v) {
-
+                public synchronized void onClick(View v) {
                     Firebase userRef = User.firebaseRef.child("users").child(User.uid).child("chats");
                     userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onDataChange(DataSnapshot snapshot) {
+                        public synchronized void onDataChange(DataSnapshot snapshot) {
                             // check if it's the first connection
                             boolean firstConnection = true;
                             String chatID = "";

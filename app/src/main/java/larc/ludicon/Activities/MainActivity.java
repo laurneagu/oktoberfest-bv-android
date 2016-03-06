@@ -439,7 +439,6 @@ public class MainActivity extends Activity {
 
                         if( (data.getKey()).compareTo("name") == 0 ) {
                             name.setText(data.getValue().toString());
-                            Log.v("name", data.getValue().toString());
                         }
                         if( (data.getKey()).compareTo("profileImageURL") == 0 )
                             new DownloadImageTask(profilePicture).execute(data.getValue().toString());

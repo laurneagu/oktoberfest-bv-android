@@ -133,16 +133,18 @@ public class ChatListActivity extends Activity {
             final ImageView imageView = (ImageView) view.findViewById(R.id.friend_photo);
             Button chatButton = (Button) view.findViewById(R.id.gotoChat);
 
+            //Log.v("UID","-" + list.get(position).userUID);
+
             // Set friend's name and image
-            Firebase firebaseRef = new Firebase(FIREBASE_URL).child("users").child(list.get(position).userUID).child("name");
+            Firebase firebaseRef = new Firebase(FIREBASE_URL).child("users").child(list.get(position).userUID);
             firebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
 
                     for (DataSnapshot data : snapshot.getChildren()) {
-
+                       // Log.v("DAA",data.toString());
                         if( (data.getKey()).compareTo("name") == 0 )
-                            textName.setText(snapshot.getValue().toString());
+                            textName.setText(data.getValue().toString());
                         if( (data.getKey()).compareTo("profileImageURL") == 0 )
                             if (data.getValue() != null) {
                                 new DownloadImageTask(imageView).execute(data.getValue().toString());
@@ -189,7 +191,7 @@ public class ChatListActivity extends Activity {
             this.bmImage = bmImage;
         }
 
-        protected Bitmap doInBackground(String... urls) {
+        protected synchronized Bitmap doInBackground(String... urls) {
             String urldisplay = urls[0];
             Bitmap mIcon11 = null;
             try {
