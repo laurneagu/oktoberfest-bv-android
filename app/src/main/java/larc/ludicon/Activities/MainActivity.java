@@ -35,6 +35,7 @@ import android.app.PendingIntent;
 
 
 //import com.batch.android.Batch;
+import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -73,21 +74,12 @@ public class MainActivity extends Activity {
         Map<String, Boolean> usersUID = new HashMap<String,Boolean>();
         Date date;
         String sport;
-        //Address place;
         String creator;
         String place;
         double latitude;
         double longitude;
         String id;
         public String getFirstUser() {
-            /*String userCreatorName = null;
-
-            for(Map.Entry<String,Boolean> e : usersUID.entrySet()){
-                if(e.getValue()){
-                    userCreatorName = e.getKey();
-                }
-            }
-            return userCreatorName;*/
             return creator;
         }
     }
@@ -117,7 +109,7 @@ public class MainActivity extends Activity {
         editor.putString("events", connectionsJSONString);
         editor.commit();
 
-
+        /*
         // Update sharedpref for events:
         Firebase usersRef = User.firebaseRef.child("users").child(User.uid).child("events");
         usersRef.addValueEventListener(new ValueEventListener() {
@@ -139,7 +131,6 @@ public class MainActivity extends Activity {
                                                                ActivityInfo ai = new ActivityInfo();
 
                                                                for (DataSnapshot details : dataSnapshot.getChildren()) {
-                                                                   Log.v("Da", "Here");
 
                                                                    if (details.getKey().toString().equalsIgnoreCase("users")) {
                                                                        int count = 0;
@@ -206,7 +197,7 @@ public class MainActivity extends Activity {
                                            }
                                        });
 
-
+        */
 
 
         // Left side panel
@@ -223,13 +214,20 @@ public class MainActivity extends Activity {
         Drawable d = new BitmapDrawable(getResources(), User.image);
         userPic.setImageDrawable(d);
         // -------------------------------------------------------------------------------------------------------------
+        final ArrayList<Event> eventList = new ArrayList<>();
+        MyCustomAdapter adapter = new MyCustomAdapter(eventList, getApplicationContext());
+        ListView listView = (ListView) findViewById(R.id.events_listView);
+        if (listView != null)
+            listView.setAdapter(adapter);
+        updateinBackground(listView, eventList);
+    }
+        /*
         Firebase userRef = User.firebaseRef.child("events"); // check events
-        userRef.addValueEventListener(new ValueEventListener() {
-            @Override
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        @Override
             public void onDataChange(DataSnapshot snapshot) {
-                ArrayList<Event> eventList = new ArrayList<>();
-                for(DataSnapshot data : snapshot.getChildren())
-                {
+                final ArrayList<Event> eventList = new ArrayList<>();
+                for (DataSnapshot data : snapshot.getChildren()) {
                     Event event = new Event();
                     boolean isPublic = true;
                     boolean doIParticipate = false;
@@ -237,11 +235,10 @@ public class MainActivity extends Activity {
                     Map<String, Boolean> participants = new HashMap<String, Boolean>();
 
 
+                    for (DataSnapshot details : data.getChildren()) {
 
-                    for( DataSnapshot details : data.getChildren() ) {
-
-                        if(details.getKey().toString().equalsIgnoreCase("privacy"))
-                            if( details.getValue().toString().equalsIgnoreCase("private"))
+                        if (details.getKey().toString().equalsIgnoreCase("privacy"))
+                            if (details.getValue().toString().equalsIgnoreCase("private"))
                                 isPublic = false;
 
                         if (details.getKey().toString().equalsIgnoreCase("sport"))
@@ -252,43 +249,25 @@ public class MainActivity extends Activity {
                         if (details.getKey().toString().equalsIgnoreCase("date"))
                             event.date = new Date(details.getValue().toString());
 
-                        if (details.getKey().toString().equalsIgnoreCase("place"))
-                        {
-                            Geocoder geocoder = new Geocoder(getApplicationContext(), locale);
-                            Map<String,Object> position = ( Map<String,Object>) details.getValue();
+                        if (details.getKey().toString().equalsIgnoreCase("place")) {
+                            Map<String, Object> position = (Map<String, Object>) details.getValue();
                             double latitude = (double) position.get("latitude");
                             double longitude = (double) position.get("longitude");
                             String addressName = (String) position.get("name");
                             event.place = addressName;
                             event.latitude = latitude;
                             event.longitude = longitude;
-                            /*
-                            try {
-                                List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-                                Log.v("Address",latitude + " " + longitude + " " +  addresses);
-                                if(addresses.size()>0) {
-                                    event.place = addresses.get(0).getAddressLine(0);
-                                }
-                                else event.place = "Parc Crangasi";
-                            }
-                            catch(Exception exc){ event.place = "Unknown";}
-                            */
                         }
 
-                        if(details.getKey().toString().equalsIgnoreCase("users"))
-                        {
-                            for( DataSnapshot user : details.getChildren())
-                            {
+                        if (details.getKey().toString().equalsIgnoreCase("users")) {
+                            for (DataSnapshot user : details.getChildren()) {
                                 String userID = user.getKey().toString();
-                                if( userID.equalsIgnoreCase(User.uid))
-                                {
+                                if (userID.equalsIgnoreCase(User.uid)) {
                                     // TODO check if I have accepted
                                     doIParticipate = true;
                                     participants.put(user.getKey().toString(), (Boolean) user.getValue());
                                     break;
-                                }
-                                else
-                                {
+                                } else {
                                     participants.put(user.getKey().toString(), (Boolean) user.getValue());
                                 }
                             }
@@ -296,25 +275,118 @@ public class MainActivity extends Activity {
                     }
 
 
-
-                    if( doIParticipate == false && new Date().before(event.date)  && isPublic )
-                    {
+                    if (doIParticipate == false && new Date().before(event.date) && isPublic) {
                         event.usersUID = participants;
                         eventList.add(event);
                     }
                 }
                 //
-                MyCustomAdapter adapter = new MyCustomAdapter(eventList,getApplicationContext());
-                ListView listView= (ListView) findViewById(R.id.events_listView);
-                if( listView != null)
+                MyCustomAdapter adapter = new MyCustomAdapter(eventList, getApplicationContext());
+                ListView listView = (ListView) findViewById(R.id.events_listView);
+                if (listView != null)
                     listView.setAdapter(adapter);
+                updateinBackground(listView,eventList);
             }
+
             @Override
-             public void onCancelled(FirebaseError firebaseError) {
+            public void onCancelled(FirebaseError firebaseError) {
             }
         });
-    }
+    }*/
+    public void updateinBackground(final ListView listview, final ArrayList<Event> events)
+    {
+        Firebase userRef = User.firebaseRef.child("events"); // check events
+        userRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildMoved(DataSnapshot snapshot, String s) {
 
+            }
+            @Override
+            public void onChildRemoved(DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot snapshot, String previousChildKey) {
+
+                for(int i = 0; i < events.size(); i++ )
+                {
+                    if ( (events.get(i).id).compareTo(snapshot.getValue().toString()) == 0 )
+                    {
+                        for(DataSnapshot data : snapshot.getChildren() ){
+                            if (data.getKey().toString().equalsIgnoreCase("privacy"))
+
+                                if (data.getKey().toString().equalsIgnoreCase("sport"))
+                                    events.get(i).sport = data.getValue().toString();
+                            if (data.getKey().equalsIgnoreCase("createdBy"))
+                                events.get(i).creator = data.getValue().toString();
+                            if (data.getKey().toString().equalsIgnoreCase("date"))
+                                events.get(i).date = new Date(data.getValue().toString());
+                            if (data.getKey().toString().equalsIgnoreCase("place")) {
+                                Map<String, Object> position = (Map<String, Object>) data.getValue();
+                                double latitude = (double) position.get("latitude");
+                                double longitude = (double) position.get("longitude");
+                                String addressName = (String) position.get("name");
+                                events.get(i).place = addressName;
+                                events.get(i).latitude = latitude;
+                                events.get(i).longitude = longitude;
+                            }
+                            boolean doIParticipate = false;
+                            if (data.getKey().toString().equalsIgnoreCase("users")) {
+                                for (DataSnapshot user : data.getChildren()) {
+                                    String userID = user.getKey().toString();
+                                    if (userID.equalsIgnoreCase(User.uid)) {
+                                        // TODO check if I have accepted
+                                        doIParticipate = true;
+                                    }
+                                    if( doIParticipate == true ) events.remove(i);
+                                }
+                            }
+                        }
+                    }
+                }
+                listview.invalidateViews();
+            }
+
+            @Override
+            public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
+                Event auxEvent = new Event();
+                boolean doIParticipate = false;
+                auxEvent.id = snapshot.getKey();
+                for(DataSnapshot data : snapshot.getChildren() ) {
+                    if (data.getKey().toString().equalsIgnoreCase("sport"))
+                        auxEvent.sport = data.getValue().toString();
+                    if (data.getKey().equalsIgnoreCase("createdBy"))
+                        auxEvent.creator = data.getValue().toString();
+                    if (data.getKey().toString().equalsIgnoreCase("date"))
+                        auxEvent.date = new Date(data.getValue().toString());
+                    if (data.getKey().toString().equalsIgnoreCase("place")) {
+                        Map<String, Object> position = (Map<String, Object>) data.getValue();
+                        double latitude = (double) position.get("latitude");
+                        double longitude = (double) position.get("longitude");
+                        String addressName = (String) position.get("name");
+                        auxEvent.place = addressName;
+                        auxEvent.latitude = latitude;
+                        auxEvent.longitude = longitude;
+                    }
+                    if (data.getKey().toString().equalsIgnoreCase("users")) {
+                        for (DataSnapshot user : data.getChildren()) {
+                            String userID = user.getKey().toString();
+                            if (userID.equalsIgnoreCase(User.uid)) {
+                                // TODO check if I have accepted
+                                doIParticipate = true;
+                            }
+                        }
+                    }
+                }
+                if (doIParticipate == false)
+                    events.add(auxEvent);
+                listview.invalidateViews();
+            }
+            @Override
+            public void onCancelled(FirebaseError error){}
+        });
+    }
     public class MyCustomAdapter extends BaseAdapter implements ListAdapter {
 
         private ArrayList<Event> list = new ArrayList<>();
@@ -365,8 +437,10 @@ public class MainActivity extends Activity {
 
                     for ( DataSnapshot data : snapshot.getChildren() ) {
 
-                        if( (data.getKey()).compareTo("name") == 0 )
+                        if( (data.getKey()).compareTo("name") == 0 ) {
                             name.setText(data.getValue().toString());
+                            Log.v("name", data.getValue().toString());
+                        }
                         if( (data.getKey()).compareTo("profileImageURL") == 0 )
                             new DownloadImageTask(profilePicture).execute(data.getValue().toString());
                     }
@@ -426,7 +500,6 @@ public class MainActivity extends Activity {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
                             Map<String, Object> map = new HashMap<>();
-                            if (snapshot == null) Log.v("NULL", "Snapshot e null");
                             for (DataSnapshot data : snapshot.getChildren()) {
 
                                 map.put(data.getKey(), data.getValue());
@@ -438,6 +511,7 @@ public class MainActivity extends Activity {
 
                             Map<String,Object> ev =  new HashMap<String,Object>();
                             ev.put(list.get(position).id, true);
+                            list.remove(position);
                             User.firebaseRef.child("users").child(User.uid).child("events").updateChildren(ev);
                         }
 

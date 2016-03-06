@@ -211,7 +211,7 @@ public class IntroActivity extends Activity {
                 startActivity(goToNextActivity);
                 finish();
             }
-        }, 3000); // Delay time for transition to next activity -> insert any time wanted here instead of 5000
+        }, 1000); // Delay time for transition to next activity -> insert any time wanted here instead of 5000
     }
 
     public void jumpToPrefActivity() {
@@ -223,7 +223,7 @@ public class IntroActivity extends Activity {
                 startActivity(goToNextActivity);
                 finish();
             }
-        }, 3000); // Delay time for transition to next activity -> insert any time wanted here instead of 5000
+        }, 1000); // Delay time for transition to next activity -> insert any time wanted here instead of 5000
     }
 
 

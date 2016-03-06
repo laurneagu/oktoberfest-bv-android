@@ -133,30 +133,24 @@ public class ChatListActivity extends Activity {
             final ImageView imageView = (ImageView) view.findViewById(R.id.friend_photo);
             Button chatButton = (Button) view.findViewById(R.id.gotoChat);
 
-            // Set friend's name
+            // Set friend's name and image
             Firebase firebaseRef = new Firebase(FIREBASE_URL).child("users").child(list.get(position).userUID).child("name");
             firebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
-                    textName.setText(snapshot.getValue().toString());
-                }
 
-                @Override
-                public void onCancelled(FirebaseError firebaseError) {
-                }
-            });
+                    for (DataSnapshot data : snapshot.getChildren()) {
 
-            // Set Friend Image
-            Firebase userRef = User.firebaseRef.child("users").child(list.get(position).userUID).child("profileImageURL");
-            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot snapshot) {
-                    if(snapshot.getValue() != null) {
-                            new DownloadImageTask(imageView).execute(snapshot.getValue().toString());
+                        if( (data.getKey()).compareTo("name") == 0 )
+                            textName.setText(snapshot.getValue().toString());
+                        if( (data.getKey()).compareTo("profileImageURL") == 0 )
+                            if (data.getValue() != null) {
+                                new DownloadImageTask(imageView).execute(data.getValue().toString());
+                            } else
+                                imageView.setImageResource(R.drawable.logo);
                     }
-                    else
-                        imageView.setImageResource(R.drawable.logo);
                 }
+
                 @Override
                 public void onCancelled(FirebaseError firebaseError) {
                 }
@@ -171,11 +165,9 @@ public class ChatListActivity extends Activity {
                     userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
-                                //textName.setText(snapshot.getValue().toString());
                                 Intent intent = new Intent(getApplicationContext(), ChatTemplateActivity.class);
                                 intent.putExtra("uid", list.get(position).userUID);
                                 intent.putExtra("firstConnection", false);
-                                //intent.putExtra("otherName", snapshot.getValue().toString());
                                 intent.putExtra("chatID",list.get(position).chatID);
                                 startActivity(intent);
                         }
