@@ -3,6 +3,7 @@ package larc.ludicon.Activities;
 import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -56,6 +57,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import larc.ludicon.Adapters.LeftPanelItemClicker;
 import larc.ludicon.Adapters.LeftSidePanelAdapter;
@@ -71,6 +74,8 @@ public class MainActivity extends Activity {
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
+    private ProgressDialog dialog;
+    private int TIMEOUT = 80;
     class Event {
         Map<String, Boolean> usersUID = new HashMap<String,Boolean>();
         Date date;
@@ -102,6 +107,8 @@ public class MainActivity extends Activity {
 
         setContentView(R.layout.activity_main);
         final Locale locale = Locale.getDefault();
+
+        dialog = ProgressDialog.show(MainActivity.this, "", "Loading. Please wait", true);
 
         // Background Service:
         Intent mServiceIntent = new Intent(this, BackgroundService.class);
@@ -295,7 +302,23 @@ public class MainActivity extends Activity {
                 ListView listView = (ListView) findViewById(R.id.events_listView);
                 if (listView != null)
                     listView.setAdapter(adapter);
-                //updateinBackground(listView,eventList);
+
+            // Dismiss loading dialog after  2 * TIMEOUT * eventList.size() ms
+                Timer timer = new Timer();
+                TimerTask delayedThreadStartTask = new TimerTask() {
+                    @Override
+                    public void run() {
+
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                dialog.dismiss();
+                            }
+                        }).start();
+                     }
+                };
+                timer.schedule(delayedThreadStartTask, TIMEOUT * 2 * eventList.size());
+
             }
 
             @Override
@@ -562,7 +585,7 @@ public class MainActivity extends Activity {
                 Thread.sleep(50,1);
             }
             catch(InterruptedException exc ) {}
-            
+
             return view;
         }
     }

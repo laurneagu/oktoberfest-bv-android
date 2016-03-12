@@ -1,6 +1,7 @@
 package larc.ludicon.Activities;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -38,7 +39,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
+import java.util.logging.Handler;
 
 import larc.ludicon.Adapters.LeftPanelItemClicker;
 import larc.ludicon.Adapters.LeftSidePanelAdapter;
@@ -51,6 +55,8 @@ public class ChatListActivity extends Activity {
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
+    private ProgressDialog dialog;
+    private int TIMEOUT = 80;
 
     private static final String FIREBASE_URL = "https://ludicon.firebaseio.com/";
 
@@ -65,8 +71,9 @@ public class ChatListActivity extends Activity {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_chat_list);
-
         initializeLeftSidePanel();
+
+        dialog = ProgressDialog.show(ChatListActivity.this, "", "Loading. Please wait", true);
 
         User.setImage();
 
@@ -92,6 +99,23 @@ public class ChatListActivity extends Activity {
                 MyCustomAdapter adapter = new MyCustomAdapter(chatList, getApplicationContext());
                 ListView listView = (ListView) findViewById(R.id.chat_list);
                 listView.setAdapter(adapter);
+
+                // Dismiss loading dialog after  2 * TIMEOUT * chatList.size() ms
+                Timer timer = new Timer();
+                TimerTask delayedThreadStartTask = new TimerTask() {
+                    @Override
+                    public void run() {
+
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                dialog.dismiss();
+                            }
+                        }).start();
+                    }
+                };
+                timer.schedule(delayedThreadStartTask, TIMEOUT * 6 * chatList.size());
+
             }
 
             @Override
@@ -104,6 +128,7 @@ public class ChatListActivity extends Activity {
         private List<Chat1to1> list = new ArrayList<>();
         private Context context;
         //private final Map<String,Boolean> states = new HashMap<String,Boolean>();
+
 
         public MyCustomAdapter(List<Chat1to1> list, Context context) {
             this.list = list;
@@ -136,34 +161,35 @@ public class ChatListActivity extends Activity {
             Button chatButton = (Button) view.findViewById(R.id.gotoChat);
 
             // Set friend's name and image
+
             Firebase firebaseRef = new Firebase(FIREBASE_URL).child("users").child(list.get(position).userUID);
             firebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot snapshot) {
-                    for (DataSnapshot data : snapshot.getChildren()) {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
 
-                        if ((data.getKey()).compareTo("name") == 0) {
-                            String name = data.getValue().toString();
-                            Log.v("Name", "Set name:" + name + "to position:" + position);
-                            textName.setText(name);
-                        }
-                        if ((data.getKey()).compareTo("profileImageURL") == 0)
-                            if (data.getValue() != null) {
-                                //new DownloadImageTask(imageView).execute(data.getValue().toString());
-                                Picasso.with(context).load(data.getValue().toString()).into(imageView);
-                            } else {
-                                imageView.setImageResource(R.drawable.logo);
+                            for (DataSnapshot data : snapshot.getChildren()) {
+                                if ((data.getKey()).compareTo("name") == 0) {
+                                    String name = data.getValue().toString();
+                                    Log.v("Name", "Set name:" + name + "to position:" + position);
+                                    textName.setText(name);
+                                }
+                                if ((data.getKey()).compareTo("profileImageURL") == 0)
+                                    if (data.getValue() != null) {
+                                        //new DownloadImageTask(imageView).execute(data.getValue().toString());
+                                        Picasso.with(context).load(data.getValue().toString()).into(imageView);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.logo);
+                                    }
                             }
-                    }
-                }
+                        }
 
-                @Override
-                public void onCancelled(FirebaseError firebaseError) {
-                }
-            });
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
+                        }
+                    });
 
             try{
-                Thread.sleep(45,1);
+                Thread.sleep(TIMEOUT,1);
             }
             catch(InterruptedException exc ){}
             // Buttons behaviour
