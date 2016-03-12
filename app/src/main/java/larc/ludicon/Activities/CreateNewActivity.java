@@ -70,6 +70,8 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
     static public int ASK_COORDS = 1000;
     static public int ASK_COORDS_DONE = 1001;
 
+    private static final String FIREBASE_URL = "https://ludicon.firebaseio.com/";
+
     // Left side panel
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -210,7 +212,28 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         String gmtTime = df.format(calendar.getTime());
         map.put("date",  gmtTime);
         map.put("createdBy", User.uid);
-        //map.put("creatorName", )
+        Firebase userRef = new Firebase(FIREBASE_URL).child("users").child(User.uid);
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+               for(DataSnapshot data : snapshot.getChildren() )
+               {
+                   if ( data.getKey().equalsIgnoreCase("name") )
+                       map.put("creatorName", data.getValue().toString());
+                   if ( data.getKey().equalsIgnoreCase("profileImageURL") )
+                       map.put("creatorImage", data.getValue().toString());
+               }
+            }
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+            }
+        });
+
+        try{
+            Thread.sleep(100,1);
+        }
+        catch(InterruptedException exc){}
+
         Log.v("Name", User.firstName + User.lastName);
         //map.put("date",  java.text.DateFormat.getDateTimeInstance().format(calendar.getTime()));
         //Log.v("date", java.text.DateFormat.getDateTimeInstance().format(calendar.getTime()) );

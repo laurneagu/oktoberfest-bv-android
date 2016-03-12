@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -117,6 +118,46 @@ public class ProfileActivity extends Activity {
 
         Firebase userSports = User.firebaseRef.child("users").child(uid).child("sports");
         final ArrayList<Drawable> sportsList = new ArrayList<>();
+
+        ImageButton chatButton = (ImageButton)findViewById(R.id.chatbutton);
+        chatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Firebase userRef = User.firebaseRef.child("users").child(uid).child("chats");
+                userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        if( snapshot == null )
+                        {
+                            Intent intent = new Intent(getApplicationContext(), ChatTemplateActivity.class);
+                            intent.putExtra("uid", uid);
+                            intent.putExtra("firstConnection", true);
+                            startActivity(intent);
+                        }
+                        else
+                        {
+                            for (DataSnapshot data : snapshot.getChildren() )
+                            {
+                                if ( data.getKey().equalsIgnoreCase(User.uid) )
+                                {
+                                    Intent intent = new Intent(getApplicationContext(), ChatTemplateActivity.class);
+                                    intent.putExtra("uid", uid);
+                                    intent.putExtra("firstConnection", false);
+                                    intent.putExtra("chatID", data.getValue().toString());
+                                    startActivity(intent);
+                                }
+                            }
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+                    }
+                });
+            }
+        });
 
         userSports.addListenerForSingleValueEvent(new ValueEventListener() { // get user sports
             @Override

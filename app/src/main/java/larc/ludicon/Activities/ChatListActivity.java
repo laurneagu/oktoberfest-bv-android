@@ -31,6 +31,7 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -102,6 +103,7 @@ public class ChatListActivity extends Activity {
 
         private List<Chat1to1> list = new ArrayList<>();
         private Context context;
+        //private final Map<String,Boolean> states = new HashMap<String,Boolean>();
 
         public MyCustomAdapter(List<Chat1to1> list, Context context) {
             this.list = list;
@@ -133,23 +135,25 @@ public class ChatListActivity extends Activity {
             final ImageView imageView = (ImageView) view.findViewById(R.id.friend_photo);
             Button chatButton = (Button) view.findViewById(R.id.gotoChat);
 
-            //Log.v("UID","-" + list.get(position).userUID);
-
             // Set friend's name and image
             Firebase firebaseRef = new Firebase(FIREBASE_URL).child("users").child(list.get(position).userUID);
             firebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
-
                     for (DataSnapshot data : snapshot.getChildren()) {
-                       // Log.v("DAA",data.toString());
-                        if( (data.getKey()).compareTo("name") == 0 )
-                            textName.setText(data.getValue().toString());
-                        if( (data.getKey()).compareTo("profileImageURL") == 0 )
+
+                        if ((data.getKey()).compareTo("name") == 0) {
+                            String name = data.getValue().toString();
+                            Log.v("Name", "Set name:" + name + "to position:" + position);
+                            textName.setText(name);
+                        }
+                        if ((data.getKey()).compareTo("profileImageURL") == 0)
                             if (data.getValue() != null) {
-                                new DownloadImageTask(imageView).execute(data.getValue().toString());
-                            } else
+                                //new DownloadImageTask(imageView).execute(data.getValue().toString());
+                                Picasso.with(context).load(data.getValue().toString()).into(imageView);
+                            } else {
                                 imageView.setImageResource(R.drawable.logo);
+                            }
                     }
                 }
 
@@ -158,8 +162,12 @@ public class ChatListActivity extends Activity {
                 }
             });
 
+            try{
+                Thread.sleep(45,1);
+            }
+            catch(InterruptedException exc ){}
             // Buttons behaviour
-            chatButton.setOnClickListener(new View.OnClickListener(){
+            chatButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
@@ -167,11 +175,11 @@ public class ChatListActivity extends Activity {
                     userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
-                                Intent intent = new Intent(getApplicationContext(), ChatTemplateActivity.class);
-                                intent.putExtra("uid", list.get(position).userUID);
-                                intent.putExtra("firstConnection", false);
-                                intent.putExtra("chatID",list.get(position).chatID);
-                                startActivity(intent);
+                            Intent intent = new Intent(getApplicationContext(), ChatTemplateActivity.class);
+                            intent.putExtra("uid", list.get(position).userUID);
+                            intent.putExtra("firstConnection", false);
+                            intent.putExtra("chatID", list.get(position).chatID);
+                            startActivity(intent);
                         }
 
                         @Override
@@ -191,7 +199,7 @@ public class ChatListActivity extends Activity {
             this.bmImage = bmImage;
         }
 
-        protected synchronized Bitmap doInBackground(String... urls) {
+        protected Bitmap doInBackground(String... urls) {
             String urldisplay = urls[0];
             Bitmap mIcon11 = null;
             try {

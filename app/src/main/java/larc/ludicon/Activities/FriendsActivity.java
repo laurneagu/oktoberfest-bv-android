@@ -44,6 +44,7 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -120,6 +121,7 @@ public class FriendsActivity extends Activity {
                             // Display in ListView
                             MyCustomAdapter adapter = new MyCustomAdapter(friends,getApplicationContext());
                             ListView listView = (ListView) findViewById(R.id.friends_listView);
+                            Log.v("TAG",friends.size()+"");
                             listView.setAdapter(adapter);
 
                         } catch (JSONException e) {
@@ -176,19 +178,20 @@ public class FriendsActivity extends Activity {
 
             // Set Image in ImageView
             Firebase userRef = User.firebaseRef.child("users").child(list.get(position).uid).child("profileImageURL");
-            Log.v("Position",position+"");
+            Log.v("Position", position + "");
             userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
-                    if(snapshot.getValue() != null) {
+                    if (snapshot.getValue() != null) {
                         String label = textName.getText().toString();
                         String strURL = snapshot.getValue().toString();
-                        if( (list.get(position).name).compareTo(label) == 0)
-                            new DownloadImageTask(imageView).execute(strURL);
-                    }
-                    else
+                        if ((list.get(position).name).compareTo(label) == 0)
+                            //new DownloadImageTask(imageView).execute(strURL);
+                            Picasso.with(context).load(strURL).into(imageView);
+                    } else
                         imageView.setImageResource(R.drawable.logo);
                 }
+
                 @Override
                 public void onCancelled(FirebaseError firebaseError) {
                 }
@@ -197,16 +200,17 @@ public class FriendsActivity extends Activity {
             userSports.addListenerForSingleValueEvent(new ValueEventListener() { // get user sports
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
-                    if( snapshot != null ) {
+                    if (snapshot != null) {
                         String label = textName.getText().toString();
-                        if( (list.get(position).name).compareTo(label) == 0)
-                               numberSports.setText(snapshot.getChildrenCount() + " sports");
+                        if ((list.get(position).name).compareTo(label) == 0)
+                            numberSports.setText(snapshot.getChildrenCount() + " sports");
                     }
                 }
-                    @Override
-                    public void onCancelled(FirebaseError firebaseError) {
-                    }
-                });
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+                }
+            });
             // Buttons behaviour
             moreButton.setOnClickListener(new View.OnClickListener(){
                 @Override
@@ -216,21 +220,22 @@ public class FriendsActivity extends Activity {
                     startActivity(intent);
                 }
             });
-            chatButton.setOnClickListener(new View.OnClickListener(){
+
+            chatButton.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public synchronized void onClick(View v) {
-                    Firebase userRef = User.firebaseRef.child("users").child(User.uid).child("chats");
+                public void onClick(View v) {
+                    Firebase userRef = User.firebaseRef.child("users").child(list.get(position).uid).child("chats");
                     userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public synchronized void onDataChange(DataSnapshot snapshot) {
+                        public void onDataChange(DataSnapshot snapshot) {
                             // check if it's the first connection
                             boolean firstConnection = true;
                             String chatID = "";
-                            for ( DataSnapshot data : snapshot.getChildren() )
-                            {
-                                if( data.getKey().equalsIgnoreCase(list.get(position).uid) )
+                            for (DataSnapshot data : snapshot.getChildren()) {
+                                if (data.getKey().equalsIgnoreCase(User.uid)) {
                                     firstConnection = false;
                                     chatID = data.getValue().toString();
+                                }
                             }
                             Intent intent = new Intent(getApplicationContext(), ChatTemplateActivity.class);
                             intent.putExtra("uid", list.get(position).uid);
@@ -239,6 +244,7 @@ public class FriendsActivity extends Activity {
                             intent.putExtra("chatID", chatID);
                             startActivity(intent);
                         }
+
                         @Override
                         public void onCancelled(FirebaseError firebaseError) {
                         }

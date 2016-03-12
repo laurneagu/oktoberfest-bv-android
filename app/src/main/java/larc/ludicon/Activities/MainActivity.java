@@ -42,6 +42,7 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.squareup.picasso.Picasso;
 
 
 import java.io.IOException;
@@ -80,6 +81,8 @@ public class MainActivity extends Activity {
         double latitude;
         double longitude;
         String id;
+        String creatorName;
+        String profileImageURL;
         public String getFirstUser() {
             return creator;
         }
@@ -237,6 +240,12 @@ public class MainActivity extends Activity {
 
 
                     for (DataSnapshot details : data.getChildren()) {
+
+                        if( details.getKey().toString().equalsIgnoreCase("creatorName"))
+                            event.creatorName = details.getValue().toString();
+
+                        if( details.getKey().toString().equalsIgnoreCase("creatorImage"))
+                            event.profileImageURL = details.getValue().toString();
 
                         if (details.getKey().toString().equalsIgnoreCase("privacy"))
                             if (details.getValue().toString().equalsIgnoreCase("private"))
@@ -441,7 +450,13 @@ public class MainActivity extends Activity {
             final ImageButton join = (ImageButton) view.findViewById(R.id.join_btn);
 
             // Set name and picture for the first user of the event
-            final String userUID = list.get(position).getFirstUser();
+            //final String userUID = list.get(position).getFirstUser();
+
+            name.setText(list.get(position).creatorName);
+            Picasso.with(context).load(list.get(position).profileImageURL).into(profilePicture);
+
+
+            /*
             Firebase userRef = User.firebaseRef.child("users").child(userUID);
             userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -459,7 +474,8 @@ public class MainActivity extends Activity {
                 @Override
                 public void onCancelled(FirebaseError firebaseError) {
                 }
-            });
+            });*/
+
             String uri = "@drawable/" + list.get(position).sport.toLowerCase().replace(" ", "");
 
             int imageResource = getResources().getIdentifier(uri, null, getPackageName());
@@ -541,6 +557,12 @@ public class MainActivity extends Activity {
                     });
                 }
             });
+
+            try{
+                Thread.sleep(50,1);
+            }
+            catch(InterruptedException exc ) {}
+            
             return view;
         }
     }
