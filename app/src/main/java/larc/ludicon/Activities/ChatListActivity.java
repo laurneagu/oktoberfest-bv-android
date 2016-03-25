@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
@@ -71,11 +73,14 @@ public class ChatListActivity extends Activity {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_chat_list);
+
+        // Left side panel initializing
+        mDrawerList = (ListView) findViewById(R.id.leftMenu);
         initializeLeftSidePanel();
 
-        dialog = ProgressDialog.show(ChatListActivity.this, "", "Loading. Please wait", true);
-
         User.setImage();
+
+        dialog = ProgressDialog.show(ChatListActivity.this, "", "Loading. Please wait", true);
 
         // User picture and name for HEADER MENU
         TextView userName = (TextView) findViewById(R.id.userName);
@@ -83,6 +88,16 @@ public class ChatListActivity extends Activity {
 
         TextView hello_message = (TextView) findViewById(R.id.hello_message_activity);
         hello_message.setText("Chats");
+        ImageView userPic = (ImageView) findViewById(R.id.userPicture);
+        Drawable d = new BitmapDrawable(getResources(), User.image);
+        userPic.setImageDrawable(d);
+        userPic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                ChatListActivity.this.startActivity(mainIntent);
+            }
+        });
 
         Firebase firebaseRef = new Firebase(FIREBASE_URL).child("users").child(User.uid).child("chats");
         firebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -242,27 +257,8 @@ public class ChatListActivity extends Activity {
             bmImage.setImageBitmap(result);
         }
     }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_chat_list, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
+    // Left side menu
 
     public void initializeLeftSidePanel() {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_chats);
@@ -293,7 +289,30 @@ public class ChatListActivity extends Activity {
                 super.onDrawerClosed(drawerView);
             }
         };
-//        mDrawerLayout.setDrawerListener(mDrawerToggle);
-
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_chat_list, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 }
