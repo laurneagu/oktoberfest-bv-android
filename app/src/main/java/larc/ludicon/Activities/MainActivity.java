@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
@@ -81,6 +82,9 @@ public class MainActivity extends Activity {
 
     private ViewFlipper flipper;
     private int currentPage = 0; // 0 = friends, 1 = my
+    Button frButton;
+    Button myButton;
+
 
     class Event {
         Map<String, Boolean> usersUID = new HashMap<String,Boolean>();
@@ -115,6 +119,10 @@ public class MainActivity extends Activity {
         flipper = (ViewFlipper)findViewById(R.id.viewFlipper);
         flipper.setInAnimation(this, R.anim.right_enter);
         flipper.setOutAnimation(this, R.anim.left_out);
+
+         frButton = (Button)findViewById(R.id.fractbutton);
+         myButton = (Button)findViewById(R.id.myactbutton);
+
 
         addFriendsActivityButtonEventListener();
         addMyActivityButtonEventListener();
@@ -470,12 +478,14 @@ public class MainActivity extends Activity {
     }
 
     public void addFriendsActivityButtonEventListener(){
-        Button fr = (Button)findViewById(R.id.fractbutton);
-        fr.setOnClickListener(new View.OnClickListener() {
+
+        frButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(currentPage != 0){
                     currentPage = 0;
+                    myButton.setBackgroundColor(Color.rgb(197,105,105));
+                    frButton.setBackgroundColor(Color.rgb(144,39,39));
                     flipper.setInAnimation(getApplicationContext(), R.anim.right_enter);
                     flipper.setOutAnimation(getApplicationContext(), R.anim.left_out);
                     flipper.showNext();
@@ -485,12 +495,13 @@ public class MainActivity extends Activity {
     }
 
     public void addMyActivityButtonEventListener(){
-        Button my = (Button)findViewById(R.id.myactbutton);
-        my.setOnClickListener(new View.OnClickListener() {
+        myButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(currentPage != 1){
                     currentPage = 1;
+                    frButton.setBackgroundColor(Color.rgb(197,105,105));
+                    myButton.setBackgroundColor(Color.rgb(144,39,39));
                     flipper.setInAnimation(getApplicationContext(), R.anim.left_enter);
                     flipper.setOutAnimation(getApplicationContext(), R.anim.right_out);
                     flipper.showPrevious();
