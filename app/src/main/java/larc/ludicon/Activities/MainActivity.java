@@ -26,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
@@ -33,6 +34,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.app.PendingIntent;
+import android.widget.ViewFlipper;
 
 
 //import com.batch.android.Batch;
@@ -76,6 +78,10 @@ public class MainActivity extends Activity {
     private DrawerLayout mDrawerLayout;
     private ProgressDialog dialog;
     private int TIMEOUT = 80;
+
+    private ViewFlipper flipper;
+    private int currentPage = 0; // 0 = friends, 1 = my
+
     class Event {
         Map<String, Boolean> usersUID = new HashMap<String,Boolean>();
         Date date;
@@ -106,6 +112,13 @@ public class MainActivity extends Activity {
         */
 
         setContentView(R.layout.activity_main);
+        flipper = (ViewFlipper)findViewById(R.id.viewFlipper);
+        flipper.setInAnimation(this, R.anim.right_enter);
+        flipper.setOutAnimation(this, R.anim.left_out);
+
+        addFriendsActivityButtonEventListener();
+        addMyActivityButtonEventListener();
+
         final Locale locale = Locale.getDefault();
 
         dialog = ProgressDialog.show(MainActivity.this, "", "Loading. Please wait", true);
@@ -238,6 +251,8 @@ public class MainActivity extends Activity {
         @Override
             public void onDataChange(DataSnapshot snapshot) {
                 final ArrayList<Event> eventList = new ArrayList<>();
+                final ArrayList<Event> myEventsList = new ArrayList<>();
+                final ArrayList<Event> friendsEventsList = new ArrayList<>();
                 for (DataSnapshot data : snapshot.getChildren()) {
                     Event event = new Event();
                     boolean isPublic = true;
@@ -248,10 +263,10 @@ public class MainActivity extends Activity {
 
                     for (DataSnapshot details : data.getChildren()) {
 
-                        if( details.getKey().toString().equalsIgnoreCase("creatorName"))
+                        if (details.getKey().toString().equalsIgnoreCase("creatorName"))
                             event.creatorName = details.getValue().toString();
 
-                        if( details.getKey().toString().equalsIgnoreCase("creatorImage"))
+                        if (details.getKey().toString().equalsIgnoreCase("creatorImage"))
                             event.profileImageURL = details.getValue().toString();
 
                         if (details.getKey().toString().equalsIgnoreCase("privacy"))
@@ -292,16 +307,38 @@ public class MainActivity extends Activity {
                     }
 
 
-                    if (doIParticipate == false && new Date().before(event.date) && isPublic) {
+//                    if (doIParticipate == false && new Date().before(event.date) && isPublic) {
+//                        event.usersUID = participants;
+//                        eventList.add(event);
+//                    }
+
+                    // Insert event in the correct list
+                    if (new Date().before(event.date) && isPublic) {
+
                         event.usersUID = participants;
-                        eventList.add(event);
+
+                        if (doIParticipate) {
+                            myEventsList.add(event);
+                        } else {
+                            friendsEventsList.add(event);
+                        }
+
                     }
                 }
-                //
-                MyCustomAdapter adapter = new MyCustomAdapter(eventList, getApplicationContext());
-                ListView listView = (ListView) findViewById(R.id.events_listView);
-                if (listView != null)
-                    listView.setAdapter(adapter);
+                /* Friends */
+                MyCustomAdapter fradapter = new MyCustomAdapter(friendsEventsList, getApplicationContext());
+                ListView frlistView = (ListView) findViewById(R.id.events_listView1);
+                if (frlistView != null)
+                    frlistView.setAdapter(fradapter);
+
+                /* My */
+                MyCustomAdapter myadapter = new MyCustomAdapter(myEventsList, getApplicationContext());
+                ListView mylistView = (ListView) findViewById(R.id.events_listView2);
+                if (mylistView != null)
+                    mylistView.setAdapter(myadapter);
+
+
+
 
             // Dismiss loading dialog after  2 * TIMEOUT * eventList.size() ms
                 Timer timer = new Timer();
@@ -334,6 +371,7 @@ public class MainActivity extends Activity {
             public void onChildMoved(DataSnapshot snapshot, String s) {
 
             }
+
             @Override
             public void onChildRemoved(DataSnapshot snapshot) {
 
@@ -342,11 +380,9 @@ public class MainActivity extends Activity {
             @Override
             public void onChildChanged(DataSnapshot snapshot, String previousChildKey) {
 
-                for(int i = 0; i < events.size(); i++ )
-                {
-                    if ( (events.get(i).id).compareTo(snapshot.getValue().toString()) == 0 )
-                    {
-                        for(DataSnapshot data : snapshot.getChildren() ){
+                for (int i = 0; i < events.size(); i++) {
+                    if ((events.get(i).id).compareTo(snapshot.getValue().toString()) == 0) {
+                        for (DataSnapshot data : snapshot.getChildren()) {
                             if (data.getKey().toString().equalsIgnoreCase("privacy"))
 
                                 if (data.getKey().toString().equalsIgnoreCase("sport"))
@@ -367,16 +403,16 @@ public class MainActivity extends Activity {
                             boolean doIParticipate = false;
                             if (data.getKey().toString().equalsIgnoreCase("users")) {
                                 for (DataSnapshot user : data.getChildren()) {
-                                    if( user != null)
-                                    {   if( events.get(i).usersUID.get(user.getKey().toString()) == null )
-                                             events.get(i).usersUID.put(user.getKey().toString(),true);
+                                    if (user != null) {
+                                        if (events.get(i).usersUID.get(user.getKey().toString()) == null)
+                                            events.get(i).usersUID.put(user.getKey().toString(), true);
                                     }
                                     String userID = user.getKey().toString();
                                     if (userID.equalsIgnoreCase(User.uid)) {
                                         // TODO check if I have accepted
                                         doIParticipate = true;
                                     }
-                                    if( doIParticipate == true ) events.remove(i);
+                                    if (doIParticipate == true) events.remove(i);
                                 }
                             }
                             //events.get(i).noUsers = events.get(i).usersUID.size();
@@ -391,7 +427,7 @@ public class MainActivity extends Activity {
                 Event auxEvent = new Event();
                 boolean doIParticipate = false;
                 auxEvent.id = snapshot.getKey();
-                for(DataSnapshot data : snapshot.getChildren() ) {
+                for (DataSnapshot data : snapshot.getChildren()) {
                     if (data.getKey().toString().equalsIgnoreCase("sport"))
                         auxEvent.sport = data.getValue().toString();
                     if (data.getKey().equalsIgnoreCase("createdBy"))
@@ -409,9 +445,8 @@ public class MainActivity extends Activity {
                     }
                     if (data.getKey().toString().equalsIgnoreCase("users")) {
                         for (DataSnapshot user : data.getChildren()) {
-                            if ( user != null )
-                            {
-                                auxEvent.usersUID.put(user.getKey().toString(),true);
+                            if (user != null) {
+                                auxEvent.usersUID.put(user.getKey().toString(), true);
                             }
                             String userID = user.getKey().toString();
                             if (userID.equalsIgnoreCase(User.uid)) {
@@ -427,15 +462,48 @@ public class MainActivity extends Activity {
                     events.add(auxEvent);
                 listview.invalidateViews();
             }
+
             @Override
-            public void onCancelled(FirebaseError error){}
+            public void onCancelled(FirebaseError error) {
+            }
         });
     }
+
+    public void addFriendsActivityButtonEventListener(){
+        Button fr = (Button)findViewById(R.id.fractbutton);
+        fr.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(currentPage != 0){
+                    currentPage = 0;
+                    flipper.setInAnimation(getApplicationContext(), R.anim.right_enter);
+                    flipper.setOutAnimation(getApplicationContext(), R.anim.left_out);
+                    flipper.showNext();
+                }
+            }
+        });
+    }
+
+    public void addMyActivityButtonEventListener(){
+        Button my = (Button)findViewById(R.id.myactbutton);
+        my.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(currentPage != 1){
+                    currentPage = 1;
+                    flipper.setInAnimation(getApplicationContext(), R.anim.left_enter);
+                    flipper.setOutAnimation(getApplicationContext(), R.anim.right_out);
+                    flipper.showPrevious();
+                }
+            }
+        });
+    }
+
     public class MyCustomAdapter extends BaseAdapter implements ListAdapter {
 
         private ArrayList<Event> list = new ArrayList<>();
         private Context context;
-        final ListView listView = (ListView) findViewById(R.id.events_listView);
+        final ListView listView = (ListView) findViewById(R.id.events_listView1);
 
         public MyCustomAdapter(ArrayList<Event> list, Context context) {
             this.list = list;
