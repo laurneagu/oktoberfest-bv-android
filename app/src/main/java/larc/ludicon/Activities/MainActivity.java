@@ -55,6 +55,8 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -141,7 +143,7 @@ public class MainActivity extends Activity {
         editor.putString("events", connectionsJSONString);
         editor.commit();
 
-        /*
+
         // Update sharedpref for events:
         Firebase usersRef = User.firebaseRef.child("users").child(User.uid).child("events");
         usersRef.addValueEventListener(new ValueEventListener() {
@@ -180,8 +182,15 @@ public class MainActivity extends Activity {
                                                                        ai.sport = details.getValue().toString();
                                                                    }
                                                                    if (details.getKey().toString().equalsIgnoreCase("place")) {
-                                                                       // TODO get nown zone
-                                                                       ai.place = "Herastrau";
+                                                                       for( DataSnapshot eventData : details.getChildren() ) {
+                                                                           if(eventData.getKey().toString().equalsIgnoreCase("latitude"))
+                                                                               ai.latitude = Double.parseDouble(eventData.getValue().toString());
+                                                                           if(eventData.getKey().toString().equalsIgnoreCase("longitude"))
+                                                                               ai.longitude = Double.parseDouble(eventData.getValue().toString());
+                                                                           if(eventData.getKey().toString().equalsIgnoreCase("name"))
+                                                                               ai.place = eventData.getValue().toString();
+                                                                       }
+
                                                                    }
                                                                }
 
@@ -207,6 +216,14 @@ public class MainActivity extends Activity {
                                                                    }
                                                                }
 
+                                                                //TODO sort by date
+                                                               Collections.sort(events, new Comparator<ActivityInfo>() {
+                                                                   @Override
+                                                                   public int compare(ActivityInfo lhs, ActivityInfo rhs) {
+                                                                       return lhs.date.compareTo(rhs.date);
+                                                                   }
+                                                               });
+
                                                                SharedPreferences.Editor editor = getSharedPreferences("UserDetails", 0).edit();
                                                                connectionsJSONString = new Gson().toJson(events);
                                                                editor.putString("events", connectionsJSONString);
@@ -228,9 +245,6 @@ public class MainActivity extends Activity {
                                            public void onCancelled(FirebaseError firebaseError) {
                                            }
                                        });
-
-        */
-
 
         // Left side panel
         mDrawerList = (ListView) findViewById(R.id.leftMenu);

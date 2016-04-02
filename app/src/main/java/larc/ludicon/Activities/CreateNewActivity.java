@@ -218,10 +218,14 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
             public void onDataChange(DataSnapshot snapshot) {
                for(DataSnapshot data : snapshot.getChildren() )
                {
-                   if ( data.getKey().equalsIgnoreCase("name") )
+                   if ( data.getKey().equalsIgnoreCase("name") ) {
                        map.put("creatorName", data.getValue().toString());
-                   if ( data.getKey().equalsIgnoreCase("profileImageURL") )
+                       Log.v("CreatorName", data.getValue().toString());
+                   }
+                   if ( data.getKey().equalsIgnoreCase("profileImageURL") ) {
                        map.put("creatorImage", data.getValue().toString());
+                       Log.v("CreatorImage", data.getValue().toString());
+                   }
                }
             }
             @Override
@@ -230,7 +234,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         });
 
         try{
-            Thread.sleep(100,1);
+            Thread.sleep(200,1);
         }
         catch(InterruptedException exc){}
 
@@ -303,7 +307,6 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
                     */
                 }
                 User.firebaseRef.child("events").child(id).setValue(map);
-
                 // Each user has an "events" field which has a list of event ids
                 Map<String,Object> ev =  new HashMap<String,Object>();
                 ev.put(id, true);

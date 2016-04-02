@@ -319,6 +319,9 @@ public class IntroActivity extends Activity {
                         map.put("timezone", cachedInfo.get("timezone").toString());
                     }
 
+                    //points
+                    map.put("points","0");
+
                     //lastLogIn - GMT
                     DateFormat df = DateFormat.getDateTimeInstance();
                     df.setTimeZone(TimeZone.getTimeZone("gmt"));
