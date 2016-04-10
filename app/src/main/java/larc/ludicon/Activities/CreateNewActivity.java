@@ -55,7 +55,7 @@ import larc.ludicon.R;
 import larc.ludicon.UserInfo.User;
 import larc.ludicon.Utils.Location.GPS_Positioning;
 import larc.ludicon.Utils.Location.ActivitiesLocationListener;
-import larc.ludicon.Utils.Util.UniqueIDCreator;
+import larc.ludicon.Utils.util.UniqueIDCreator;
 
 public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 

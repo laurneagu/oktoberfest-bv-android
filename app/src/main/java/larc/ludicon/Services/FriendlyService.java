@@ -9,10 +9,6 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -29,7 +25,7 @@ import java.util.TimeZone;
 import larc.ludicon.Utils.Location.ServiceLocationListener;
 import larc.ludicon.UserInfo.ActivityInfo;
 import larc.ludicon.UserInfo.User;
-import larc.ludicon.Utils.Util.Notifier;
+import larc.ludicon.Utils.util.Notifier;
 
 /**
  * Created by Andrei on 2/27/2016.
