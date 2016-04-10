@@ -1,27 +1,18 @@
-package larc.ludicon.Utils.Location_GPS;
+package larc.ludicon.Utils.Location;
 
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-
 /**
  * Created by Ciprian on 2/12/2016.
  */
-public class MyLocationListener implements LocationListener {
+public class ActivitiesLocationListener implements LocationListener {
     private GoogleMap m_map;
     private boolean hasSetPosition = false;
 

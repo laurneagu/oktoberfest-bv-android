@@ -1,8 +1,6 @@
 package larc.ludicon.Activities;
 
 import android.app.Activity;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -12,9 +10,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.location.Address;
-import android.location.Geocoder;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -34,7 +29,6 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.app.PendingIntent;
 import android.widget.ViewFlipper;
 
 
@@ -49,9 +43,7 @@ import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
 
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -70,8 +62,7 @@ import larc.ludicon.Adapters.LeftSidePanelAdapter;
 import larc.ludicon.R;
 import larc.ludicon.UserInfo.ActivityInfo;
 import larc.ludicon.UserInfo.User;
-import larc.ludicon.Utils.util.AsyncBackgroundTask;
-import larc.ludicon.Utils.util.BackgroundService;
+import larc.ludicon.Services.FriendlyService;
 
 public class MainActivity extends Activity {
 
@@ -134,7 +125,7 @@ public class MainActivity extends Activity {
         dialog = ProgressDialog.show(MainActivity.this, "", "Loading. Please wait", true);
 
         // Background Service:
-        Intent mServiceIntent = new Intent(this, BackgroundService.class);
+        Intent mServiceIntent = new Intent(this, FriendlyService.class);
         startService(mServiceIntent);
 
         //Clean up shared pref for events: just for debugging

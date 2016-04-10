@@ -3,7 +3,6 @@ package larc.ludicon.Activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -38,17 +37,11 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type;
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -59,11 +52,10 @@ import java.util.TimeZone;
 import larc.ludicon.Adapters.LeftPanelItemClicker;
 import larc.ludicon.Adapters.LeftSidePanelAdapter;
 import larc.ludicon.R;
-import larc.ludicon.UserInfo.ActivityInfo;
 import larc.ludicon.UserInfo.User;
-import larc.ludicon.Utils.Location_GPS.GPS_Positioning;
-import larc.ludicon.Utils.Location_GPS.MyLocationListener;
-import larc.ludicon.Utils.util.UniqueIDCreator;
+import larc.ludicon.Utils.Location.GPS_Positioning;
+import larc.ludicon.Utils.Location.ActivitiesLocationListener;
+import larc.ludicon.Utils.Util.UniqueIDCreator;
 
 public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
@@ -77,7 +69,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
 
-    private MyLocationListener locationListener;
+    private ActivitiesLocationListener locationListener;
     private LocationManager lm;
     private GoogleMap m_gmap;
 
@@ -88,7 +80,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
     public void onMapReady(GoogleMap map) {
         m_gmap = map;
 
-        locationListener = new MyLocationListener();
+        locationListener = new ActivitiesLocationListener();
         locationListener.BindMap(map);
         lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 

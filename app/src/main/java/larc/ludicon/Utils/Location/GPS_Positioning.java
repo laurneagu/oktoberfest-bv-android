@@ -1,9 +1,6 @@
-package larc.ludicon.Utils.Location_GPS;
+package larc.ludicon.Utils.Location;
 
-import android.content.ContentResolver;
 import android.location.Location;
-import android.location.LocationManager;
-import android.provider.Settings;
 
 import com.google.android.gms.maps.model.LatLng;
 

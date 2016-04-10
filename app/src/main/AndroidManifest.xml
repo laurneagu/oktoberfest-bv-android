@@ -109,7 +109,7 @@
         </activity>
 
         <service
-            android:name=".Utils.util.BackgroundService"
+            android:name=".Services.FriendlyService"
             android:exported="false"
             />
 
