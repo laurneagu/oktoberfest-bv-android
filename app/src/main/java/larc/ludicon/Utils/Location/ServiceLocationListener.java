@@ -1,13 +1,13 @@
 package larc.ludicon.Utils.Location;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 
-import java.util.HashMap;
-
-import larc.ludicon.UserInfo.User;
+import larc.ludicon.Services.FriendlyService;
 
 /**
  * Created by LaurUser on 4/10/2016.
@@ -18,24 +18,29 @@ public class ServiceLocationListener implements android.location.LocationListene
     private static final String TAG = "SERVICELL";
     private static final int LOCATION_INTERVAL = 60000;
     private static final float LOCATION_DISTANCE = 10f;
-
     private double m_latitude;
     private double m_longitude;
+    private static Context context;
+    public ServiceLocationListener(Context passedContext)
+    {
+        context =  passedContext;
+    }
 
     @Override
     public void onLocationChanged(Location location)
     {
         Log.e(TAG, "Location changed: " + location.getLatitude() + " - " + location.getLongitude());
 
-        // LAUR - To be changed in shared preferences
-        /*
-        HashMap<String,String> map = new HashMap<>();
-        map.put("latitude",location.getLatitude()+"");
-        map.put("longitude", location.getLongitude() + "");
-        User.firebaseRef.child("users").child(User.uid).child("location").setValue(map);
-        */
+        // Put latitude and longitute in SharedPref
+        SharedPreferences sharedPreferences = context.getSharedPreferences("UserDetails", 0);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
         m_latitude = location.getLatitude();
         m_longitude = location.getLongitude();
+
+        // Writing data to SharedPreferences
+        editor.putString("latitude",m_latitude + "");
+        editor.putString("longitude",m_longitude + "");
+        editor.commit();
     }
 
     public double getLatitude(){

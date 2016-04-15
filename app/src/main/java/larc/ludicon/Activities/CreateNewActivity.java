@@ -301,9 +301,11 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
                 User.firebaseRef.child("events").child(id).setValue(map);
                 // Each user has an "events" field which has a list of event ids
                 Map<String,Object> ev =  new HashMap<String,Object>();
-                ev.put(id, true);
+                Map<String,Object> inEv = new HashMap<>();
+                inEv.put("participation",true);
+                inEv.put("points",0);
+                ev.put(id, inEv);
                 User.firebaseRef.child("users").child(User.uid).child("events").updateChildren(ev);
-
 
                 try {
                     if(lm != null)

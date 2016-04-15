@@ -43,6 +43,8 @@ import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
 
 
+import org.json.JSONObject;
+
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -51,6 +53,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -124,6 +127,67 @@ public class MainActivity extends Activity {
 
         dialog = ProgressDialog.show(MainActivity.this, "", "Loading. Please wait", true);
 
+        // Check if there are any unsaved points in SharedPref and put them on Firebase
+        Map<String,Integer> unsavedPointsMap = new HashMap<>();
+        SharedPreferences pSharedPref = getSharedPreferences("Points", Context.MODE_PRIVATE);
+        try{
+            if (pSharedPref != null){
+                String jsonString = pSharedPref.getString("UnsavedPointsMap", (new JSONObject()).toString());
+                JSONObject jsonObject = new JSONObject(jsonString);
+                Iterator<String> keysItr = jsonObject.keys();
+                while(keysItr.hasNext()) {
+                    String key = keysItr.next();
+                    Integer value = (Integer) jsonObject.get(key);
+                    unsavedPointsMap.put(key, value);
+                }
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        for( Map.Entry<String,Integer> entry : unsavedPointsMap.entrySet() )
+        {
+            // Get sport of the current event(entry)
+            Firebase sportNameRef = User.firebaseRef.child("events").child(entry.getKey()).child("sport");
+            final ArrayList<String> eventSport = new ArrayList<>();
+            sportNameRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    eventSport.add(snapshot.getValue().toString());
+                }
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+                }
+            });
+            try {
+                Thread.sleep(100, 1);
+            }
+            catch(Exception exc){}
+
+            // Get and update total number of points for user in sport
+            Firebase pointsRef = User.firebaseRef.child("points").child(eventSport.get(0)).child(User.uid);
+            final ArrayList<Integer> points = new ArrayList<>();
+            pointsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                points.add(Integer.parseInt(snapshot.getValue().toString()));
+            }
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+            }
+            });
+            try {
+                Thread.sleep(100, 1);
+            }
+            catch(Exception exc){}
+            pointsRef.setValue(points.get(0) + entry.getValue());
+
+            // Update points for each event in user's details
+            User.firebaseRef.child("users").child("events").child(entry.getKey().toString()).child("points").setValue(entry.getValue());
+
+        }
+        // Clear UnsavedPointsMap from SharedPref
+        pSharedPref.edit().remove("UnsavedPointsMap").commit();
+
         // Background Service:
         Intent mServiceIntent = new Intent(this, FriendlyService.class);
         startService(mServiceIntent);
@@ -145,88 +209,90 @@ public class MainActivity extends Activity {
                                                if (snapshot == null)
                                                    Log.v("NULL", "Snapshot e null");
                                                for (DataSnapshot data : snapshot.getChildren()) {
+                                                    final String id = data.getKey().toString();
+                                                   for( DataSnapshot child : data.getChildren() ) {
+                                                       if ( child.getKey().compareToIgnoreCase("participation") == 0 && (Boolean) child.getValue() == true) {
+                                                           Firebase eventRef = User.firebaseRef.child("events").child(data.getKey().toString());
+                                                           eventRef.addListenerForSingleValueEvent(new ValueEventListener() {
 
+                                                               @Override
+                                                               public void onDataChange(DataSnapshot dataSnapshot) {
+                                                                   ActivityInfo ai = new ActivityInfo();
+                                                                   ai.id = id;
 
-                                                   if ((Boolean) data.getValue() == true) {
-                                                       Firebase eventRef = User.firebaseRef.child("events").child(data.getKey().toString());
-                                                       eventRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                   for (DataSnapshot details : dataSnapshot.getChildren()) {
 
-                                                           @Override
-                                                           public void onDataChange(DataSnapshot dataSnapshot) {
-                                                               ActivityInfo ai = new ActivityInfo();
+                                                                       if (details.getKey().toString().equalsIgnoreCase("users")) {
+                                                                           int count = 0;
 
-                                                               for (DataSnapshot details : dataSnapshot.getChildren()) {
+                                                                           for (DataSnapshot user : details.getChildren()) {
+                                                                               count++;
+                                                                           }
+                                                                           ai.others = count;
 
-                                                                   if (details.getKey().toString().equalsIgnoreCase("users")) {
-                                                                       int count = 0;
-
-                                                                       for (DataSnapshot user : details.getChildren()) {
-                                                                           count++;
                                                                        }
-                                                                       ai.others = count;
-
-                                                                   }
-                                                                   if (details.getKey().toString().equalsIgnoreCase("date")) {
-                                                                       ai.date = new Date(details.getValue().toString());
-                                                                   }
-                                                                   if (details.getKey().toString().equalsIgnoreCase("sport")) {
-                                                                       ai.sport = details.getValue().toString();
-                                                                   }
-                                                                   if (details.getKey().toString().equalsIgnoreCase("place")) {
-                                                                       for( DataSnapshot eventData : details.getChildren() ) {
-                                                                           if(eventData.getKey().toString().equalsIgnoreCase("latitude"))
-                                                                               ai.latitude = Double.parseDouble(eventData.getValue().toString());
-                                                                           if(eventData.getKey().toString().equalsIgnoreCase("longitude"))
-                                                                               ai.longitude = Double.parseDouble(eventData.getValue().toString());
-                                                                           if(eventData.getKey().toString().equalsIgnoreCase("name"))
-                                                                               ai.place = eventData.getValue().toString();
+                                                                       if (details.getKey().toString().equalsIgnoreCase("date")) {
+                                                                           ai.date = new Date(details.getValue().toString());
                                                                        }
+                                                                       if (details.getKey().toString().equalsIgnoreCase("sport")) {
+                                                                           ai.sport = details.getValue().toString();
+                                                                       }
+                                                                       if (details.getKey().toString().equalsIgnoreCase("place")) {
+                                                                           for (DataSnapshot eventData : details.getChildren()) {
+                                                                               if (eventData.getKey().toString().equalsIgnoreCase("latitude"))
+                                                                                   ai.latitude = Double.parseDouble(eventData.getValue().toString());
+                                                                               if (eventData.getKey().toString().equalsIgnoreCase("longitude"))
+                                                                                   ai.longitude = Double.parseDouble(eventData.getValue().toString());
+                                                                               if (eventData.getKey().toString().equalsIgnoreCase("name"))
+                                                                                   ai.place = eventData.getValue().toString();
+                                                                           }
 
-                                                                   }
-                                                               }
-
-                                                               String connectionsJSONString = getSharedPreferences("UserDetails", 0).getString("events", null);
-                                                               Type type = new TypeToken< List <ActivityInfo>>() {}.getType();
-                                                               List < ActivityInfo > events = null;
-                                                               if(connectionsJSONString != null) {
-                                                                   events = new Gson().fromJson(connectionsJSONString, type);
-                                                               }
-                                                               if(events == null){
-                                                                   events = new ArrayList<ActivityInfo>();
-                                                                   events.add(ai);
-                                                               }
-                                                               else{
-                                                                   Boolean exist = false;
-                                                                   for(ActivityInfo act : events){
-                                                                       if(ai.date.compareTo(act.date) == 0){
-                                                                           exist = true;
                                                                        }
                                                                    }
-                                                                   if(!exist) {
+
+                                                                   String connectionsJSONString = getSharedPreferences("UserDetails", 0).getString("events", null);
+                                                                   Type type = new TypeToken<List<ActivityInfo>>() {
+                                                                   }.getType();
+                                                                   List<ActivityInfo> events = null;
+                                                                   if (connectionsJSONString != null) {
+                                                                       events = new Gson().fromJson(connectionsJSONString, type);
+                                                                   }
+                                                                   if (events == null) {
+                                                                       events = new ArrayList<ActivityInfo>();
                                                                        events.add(ai);
+                                                                   } else {
+                                                                       Boolean exist = false;
+                                                                       for (ActivityInfo act : events) {
+                                                                           if (ai.date.compareTo(act.date) == 0) {
+                                                                               exist = true;
+                                                                           }
+                                                                       }
+                                                                       if (!exist) {
+                                                                           events.add(ai);
+                                                                       }
                                                                    }
+
+                                                                   //TODO sort by date
+                                                                   Collections.sort(events, new Comparator<ActivityInfo>() {
+                                                                       @Override
+                                                                       public int compare(ActivityInfo lhs, ActivityInfo rhs) {
+                                                                           return lhs.date.compareTo(rhs.date);
+                                                                       }
+                                                                   });
+
+                                                                   SharedPreferences.Editor editor = getSharedPreferences("UserDetails", 0).edit();
+                                                                   connectionsJSONString = new Gson().toJson(events);
+                                                                   editor.putString("events", connectionsJSONString);
+                                                                   editor.commit();
+
                                                                }
 
-                                                                //TODO sort by date
-                                                               Collections.sort(events, new Comparator<ActivityInfo>() {
-                                                                   @Override
-                                                                   public int compare(ActivityInfo lhs, ActivityInfo rhs) {
-                                                                       return lhs.date.compareTo(rhs.date);
-                                                                   }
-                                                               });
+                                                               @Override
+                                                               public void onCancelled(FirebaseError firebaseError) {
 
-                                                               SharedPreferences.Editor editor = getSharedPreferences("UserDetails", 0).edit();
-                                                               connectionsJSONString = new Gson().toJson(events);
-                                                               editor.putString("events", connectionsJSONString);
-                                                               editor.commit();
-
-                                                           }
-
-                                                           @Override
-                                                           public void onCancelled(FirebaseError firebaseError) {
-
-                                                           }
-                                                       });
+                                                               }
+                                                           });
+                                                       }
                                                    }
                                                }
 
@@ -647,13 +713,19 @@ public class MainActivity extends Activity {
 
                                 map.put(data.getKey(), data.getValue());
                             }
+
                             map.put(User.uid,true);
                             // NOTE: I need userRef to set the map value
                             Firebase userRef = User.firebaseRef.child("events").child(list.get(position).id).child("users");
                             userRef.updateChildren(map);
 
+
+                            Map<String,Object> inEv = new HashMap<>();
+                            inEv.put("participation",true);
+                            inEv.put("points", 0);
+
                             Map<String,Object> ev =  new HashMap<String,Object>();
-                            ev.put(list.get(position).id, true);
+                            ev.put(list.get(position).id, inEv);
                             list.remove(position);
                             User.firebaseRef.child("users").child(User.uid).child("events").updateChildren(ev);
                         }

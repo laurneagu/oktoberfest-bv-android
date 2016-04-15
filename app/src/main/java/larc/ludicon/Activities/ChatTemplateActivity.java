@@ -22,9 +22,12 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import larc.ludicon.ChatUtils.Chat;
@@ -62,10 +65,8 @@ public class ChatTemplateActivity extends ListActivity {
 
         final List<String> ID = new ArrayList<>();
 
-        // TODO User to User Chat
+
         if( firstConnection == true ){
-            // TODO Create general Chat for these two and get it's ID, increment counter
-            // TODO Change counter implementation with standard random key !!!!!
 
 
             // Create general Chat for these two
@@ -80,12 +81,15 @@ public class ChatTemplateActivity extends ListActivity {
             Firebase addUserUIDs = keyRef.child("Users");
 
             Map<String,String> userUIDMap = new HashMap<>();
-            userUIDMap.put(User.uid,"");
+            userUIDMap.put(User.uid, "");
             userUIDMap.put(otherUserUid, "");
             addUserUIDs.setValue(userUIDMap);
 
+            Date now = new Date();
+            String formattedDate = String.format(new Locale("English"),"%tc", now);
+            // Create our 'model', a Chat object
             Firebase newChat = keyRef.child("Messages").push();
-            Chat chat = new Chat("Bun venit in chat!", "Ludicon");
+            Chat chat = new Chat("Bun venit in chat!", "Ludicon",formattedDate);
             newChat.setValue(chat);
 
             // TODO Create child to "users -> userUID -> chats" for each user
@@ -215,8 +219,14 @@ public class ChatTemplateActivity extends ListActivity {
         String input = inputText.getText().toString();
         if (!input.equals("")) {
 
+            Date now = new Date();
+
+            //DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, new Locale("ENGLISH"));
+            //String formattedDate = df.format(now);
+
+            String formattedDate = String.format(new Locale("English"),"%tc", now );
             // Create our 'model', a Chat object
-            Chat chat = new Chat(input, mUsername);
+            Chat chat = new Chat(input, mUsername,formattedDate);
 
             // Create a new, auto-generated child of that chat location, and save our chat data there
             mFirebaseRef.push().setValue(chat);

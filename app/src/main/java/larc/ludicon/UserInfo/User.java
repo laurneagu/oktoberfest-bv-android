@@ -34,7 +34,6 @@ public class User {
     // FirebaseRef
     public static Firebase firebaseRef;
 
-
     /* Important: We get the data in these static fields, but after log in
     our user is "parsUser" */
    // public static ParseUser parseUser;

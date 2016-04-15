@@ -10,6 +10,7 @@ public class ActivityInfo {
     public Date date;
     public String place;
     public int others;
+    public String id;
     public double longitude;
     public double latitude;
 }

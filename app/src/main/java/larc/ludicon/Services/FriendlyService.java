@@ -3,28 +3,33 @@ package larc.ludicon.Services;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.fasterxml.jackson.databind.deser.std.NumberDeserializers;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
+import larc.ludicon.Activities.FriendsActivity;
 import larc.ludicon.Utils.Location.ServiceLocationListener;
 import larc.ludicon.UserInfo.ActivityInfo;
-import larc.ludicon.UserInfo.User;
 import larc.ludicon.Utils.util.Notifier;
 
 /**
@@ -43,7 +48,7 @@ public class FriendlyService extends Service {
     private static int limitTime = 30;
 
     private LocationManager mLocationManager;
-    private ServiceLocationListener mLocationListener = new ServiceLocationListener();
+    private ServiceLocationListener mLocationListener = new ServiceLocationListener(this);
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -94,9 +99,6 @@ public class FriendlyService extends Service {
                             long diff = upcomingEvent.date.getTime() - now.getTime();
                             long diffMinutes = diff / (60 * 1000) % 60;
 
-                            // LAUR This line is throwing eror on service
-                            //User.firebaseRef.child("mesgEvents").setValue("Mai sunt " + diffMinutes + " minute pana la eventul urmator");
-
                             // Less then 10 minutes til event
                             if ( diffMinutes <= 10 )
                             {
@@ -113,83 +115,25 @@ public class FriendlyService extends Service {
                                 // Point where the event starts
                                 final ArrayList<Integer> pointsList = new ArrayList<>();
 
-                                // LAUR - What if there is no network connection ? - For now comment it
-                                /*
-                                Firebase pointsRef = User.firebaseRef.child("points").child(upcomingEvent.sport).child(User.uid);
-                                pointsRef.addValueEventListener(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot snapshot) {
-                                            if ( snapshot.getValue() != null)
-                                                pointsList.add(Integer.parseInt(snapshot.getValue().toString()));
-                                        }
-
-                                    @Override
-                                    public void onCancelled(FirebaseError firebaseError) {
-                                    }
-                                });
-                                */
-
-                                // LAUR - Is this really needed ?
-                                try{
-                                    Thread.sleep(200,1);
-                                }
-                                catch(InterruptedException exc){}
-
-
-                                int points, eventPoints = 0;
-                                if(pointsList.size()!=0)
-                                    points  = pointsList.get(0);
-                                else points = 0;
-
-                                int locationErrors = 0;
-
+                                int eventPoints = 0,locationErrors = 0;
                                 // Count points if he has not left the location and if has not scored yet 10 points
                                 while (locationErrors <= 3 && eventPoints <= 10)
                                 {
-                                    // LAUR - Should not be called again
-                                    //requestUpdates(mLocationListeners,mLocationManager);
 
-                                    // Get current location - From Firebase
-                                    // LAUR - Should not pass through Firebase !
-                                    /*
-                                    final ArrayList<Double> coordinates = new ArrayList<>();
-                                    Firebase coordRef = User.firebaseRef.child("users").child(User.uid).child("location");
-                                    coordRef.addValueEventListener(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot snapshot) {
-                                            for (DataSnapshot data : snapshot.getChildren() )
-                                            {
-                                                if ( data.getKey().equalsIgnoreCase("latitude") )
-                                                    coordinates.add(Double.parseDouble(data.getValue()+""));
-                                                if ( data.getKey().equalsIgnoreCase("longitude") )
-                                                    coordinates.add(Double.parseDouble(data.getValue() + ""));
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onCancelled(FirebaseError firebaseError) {
-                                        }
-                                    });
-                                    */
-
-                                    // LAUR - Is this really needed ?
-                                    try{
-                                        Thread.sleep(100,1);
-                                    }
-                                    catch(InterruptedException exc){}
+                                    // Get last known location from SharedPref
+                                    SharedPreferences sharedPrefs = getSharedPreferences("UserDetails",0);
+                                    double latitude = Double.parseDouble(sharedPrefs.getString("latitude", "0"));
+                                    double longitude = Double.parseDouble(sharedPrefs.getString("longitude", "0"));
 
                                     // New coordinates received
-                                    if ( mLocationListener.getLongitude() != 0 || mLocationListener.getLatitude() != 0)
+                                    if ( latitude != 0 || longitude != 0)
                                     {
-                                        // LAUR - This must be removed
-                                        //User.firebaseRef.child("mesgEventsNrEvenimente").setValue("Coordonate noi" + coordinates.get(0) + " " + coordinates.get(1));
-
                                         // Get distance between current location and event location
                                         float[] distance = new float[10];
-                                        Location.distanceBetween(mLocationListener.getLatitude(),mLocationListener.getLongitude(), upcomingEvent.latitude, upcomingEvent.longitude, distance);
+                                        Location.distanceBetween(latitude,longitude, upcomingEvent.latitude, upcomingEvent.longitude, distance);
 
                                         Log.v("distance1", mLocationListener.getLatitude() + " " + mLocationListener.getLongitude() + " vs " + upcomingEvent.latitude + " " + upcomingEvent.longitude);
-                                        Log.v("distance2",distance[0]+" ");
+                                        Log.v("distance2", distance[0] + " ");
 
                                         // User left the location
                                         if ( distance[0] >= 500 ) {
@@ -199,17 +143,42 @@ public class FriendlyService extends Service {
                                         // User is in location ( difference < 500 m ) add points to the eventPoints
                                         else{
                                             eventPoints++;
+                                        }
                                     }
-                                    }
-                                    // Update points with the ones received for the current event and update in Database
-                                    points += eventPoints;
-                                    User.firebaseRef.child("points").child(upcomingEvent.sport).child(User.uid).setValue(points+"");
-
                                     // From 10 to 10 minutes, recheck the user is still there
                                     try{
                                         Thread.sleep(600000,1);
                                     }
                                     catch(InterruptedException exc){}
+                                }
+                                // Update points with the ones received for the current event and update in Database
+                                // Check if there are unsaved points in SharedPrefs
+                                // Points are tied to events in a Map<Event_ID,Event_Points>
+                                Map<String,Integer> unsavedPointsMap = new HashMap<>();
+                                SharedPreferences pSharedPref = getSharedPreferences("Points", Context.MODE_PRIVATE);
+                                try{
+                                    if (pSharedPref != null){
+                                        String jsonString = pSharedPref.getString("UnsavedPointsMap", (new JSONObject()).toString());
+                                        JSONObject jsonObject = new JSONObject(jsonString);
+                                        Iterator<String> keysItr = jsonObject.keys();
+                                        while(keysItr.hasNext()) {
+                                            String key = keysItr.next();
+                                            Integer value = (Integer) jsonObject.get(key);
+                                            unsavedPointsMap.put(key, value);
+                                        }
+                                    }
+                                }catch(Exception e){
+                                    e.printStackTrace();
+                                }
+                                // Add the current event points to SharedPref
+                                unsavedPointsMap.put(upcomingEvent.id,eventPoints);
+                                if (pSharedPref != null){
+                                    JSONObject jsonObject = new JSONObject(unsavedPointsMap);
+                                    String jsonString = jsonObject.toString();
+                                    SharedPreferences.Editor editor = pSharedPref.edit();
+                                    editor.remove("UnsavedPointsMap").commit();
+                                    editor.putString("UnsavedPointsMap", jsonString);
+                                    editor.commit();
                                 }
                             }
                         }
@@ -325,7 +294,6 @@ public class FriendlyService extends Service {
             mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         }
     }
-
 }
 
 
