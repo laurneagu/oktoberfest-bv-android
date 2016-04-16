@@ -315,4 +315,12 @@ public class ChatListActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    // Delete the history stack and point to Main activity
+    @Override
+    public void onBackPressed() {
+        Intent toMain = new Intent(this,MainActivity.class);
+        toMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(toMain);
+    }
+
 }

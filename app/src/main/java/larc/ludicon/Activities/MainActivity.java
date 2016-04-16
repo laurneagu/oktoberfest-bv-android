@@ -33,7 +33,6 @@ import android.widget.ViewFlipper;
 
 
 //import com.batch.android.Batch;
-import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -416,13 +415,13 @@ public class MainActivity extends Activity {
                 }
 
                 /* Friends */
-                MyCustomAdapter fradapter = new MyCustomAdapter(friendsEventsList, getApplicationContext());
+                TimelineAroundActAdapter fradapter = new TimelineAroundActAdapter(friendsEventsList, getApplicationContext());
                 ListView frlistView = (ListView) findViewById(R.id.events_listView1);
                 if (frlistView != null)
                     frlistView.setAdapter(fradapter);
 
                 /* My */
-                MyCustomAdapter myadapter = new MyCustomAdapter(myEventsList, getApplicationContext());
+                TimelineMyActAdapter myadapter = new TimelineMyActAdapter(myEventsList, getApplicationContext());
                 ListView mylistView = (ListView) findViewById(R.id.events_listView2);
                 if (mylistView != null)
                     mylistView.setAdapter(myadapter);
@@ -487,13 +486,76 @@ public class MainActivity extends Activity {
         });
     }
 
-    public class MyCustomAdapter extends BaseAdapter implements ListAdapter {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        // Left side panel
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    // Left side menu
+    public void initializeLeftSidePanel() {
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.leftMenu);
+
+        // Set the adapter for the list view
+        mDrawerList.setAdapter(new LeftSidePanelAdapter(this, MainActivity.this));
+        // Set the list's click listener
+        LeftPanelItemClicker.OnItemClick(mDrawerList, getApplicationContext(), MainActivity.this);
+
+        final ImageButton showPanel = (ImageButton) findViewById(R.id.showPanel);
+        showPanel.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Perform action on click
+                mDrawerLayout.openDrawer(Gravity.LEFT);
+            }
+        });
+
+        // Toggle efect on left side panel
+        mDrawerToggle = new android.support.v4.app.ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+        };
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+    }
+
+    // Adapter for the Around activities tab
+    public class TimelineAroundActAdapter extends BaseAdapter implements ListAdapter {
 
         private ArrayList<Event> list = new ArrayList<>();
         private Context context;
         final ListView listView = (ListView) findViewById(R.id.events_listView1);
 
-        public MyCustomAdapter(ArrayList<Event> list, Context context) {
+        public TimelineAroundActAdapter(ArrayList<Event> list, Context context) {
             this.list = list;
             this.context = context;
         }
@@ -651,95 +713,142 @@ public class MainActivity extends Activity {
             return view;
         }
     }
+
+
     public static int getDayOfMonth(Date aDate) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(aDate);
         return cal.get(Calendar.DAY_OF_MONTH);
     }
-    // Method which downloads Image from URL
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
 
-        public DownloadImageTask(ImageView bmImage) {
-            this.bmImage = bmImage;
+    // Adapter for the My pending activities tab
+    public class TimelineMyActAdapter extends BaseAdapter implements ListAdapter {
+
+        private ArrayList<Event> list = new ArrayList<>();
+        private Context context;
+        final ListView listView = (ListView) findViewById(R.id.events_listView2);
+
+        public TimelineMyActAdapter(ArrayList<Event> list, Context context) {
+            this.list = list;
+            this.context = context;
         }
 
-        protected synchronized Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
+        @Override
+        public int getCount() {
+            return list.size();
+        }
+        @Override
+        public Object getItem(int pos) {
+            return list.get(pos);
+        }
+        @Override
+        public long getItemId(int pos) {
+            return 0;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            View view = convertView;
+            if (view == null) {
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.timeline_list_myactivities_layout, null);
             }
-            return mIcon11;
-        }
+            final TextView name = (TextView) view.findViewById(R.id.nameLabel);
+            final ImageView profilePicture = (ImageView) view.findViewById(R.id.profilePicture);
+            final TextView firstPart = (TextView) view.findViewById(R.id.firstPartofText);
+            final TextView secondPart = (TextView) view.findViewById(R.id.secondPartofText);
+            final TextView time = (TextView) view.findViewById(R.id.timeText);
+            final TextView place = (TextView) view.findViewById(R.id.placeText);
+            final ImageView icon = (ImageView) view.findViewById(R.id.sportIcon);
+            final ImageButton details = (ImageButton) view.findViewById(R.id.details_btn);
 
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
+            // Set name and picture for the first user of the event
+            //final String userUID = list.get(position).getFirstUser();
+
+            name.setText(list.get(position).creatorName);
+            Picasso.with(context).load(list.get(position).profileImageURL).into(profilePicture);
+
+
+            /*
+            Firebase userRef = User.firebaseRef.child("users").child(userUID);
+            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+
+                    for ( DataSnapshot data : snapshot.getChildren() ) {
+
+                        if( (data.getKey()).compareTo("name") == 0) {
+                            name.setText(data.getValue().toString());
+                        }
+                        if( (data.getKey()).compareTo("profileImageURL") == 0 )
+                            new DownloadImageTask(profilePicture).execute(data.getValue().toString());
+                    }
+                }
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+                }
+            });*/
+
+            String uri = "@drawable/" + list.get(position).sport.toLowerCase().replace(" ", "");
+
+            int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+            Drawable res = getResources().getDrawable(imageResource);
+
+            icon.setImageDrawable(res);
+            firstPart.setText("Will play " + list.get(position).sport);
+            if ((list.get(position).usersUID.size() - 1) > 1) {
+                secondPart.setText(" with " + (list.get(position).usersUID.size() - 1) + " others");
+            } else if ((list.get(position).usersUID.size() - 1) == 1) {
+                secondPart.setText(" with 1 other");
+            } else {
+                secondPart.setText(" with no others");
+            }
+            /*
+            firstPart.setText("Will play " + list.get(position).sport);
+            if ((list.get(position).usersUID.size() - 1) > 1) {
+                secondPart.setText(" with " + (list.get(position).noUsers) + " others");
+            } else if (list.get(position).noUsers  == 1) {
+                secondPart.setText(" with 1 other");
+            } else {
+                secondPart.setText(" with no others");
+            }*/
+
+            if(list.get(position) != null )
+                place.setText(list.get(position).place);
+            else
+                place.setText("Unknown");
+            Calendar c = Calendar.getInstance();
+            Date today = c.getTime();
+            int todayDay = getDayOfMonth(today);
+            int todayMonth = today.getMonth();
+            int todayYear = today.getYear();
+
+            String day;
+            if ( todayDay == getDayOfMonth(list.get(position).date) && todayMonth == list.get(position).date.getMonth() && todayYear == list.get(position).date.getYear() )
+                day = "Today";
+            else if ( todayDay == ( getDayOfMonth(list.get(position).date) - 1 ) && todayMonth == list.get(position).date.getMonth() && todayYear == list.get(position).date.getYear() )
+                day = "Tomorrow";
+            else day = getDayOfMonth(list.get(position).date) + "/" + (list.get(position).date.getMonth()+1) + "/" + (list.get(position).date.getYear()+1900);
+            String dateHour = list.get(position).date.getHours() + "";
+            String dateMin = list.get(position).date.getMinutes()+ "";
+            if(dateHour.equalsIgnoreCase("0")) dateHour += "0";
+            if(dateMin.equalsIgnoreCase("0")) dateMin += "0";
+            String hour = dateHour + ":" + dateMin;
+            time.setText(day + " at " + hour);
+            details.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(getApplicationContext(), "Hei, wait for it..", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            try{
+                Thread.sleep(50,1);
+            }
+            catch(InterruptedException exc ) {}
+
+            return view;
         }
     }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        // Left side panel
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-
-    // Left side menu
-    public void initializeLeftSidePanel() {
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.leftMenu);
-
-        // Set the adapter for the list view
-        mDrawerList.setAdapter(new LeftSidePanelAdapter(this, MainActivity.this));
-        // Set the list's click listener
-        LeftPanelItemClicker.OnItemClick(mDrawerList, getApplicationContext(), MainActivity.this);
-
-        final ImageButton showPanel = (ImageButton) findViewById(R.id.showPanel);
-        showPanel.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // Perform action on click
-                mDrawerLayout.openDrawer(Gravity.LEFT);
-            }
-        });
-
-        // Toggle efect on left side panel
-        mDrawerToggle = new android.support.v4.app.ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-            }
-        };
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-
-    }
 }

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/profilePicture"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignTop="@+id/nameLabel"
+        android:layout_alignLeft="@+id/linearLayout4"
+        android:layout_alignStart="@+id/linearLayout4" />
+
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:id="@+id/sportIcon"
+        android:layout_alignBottom="@id/profilePicture"
+        android:layout_alignRight="@id/profilePicture" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="His name is"
+        android:textColor="#008000"
+        android:textSize="20sp"
+        android:id="@+id/nameLabel"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="110dp"
+        android:layout_alignParentTop="true" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/firstPartofText"
+        android:layout_toRightOf="@+id/linearLayout4"
+        android:layout_marginLeft="40dp"
+        android:id="@+id/linearLayout6">
+
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:background="@drawable/place"
+            android:id="@+id/placeImage" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="Parc Crangasi"
+            android:textColor="#888888"
+            android:textSize="14sp"
+            android:id="@+id/placeText" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout5"
+        android:layout_below="@+id/nameLabel"
+        android:layout_toRightOf="@id/firstPartofText">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/secondPartofText"
+            android:text=" with x others"
+            android:textColor="#FF0000"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout4"
+        android:layout_marginLeft="42dp"
+        android:layout_below="@+id/firstPartofText">
+
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:background="@drawable/clock"
+            android:id="@+id/clockImage" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#888888"
+            android:text="Today at 19:00"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:id="@+id/timeText" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout2"
+        android:layout_below="@+id/linearLayout6"
+        android:layout_centerHorizontal="true">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/details"
+            android:layout_marginRight="15dp"
+            android:id="@+id/details_btn" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/firstPartofText"
+        android:text="Will play something"
+        android:textColor="#5c5a5a"
+        android:textSize="16sp"
+        android:layout_below="@+id/nameLabel"
+        android:layout_alignLeft="@+id/nameLabel"
+        android:layout_alignStart="@+id/nameLabel"
+        android:layout_marginBottom="15dp" />
+</RelativeLayout>

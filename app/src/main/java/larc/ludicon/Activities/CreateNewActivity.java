@@ -356,6 +356,10 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         lm = null;
         locationListener =null;
         finish();
+
+        Intent toMain = new Intent(this,MainActivity.class);
+        toMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(toMain);
     }
 
 
@@ -384,7 +388,6 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
                 //.icon(BitmapDescriptorFactory.fromResource(R.drawable.football))
                 .title("This is your selected area"));
         m_gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-
     }
 
     // Left side menu
