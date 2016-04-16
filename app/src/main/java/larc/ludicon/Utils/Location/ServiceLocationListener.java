@@ -6,7 +6,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
-
+import java.util.HashMap;
 import larc.ludicon.Services.FriendlyService;
 
 /**
@@ -16,8 +16,9 @@ import larc.ludicon.Services.FriendlyService;
 public class ServiceLocationListener implements android.location.LocationListener{
 
     private static final String TAG = "SERVICELL";
-    private static final int LOCATION_INTERVAL = 60000;
-    private static final float LOCATION_DISTANCE = 10f;
+    private static final int LOCATION_INTERVAL = 540000; // 9 minutes
+    private static final float LOCATION_DISTANCE = 150; // 150 meters
+
     private double m_latitude;
     private double m_longitude;
     private static Context context;

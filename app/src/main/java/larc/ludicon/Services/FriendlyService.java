@@ -1,9 +1,11 @@
 package larc.ludicon.Services;
 
+import android.Manifest;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.IBinder;
@@ -42,7 +44,7 @@ import larc.ludicon.Utils.util.Notifier;
 
 public class FriendlyService extends Service {
 
-    public static final long MIN = 60*1000;
+    public static final long MIN = 60 * 1000;
 
     // Time to notify (in minutes)
     private static int limitTime = 30;
@@ -53,6 +55,8 @@ public class FriendlyService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         initializeLocationManager();
+
+        // Request location updates
         mLocationListener.requestUpdates(mLocationManager);
 
         // Thread for Rewarding user with points
@@ -65,17 +69,25 @@ public class FriendlyService extends Service {
                     e.printStackTrace();
                 }
 
-                while(true){
+                while (true) {
+
+                    // Time to get the location
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
 
                     // Get the list of events from Shared Prefs
                     String connectionsJSONString = getSharedPreferences("UserDetails", 0).getString("events", null);
-                    Type type = new TypeToken< List<ActivityInfo>>() {}.getType();
-                    List < ActivityInfo > events = null;
-                    if(connectionsJSONString != null) {
+                    Type type = new TypeToken<List<ActivityInfo>>() {
+                    }.getType();
+                    List<ActivityInfo> events = null;
+                    if (connectionsJSONString != null) {
                         events = new Gson().fromJson(connectionsJSONString, type);
                     }
 
-                    if(events != null){
+                    if (events != null) {
 
                         // Get current date
                         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, new Locale("English"));
@@ -87,23 +99,21 @@ public class FriendlyService extends Service {
 
                         // Get the current pending event
                         int j = 0;
-                        while ( j < events.size() && now.after(events.get(j).date)  ) j++;
+                        while (j < events.size() && now.after(events.get(j).date)) j++;
 
                         ActivityInfo upcomingEvent;
-                        if ( j == events.size() ) upcomingEvent = events.get(j - 1);
+                        if (j == events.size()) upcomingEvent = events.get(j - 1);
                         else upcomingEvent = events.get(j);
 
                         // Pending event starts in the next limitTime minutes - default 30
-                        if ( upcomingEvent.date.before(limit) && now.before(upcomingEvent.date) )
-                        {
+                        if (upcomingEvent.date.before(limit) && now.before(upcomingEvent.date)) {
                             long diff = upcomingEvent.date.getTime() - now.getTime();
                             long diffMinutes = diff / (60 * 1000) % 60;
 
                             // Less then 10 minutes til event
-                            if ( diffMinutes <= 10 )
-                            {
-                                int diffMin = (int)diffMinutes;
-                                if ( diffMin > 1 ) {
+                            if (diffMinutes <= 10) {
+                                int diffMin = (int) diffMinutes;
+                                if (diffMin > 1) {
                                     try {
                                         Thread.sleep((diffMin - 1) * 1000, 1);
                                     } catch (InterruptedException exc) {
@@ -116,9 +126,38 @@ public class FriendlyService extends Service {
                                 final ArrayList<Integer> pointsList = new ArrayList<>();
 
                                 int eventPoints = 0,locationErrors = 0;
+                                // LAUR - What if there is no network connection ? - For now comment it
+                                /*
+                                Firebase pointsRef = User.firebaseRef.child("points").child(upcomingEvent.sport).child(User.uid);
+                                pointsRef.addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot snapshot) {
+                                            if ( snapshot.getValue() != null)
+                                                pointsList.add(Integer.parseInt(snapshot.getValue().toString()));
+                                        }
+
+                                    @Override
+                                    public void onCancelled(FirebaseError firebaseError) {
+                                    }
+                                });
+                                */
+
+                                // LAUR - Is this really needed ?
+                                try {
+                                    Thread.sleep(200, 1);
+                                } catch (InterruptedException exc) {
+                                }
+
+
+                                int points=0;
+                                if (pointsList.size() != 0)
+                                    points = pointsList.get(0);
+                                else points = 0;
+
                                 // Count points if he has not left the location and if has not scored yet 10 points
-                                while (locationErrors <= 3 && eventPoints <= 10)
-                                {
+                                while (locationErrors <= 3 && eventPoints <= 10) {
+                                    // LAUR - Should not be called again
+                                    //requestUpdates(mLocationListeners,mLocationManager);
 
                                     // Get last known location from SharedPref
                                     SharedPreferences sharedPrefs = getSharedPreferences("UserDetails",0);
@@ -136,20 +175,20 @@ public class FriendlyService extends Service {
                                         Log.v("distance2", distance[0] + " ");
 
                                         // User left the location
-                                        if ( distance[0] >= 500 ) {
+                                        if (distance[0] >= 500) {
                                             locationErrors++;
                                         }
 
                                         // User is in location ( difference < 500 m ) add points to the eventPoints
-                                        else{
+                                        else {
                                             eventPoints++;
                                         }
                                     }
                                     // From 10 to 10 minutes, recheck the user is still there
-                                    try{
-                                        Thread.sleep(600000,1);
+                                    try {
+                                        Thread.sleep(600000, 1);
+                                    } catch (InterruptedException exc) {
                                     }
-                                    catch(InterruptedException exc){}
                                 }
                                 // Update points with the ones received for the current event and update in Database
                                 // Check if there are unsaved points in SharedPrefs
@@ -182,11 +221,15 @@ public class FriendlyService extends Service {
                                 }
                             }
                         }
+
                     }
 
-                    // Sleep limitTime minutes
+                    Log.v("Ludicon","i am here !");
+
+                   // Sleep limitTime minutes
                     try {
-                        Thread.sleep(limitTime*MIN);
+                        //Thread.sleep(MIN);
+                        Thread.sleep(limitTime * MIN);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -208,22 +251,22 @@ public class FriendlyService extends Service {
                     e.printStackTrace();
                 }
 
-                int i =0;
-                Map<Date,Integer> checkNotSent30 = new HashMap<Date,Integer>();
-                while(true){
+                int i = 0;
+                Map<Date, Integer> checkNotSent30 = new HashMap<Date, Integer>();
+                while (true) {
 
                     String connectionsJSONString = getSharedPreferences("UserDetails", 0).getString("events", null);
-                    Type type = new TypeToken< List<ActivityInfo>>() {}.getType();
-                    List < ActivityInfo > events = null;
-                    if(connectionsJSONString != null) {
+                    Type type = new TypeToken<List<ActivityInfo>>() {
+                    }.getType();
+                    List<ActivityInfo> events = null;
+                    if (connectionsJSONString != null) {
                         events = new Gson().fromJson(connectionsJSONString, type);
                     }
-                    if(events == null){
-                       // User.firebaseRef.child("mesgEvents").setValue("Nu are evenimente");
-                    }
-                    else{
+                    if (events == null) {
+                        // User.firebaseRef.child("mesgEvents").setValue("Nu are evenimente");
+                    } else {
                         //User.firebaseRef.child("mesgEvents").setValue("Are evenimente : " + events.get(events.size()-1).date);
-                       // User.firebaseRef.child("mesgEventsNrEvenimente").setValue("NR: " + events.size());
+                        // User.firebaseRef.child("mesgEventsNrEvenimente").setValue("NR: " + events.size());
 
                         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, new Locale("English"));
                         df.setTimeZone(TimeZone.getTimeZone("gmt"));
@@ -235,18 +278,18 @@ public class FriendlyService extends Service {
                         Date limit = new Date(aux.getTime() + 30 * MIN);
                         //User.firebaseRef.child("mesgEventsLimit").setValue(limit.toString());
 
-                        for(ActivityInfo ai : events){
-                           if(ai.date != null && ai.date.after(now) && ai.date.before(limit) && !checkNotSent30.containsKey(ai.date)){
-                               checkNotSent30.put(ai.date, i);
-                               Notifier notifier = new Notifier();
+                        for (ActivityInfo ai : events) {
+                            if (ai.date != null && ai.date.after(now) && ai.date.before(limit) && !checkNotSent30.containsKey(ai.date)) {
+                                checkNotSent30.put(ai.date, i);
+                                Notifier notifier = new Notifier();
 
-                               notifier.sendNotification(FriendlyService.this, getSystemService(NOTIFICATION_SERVICE), getResources(), i, 30, ai.sport, ai.others, ai.place, ai.date);
+                                notifier.sendNotification(FriendlyService.this, getSystemService(NOTIFICATION_SERVICE), getResources(), i, 30, ai.sport, ai.others, ai.place, ai.date);
 
-                               i++;
-                               if(i == Integer.MAX_VALUE -1){
-                                   i = 0;
-                               }
-                           }
+                                i++;
+                                if (i == Integer.MAX_VALUE - 1) {
+                                    i = 0;
+                                }
+                            }
                         }
                     }
 
@@ -275,12 +318,8 @@ public class FriendlyService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mLocationManager != null && mLocationListener != null) {
-                try {
-                    mLocationManager.removeUpdates(mLocationListener);
-                } catch (SecurityException ex) {
-                }
-        }
+
+        removeUpdatesLocationManager();
     }
 
     @Nullable
@@ -294,6 +333,16 @@ public class FriendlyService extends Service {
             mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         }
     }
+
+    private void removeUpdatesLocationManager() {
+        if (mLocationManager != null && mLocationListener != null) {
+            try {
+                mLocationManager.removeUpdates(mLocationListener);
+            } catch (SecurityException ex) {
+            }
+        }
+    }
+
 }
 
 

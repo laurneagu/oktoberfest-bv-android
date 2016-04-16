@@ -1,6 +1,6 @@
 package larc.ludicon.Activities;
 
-import larc.ludicon.Activities.util.SystemUiHider;
+import larc.ludicon.Utils.util.SystemUiHider;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
