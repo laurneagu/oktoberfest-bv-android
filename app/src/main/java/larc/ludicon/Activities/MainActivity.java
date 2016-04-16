@@ -66,6 +66,7 @@ import larc.ludicon.R;
 import larc.ludicon.UserInfo.ActivityInfo;
 import larc.ludicon.UserInfo.User;
 import larc.ludicon.Services.FriendlyService;
+import android.support.v4.widget.SwipeRefreshLayout;
 
 public class MainActivity extends Activity {
 
@@ -118,7 +119,6 @@ public class MainActivity extends Activity {
 
          frButton = (Button)findViewById(R.id.fractbutton);
          myButton = (Button)findViewById(R.id.myactbutton);
-
 
         addFriendsActivityButtonEventListener();
         addMyActivityButtonEventListener();
@@ -317,17 +317,34 @@ public class MainActivity extends Activity {
         Drawable d = new BitmapDrawable(getResources(), User.image);
         userPic.setImageDrawable(d);
         // -------------------------------------------------------------------------------------------------------------
-        /*
-        final ArrayList<Event> eventList = new ArrayList<>();
-        MyCustomAdapter adapter = new MyCustomAdapter(eventList, getApplicationContext());
-        ListView listView = (ListView) findViewById(R.id.events_listView);
-        if (listView != null)
-            listView.setAdapter(adapter);
-        updateinBackground(listView, eventList);*/
+
+        final SwipeRefreshLayout mSwipeRefreshLayout1 = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh1);
+        mSwipeRefreshLayout1.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                updateList();
+                mSwipeRefreshLayout1.setRefreshing(false);
+            }
+        });
+
+        final SwipeRefreshLayout mSwipeRefreshLayout2 = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh2);
+        mSwipeRefreshLayout2.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                updateList();
+                mSwipeRefreshLayout2.setRefreshing(false);
+            }
+        });
+
+        updateList();
+    }
+
+    public void updateList()
+    {
 
         Firebase userRef = User.firebaseRef.child("events"); // check events
         userRef.addValueEventListener(new ValueEventListener() {
-        @Override
+            @Override
             public void onDataChange(DataSnapshot snapshot) {
                 final ArrayList<Event> eventList = new ArrayList<>();
                 final ArrayList<Event> myEventsList = new ArrayList<>();
@@ -374,7 +391,6 @@ public class MainActivity extends Activity {
                             for (DataSnapshot user : details.getChildren()) {
                                 String userID = user.getKey().toString();
                                 if (userID.equalsIgnoreCase(User.uid)) {
-                                    // TODO check if I have accepted
                                     doIParticipate = true;
                                     participants.put(user.getKey().toString(), (Boolean) user.getValue());
                                     break;
@@ -384,12 +400,6 @@ public class MainActivity extends Activity {
                             }
                         }
                     }
-
-
-//                    if (doIParticipate == false && new Date().before(event.date) && isPublic) {
-//                        event.usersUID = participants;
-//                        eventList.add(event);
-//                    }
 
                     // Insert event in the correct list
                     if (new Date().before(event.date) && isPublic) {
@@ -404,6 +414,7 @@ public class MainActivity extends Activity {
 
                     }
                 }
+
                 /* Friends */
                 MyCustomAdapter fradapter = new MyCustomAdapter(friendsEventsList, getApplicationContext());
                 ListView frlistView = (ListView) findViewById(R.id.events_listView1);
@@ -419,7 +430,7 @@ public class MainActivity extends Activity {
 
 
 
-            // Dismiss loading dialog after  2 * TIMEOUT * eventList.size() ms
+                // Dismiss loading dialog after  2 * TIMEOUT * eventList.size() ms
                 Timer timer = new Timer();
                 TimerTask delayedThreadStartTask = new TimerTask() {
                     @Override
@@ -431,7 +442,7 @@ public class MainActivity extends Activity {
                                 dialog.dismiss();
                             }
                         }).start();
-                     }
+                    }
                 };
                 timer.schedule(delayedThreadStartTask, TIMEOUT * 2 * eventList.size());
 
@@ -439,111 +450,6 @@ public class MainActivity extends Activity {
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
-            }
-        });
-    }
-    public void updateinBackground(final ListView listview, final ArrayList<Event> events)
-    {
-        Firebase userRef = User.firebaseRef.child("events"); // check events
-        userRef.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildMoved(DataSnapshot snapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot snapshot) {
-
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot snapshot, String previousChildKey) {
-
-                for (int i = 0; i < events.size(); i++) {
-                    if ((events.get(i).id).compareTo(snapshot.getValue().toString()) == 0) {
-                        for (DataSnapshot data : snapshot.getChildren()) {
-                            if (data.getKey().toString().equalsIgnoreCase("privacy"))
-
-                                if (data.getKey().toString().equalsIgnoreCase("sport"))
-                                    events.get(i).sport = data.getValue().toString();
-                            if (data.getKey().equalsIgnoreCase("createdBy"))
-                                events.get(i).creator = data.getValue().toString();
-                            if (data.getKey().toString().equalsIgnoreCase("date"))
-                                events.get(i).date = new Date(data.getValue().toString());
-                            if (data.getKey().toString().equalsIgnoreCase("place")) {
-                                Map<String, Object> position = (Map<String, Object>) data.getValue();
-                                double latitude = (double) position.get("latitude");
-                                double longitude = (double) position.get("longitude");
-                                String addressName = (String) position.get("name");
-                                events.get(i).place = addressName;
-                                events.get(i).latitude = latitude;
-                                events.get(i).longitude = longitude;
-                            }
-                            boolean doIParticipate = false;
-                            if (data.getKey().toString().equalsIgnoreCase("users")) {
-                                for (DataSnapshot user : data.getChildren()) {
-                                    if (user != null) {
-                                        if (events.get(i).usersUID.get(user.getKey().toString()) == null)
-                                            events.get(i).usersUID.put(user.getKey().toString(), true);
-                                    }
-                                    String userID = user.getKey().toString();
-                                    if (userID.equalsIgnoreCase(User.uid)) {
-                                        // TODO check if I have accepted
-                                        doIParticipate = true;
-                                    }
-                                    if (doIParticipate == true) events.remove(i);
-                                }
-                            }
-                            //events.get(i).noUsers = events.get(i).usersUID.size();
-                        }
-                    }
-                }
-                listview.invalidateViews();
-            }
-
-            @Override
-            public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
-                Event auxEvent = new Event();
-                boolean doIParticipate = false;
-                auxEvent.id = snapshot.getKey();
-                for (DataSnapshot data : snapshot.getChildren()) {
-                    if (data.getKey().toString().equalsIgnoreCase("sport"))
-                        auxEvent.sport = data.getValue().toString();
-                    if (data.getKey().equalsIgnoreCase("createdBy"))
-                        auxEvent.creator = data.getValue().toString();
-                    if (data.getKey().toString().equalsIgnoreCase("date"))
-                        auxEvent.date = new Date(data.getValue().toString());
-                    if (data.getKey().toString().equalsIgnoreCase("place")) {
-                        Map<String, Object> position = (Map<String, Object>) data.getValue();
-                        double latitude = (double) position.get("latitude");
-                        double longitude = (double) position.get("longitude");
-                        String addressName = (String) position.get("name");
-                        auxEvent.place = addressName;
-                        auxEvent.latitude = latitude;
-                        auxEvent.longitude = longitude;
-                    }
-                    if (data.getKey().toString().equalsIgnoreCase("users")) {
-                        for (DataSnapshot user : data.getChildren()) {
-                            if (user != null) {
-                                auxEvent.usersUID.put(user.getKey().toString(), true);
-                            }
-                            String userID = user.getKey().toString();
-                            if (userID.equalsIgnoreCase(User.uid)) {
-                                // TODO check if I have accepted
-                                doIParticipate = true;
-                            }
-                        }
-                    }
-
-                }
-                auxEvent.noUsers = auxEvent.usersUID.size();
-                if (doIParticipate == false)
-                    events.add(auxEvent);
-                listview.invalidateViews();
-            }
-
-            @Override
-            public void onCancelled(FirebaseError error) {
             }
         });
     }

@@ -13,6 +13,7 @@ import larc.ludicon.Activities.GeneralChatActivity;
 import larc.ludicon.Activities.CreateNewActivity;
 import larc.ludicon.Activities.FriendsActivity;
 import larc.ludicon.Activities.SettingsActivity;
+import larc.ludicon.Activities.StatisticsActivity;
 
 /**
  * Created by LaurUser on 12/28/2015.
@@ -28,7 +29,8 @@ public class LeftPanelItemClicker {
                                 i_currActivity.startActivity(createNewIntent);
                                 break;
                             case 1:
-                                Toast.makeText(i_context, "Hei, wait for it..", Toast.LENGTH_SHORT).show();
+                                Intent statisticsNewIntent = new Intent(i_currActivity, StatisticsActivity.class);
+                                i_currActivity.startActivity(statisticsNewIntent);
                                 break;
                             case 2:
                                 Intent friendIntent = new Intent(i_currActivity, FriendsActivity.class);
