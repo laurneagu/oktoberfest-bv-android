@@ -58,7 +58,7 @@ public class ChatListActivity extends Activity {
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private ProgressDialog dialog;
-    private int TIMEOUT = 80;
+    private int TIMEOUT = 100;
 
     private static final String FIREBASE_URL = "https://ludicon.firebaseio.com/";
 

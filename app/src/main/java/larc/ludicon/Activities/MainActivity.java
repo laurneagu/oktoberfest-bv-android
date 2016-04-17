@@ -342,7 +342,7 @@ public class MainActivity extends Activity {
     {
 
         Firebase userRef = User.firebaseRef.child("events"); // check events
-        userRef.addValueEventListener(new ValueEventListener() {
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 final ArrayList<Event> eventList = new ArrayList<>();
@@ -414,6 +414,21 @@ public class MainActivity extends Activity {
                     }
                 }
 
+                // Sort by date
+                Collections.sort(friendsEventsList, new Comparator<Event>() {
+                    @Override
+                    public int compare(Event lhs, Event rhs) {
+                        return lhs.date.compareTo(rhs.date);
+                    }
+                });
+                // Sort by date
+                Collections.sort(myEventsList, new Comparator<Event>() {
+                    @Override
+                    public int compare(Event lhs, Event rhs) {
+                        return lhs.date.compareTo(rhs.date);
+                    }
+                });
+
                 /* Friends */
                 TimelineAroundActAdapter fradapter = new TimelineAroundActAdapter(friendsEventsList, getApplicationContext());
                 ListView frlistView = (ListView) findViewById(R.id.events_listView1);
@@ -425,8 +440,6 @@ public class MainActivity extends Activity {
                 ListView mylistView = (ListView) findViewById(R.id.events_listView2);
                 if (mylistView != null)
                     mylistView.setAdapter(myadapter);
-
-
 
 
                 // Dismiss loading dialog after  2 * TIMEOUT * eventList.size() ms
