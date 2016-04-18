@@ -45,6 +45,8 @@ public class ChatTemplateActivity extends ListActivity {
     private ValueEventListener mConnectedListener;
     private ChatListAdapter mChatListAdapter;
 
+    public static boolean isForeground = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -163,6 +165,7 @@ public class ChatTemplateActivity extends ListActivity {
     @Override
     public void onStart() {
         super.onStart();
+        isForeground = true;
 
         // Setup our view and list adapter. Ensure it scrolls to the bottom as data changes
         final ListView listView = getListView();
@@ -196,6 +199,18 @@ public class ChatTemplateActivity extends ListActivity {
             }
         });
       */
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        isForeground = false;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        isForeground = true;
     }
 
     @Override

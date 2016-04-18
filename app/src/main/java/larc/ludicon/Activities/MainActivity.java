@@ -1,6 +1,7 @@
 package larc.ludicon.Activities;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -98,7 +99,15 @@ public class MainActivity extends Activity {
             return creator;
         }
     }
-
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -188,8 +197,11 @@ public class MainActivity extends Activity {
         pSharedPref.edit().remove("UnsavedPointsMap").commit();
 
         // Background Service:
-        Intent mServiceIntent = new Intent(this, FriendlyService.class);
-        startService(mServiceIntent);
+        if(!isMyServiceRunning(FriendlyService.class)){
+            Intent mServiceIntent = new Intent(this, FriendlyService.class);
+            startService(mServiceIntent);
+        }
+
 
         //Clean up shared pref for events: just for debugging
         SharedPreferences.Editor editor = getSharedPreferences("UserDetails", 0).edit();
@@ -199,6 +211,9 @@ public class MainActivity extends Activity {
 
 
         // Update sharedpref for events:
+        editor = getSharedPreferences("UserDetails", 0).edit();
+        editor.putString("uid", User.uid);
+        editor.commit();
         Firebase usersRef = User.firebaseRef.child("users").child(User.uid).child("events");
         usersRef.addValueEventListener(new ValueEventListener() {
                                            @Override

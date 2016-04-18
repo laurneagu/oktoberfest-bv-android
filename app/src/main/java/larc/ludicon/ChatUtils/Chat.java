@@ -9,6 +9,7 @@ public class Chat {
     private String message;
     private String author;
     public String date;
+    public boolean seen;
 
     // Required default constructor for Firebase object mapping
     @SuppressWarnings("unused")
@@ -19,6 +20,7 @@ public class Chat {
         this.message = message;
         this.author = author;
         this.date = date;
+        this.seen = false;
     }
 
     public String getMessage() {
