@@ -415,8 +415,9 @@ public class FriendlyService extends Service {
 
                                         // It is not my message
                                         // If I haven't seen it
-                                        if(seen == "false"){
+                                        if(seen == "false" && myName.compareToIgnoreCase(author) != 0){
                                              //Notification !!!
+                                            Log.v("Name vs Author", myName + " " + author);
                                             if(!isForeground("larc.ludicon")){ // if chat is not open
                                                 ChatNotifier notifier = new ChatNotifier();
 
