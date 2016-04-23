@@ -75,7 +75,7 @@ public class ChatTemplateActivity extends ListActivity {
 
         // Left side panel
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
-//        initializeLeftSidePanel();
+        initializeLeftSidePanel();
 
         User.setImage();
 
@@ -133,7 +133,7 @@ public class ChatTemplateActivity extends ListActivity {
         });
 
         try {
-            Thread.sleep(500);
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -325,7 +325,7 @@ public class ChatTemplateActivity extends ListActivity {
 
 
     public void initializeLeftSidePanel() {
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_settings);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_chat);
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
 
         // Set the adapter for the list view
