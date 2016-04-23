@@ -625,6 +625,15 @@ public class MainActivity extends Activity {
             Picasso.with(context).load(list.get(position).profileImageURL).into(profilePicture);
 
 
+            // Redirect to user profile on picture click
+            profilePicture.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                    intent.putExtra("uid", list.get(position).getFirstUser());
+                    startActivity(intent);
+                }
+            });
+
             /*
             Firebase userRef = User.firebaseRef.child("users").child(userUID);
             userRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -796,6 +805,19 @@ public class MainActivity extends Activity {
             name.setText(list.get(position).creatorName);
             Picasso.with(context).load(list.get(position).profileImageURL).into(profilePicture);
 
+            // Redirect to user profile on picture click
+            profilePicture.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    if(User.uid.equals(list.get(position).creator)) {
+                        Toast.makeText(context,"This is you ! We can't compare with yourself..",Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                        intent.putExtra("uid", list.get(position).getFirstUser());
+                        startActivity(intent);
+                    }
+                }
+            });
 
             /*
             Firebase userRef = User.firebaseRef.child("users").child(userUID);
