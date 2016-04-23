@@ -56,10 +56,12 @@ public class ChatNotifier {
         builder.setSound(soundUri);
         builder.build();
 
-        builder.setVibrate(new long[]{1000, 1000, 1000, 1000, 1000});
+       // builder.setVibrate(new long[]{1000, 1000, 1000, 1000, 1000});
         builder.setLights(Color.RED, 3000, 3000);
 
+
         myNotification = builder.getNotification();
+        myNotification.defaults |= Notification.DEFAULT_VIBRATE;
         manager.notify(notificationNumber, myNotification);
     }
 
