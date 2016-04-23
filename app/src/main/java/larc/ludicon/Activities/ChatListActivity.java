@@ -50,6 +50,7 @@ import larc.ludicon.Adapters.LeftPanelItemClicker;
 import larc.ludicon.Adapters.LeftSidePanelAdapter;
 import larc.ludicon.R;
 import larc.ludicon.UserInfo.User;
+import larc.ludicon.Utils.util.ChatNotifier;
 
 public class ChatListActivity extends Activity {
 
@@ -59,6 +60,7 @@ public class ChatListActivity extends Activity {
     private DrawerLayout mDrawerLayout;
     private ProgressDialog dialog;
     private int TIMEOUT = 100;
+    public static boolean isForeground = false;
 
     private static final String FIREBASE_URL = "https://ludicon.firebaseio.com/";
 
@@ -66,6 +68,23 @@ public class ChatListActivity extends Activity {
         String userUID;
         String chatID;
         String userName;
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        isForeground = true;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        isForeground = false;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        isForeground = true;
     }
 
     @Override
@@ -98,6 +117,18 @@ public class ChatListActivity extends Activity {
                 ChatListActivity.this.startActivity(mainIntent);
             }
         });
+
+
+        // Delete chat notifications
+        ChatNotifier chatNotifier = new ChatNotifier();
+        synchronized (chatNotifier.lock) {
+            for (int i = chatNotifier.chatNotificationFirstIndex; i <= chatNotifier.chatNotificationIndex; ++i) {
+                chatNotifier.deleteNotification(getSystemService(NOTIFICATION_SERVICE), i);
+            }
+            chatNotifier.chatNotificationIndex = 0;
+            chatNotifier.chatNotificationFirstIndex = 0;
+        }
+
 
         Firebase firebaseRef = new Firebase(FIREBASE_URL).child("users").child(User.uid).child("chats");
         firebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {

@@ -733,6 +733,7 @@ public class MainActivity extends Activity {
                             ev.put(list.get(position).id, inEv);
                             list.remove(position);
                             User.firebaseRef.child("users").child(User.uid).child("events").updateChildren(ev);
+                            updateList();
                         }
 
                         @Override

@@ -41,6 +41,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
+import larc.ludicon.Activities.ChatListActivity;
 import larc.ludicon.Activities.ChatTemplateActivity;
 import larc.ludicon.Activities.FriendsActivity;
 import larc.ludicon.UserInfo.User;
@@ -70,7 +71,8 @@ public class FriendlyService extends Service {
     private ServiceLocationListener mLocationListener = new ServiceLocationListener(this);
     private boolean mRunning;
 
-    private static int chatNotificationIndex = 0;
+    private static ChatNotifier chatNotifier = new ChatNotifier();
+    private static Notifier notifier = new Notifier();
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -298,7 +300,6 @@ public class FriendlyService extends Service {
                         for (ActivityInfo ai : events) {
                             if (ai.date != null && ai.date.after(now) && ai.date.before(limit) && !checkNotSent30.containsKey(ai.date)) {
                                 checkNotSent30.put(ai.date, i);
-                                Notifier notifier = new Notifier();
 
                                 notifier.sendNotification(FriendlyService.this, getSystemService(NOTIFICATION_SERVICE), getResources(), i, 30, ai.sport, ai.others, ai.place, ai.date);
 
@@ -328,7 +329,7 @@ public class FriendlyService extends Service {
 //        ComponentName componentInfo = runningTaskInfo.get(0).topActivity;
 //        return componentInfo.getPackageName().equals(myPackage);
         try{
-            if(ChatTemplateActivity.isForeground){
+            if(ChatListActivity.isForeground || ChatTemplateActivity.isForeground){
                 return true;
             }
             else {
@@ -341,10 +342,13 @@ public class FriendlyService extends Service {
     }
 
     public int getNotificationIndex(){
-        if(chatNotificationIndex == 5){
-            chatNotificationIndex = 0;
+        synchronized (chatNotifier.lock){
+            if(chatNotifier.chatNotificationIndex >= 5) {
+                chatNotifier.deleteNotification(getSystemService(NOTIFICATION_SERVICE), chatNotifier.chatNotificationFirstIndex);
+                chatNotifier.chatNotificationFirstIndex++;
+            }
+            return chatNotifier.chatNotificationIndex++;
         }
-        return chatNotificationIndex++;
     }
 
     private Runnable getCheckNotificationsChatThread(){
@@ -409,19 +413,19 @@ public class FriendlyService extends Service {
                                             }
                                         }
 
-                                        if(myName == author){
+                                        if(myName.compareToIgnoreCase(author) == 0){
                                             return;
                                         }
 
                                         // It is not my message
                                         // If I haven't seen it
-                                        if(seen == "false" && myName.compareToIgnoreCase(author) != 0){
+                                        if(seen == "false"){
                                              //Notification !!!
                                             Log.v("Name vs Author", myName + " " + author);
                                             if(!isForeground("larc.ludicon")){ // if chat is not open
-                                                ChatNotifier notifier = new ChatNotifier();
 
-                                                notifier.sendNotification(FriendlyService.this, getSystemService(NOTIFICATION_SERVICE), getResources(), getNotificationIndex(), author, message, date);
+
+                                                chatNotifier.sendNotification(FriendlyService.this, getSystemService(NOTIFICATION_SERVICE), getResources(), getNotificationIndex(), author, message, date);
                                             }
                                             //userRef.child("chatNotif").setValue(author);
                                             // see it!
