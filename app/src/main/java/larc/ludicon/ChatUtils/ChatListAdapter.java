@@ -3,7 +3,10 @@ package larc.ludicon.ChatUtils;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.firebase.client.Query;
 
@@ -38,14 +41,41 @@ public class ChatListAdapter extends FirebaseListAdapter<Chat> {
     protected void populateView(View view, Chat chat) {
         // Map a Chat object to an entry in our listview
         String author = chat.getAuthor();
-        TextView authorText = (TextView) view.findViewById(R.id.author);
-        authorText.setText(author + ": ");
-        // If the message was sent by this user, color it differently
+        LinearLayout linLayoutRight;
+        TextView msgDateRight;
+        TextView msgTextRight;
+        LinearLayout linLayoutLeft;
+        TextView msgDateLeft;
+        TextView msgTextLeft;
+
         if (author != null && author.equals(mUsername)) {
-            authorText.setTextColor(Color.RED);
+            linLayoutRight = (LinearLayout) view.findViewById(R.id.content_with_background_right);
+            linLayoutRight.setBackgroundResource(R.drawable.in_message_bg);
+            linLayoutRight.setAlpha(1);
+            msgDateRight = (TextView) view.findViewById(R.id.message_date_right);
+            msgTextRight = (TextView) view.findViewById(R.id.message_text_right);
+            msgDateRight.setText(chat.date);
+            msgTextRight.setText(chat.getMessage());
+            linLayoutLeft = (LinearLayout) view.findViewById(R.id.content_with_background_left);
+            linLayoutLeft.setAlpha(0);
+            msgDateLeft = (TextView) view.findViewById(R.id.message_date_left);
+            msgTextLeft = (TextView) view.findViewById(R.id.message_text_left);
+            msgDateLeft.setText("");
+            msgTextLeft.setText("");
         } else {
-            authorText.setTextColor(Color.BLUE);
+            linLayoutLeft = (LinearLayout) view.findViewById(R.id.content_with_background_left);
+            linLayoutLeft.setAlpha(1);
+            linLayoutLeft.setBackgroundResource(R.drawable.out_message_bg);
+            msgDateLeft = (TextView) view.findViewById(R.id.message_date_left);
+            msgTextLeft = (TextView) view.findViewById(R.id.message_text_left);
+            msgDateLeft.setText(chat.date);
+            msgTextLeft.setText(chat.getMessage());
+            linLayoutRight = (LinearLayout) view.findViewById(R.id.content_with_background_right);
+            linLayoutRight.setAlpha(0);
+            msgDateRight = (TextView) view.findViewById(R.id.message_date_right);
+            msgTextRight = (TextView) view.findViewById(R.id.message_text_right);
+            msgDateRight.setText("");
+            msgTextRight.setText("");
         }
-        ((TextView) view.findViewById(R.id.message)).setText(chat.getMessage());
     }
 }

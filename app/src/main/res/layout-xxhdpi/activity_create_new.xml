@@ -163,10 +163,22 @@
                 android:layout_below="@+id/time_picker"
                 />
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            <AutoCompleteTextView
+                android:id="@+id/autoCompleteTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/locationTB"
+                android:ems="10"
+                android:text="Please enter your place">
+
+                <requestFocus />
+            </AutoCompleteTextView>
+
+
+            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         android:name="com.google.android.gms.maps.MapFragment"
         android:id="@+id/map"
-        android:layout_below="@+id/locationTB"
+                android:layout_below="@+id/autoCompleteTextView"
         android:layout_width="400dp"
         android:layout_height="200dp"
         android:layout_marginTop="20dp"

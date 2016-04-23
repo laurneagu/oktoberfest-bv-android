@@ -383,7 +383,6 @@ public class SettingsActivity extends Activity {
 
     // Left side menu
     public void initializeLeftSidePanel() {
-
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_settings);
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
 

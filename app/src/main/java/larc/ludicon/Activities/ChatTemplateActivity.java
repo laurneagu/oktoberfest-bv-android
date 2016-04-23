@@ -4,35 +4,52 @@ import android.app.ListActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.DataSetObserver;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.squareup.picasso.Picasso;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
+import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import larc.ludicon.Adapters.LeftPanelItemClicker;
+import larc.ludicon.Adapters.LeftSidePanelAdapter;
 import larc.ludicon.ChatUtils.Chat;
 import larc.ludicon.ChatUtils.ChatListAdapter;
 import larc.ludicon.R;
+import larc.ludicon.UserInfo.ActivityInfo;
 import larc.ludicon.UserInfo.User;
 
 public class ChatTemplateActivity extends ListActivity {
@@ -45,6 +62,10 @@ public class ChatTemplateActivity extends ListActivity {
     private ValueEventListener mConnectedListener;
     private ChatListAdapter mChatListAdapter;
 
+    // Left side panel
+    private ListView mDrawerList;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private DrawerLayout mDrawerLayout;
     public static boolean isForeground = false;
 
     @Override
@@ -52,21 +73,73 @@ public class ChatTemplateActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
+        // Left side panel
+        mDrawerList = (ListView) findViewById(R.id.leftMenu);
+//        initializeLeftSidePanel();
+
+        User.setImage();
+
+        // User picture and name for Left side Panel
+        TextView userName = (TextView) findViewById(R.id.userName);
+        userName.setText(User.getFirstName(getApplicationContext()) + " " + User.getLastName(getApplicationContext()));
+
+        ImageView userPic = (ImageView) findViewById(R.id.userPicture);
+        Drawable d = new BitmapDrawable(getResources(), User.image);
+        userPic.setImageDrawable(d);
+        userPic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                ChatTemplateActivity.this.startActivity(mainIntent);
+            }
+        });
+
         //TODO Receive intent with the uid of the other user and if this is the first Connection between those two
         Intent intent = getIntent();
         final String otherUserUid  = intent.getStringExtra("uid");
         final boolean firstConnection = intent.getBooleanExtra("firstConnection", true);
         Log.v("UID + firstConnection", otherUserUid + " - " + firstConnection);
         final String chatID = intent.getStringExtra("chatID");
-       // final String otherUserName = intent.getStringExtra("otherName");
 
         // Make sure we have a current Username
         setupUsername();
 
         //setTitle("Chatting with " + otherUserName);
 
-        final List<String> ID = new ArrayList<>();
+        final TextView hello_message = (TextView) findViewById(R.id.hello_message_activity);
+        final ImageView profilePicture = (ImageView) findViewById(R.id.friendPicture);
+        Firebase userRef = User.firebaseRef.child("users").child(otherUserUid);
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
 
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    if (data.getKey().compareToIgnoreCase("firstName") == 0) {
+                        hello_message.setText(data.getValue().toString());
+                    }
+
+                    if (data.getKey().compareToIgnoreCase("profileImageURL") == 0) {
+
+                        Picasso.with(getApplicationContext()).load(data.getValue().toString()).into(profilePicture);
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
+        final List<String> ID = new ArrayList<>();
 
         if( firstConnection == true ){
 
@@ -249,4 +322,39 @@ public class ChatTemplateActivity extends ListActivity {
             inputText.setText("");
         }
     }
+
+
+    public void initializeLeftSidePanel() {
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_settings);
+        mDrawerList = (ListView) findViewById(R.id.leftMenu);
+
+        // Set the adapter for the list view
+        mDrawerList.setAdapter(new LeftSidePanelAdapter(this, ChatTemplateActivity.this));
+        // Set the list's click listener
+        LeftPanelItemClicker.OnItemClick(mDrawerList, getApplicationContext(), ChatTemplateActivity.this);
+
+        final ImageButton showPanel = (ImageButton) findViewById(R.id.showPanel);
+        showPanel.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Perform action on click
+                mDrawerLayout.openDrawer(Gravity.LEFT);
+            }
+        });
+
+        // Toggle efect on left side panel
+        mDrawerToggle = new android.support.v4.app.ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+        };
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+    }
+
 }

@@ -11,6 +11,14 @@
         android:background="#8f2525"
         android:id="@+id/headerMenu">
 
+        <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/friendPicture"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="65dp"
+            android:layout_centerVertical="true" />
+
         <ImageButton android:layout_width="30dp"
             android:layout_height="30dp"
             android:background="@drawable/ic_drawer"
@@ -30,18 +38,13 @@
             android:layout_centerInParent="true"
             android:id="@+id/hello_message_activity"
             />
-        <ImageView android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="10dp"
-            android:id="@+id/logoHeader"
-            />
+
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/imageView" />
+
     </RelativeLayout>
 </LinearLayout>
 
