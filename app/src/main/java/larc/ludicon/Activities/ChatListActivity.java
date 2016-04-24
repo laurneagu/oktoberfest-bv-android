@@ -177,7 +177,7 @@ public class ChatListActivity extends Activity {
 
 
         public MyCustomAdapter(List<Chat1to1> list, Context context) {
-            list.remove(0);
+            //list.remove(0);
             this.list = list;
             this.context = context;
         }
