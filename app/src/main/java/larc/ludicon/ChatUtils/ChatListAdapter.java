@@ -10,6 +10,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.firebase.client.Query;
 
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import larc.ludicon.R;
 
 /**
@@ -54,6 +58,7 @@ public class ChatListAdapter extends FirebaseListAdapter<Chat> {
             linLayoutRight.setAlpha(1);
             msgDateRight = (TextView) view.findViewById(R.id.message_date_right);
             msgTextRight = (TextView) view.findViewById(R.id.message_text_right);
+
             msgDateRight.setText(chat.date);
             msgTextRight.setText(chat.getMessage());
             linLayoutLeft = (LinearLayout) view.findViewById(R.id.content_with_background_left);

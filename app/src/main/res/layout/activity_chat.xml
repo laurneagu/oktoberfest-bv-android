@@ -18,6 +18,8 @@
         <ListView
             android:id="@android:id/list"
             android:paddingTop="70dp"
+            android:dividerHeight="0dp"
+            android:divider="@null"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/listFooter"

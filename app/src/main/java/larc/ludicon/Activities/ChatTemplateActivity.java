@@ -161,7 +161,9 @@ public class ChatTemplateActivity extends ListActivity {
             addUserUIDs.setValue(userUIDMap);
 
             Date now = new Date();
-            String formattedDate = String.format(new Locale("English"),"%tc", now);
+            String formattedDate = String.format(new Locale("English"), "%tb", now) + " " +
+                    String.format(new Locale("English"), "%td", now) + ", " +
+                    String.format(new Locale("English"), "%tR", now);
             // Create our 'model', a Chat object
             Firebase newChat = keyRef.child("Messages").push();
             Chat chat = new Chat("Bun venit in chat!", "Ludicon",formattedDate);
@@ -312,7 +314,9 @@ public class ChatTemplateActivity extends ListActivity {
             //DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, new Locale("ENGLISH"));
             //String formattedDate = df.format(now);
 
-            String formattedDate = String.format(new Locale("English"),"%tc", now );
+            String formattedDate = String.format(new Locale("English"), "%tb", now) + " " +
+                    String.format(new Locale("English"), "%td", now) + ", " +
+                    String.format(new Locale("English"), "%tR", now);
             // Create our 'model', a Chat object
             Chat chat = new Chat(input, mUsername,formattedDate);
 
