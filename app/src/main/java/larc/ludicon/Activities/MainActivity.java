@@ -488,8 +488,8 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 if(currentPage != 0){
                     currentPage = 0;
-                    myButton.setBackgroundColor(Color.rgb(197,105,105));
-                    frButton.setBackgroundColor(Color.rgb(144,39,39));
+                    myButton.setBackgroundColor(Color.parseColor("#237bbe"));
+                    frButton.setBackgroundColor(Color.parseColor("#0e64a6"));
                     flipper.setInAnimation(getApplicationContext(), R.anim.right_enter);
                     flipper.setOutAnimation(getApplicationContext(), R.anim.left_out);
                     flipper.showNext();
@@ -504,8 +504,8 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 if(currentPage != 1){
                     currentPage = 1;
-                    frButton.setBackgroundColor(Color.rgb(197,105,105));
-                    myButton.setBackgroundColor(Color.rgb(144,39,39));
+                    frButton.setBackgroundColor(Color.parseColor("#237bbe"));
+                    myButton.setBackgroundColor(Color.parseColor("#0e64a6"));
                     flipper.setInAnimation(getApplicationContext(), R.anim.left_enter);
                     flipper.setOutAnimation(getApplicationContext(), R.anim.right_out);
                     flipper.showPrevious();
@@ -703,7 +703,10 @@ public class MainActivity extends Activity {
             details.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(getApplicationContext(), "Hei, wait for it..", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), "Hei, wait for it..", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getApplicationContext(), EventDetails.class);
+                    intent.putExtra("eventUid", list.get(position).id);
+                    startActivity(intent);
                 }
             });
             join.setOnClickListener(new View.OnClickListener(){
@@ -809,10 +812,9 @@ public class MainActivity extends Activity {
             // Redirect to user profile on picture click
             profilePicture.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    if(User.uid.equals(list.get(position).creator)) {
-                        Toast.makeText(context,"This is you ! We can't compare with yourself..",Toast.LENGTH_SHORT).show();
-                    }
-                    else {
+                    if (User.uid.equals(list.get(position).creator)) {
+                        Toast.makeText(context, "This is you ! We can't compare with yourself..", Toast.LENGTH_SHORT).show();
+                    } else {
                         Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
                         intent.putExtra("uid", list.get(position).getFirstUser());
                         startActivity(intent);
@@ -890,6 +892,16 @@ public class MainActivity extends Activity {
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(getApplicationContext(), "Hei, wait for it..", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            details.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //Toast.makeText(getApplicationContext(), "Hei, wait for it..", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getApplicationContext(), EventDetails.class);
+                    intent.putExtra("eventUid", list.get(position).id);
+                    startActivity(intent);
                 }
             });
 

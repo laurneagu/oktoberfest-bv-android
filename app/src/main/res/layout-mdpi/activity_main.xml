@@ -34,7 +34,7 @@
                 android:layout_marginLeft="0dp"
                 android:layout_marginTop="0dp"
                 android:layout_marginBottom="0dp"
-                android:background="#c56969"
+                android:background="#237bbe"
                 android:textColor="#ffffff" />
 
             <Button
@@ -45,7 +45,7 @@
                 android:layout_alignParentRight="true"
                 android:text="Around me"
                 android:padding="0dp"
-                android:background="#902727"
+                android:background="#0e64a6"
                 android:textColor="#ffffff" />
         </RelativeLayout>
 

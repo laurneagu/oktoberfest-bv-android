@@ -8,7 +8,7 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="60dp"
-        android:background="#8f2525"
+        android:background="#237bbe"
         android:id="@+id/headerMenu">
 
         <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -27,18 +27,23 @@
             android:id="@+id/showPanel"
             />
         <TextView
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Activities"
             android:textColor="#FFFFFF"
-            android:layout_marginLeft="100dp"
-            android:layout_toRightOf="@+id/showPanel"
+            android:layout_toRightOf="@+id/friendPicture"
             android:textSize="23dp"
+            android:textStyle="bold"
             android:gravity="center|left"
             android:layout_centerInParent="true"
             android:id="@+id/hello_message_activity"
             />
 
+        <View
+            android:layout_width="70dp"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@+id/hello_message_activity"
+            />
 
         <ImageView
             android:layout_width="wrap_content"

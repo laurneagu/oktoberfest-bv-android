@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff">
+
+
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <View
+            android:id="@+id/shadow_header"
+            android:layout_width="fill_parent"
+            android:layout_height="2.3dp"
+            android:background="@drawable/shadow_layout"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="60dp">
+        </View>
+
+
+        <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/profileImageView"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_below="@+id/shadow_header"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="70dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Organiser"
+            android:id="@+id/event_org"
+            android:layout_below="@+id/profileImageView"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Large Text"
+            android:id="@+id/event_organiser_name"
+            android:layout_below="@+id/event_org"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Small Text"
+            android:id="@+id/event_organiser_points"
+            android:layout_below="@+id/event_organiser_name"
+            android:layout_centerHorizontal="true" />
+
+
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/event_organiser_points"
+            android:background="#ebebeb"
+            android:id="@+id/frameLayout"
+            android:useDefaultMargins="true"
+            android:nestedScrollingEnabled="false">
+
+            <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/sportImage"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal|top"
+                android:layout_row="0"
+                android:layout_column="2" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Medium Text"
+                android:id="@+id/event_date"
+                android:layout_alignParentBottom="true"
+                android:layout_alignLeft="@+id/event_place"
+                android:layout_alignStart="@+id/event_place"
+                android:layout_gravity="center"
+                android:layout_row="2"
+                android:layout_column="2" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Medium Text"
+                android:id="@+id/event_place"
+                android:layout_above="@+id/event_date"
+                android:layout_below="@+id/event_date"
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_row="3"
+                android:layout_column="2" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Medium Text"
+                android:id="@+id/event_play"
+                android:layout_above="@+id/event_place"
+                android:layout_alignLeft="@+id/event_organiser_points"
+                android:layout_alignStart="@+id/event_organiser_points"
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_row="1"
+                android:layout_column="2" />
+
+
+        </GridLayout>
+        <View
+            android:id="@+id/shadow_grid"
+            android:layout_width="fill_parent"
+            android:layout_height="2.3dp"
+            android:layout_below="@+id/frameLayout"
+            android:background="@drawable/inner_shadow_layout">
+        </View>
+
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/listViewUsers"
+            android:layout_below="@+id/shadow_grid"
+            android:layout_centerHorizontal="true"/>
+
+    </RelativeLayout>
+
+    <include layout="@layout/header" />
+
+    <include layout="@layout/leftside_panel" />
+
+</android.support.v4.widget.DrawerLayout>
