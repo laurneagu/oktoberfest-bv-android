@@ -6,9 +6,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +24,8 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -47,28 +48,14 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
+import larc.ludicon.Adapters.FriendsListAdapter;
 import larc.ludicon.Adapters.LeftPanelItemClicker;
 import larc.ludicon.Adapters.LeftSidePanelAdapter;
 import larc.ludicon.R;
-import larc.ludicon.UserInfo.ActivityInfo;
 import larc.ludicon.UserInfo.User;
+import larc.ludicon.Utils.CustomView.NonScrollListView;
+import larc.ludicon.Utils.UserInfo;
 
-
-class UserInfo {
-    public String name;
-    public String points;
-    public String photo;
-    public int index;
-    public String uid;
-
-    UserInfo(String name, String photo, String points, int index, String uid){
-        this.name = name;
-        this.points = points;
-        this.photo = photo;
-        this.index = index;
-        this.uid = uid;
-    }
-}
 
 public class EventDetails extends AppCompatActivity {
 
@@ -119,9 +106,7 @@ public class EventDetails extends AppCompatActivity {
                 String date = "";
                 String place = "";
                 String sport = "";
-                String privancy = "";
-
-
+                String privacy = "";
 
                 for (DataSnapshot details : dataSnapshot.getChildren()) {
                     if (details.getKey().toString().equalsIgnoreCase("users")) {
@@ -140,7 +125,7 @@ public class EventDetails extends AppCompatActivity {
                         date = (String) details.getValue();
                     }
                     if (details.getKey().toString().equalsIgnoreCase("privacy")) {
-                        privancy = (String) details.getValue();
+                        privacy = (String) details.getValue();
                     }
                     if (details.getKey().toString().equalsIgnoreCase("sport")) {
                         sport = (String) details.getValue();
@@ -205,6 +190,28 @@ public class EventDetails extends AppCompatActivity {
             }
         });
 
+        final ShareDialog shareDialog = new ShareDialog(this);
+
+        // Share facebook button
+        Button shareFb = (Button)findViewById(R.id.sharefb);
+        shareFb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+
+                ShareLinkContent content = new ShareLinkContent.Builder()
+                        .setContentUrl(Uri.parse("http://ludicon.info/"))
+                        .setImageUrl(Uri.parse("http://www.ludicon.info/img/sports/jogging.png"))
+                                .setContentTitle("First post")
+                                .setContentDescription("Hello there ! This is first post in facebook")
+                                .build();
+
+                if (ShareDialog.canShow(ShareLinkContent.class) == true)
+                    shareDialog.show(content);
+
+            }
+        });
 
     }
 
@@ -304,7 +311,7 @@ public class EventDetails extends AppCompatActivity {
                 @Override
                 public void run() {
                     FriendsListAdapter adpt = new FriendsListAdapter(usersList, context);
-                    ListView lv = (ListView) findViewById(R.id.listViewUsers);
+                    NonScrollListView lv = (NonScrollListView) findViewById(R.id.listViewUsers);
                     if (lv != null)
                         lv.setAdapter(adpt);
                 }
@@ -313,52 +320,6 @@ public class EventDetails extends AppCompatActivity {
         }
     }
 
-    
-    public class FriendsListAdapter extends BaseAdapter implements ListAdapter {
-
-        private ArrayList<UserInfo> list = new ArrayList<>();
-        private Context context;
-        final ListView listView = (ListView) findViewById(R.id.listViewUsers);
-
-        public FriendsListAdapter(ArrayList<UserInfo> list, Context context) {
-            this.list = list;
-            this.context = context;
-        }
-
-        @Override
-        public int getCount() {
-            return list.size();
-        }
-        @Override
-        public Object getItem(int pos) {
-            return list.get(pos);
-        }
-        @Override
-        public long getItemId(int pos) {
-            return 0;
-        }
-
-        @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
-
-            View view = convertView;
-            if (view == null) {
-                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(R.layout.event_details_list_layout, null);
-            }
-
-            final TextView name = (TextView) view.findViewById(R.id.nameUser);
-            final ImageView profilePicture = (ImageView) view.findViewById(R.id.profilePicture);
-            final TextView points = (TextView) view.findViewById(R.id.pointsUser);
-
-
-            name.setText(list.get(position).name);
-            Picasso.with(context).load(list.get(position).photo).into(profilePicture);
-            points.setText(list.get(position).points);
-
-            return view;
-        }
-    }
 
 
     // Left side panel -----------------------------------------------------------------------------

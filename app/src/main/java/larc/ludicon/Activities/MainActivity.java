@@ -805,8 +805,8 @@ public class MainActivity extends Activity {
 
             // Set name and picture for the first user of the event
             //final String userUID = list.get(position).getFirstUser();
-
-            name.setText(list.get(position).creatorName);
+            String firstName = list.get(position).creatorName.split(" ")[0];
+            name.setText(firstName);
             Picasso.with(context).load(list.get(position).profileImageURL).into(profilePicture);
 
             // Redirect to user profile on picture click
