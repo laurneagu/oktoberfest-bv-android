@@ -50,7 +50,13 @@ android {
 //dependencies {
 //    compile 'com.batch.android:batch-sdk:1.5+'
 //}
+repositories {
+    maven { url "https://jitpack.io" }
+}
 
+dependencies {
+    compile 'com.github.PhilJay:MPAndroidChart:v2.2.4'
+}
 repositories {
     mavenCentral()
 }
@@ -59,7 +65,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.0.1'
     compile 'com.facebook.android:facebook-android-sdk:4.7.0'
     compile 'com.android.support:support-v4:23.0.1'
-
     compile 'de.hdodenhof:circleimageview:2.0.0'
 }
 

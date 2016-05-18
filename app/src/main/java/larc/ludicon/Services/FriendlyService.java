@@ -150,7 +150,7 @@ public class FriendlyService extends Service {
 
                         // Get the current pending event
                         int j = 0;
-                        while (j < events.size() && now.after(events.get(j).date)) j++;
+                        while (j < events.size() &&  now.after(events.get(j).date)) j++;
 
                         ActivityInfo upcomingEvent;
                         if (j == events.size()) upcomingEvent = events.get(j - 1);

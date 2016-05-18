@@ -286,7 +286,7 @@ public class MainActivity extends Activity {
                                                                        }
                                                                    }
 
-                                                                   //TODO sort by date
+                                                                   //sort by date
                                                                    Collections.sort(events, new Comparator<ActivityInfo>() {
                                                                        @Override
                                                                        public int compare(ActivityInfo lhs, ActivityInfo rhs) {

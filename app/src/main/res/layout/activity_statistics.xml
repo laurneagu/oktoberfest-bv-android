@@ -4,7 +4,13 @@
     android:id="@+id/drawer_layout_chats"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/app_bg">
+    android:background="#EBEBEB">
+<ScrollView
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+ <RelativeLayout
+     android:layout_width="fill_parent"
+     android:layout_height="fill_parent">
 
     <RelativeLayout
     android:layout_width="match_parent"
@@ -15,50 +21,78 @@
     android:paddingTop="70dp"
     android:paddingBottom="@dimen/activity_vertical_margin">
 
-    <TextView
-        android:text="Events joined:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/eventsjoined"
-        android:textSize="25sp"
-        android:paddingBottom="20dp"
-        android:textColor="#000"/>
         <TextView
-            android:text="0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/eventsjoined"
-            android:id="@+id/numberjoined"
-            android:textSize="25sp"
-            android:paddingBottom="20dp"
-            android:textColor="#000"/>
+            android:layout_centerHorizontal="true"
+            android:text="Current year 2016 "
+            android:textColor="#0C3855"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:id="@+id/currentYear"/>
 
+    <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/chart"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_below="@id/currentYear"/>
+    </RelativeLayout>
     <TextView
-        android:text="Events participated:"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/eventsparticipated"
-        android:textSize="25sp"
-        android:paddingBottom="20dp"
-        android:textColor="#000"
-        android:layout_below="@id/eventsjoined"/>
-        <TextView
-            android:text="0"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/numberjoined"
-            android:layout_toRightOf="@id/eventsparticipated"
-            android:id="@+id/numberparticipated"
-            android:textSize="25sp"
-            android:paddingBottom="20dp"
-            android:textColor="#000"/>
+        android:text="Sports you like to play:"
+        android:textSize="20dp"
+        android:textColor="#0C3855"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/sportsYouLike"
+        android:layout_below="@+id/relLayout"/>
+
+     <android.support.v7.widget.RecyclerView
+         android:layout_width="wrap_content"
+         android:layout_height="52dp"
+         android:textAppearance="?android:attr/textAppearanceMedium"
+         android:text=""
+         android:gravity="center"
+         android:layout_centerHorizontal="true"
+         android:layout_centerInParent="true"
+         android:paddingTop="10dp"
+         android:layout_marginLeft="100dp"
+         android:layout_marginRight="100dp"
+         android:id="@+id/listofSports"
+         android:layout_below="@+id/sportsYouLike" />
+
+     <TextView
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:text="Total points: "
+         android:layout_centerHorizontal="true"
+         android:id="@+id/totalPoints"
+         android:layout_below="@+id/listofSports"
+         android:textColor="#0C3855"
+         android:textStyle="bold" />
+
+     <TextView
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:text="Total events attended: 0"
+         android:layout_centerHorizontal="true"
+         android:id="@+id/totalEventsAttend"
+         android:layout_below="@+id/totalPoints"
+         android:textColor="#0C3855"
+         android:textStyle="bold" />
+
+     <ListView
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:layout_below="@id/totalEventsAttend"
+         android:id="@+id/statsPerSport"
+         android:paddingTop="20dp"></ListView>
 
 </RelativeLayout>
+</ScrollView>
 
     <include layout="@layout/header"/>
     <include layout="@layout/leftside_panel" />
-
-
-
 
 </android.support.v4.widget.DrawerLayout>

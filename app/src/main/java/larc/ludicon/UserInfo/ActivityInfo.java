@@ -13,4 +13,5 @@ public class ActivityInfo {
     public String id;
     public double longitude;
     public double latitude;
+    public int points;
 }
