@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -28,12 +29,15 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 
 //import com.batch.android.Batch;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -113,7 +117,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-       /* Batch.onStart(this);
+        /* Batch.onStart(this);
 
         Batch.User.getEditor()
                 .setIdentifier(User.uid)
@@ -265,8 +269,7 @@ public class MainActivity extends Activity {
                                                                    }
 
                                                                    String connectionsJSONString = getSharedPreferences("UserDetails", 0).getString("events", null);
-                                                                   Type type = new TypeToken<List<ActivityInfo>>() {
-                                                                   }.getType();
+                                                                   Type type = new TypeToken<List<ActivityInfo>>() {}.getType();
                                                                    List<ActivityInfo> events = null;
                                                                    if (connectionsJSONString != null) {
                                                                        events = new Gson().fromJson(connectionsJSONString, type);
@@ -277,6 +280,11 @@ public class MainActivity extends Activity {
                                                                    } else {
                                                                        Boolean exist = false;
                                                                        for (ActivityInfo act : events) {
+                                                                           // Trash detection
+                                                                           if (ai.date == null) {
+                                                                               exist = true;
+                                                                               break;
+                                                                           }
                                                                            if (ai.date.compareTo(act.date) == 0) {
                                                                                exist = true;
                                                                            }
@@ -355,6 +363,85 @@ public class MainActivity extends Activity {
 
     public void updateList()
     {
+        /// Check from Shared prefs if we have any event happening
+        Gson gson = new Gson();
+        String json = getSharedPreferences("UserDetails", 0).getString("currentEvent", "");
+        final ActivityInfo currentEvent = gson.fromJson(json, ActivityInfo.class);
+
+        if (currentEvent != null){
+            RelativeLayout rlCurrEvent = (RelativeLayout)findViewById(R.id.currEventLayout);
+
+            ViewGroup.LayoutParams params = rlCurrEvent.getLayoutParams();
+            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+
+            rlCurrEvent.setLayoutParams(params);
+
+            // Fill the current event details
+
+            final TextView firstPart = (TextView)findViewById(R.id.firstPartofTextCurrEvent);
+            final TextView secondPart = (TextView) findViewById(R.id.secondPartofTextCurrEvent);
+            final TextView time = (TextView) findViewById(R.id.timeTextCurrEvent);
+            final TextView place = (TextView) findViewById(R.id.placeTextCurrEvent);
+            final ImageView icon = (ImageView) findViewById(R.id.sportIconCurrEvent);
+            final ImageButton share = (ImageButton) findViewById(R.id.sharefb_btnCurrEvent);
+
+            // Set name and picture for the first user of the event
+
+            String uri = "@drawable/" + currentEvent.sport.toLowerCase().replace(" ", "");
+
+            int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+            Drawable res = getResources().getDrawable(imageResource);
+
+            icon.setImageDrawable(res);
+            firstPart.setText("You are playing " + currentEvent.sport);
+            String audience = "";
+            if (currentEvent.others > 1) {
+                audience = " with " + (currentEvent.others) + " others";
+            }
+            else {
+                audience = " with no others";
+            }
+            secondPart.setText(audience);
+
+            if(currentEvent.place != null )
+                place.setText(currentEvent.place);
+            else
+                place.setText("Unknown");
+
+            time.setText("Now");
+
+            // Share on facebook
+            final ShareDialog shareDialog = new ShareDialog(this);
+            share.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String audience = "";
+                    if (currentEvent.others > 1)
+                        audience = " with " + (currentEvent.others) + " others";
+                    else
+                        audience = " with no others";
+
+                    String place ="";
+                    if(currentEvent.place != null )
+                        place= currentEvent.place;
+                    else
+                        place ="Unknown";
+
+                    ShareLinkContent content = new ShareLinkContent.Builder()
+                            .setContentUrl(Uri.parse("http://ludicon.info/"))
+                            .setImageUrl(Uri.parse("http://www.ludicon.info/img/sports/" + currentEvent.sport +".png"))
+                                    .setContentTitle(User.getFirstName(getApplicationContext()) + " is playing " + currentEvent.sport + audience + " at " + place)
+                                    .setContentDescription("Ludicon ! Let's go and play !")
+                                    .build();
+
+                    if (ShareDialog.canShow(ShareLinkContent.class) == true)
+                        shareDialog.show(content);
+
+                }
+            });
+
+        }
+
 
         Firebase userRef = User.firebaseRef.child("events"); // check events
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -407,7 +494,7 @@ public class MainActivity extends Activity {
                                 if (userID.equalsIgnoreCase(User.uid)) {
                                     doIParticipate = true;
                                     participants.put(user.getKey().toString(), (Boolean) user.getValue());
-                                    break;
+                                    //break;
                                 } else {
                                     participants.put(user.getKey().toString(), (Boolean) user.getValue());
                                 }
@@ -416,7 +503,8 @@ public class MainActivity extends Activity {
                     }
 
                     // Insert event in the correct list
-                    if (new Date().before(event.date) && isPublic) {
+                    //if (new Date().before(event.date) && isPublic) {
+                    if ((new Date().getTime() < event.date.getTime()) && isPublic) {
 
                         event.usersUID = participants;
 

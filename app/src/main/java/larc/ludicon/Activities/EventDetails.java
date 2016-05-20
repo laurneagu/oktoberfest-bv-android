@@ -93,6 +93,14 @@ public class EventDetails extends AppCompatActivity {
         ImageView userPic = (ImageView) findViewById(R.id.userPicture);
         Drawable d = new BitmapDrawable(getResources(), User.image);
         userPic.setImageDrawable(d);
+
+        userPic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                EventDetails.this.startActivity(mainIntent);
+            }
+        });
         // -------------------------------------------------------------------------------------------------------------
 
         Firebase eventRef = User.firebaseRef.child("events").child(eventUid);

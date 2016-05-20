@@ -6,7 +6,8 @@
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        >
 
         <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="wrap_content"
@@ -17,9 +18,9 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="3dp"
+            android:layout_height="2dp"
             android:id="@+id/separatorLine"
-            android:background="@android:color/darker_gray"/>
+            android:background="#FFFFFF"/>
 
         <LinearLayout
             android:id="@+id/relativeLayout1"
@@ -59,12 +60,138 @@
         </LinearLayout>
 
 
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:id="@+id/currEventLayout"
+            android:layout_height="0dp"
+            android:background="@color/com_facebook_button_background_color"
+            android:layout_below="@+id/relativeLayout1">
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:id="@+id/sportIconCurrEvent"
+                android:layout_alignTop="@+id/nameLabelCurrEvent"
+                android:layout_alignLeft="@+id/linearLayout4CurrEvent"
+                android:layout_alignStart="@+id/linearLayout4CurrEvent" />
+            <TextView
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="HAPPENING NOW !"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:id="@+id/nameLabelCurrEvent"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="110dp"
+                android:layout_alignParentTop="true" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/linearLayout4CurrEvent"
+                android:layout_marginLeft="42dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:id="@+id/linearLayout6CurrEvent">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:background="@drawable/place"
+                    android:id="@+id/placeImageCurrEvent" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="Parc Crangasi"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp"
+                    android:layout_marginLeft="10dp"
+                    android:id="@+id/placeTextCurrEvent" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/linearLayout5CurrEvent"
+                android:layout_below="@+id/nameLabelCurrEvent"
+                android:layout_toRightOf="@+id/firstPartofTextCurrEvent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/secondPartofTextCurrEvent"
+                    android:text=" with x others"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/linearLayout4CurrEvent"
+                android:layout_marginLeft="42dp"
+                android:layout_below="@+id/firstPartofTextCurrEvent">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:background="@drawable/clock"
+                    android:id="@+id/clockImageCurrEvent" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:text="Today at 19:00"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:layout_marginLeft="10dp"
+                    android:id="@+id/timeTextCurrEvent" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/linearLayout2CurrEvent"
+
+                android:layout_alignParentRight="true"
+                android:layout_toRightOf="@+id/nameLabelCurrEvent"
+                android:layout_marginTop="15dp">
+
+                <ImageButton
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/fb_share_small"
+                    android:layout_marginRight="5dp"
+                    android:id="@+id/sharefb_btnCurrEvent" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/firstPartofTextCurrEvent"
+                android:text="You play something"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:layout_below="@+id/nameLabelCurrEvent"
+                android:layout_alignLeft="@+id/nameLabelCurrEvent"
+                android:layout_marginBottom="15dp" />
+
+
+        </RelativeLayout>
+
+
 
         <ViewFlipper
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/viewFlipper"
-            android:layout_below="@+id/relativeLayout1">
+            android:layout_below="@+id/currEventLayout">
 
             <android.support.v4.widget.SwipeRefreshLayout
                 android:id="@+id/swipe_refresh1"
@@ -84,6 +211,7 @@
                 android:id="@+id/swipe_refresh2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <ListView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

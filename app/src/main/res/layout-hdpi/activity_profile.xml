@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:id="@+id/drawer_layout_settings"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/app_bg">
-
-    <include layout="@layout/header" />
-
-    <include layout="@layout/leftside_panel" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -24,11 +21,11 @@
             android:layout_marginTop="70dp" />
 
         <ImageButton
-            android:layout_width="150dp"
-            android:layout_height="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/chatbutton"
             android:layout_marginTop="10dp"
-            android:background="@drawable/chatbtn"
+            android:background="@drawable/chat"
             android:layout_below="@+id/profileImageView"
             android:layout_centerHorizontal="true" />
 
@@ -78,4 +75,7 @@
             android:layout_below="@+id/view"
             android:layout_centerHorizontal="true" />
     </RelativeLayout>
+
+    <include layout="@layout/header"/>
+    <include layout="@layout/leftside_panel"/>
 </android.support.v4.widget.DrawerLayout>

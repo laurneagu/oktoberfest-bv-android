@@ -246,6 +246,9 @@ public class IntroActivity extends Activity {
 
             User.profilePictureView = profilePictureView;
 
+            LoginButton login_button = (LoginButton) findViewById(R.id.login_button);
+            login_button.setVisibility(View.INVISIBLE);
+
 
 //            ImageView fbImage = ( ( ImageView)profilePictureView.getChildAt(0));
 //            Bitmap    bitmap  = ( (BitmapDrawable) fbImage.getDrawable()).getBitmap();
@@ -320,7 +323,7 @@ public class IntroActivity extends Activity {
                     }
 
                     //points
-                    map.put("points","0");
+                    map.put("points", "0");
 
                     //lastLogIn - GMT
                     DateFormat df = DateFormat.getDateTimeInstance();
@@ -336,11 +339,9 @@ public class IntroActivity extends Activity {
                     ImageView profilePicture = (ImageView) findViewById(R.id.profileImageView);
                     profilePicture.setImageBitmap(profilePictureView.getDrawingCache());
 
-                    LoginButton login_button = (LoginButton) findViewById(R.id.login_button);
-                    login_button.setVisibility(View.INVISIBLE);
-
                     greeting.setVisibility(View.VISIBLE);
                     greeting.setText(getString(R.string.hello_user, profile.getFirstName()));
+
 
                     // Check user exists
                     Log.v("UID",uid);

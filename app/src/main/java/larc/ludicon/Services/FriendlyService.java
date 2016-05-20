@@ -131,8 +131,7 @@ public class FriendlyService extends Service {
 
                     // Get the list of events from Shared Prefs
                     String connectionsJSONString = getSharedPreferences("UserDetails", 0).getString("events", null);
-                    Type type = new TypeToken<List<ActivityInfo>>() {
-                    }.getType();
+                    Type type = new TypeToken<List<ActivityInfo>>() {}.getType();
                     List<ActivityInfo> events = null;
                     if (connectionsJSONString != null) {
                         events = new Gson().fromJson(connectionsJSONString, type);
@@ -173,6 +172,13 @@ public class FriendlyService extends Service {
 
                                 // sleep till the start of the event ( 1 minute error )
 
+                                // SAVE IN SHARED PREFS THE PENDING EVENT
+                                SharedPreferences.Editor editor = getSharedPreferences("UserDetails", 0).edit();
+                                Gson gson = new Gson();
+                                String json = gson.toJson(upcomingEvent); // Type is activity info
+                                editor.putString("currentEvent", json);
+                                editor.commit();
+
                                 // Point where the event starts
                                 final ArrayList<Integer> pointsList = new ArrayList<>();
 
@@ -211,6 +217,10 @@ public class FriendlyService extends Service {
                                     } catch (InterruptedException exc) {
                                     }
                                 }
+
+                                // Delete current event from shared preferences when ended
+                                getSharedPreferences("UserDetails", 0).edit().putString("currentEvent", "").commit();
+
                                 // Update points with the ones received for the current event and update in Database
                                 // Check if there are unsaved points in SharedPrefs
                                 // Points are tied to events in a Map<Event_ID,Event_Points>
@@ -235,7 +245,7 @@ public class FriendlyService extends Service {
                                 if (pSharedPref != null) {
                                     JSONObject jsonObject = new JSONObject(unsavedPointsMap);
                                     String jsonString = jsonObject.toString();
-                                    SharedPreferences.Editor editor = pSharedPref.edit();
+                                    editor = pSharedPref.edit();
                                     editor.remove("UnsavedPointsMap").commit();
                                     editor.putString("UnsavedPointsMap", jsonString);
                                     editor.commit();

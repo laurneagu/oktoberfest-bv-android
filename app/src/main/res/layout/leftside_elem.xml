@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:paddingTop="2sp"
     android:layout_marginTop="10dp"
-    android:background="#D3D3D3"
+    android:background="#FFFFFF"
     android:id="@+id/curr_item_layout">
     <!-- Defining where should text be placed. You set you text color here-->
 

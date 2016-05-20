@@ -185,10 +185,12 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
     public void OnCreateEvent(View view) {
         DatePicker datePicker = (DatePicker) findViewById(R.id.date_picker);
         TimePicker timePicker = (TimePicker) findViewById(R.id.time_picker);
+
+        // Laur Comment there are 3 hours before !!
         Calendar calendar = new GregorianCalendar(datePicker.getYear(),
                 datePicker.getMonth(),
                 datePicker.getDayOfMonth(),
-                timePicker.getCurrentHour(),
+                timePicker.getCurrentHour() + 3,
                 timePicker.getCurrentMinute());
 
         UniqueIDCreator idCreator = new UniqueIDCreator();
@@ -201,6 +203,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         // TODO GMT format
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, new Locale("English"));
         df.setTimeZone(TimeZone.getTimeZone("gmt"));
+
         String gmtTime = df.format(calendar.getTime());
         map.put("date",  gmtTime);
         map.put("createdBy", User.uid);
