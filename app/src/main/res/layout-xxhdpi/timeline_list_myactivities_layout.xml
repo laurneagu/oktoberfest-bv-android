@@ -8,8 +8,9 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_alignTop="@+id/nameLabel"
-        android:layout_alignLeft="@+id/linearLayout4"
-        android:layout_alignStart="@+id/linearLayout4" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="10dp" />
 
     <ImageView
         android:layout_width="30dp"
@@ -18,25 +19,25 @@
         android:layout_alignBottom="@id/profilePicture"
         android:layout_alignRight="@id/profilePicture" />
     <TextView
-        android:layout_width="150dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="His name is"
-        android:textColor="#000066"
-        android:textSize="20dp"
+        android:textColor="#0e3956"
+        android:textSize="20sp"
         android:id="@+id/nameLabel"
         android:layout_marginTop="15dp"
-        android:layout_marginLeft="110dp"
+        android:layout_marginLeft="80dp"
         android:layout_alignParentTop="true" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/linearLayout6"
         android:layout_below="@+id/linearLayout4"
-        android:layout_marginLeft="42dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:id="@+id/linearLayout6">
+        android:layout_alignLeft="@+id/linearLayout4"
+        android:layout_alignStart="@+id/linearLayout4"
+        android:layout_marginBottom="10dp">
 
         <ImageView
             android:layout_width="18dp"
@@ -49,34 +50,19 @@
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:text="Parc Crangasi"
-            android:textColor="#237bbe"
+            android:textColor="#0e3956"
             android:textSize="14sp"
-            android:layout_marginLeft="10dp"
             android:id="@+id/placeText" />
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/linearLayout5"
-        android:layout_below="@+id/profilePicture"
-        android:layout_toRightOf="@id/firstPartofText">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/secondPartofText"
-            android:text=" with x others"
-            android:textColor="#000066"
-            android:textSize="16sp" />
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/linearLayout4"
-        android:layout_marginLeft="42dp"
+        android:layout_marginLeft="10dp"
         android:layout_below="@+id/firstPartofText">
 
         <ImageView
@@ -88,40 +74,60 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#237bbe"
+            android:textColor="#0e3956"
             android:text="Today at 19:00"
             android:textStyle="bold"
             android:textSize="14sp"
-            android:layout_marginLeft="10dp"
             android:id="@+id/timeText" />
+
+        <TableLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignBottom="@+id/linearLayout6"
+            android:layout_alignLeft="@+id/linearLayout6"
+            android:layout_alignStart="@+id/linearLayout6"
+            android:layout_below="@+id/profilePicture"
+            android:layout_alignRight="@+id/nameLabel"
+            android:layout_alignEnd="@+id/nameLabel">
+
+
+        </TableLayout>
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/linearLayout2"
-
-        android:layout_alignParentRight="true"
-        android:layout_toRightOf="@+id/nameLabel"
-        android:layout_marginTop="15dp">
-
-        <ImageButton
-            android:layout_width="70dp"
-            android:layout_height="20dp"
-            android:background="@drawable/details"
-           android:layout_marginRight="15dp"
-            android:id="@+id/details_btn" />
-
-    </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/firstPartofText"
         android:text="Will play something"
-        android:textColor="#237bbe"
+        android:textColor="#5c5a5a"
         android:textSize="16sp"
-        android:layout_below="@+id/profilePicture"
-        android:layout_alignLeft="@+id/profilePicture"
+        android:layout_below="@+id/nameLabel"
+        android:layout_alignLeft="@+id/nameLabel"
+        android:layout_alignStart="@+id/nameLabel"
         android:layout_marginBottom="15dp" />
+
+    <ImageButton
+        android:layout_width="63dp"
+        android:layout_height="18dp"
+        android:background="@drawable/details"
+        android:id="@+id/details_btn"
+        android:layout_alignTop="@+id/nameLabel"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="2dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/secondPartofText"
+        android:text=" with x others"
+        android:textColor="#1a425e"
+        android:textSize="16sp"
+        android:layout_alignTop="@+id/firstPartofText"
+        android:layout_toRightOf="@+id/firstPartofText"
+        android:layout_toEndOf="@+id/firstPartofText" />
+
+
 </RelativeLayout>

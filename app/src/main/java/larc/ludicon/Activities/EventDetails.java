@@ -164,7 +164,7 @@ public class EventDetails extends AppCompatActivity {
                 ((TextView)findViewById(R.id.event_date)).setText(date);
                 ((TextView)findViewById(R.id.event_place)).setText(place);
 
-                ((TextView)findViewById(R.id.event_play)).setText("Will play "+sport +
+                ((TextView)findViewById(R.id.event_play)).setText("Will play "+ sport +
                         (users.size()-1>0?
                                 " with " + ((users.size()-1)==1?
                                         "one other"

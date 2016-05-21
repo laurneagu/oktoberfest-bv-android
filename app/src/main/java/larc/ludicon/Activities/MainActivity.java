@@ -2,6 +2,7 @@ package larc.ludicon.Activities;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -15,7 +16,11 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -23,6 +28,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -33,6 +39,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBarActivity;
+import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 
 
 //import com.batch.android.Batch;
@@ -42,6 +54,7 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.firebase.client.annotations.Nullable;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
@@ -70,9 +83,12 @@ import larc.ludicon.R;
 import larc.ludicon.UserInfo.ActivityInfo;
 import larc.ludicon.UserInfo.User;
 import larc.ludicon.Services.FriendlyService;
+import larc.ludicon.Utils.MainPageUtils.ViewPagerAdapter;
+import larc.ludicon.Utils.ui.SlidingTabLayout;
+
 import android.support.v4.widget.SwipeRefreshLayout;
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
 
     // Left side panel
     private ListView mDrawerList;
@@ -85,6 +101,14 @@ public class MainActivity extends Activity {
     private int currentPage = 0; // 0 = friends, 1 = my
     Button frButton;
     Button myButton;
+
+    /* SlideTab */
+    Toolbar toolbar;
+    ViewPager pager;
+    ViewPagerAdapter adapter;
+    SlidingTabLayout tabs;
+    CharSequence Titles[]={"My Activities","Around me"};
+    int Numboftabs =2;
 
 
     class Event {
@@ -123,8 +147,42 @@ public class MainActivity extends Activity {
                 .setIdentifier(User.uid)
                 .save(); // Don't forget to save the changes!
         */
-
         setContentView(R.layout.activity_main);
+
+
+        /* Slide Tab */
+        //toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        //setSupportActionBar(toolbar); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+        // Creating The ViewPagerAdapter and Passing Fragment Manager, Titles fot the Tabs and Number Of Tabs.
+        adapter =  new ViewPagerAdapter(getSupportFragmentManager(),Titles,Numboftabs);
+
+        // Assigning ViewPager View and setting the adapter
+        pager = (ViewPager) findViewById(R.id.pager);
+        pager.setAdapter(adapter);
+
+        // Assiging the Sliding Tab Layout View
+        tabs = (SlidingTabLayout) findViewById(R.id.tabs);
+        tabs.setDistributeEvenly(true); // To make the Tabs Fixed set this true, This makes the tabs Space Evenly in Available width
+
+        // Setting Custom Color for the Scroll bar indicator of the Tab View
+        tabs.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
+            @Override
+            public int getIndicatorColor(int position) {
+                return getResources().getColor(R.color.tabsScrollColor);
+            }
+        });
+
+        // Setting the ViewPager For the SlidingTabsLayout
+        tabs.setViewPager(pager);
+        /**************/
+
+
+
+
+
+        /*
         flipper = (ViewFlipper)findViewById(R.id.viewFlipper);
         flipper.setInAnimation(this, R.anim.right_enter);
         flipper.setOutAnimation(this, R.anim.left_out);
@@ -134,6 +192,7 @@ public class MainActivity extends Activity {
 
         addFriendsActivityButtonEventListener();
         addMyActivityButtonEventListener();
+        */
 
         final Locale locale = Locale.getDefault();
 
@@ -340,6 +399,7 @@ public class MainActivity extends Activity {
         userPic.setImageDrawable(d);
         // -------------------------------------------------------------------------------------------------------------
 
+    /*
         final SwipeRefreshLayout mSwipeRefreshLayout1 = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh1);
         mSwipeRefreshLayout1.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -347,8 +407,9 @@ public class MainActivity extends Activity {
                 updateList();
                 mSwipeRefreshLayout1.setRefreshing(false);
             }
-        });
+        });*/
 
+        /*
         final SwipeRefreshLayout mSwipeRefreshLayout2 = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh2);
         mSwipeRefreshLayout2.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -358,8 +419,13 @@ public class MainActivity extends Activity {
             }
         });
 
+        */
+
+
         updateList();
+
     }
+
 
     public void updateList()
     {
@@ -1001,5 +1067,6 @@ public class MainActivity extends Activity {
             return view;
         }
     }
-
 }
+
+
