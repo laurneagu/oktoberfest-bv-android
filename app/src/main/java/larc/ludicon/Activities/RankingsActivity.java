@@ -40,6 +40,7 @@ public class RankingsActivity extends AppCompatActivity {
         ((TextView)v).setTextColor(Color.parseColor("#000000"));
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

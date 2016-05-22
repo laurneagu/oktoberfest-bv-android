@@ -107,9 +107,9 @@ public class MainActivity extends AppCompatActivity {
     ViewPager pager;
     ViewPagerAdapter adapter;
     SlidingTabLayout tabs;
-    CharSequence Titles[]={"My Activities","Around me"};
+    CharSequence Titles[]={"My Activities","Around Me"};
     int Numboftabs =2;
-
+    boolean addedSwipe = false;
 
     class Event {
         Map<String, Boolean> usersUID = new HashMap<String,Boolean>();
@@ -200,10 +200,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
 
-                if ( snapshot.getValue() != null )
-                    writeToFirebase(sport, Integer.parseInt(snapshot.getValue().toString()),unsavedPoints,eventID);
+                if (snapshot.getValue() != null)
+                    writeToFirebase(sport, Integer.parseInt(snapshot.getValue().toString()), unsavedPoints, eventID);
                 else
-                    writeToFirebase(sport, 0,unsavedPoints,eventID);
+                    writeToFirebase(sport, 0, unsavedPoints, eventID);
             }
 
             @Override
@@ -231,6 +231,8 @@ public class MainActivity extends AppCompatActivity {
                 .setIdentifier(User.uid)
                 .save(); // Don't forget to save the changes!
         */
+       // getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+        getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
 
 
@@ -490,10 +492,10 @@ public class MainActivity extends AppCompatActivity {
                 updateList();
                 mSwipeRefreshLayout1.setRefreshing(false);
             }
-        });*/
-
-
-        /*final SwipeRefreshLayout mSwipeRefreshLayout2 = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh2);
+        });
+*/
+        /*
+        final SwipeRefreshLayout mSwipeRefreshLayout2 = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh2);
         mSwipeRefreshLayout2.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -504,11 +506,12 @@ public class MainActivity extends AppCompatActivity {
         */
 
 
-
-
         updateList();
 
     }
+
+
+
 
 
     public void updateList()
@@ -695,6 +698,19 @@ public class MainActivity extends AppCompatActivity {
                 if (mylistView != null)
                     mylistView.setAdapter(myadapter);
 
+                /*Swipe */
+                if(!addedSwipe) {
+                    final SwipeRefreshLayout mSwipeRefreshLayout1 = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh1);
+                    mSwipeRefreshLayout1.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                        @Override
+                        public void onRefresh() {
+                            updateList();
+                            mSwipeRefreshLayout1.setRefreshing(false);
+                        }
+                    });
+                    addedSwipe = true;
+                }
+
 
                 // Dismiss loading dialog after  2 * TIMEOUT * eventList.size() ms
                 Timer timer = new Timer();
@@ -741,7 +757,7 @@ public class MainActivity extends AppCompatActivity {
         myButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(currentPage != 1){
+                if (currentPage != 1) {
                     currentPage = 1;
                     frButton.setBackgroundColor(Color.parseColor("#237bbe"));
                     myButton.setBackgroundColor(Color.parseColor("#0e64a6"));

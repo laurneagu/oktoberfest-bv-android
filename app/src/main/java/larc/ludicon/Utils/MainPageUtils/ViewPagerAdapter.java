@@ -11,6 +11,9 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
     CharSequence Titles[]; // This will Store the Titles of the Tabs which are Going to be passed when ViewPagerAdapter is created
     int NumbOfTabs; // Store the number of tabs, this will also be passed when the ViewPagerAdapter is created
+    Tab1 tab1;
+    Tab2 tab2;
+    boolean t1=false, t2=false;
 
 
     // Build a Constructor and assign the passed Values to appropriate values in the class
@@ -28,12 +31,18 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
         if(position == 0) // if the position is 0 we are returning the First tab
         {
-            Tab1 tab1 = new Tab1();
+            if (!t1){
+                tab1 = new Tab1();
+                t1 = true;
+            }
             return tab1;
         }
         else             // As we are having 2 tabs if the position is now 0 it must be 1 so we are returning second tab
         {
-            Tab2 tab2 = new Tab2();
+            if(!t2) {
+                tab2 = new Tab2();
+                t2 = true;
+            }
             return tab2;
         }
 

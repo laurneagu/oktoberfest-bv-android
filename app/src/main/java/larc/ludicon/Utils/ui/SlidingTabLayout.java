@@ -68,6 +68,12 @@ public class SlidingTabLayout extends HorizontalScrollView {
     private ViewPager.OnPageChangeListener mViewPagerPageChangeListener;
 
     private final SlidingTabStrip mTabStrip;
+    View oldSelection = null;
+    private void removeOldSelection() {
+        if(oldSelection != null) {
+            oldSelection.setSelected(false);
+        }
+    }
 
     public SlidingTabLayout(Context context) {
         this(context, null);
@@ -175,6 +181,8 @@ public class SlidingTabLayout extends HorizontalScrollView {
     }
 
     private void populateTabStrip() {
+        removeOldSelection(); // add those two lines
+        oldSelection = null;
         final PagerAdapter adapter = mViewPager.getAdapter();
         final View.OnClickListener tabClickListener = new TabClickListener();
 
@@ -214,8 +222,12 @@ public class SlidingTabLayout extends HorizontalScrollView {
             if (i == mViewPager.getCurrentItem()) {
                 tabView.setSelected(true);
             }
+            tabTitleView.setTextColor(getResources().getColorStateList(R.color.tab_text_color));
+            if (i == mViewPager.getCurrentItem()) {
+                tabView.setSelected(true);
+            }
+            //tabTitleView.setTextColor(getResources().getColor(R.color.white));
 
-            tabTitleView.setTextColor(getResources().getColor(R.color.white));
            //Drawable d = getResources().getDrawable(R.drawable.second_l);
             //d.setBounds(0,0,50,20);
             //tabTitleView.setBackground(d);
@@ -245,6 +257,13 @@ public class SlidingTabLayout extends HorizontalScrollView {
 
         View selectedChild = mTabStrip.getChildAt(tabIndex);
         if (selectedChild != null) {
+
+            if(positionOffset == 0 && selectedChild != oldSelection) { // added part
+                selectedChild.setSelected(true);
+                removeOldSelection();
+                oldSelection = selectedChild;
+            }
+
             int targetScrollX = selectedChild.getLeft() + positionOffset;
 
             if (tabIndex > 0 || positionOffset > 0) {
