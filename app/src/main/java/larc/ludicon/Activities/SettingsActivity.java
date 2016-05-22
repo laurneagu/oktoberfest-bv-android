@@ -111,7 +111,8 @@ public class SettingsActivity extends Activity {
                 progressText.setText(barOffset * 10 + " km");
                 seekBar = (SeekBar) findViewById(R.id.seekBar2);
                 seekBar.setProgress(barOffset * 10);
-                seekBar.setAlpha(0);
+                //seekBar.setAlpha(0);
+                //seekBar.setBackgroundColor(getResources().getColor(R.color.bg1));
 
 
                 pseudoSeekBar = (ImageView) findViewById(R.id.visibleSeekBar2);
@@ -119,7 +120,7 @@ public class SettingsActivity extends Activity {
                 String uri = "@drawable/range" + barOffset + "0";
                 int imageResource = getResources().getIdentifier(uri, null, getPackageName());
                 Drawable res = getResources().getDrawable(imageResource);
-                pseudoSeekBar.setImageDrawable(res);
+                //pseudoSeekBar.setImageDrawable(res);
             }
 
             @Override
@@ -137,6 +138,8 @@ public class SettingsActivity extends Activity {
         progressText.setText(barOffset * 10 + " km");
         seekBar = (SeekBar) findViewById(R.id.seekBar2);
         seekBar.setProgress(savedProgress);
+        seekBar.setProgressDrawable(getResources()
+                .getDrawable(R.drawable.progress_bar));
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
@@ -158,7 +161,7 @@ public class SettingsActivity extends Activity {
                 String uri = "@drawable/range" + barOffset + "0";
                 int imageResource = getResources().getIdentifier(uri, null, getPackageName());
                 Drawable res = getResources().getDrawable(imageResource);
-                pseudoSeekBar.setImageDrawable(res);
+                //pseudoSeekBar.setImageDrawable(res);
             }
 
             @Override
@@ -337,13 +340,13 @@ public class SettingsActivity extends Activity {
                         RelativeLayout rl = (RelativeLayout) cb.getParent();
                         sport.setSelected(cb.isChecked());
                         if (cb.isChecked()) {
-                            rl.setBackgroundColor(Color.parseColor("#999999"));
+                            rl.setBackgroundColor(getResources().getColor(R.color.bg1));
                             ((ImageView) rl.getChildAt(2)).setImageBitmap(sport.icon);
                             cb.setAlpha((float) 0.9);
                         } else {
-                            rl.setBackgroundColor(Color.parseColor("#cccccc"));
+                            rl.setBackgroundColor(getResources().getColor(R.color.bg2));
                             ((ImageView) rl.getChildAt(2)).setImageBitmap(sport.desaturated_icon);
-                            cb.setAlpha((float) 0.5);
+                            cb.setAlpha((float) 0.7);
                         }
 
                         // Update firebase
@@ -366,14 +369,16 @@ public class SettingsActivity extends Activity {
             holder.box.setChecked(sport.isChecked);
             holder.box.setTag(sport);
             if (holder.box.isChecked()) {
-                holder.rl.setBackgroundColor(Color.parseColor("#999999"));
+                holder.rl.setBackgroundColor(getResources().getColor(R.color.bg1));
+               // holder.text.setTextColor(getResources().getColor(R.color.white));
                 holder.image.setImageBitmap(sport.icon);
+                holder.box.setTextColor(getResources().getColor(R.color.white));
                 holder.box.setAlpha((float) 0.9);
             } else {
-
-                holder.rl.setBackgroundColor(Color.parseColor("#cccccc"));
+                holder.box.setTextColor(getResources().getColor(R.color.white));
+                holder.rl.setBackgroundColor(getResources().getColor(R.color.bg2));
                 holder.image.setImageBitmap(sport.desaturated_icon);
-                holder.box.setAlpha((float) 0.5);
+                holder.box.setAlpha((float) 0.7);
             }
 
             return convertView;

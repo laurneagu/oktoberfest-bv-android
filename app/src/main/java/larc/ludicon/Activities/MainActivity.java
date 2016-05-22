@@ -516,7 +516,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void updateList()
     {
-        /*
+
         /// Check from Shared prefs if we have any event happening
         Gson gson = new Gson();
         String json = getSharedPreferences("UserDetails", 0).getString("currentEvent", "");
@@ -595,7 +595,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
-*/
 
         Firebase userRef = User.firebaseRef.child("events"); // check events
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {

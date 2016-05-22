@@ -11,20 +11,43 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/relLayout">
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="#8f2525"
-        android:text="Log out"
-        android:textSize="20dp"
-        android:id="@+id/logout"
-        android:layout_alignParentBottom="true"
-        android:textColor="#ffffff"
-        android:visibility="invisible"
-        android:layout_alignRight="@+id/textView6"
-        android:layout_alignEnd="@+id/textView6"
-        android:layout_alignLeft="@+id/textView6"
-        android:layout_alignStart="@+id/textView6" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#8f2525"
+            android:text="Log out"
+            android:textSize="20dp"
+            android:id="@+id/logout"
+            android:layout_alignParentBottom="true"
+            android:textColor="#ffffff"
+            android:visibility="invisible"
+            android:layout_alignRight="@+id/textView6"
+            android:layout_alignEnd="@+id/textView6"
+            android:layout_alignLeft="@+id/textView6"
+            android:layout_alignStart="@+id/textView6" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Favourite Sports"
+            android:id="@+id/textView6"
+            android:layout_alignTop="@+id/gridView"
+            android:layout_centerHorizontal="true"
+            android:textColor="#166eb1"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Pick what sports you would like to play"
+            android:id="@+id/textView7"
+            android:layout_below="@+id/textView6"
+            android:layout_centerHorizontal="true"
+            android:textColor="#2275b5" />
 
         <GridView
             android:paddingTop="50dp"
@@ -42,12 +65,17 @@
             android:numColumns="2"
             android:layout_above="@+id/textView8" />
 
+
         <SeekBar
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:id="@+id/seekBar2"
             android:layout_above="@+id/progressText"
+            android:minHeight="3dip"
+            android:maxHeight="3dip"
+            android:layout_margin="5dip"
             android:layout_centerHorizontal="true" />
+
 
         <ImageView
             android:layout_width="400dp"
@@ -56,23 +84,7 @@
             android:layout_above="@+id/progressText"
             android:layout_centerHorizontal="true" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Favourite Sports"
-            android:id="@+id/textView6"
-            android:layout_alignTop="@+id/gridView"
-            android:layout_centerHorizontal="true" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Pick what sports you would like to play"
-            android:id="@+id/textView7"
-            android:layout_below="@+id/textView6"
-            android:layout_centerHorizontal="true" />
 
         <TextView
             android:paddingTop="10dp"
@@ -82,7 +94,9 @@
             android:text="Range"
             android:id="@+id/textView8"
             android:layout_above="@+id/textView9"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:textStyle="bold"
+            android:textColor="#1971b4" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -92,7 +106,8 @@
             android:id="@+id/textView9"
             android:layout_above="@+id/seekBar2"
             android:layout_alignRight="@+id/textView7"
-            android:layout_alignEnd="@+id/textView7" />
+            android:layout_alignEnd="@+id/textView7"
+            android:textColor="#176fb2" />
 
         <TextView
             android:layout_width="wrap_content"

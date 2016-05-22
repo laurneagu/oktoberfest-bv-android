@@ -32,8 +32,9 @@
 
         android:text="Pick a sport"
         android:id="@+id/sportPickTV"
-        android:textColor="#0e64a6"
-        />
+        android:textColor="#81878b"
+        android:textStyle="bold"
+        android:textSize="20dp" />
     <Spinner
         android:id="@+id/sports_spinner"
         android:layout_width="240dp"
@@ -44,22 +45,23 @@
         android:layout_below="@+id/sportPickTV"
         android:background="#FFFFFF"
         android:spinnerMode="dropdown"
-        />
+        android:layout_marginBottom="10dp" />
 
     <!-- EVENT PRIVACY -->
 
     <LinearLayout android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:layout_centerHorizontal="true"
         android:id="@+id/buttonsContainer"
-        android:layout_below="@+id/sports_spinner">
+        android:layout_below="@+id/sports_spinner"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp">
     <Button
         android:id="@+id/publicBut"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Public"
         android:layout_marginTop="10dp"
-        android:width="140dp"
+        android:width="160dp"
         android:height="20dp"
         android:textAllCaps="false"
         android:background="#0e64a6"
@@ -72,7 +74,7 @@
         android:layout_height="wrap_content"
         android:text="Private"
         android:layout_marginTop="10dp"
-        android:width="140dp"
+        android:width="160dp"
         android:height="20dp"
         android:textAllCaps="false"
         android:layout_toRightOf="@+id/publicBut"
@@ -86,16 +88,19 @@
 
     <!-- INVITE FRIENDS -->
 
+
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:text="Invite a friend"
-        android:textColor="#0e64a6"
+        android:textColor="#81878b"
         android:id="@+id/inviteFriendsTB"
         android:layout_below="@+id/buttonsContainer"
-        />
+        android:textStyle="bold"
+        android:textSize="20dp" />
 
         <AutoCompleteTextView
             android:layout_height="wrap_content"
@@ -106,7 +111,7 @@
             android:textColor="#0e64a6"
             android:background="#FFFFFF"
             android:layout_below="@+id/inviteFriendsTB"
-            />
+            android:layout_marginBottom="10dp" />
 
         <!-- DATE TIME PICK -->
         <TextView
@@ -114,41 +119,35 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="5dp"
-            android:text="Date"
-            android:textColor="#0e64a6"
+            android:text="Date and time"
+            android:textColor="#81878b"
             android:id="@+id/datetimeTB"
             android:layout_below="@+id/inviteFriendsTV"
-            />
+            android:textStyle="bold"
+            android:textSize="20dp" />
 
         <DatePicker
             android:id="@+id/date_picker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:calendarViewShown="false"
-            android:datePickerMode="spinner"
+            android:datePickerMode="calendar"
+            android:headerBackground="#0e64a6"
+            android:yearListSelectorColor="#0e64a6"
+            android:elevation="4dp"
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/datetimeTB"/>
 
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="5dp"
-                android:text="Time"
-                android:textColor="#0e64a6"
-                android:id="@+id/timeTB"
-                android:layout_below="@+id/date_picker"
-                />
 
             <TimePicker
                 android:id="@+id/time_picker"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:timePickerMode="spinner"
-                android:layout_below="@+id/timeTB"/>
+                android:headerBackground="#0e64a6"
+                android:timePickerMode="clock"
+                android:layout_below="@+id/date_picker"
+                android:layout_marginBottom="10dp" />
 
             <!-- MAPS PICK -->
 
@@ -158,10 +157,11 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="5dp"
                 android:text="Location"
-                android:textColor="#0e64a6"
+                android:textColor="#81878b"
                 android:id="@+id/locationTB"
                 android:layout_below="@+id/time_picker"
-                />
+                android:textStyle="bold"
+                android:textSize="20dp" />
 
             <AutoCompleteTextView
                 android:id="@+id/autoCompleteTextView"
@@ -178,7 +178,7 @@
                 android:layout_below="@+id/autoCompleteTextView"
         android:layout_width="400dp"
         android:layout_height="200dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
 
         />
 
@@ -194,7 +194,8 @@
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/map"
             android:onClick="OnCreateEvent"
-            />
+            android:textStyle="bold"
+            android:textSize="20dp" />
 
 </RelativeLayout>
     </ScrollView>

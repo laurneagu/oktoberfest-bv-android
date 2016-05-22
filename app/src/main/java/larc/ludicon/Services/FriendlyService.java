@@ -221,7 +221,7 @@ public class FriendlyService extends Service {
                                     }
 
                                     //  Remove location listener
-                                    removeUpdatesLocationManager();
+                                    //removeUpdatesLocationManager();
 
                                     // From 10 to 10 minutes, recheck the user is still there
                                     try {

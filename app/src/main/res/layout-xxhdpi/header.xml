@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="@drawable/leftside_header"
+        android:elevation="4dp"
         android:id="@+id/headerMenu">
 
         <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
