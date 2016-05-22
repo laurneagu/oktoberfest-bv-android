@@ -15,6 +15,7 @@
     android:layout_height="wrap_content"
     android:id="@+id/listSpinner"
     android:paddingTop="20dp"
+        android:spinnerMode="dropdown"
     android:layout_centerHorizontal="true">
     </Spinner>
 
@@ -23,12 +24,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/listSpinner"
-            android:layout_centerHorizontal="true">
+            android:layout_centerHorizontal="true"
+            android:id="@+id/linearLay"
+            android:paddingLeft="90dp">
 
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/trophy"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="My Rank: "
+                android:gravity="center_horizontal"
                 android:textSize="25dp"
                 android:textStyle="bold"
                 android:textColor="#0C3855"
@@ -39,9 +47,58 @@
                 android:text="0"
                 android:textSize="30dp"
                 android:textStyle="italic"
-                android:textColor="#0C3855"/>
+                android:textColor="#0C3855"
+                android:id="@+id/myRank" />
         </LinearLayout>
+        <ImageView
+            android:layout_width="350dp"
+            android:layout_height="150dp"
+            android:paddingTop="20dp"
+            android:layout_below="@id/linearLay"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/podium"
+            android:id="@+id/imageView2" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Locul 1"
+            android:textColor="#0C3855"
+            android:id="@+id/locul1"
+            android:layout_alignTop="@+id/imageView2"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Locul 3"
+            android:textColor="#0C3855"
+            android:id="@+id/locul3"
+            android:layout_below="@+id/locul2"
+            android:layout_alignRight="@+id/imageView2"
+            android:layout_alignEnd="@+id/imageView2" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Locul 2"
+            android:textColor="#0C3855"
+            android:id="@+id/locul2"
+            android:layout_below="@+id/locul1"
+            android:layout_alignLeft="@+id/imageView2"
+            android:layout_alignStart="@+id/imageView2" />
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imageView2"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:id="@+id/rankingsList">
+
+        </ListView>
     </RelativeLayout>
 
     <include layout="@layout/header"/>

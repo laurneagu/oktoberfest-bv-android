@@ -29,7 +29,6 @@
     <string name="title_activity_create_new">CreateNewActivity</string>
 
     <string-array name="rankings_array">
-        <item>General</item>
         <item>Football</item>
         <item>Volley</item>
         <item>Basketball</item>
