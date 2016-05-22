@@ -689,14 +689,18 @@ public class MainActivity extends AppCompatActivity {
                 /* Friends */
                 TimelineAroundActAdapter fradapter = new TimelineAroundActAdapter(friendsEventsList, getApplicationContext());
                 ListView frlistView = (ListView) findViewById(R.id.events_listView1);
-                if (frlistView != null)
+                if (frlistView != null){
                     frlistView.setAdapter(fradapter);
+                   // frlistView.setScrollingCacheEnabled(true);
+                }
 
                 /* My */
                 TimelineMyActAdapter myadapter = new TimelineMyActAdapter(myEventsList, getApplicationContext());
                 ListView mylistView = (ListView) findViewById(R.id.events_listView2);
-                if (mylistView != null)
+                if (mylistView != null){
                     mylistView.setAdapter(myadapter);
+                   // mylistView.setScrollingCacheEnabled(true);
+                }
 
                 /*Swipe */
                 if(!addedSwipe) {
@@ -834,6 +838,17 @@ public class MainActivity extends AppCompatActivity {
     // Adapter for the Around activities tab
     public class TimelineAroundActAdapter extends BaseAdapter implements ListAdapter {
 
+         class ViewHolder {
+            TextView name;
+            ImageView profilePicture;
+            TextView firstPart;
+             TextView secondPart;
+             TextView time;
+             TextView place;
+             ImageView icon;
+             ImageButton details;
+             ImageButton join;
+        };
         private ArrayList<Event> list = new ArrayList<>();
         private Context context;
         final ListView listView = (ListView) findViewById(R.id.events_listView1);
@@ -841,6 +856,9 @@ public class MainActivity extends AppCompatActivity {
         public TimelineAroundActAdapter(ArrayList<Event> list, Context context) {
             this.list = list;
             this.context = context;
+
+
+
         }
 
         @Override
@@ -859,10 +877,29 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
             View view = convertView;
+            ViewHolder holder = null;
             if (view == null) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.timeline_list_layout, null);
+
+                holder = new ViewHolder();
+                holder.name = (TextView) view.findViewById(R.id.nameLabel);
+                holder.profilePicture = (ImageView) view.findViewById(R.id.profilePicture);
+                holder.firstPart = (TextView) view.findViewById(R.id.firstPartofText);
+                holder.secondPart = (TextView) view.findViewById(R.id.secondPartofText);
+                holder.time = (TextView) view.findViewById(R.id.timeText);
+                holder.place = (TextView) view.findViewById(R.id.placeText);
+                holder.icon = (ImageView) view.findViewById(R.id.sportIcon);
+                holder.details = (ImageButton) view.findViewById(R.id.details_btn);
+                holder.join = (ImageButton) view.findViewById(R.id.join_btn);
+
+                view.setTag(holder);
             }
+            else {
+                holder = (ViewHolder)view.getTag();
+            }
+
+            /*
             final TextView name = (TextView) view.findViewById(R.id.nameLabel);
             final ImageView profilePicture = (ImageView) view.findViewById(R.id.profilePicture);
             final TextView firstPart = (TextView) view.findViewById(R.id.firstPartofText);
@@ -872,16 +909,17 @@ public class MainActivity extends AppCompatActivity {
             final ImageView icon = (ImageView) view.findViewById(R.id.sportIcon);
             final ImageButton details = (ImageButton) view.findViewById(R.id.details_btn);
             final ImageButton join = (ImageButton) view.findViewById(R.id.join_btn);
+            */
 
             // Set name and picture for the first user of the event
             //final String userUID = list.get(position).getFirstUser();
 
-            name.setText(list.get(position).creatorName);
-            Picasso.with(context).load(list.get(position).profileImageURL).into(profilePicture);
+            holder.name.setText(list.get(position).creatorName.split(" ")[0]);
+            Picasso.with(context).load(list.get(position).profileImageURL).into( holder.profilePicture);
 
 
             // Redirect to user profile on picture click
-            profilePicture.setOnClickListener(new View.OnClickListener() {
+            holder.profilePicture.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
                     intent.putExtra("uid", list.get(position).getFirstUser());
@@ -912,14 +950,14 @@ public class MainActivity extends AppCompatActivity {
             int imageResource = getResources().getIdentifier(uri, null, getPackageName());
             Drawable res = getResources().getDrawable(imageResource);
 
-            icon.setImageDrawable(res);
-            firstPart.setText("Will play " + list.get(position).sport);
+            holder.icon.setImageDrawable(res);
+            holder.firstPart.setText("Will play " + list.get(position).sport);
             if ((list.get(position).usersUID.size() - 1) > 1) {
-                secondPart.setText(" with " + (list.get(position).usersUID.size() - 1) + " others");
+                holder.secondPart.setText(" with " + (list.get(position).usersUID.size() - 1) + " others");
             } else if ((list.get(position).usersUID.size() - 1) == 1) {
-                secondPart.setText(" with 1 other");
+                holder.secondPart.setText(" with 1 other");
             } else {
-                secondPart.setText(" with no others");
+                holder.secondPart.setText(" with no others");
             }
             /*
             firstPart.setText("Will play " + list.get(position).sport);
@@ -932,9 +970,9 @@ public class MainActivity extends AppCompatActivity {
             }*/
 
             if(list.get(position) != null )
-                place.setText(list.get(position).place);
+                holder.place.setText(list.get(position).place);
             else
-                place.setText("Unknown");
+                holder.place.setText("Unknown");
             Calendar c = Calendar.getInstance();
             Date today = c.getTime();
             int todayDay = getDayOfMonth(today);
@@ -952,8 +990,8 @@ public class MainActivity extends AppCompatActivity {
             if(dateHour.equalsIgnoreCase("0")) dateHour += "0";
             if(dateMin.equalsIgnoreCase("0")) dateMin += "0";
             String hour = dateHour + ":" + dateMin;
-            time.setText(day + " at " + hour);
-            details.setOnClickListener(new View.OnClickListener() {
+            holder.time.setText(day + " at " + hour);
+            holder.details.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     //Toast.makeText(getApplicationContext(), "Hei, wait for it..", Toast.LENGTH_SHORT).show();
@@ -962,7 +1000,7 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
             });
-            join.setOnClickListener(new View.OnClickListener(){
+            holder.join.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
                     Firebase usersRef = User.firebaseRef.child("events").child(list.get(position).id).child("users");
@@ -999,10 +1037,12 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+            /*
             try{
                 Thread.sleep(50,1);
             }
             catch(InterruptedException exc ) {}
+            */
 
             return view;
         }
@@ -1017,6 +1057,17 @@ public class MainActivity extends AppCompatActivity {
 
     // Adapter for the My pending activities tab
     public class TimelineMyActAdapter extends BaseAdapter implements ListAdapter {
+
+        class ViewHolder{
+             TextView name ;
+             ImageView profilePicture;
+             TextView firstPart;
+             TextView secondPart;
+             TextView time;
+             TextView place;
+             ImageView icon;
+             ImageButton details;
+        }
 
         private ArrayList<Event> list = new ArrayList<>();
         private Context context;
@@ -1042,11 +1093,30 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
+
             View view = convertView;
+            ViewHolder holder = null;
             if (view == null) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.timeline_list_myactivities_layout, null);
+
+                holder = new ViewHolder();
+                holder.name = (TextView) view.findViewById(R.id.nameLabel);
+                holder.profilePicture = (ImageView) view.findViewById(R.id.profilePicture);
+                holder.firstPart = (TextView) view.findViewById(R.id.firstPartofText);
+                holder.secondPart = (TextView) view.findViewById(R.id.secondPartofText);
+                holder.time = (TextView) view.findViewById(R.id.timeText);
+                holder.place = (TextView) view.findViewById(R.id.placeText);
+                holder.icon = (ImageView) view.findViewById(R.id.sportIcon);
+                holder.details = (ImageButton) view.findViewById(R.id.details_btn);
+
+                view.setTag(holder);
             }
+
+            else {
+                holder = (ViewHolder)view.getTag();
+            }
+            /*
             final TextView name = (TextView) view.findViewById(R.id.nameLabel);
             final ImageView profilePicture = (ImageView) view.findViewById(R.id.profilePicture);
             final TextView firstPart = (TextView) view.findViewById(R.id.firstPartofText);
@@ -1055,15 +1125,16 @@ public class MainActivity extends AppCompatActivity {
             final TextView place = (TextView) view.findViewById(R.id.placeText);
             final ImageView icon = (ImageView) view.findViewById(R.id.sportIcon);
             final ImageButton details = (ImageButton) view.findViewById(R.id.details_btn);
+            */
 
             // Set name and picture for the first user of the event
             //final String userUID = list.get(position).getFirstUser();
             String firstName = list.get(position).creatorName.split(" ")[0];
-            name.setText(firstName);
-            Picasso.with(context).load(list.get(position).profileImageURL).into(profilePicture);
+            holder.name.setText(firstName);
+            Picasso.with(context).load(list.get(position).profileImageURL).into(holder.profilePicture);
 
             // Redirect to user profile on picture click
-            profilePicture.setOnClickListener(new View.OnClickListener() {
+            holder.profilePicture.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     if (User.uid.equals(list.get(position).creator)) {
                         Toast.makeText(context, "This is you ! We can't compare with yourself..", Toast.LENGTH_SHORT).show();
@@ -1098,14 +1169,14 @@ public class MainActivity extends AppCompatActivity {
             int imageResource = getResources().getIdentifier(uri, null, getPackageName());
             Drawable res = getResources().getDrawable(imageResource);
 
-            icon.setImageDrawable(res);
-            firstPart.setText("Will play " + list.get(position).sport);
+            holder.icon.setImageDrawable(res);
+            holder.firstPart.setText("Will play " + list.get(position).sport);
             if ((list.get(position).usersUID.size() - 1) > 1) {
-                secondPart.setText(" with " + (list.get(position).usersUID.size() - 1) + " others");
+                holder.secondPart.setText(" with " + (list.get(position).usersUID.size() - 1) + " others");
             } else if ((list.get(position).usersUID.size() - 1) == 1) {
-                secondPart.setText(" with 1 other");
+                holder.secondPart.setText(" with 1 other");
             } else {
-                secondPart.setText(" with no others");
+                holder.secondPart.setText(" with no others");
             }
             /*
             firstPart.setText("Will play " + list.get(position).sport);
@@ -1118,9 +1189,9 @@ public class MainActivity extends AppCompatActivity {
             }*/
 
             if(list.get(position) != null )
-                place.setText(list.get(position).place);
+                holder.place.setText(list.get(position).place);
             else
-                place.setText("Unknown");
+                holder.place.setText("Unknown");
             Calendar c = Calendar.getInstance();
             Date today = c.getTime();
             int todayDay = getDayOfMonth(today);
@@ -1138,15 +1209,16 @@ public class MainActivity extends AppCompatActivity {
             if(dateHour.equalsIgnoreCase("0")) dateHour += "0";
             if(dateMin.equalsIgnoreCase("0")) dateMin += "0";
             String hour = dateHour + ":" + dateMin;
-            time.setText(day + " at " + hour);
-            details.setOnClickListener(new View.OnClickListener() {
+            holder.time.setText(day + " at " + hour);
+            /*details.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(getApplicationContext(), "Hei, wait for it..", Toast.LENGTH_SHORT).show();
                 }
             });
+            */
 
-            details.setOnClickListener(new View.OnClickListener() {
+            holder.details.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     //Toast.makeText(getApplicationContext(), "Hei, wait for it..", Toast.LENGTH_SHORT).show();
@@ -1156,10 +1228,12 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+            /*
             try{
                 Thread.sleep(50,1);
             }
             catch(InterruptedException exc ) {}
+            */
 
             return view;
         }
