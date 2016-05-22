@@ -333,7 +333,6 @@ public class FriendlyService extends Service {
                         }
                     }
 
-
                     try {
                         Thread.sleep(30000);
                     } catch (InterruptedException e) {
