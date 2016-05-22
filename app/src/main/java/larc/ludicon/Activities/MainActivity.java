@@ -2,6 +2,7 @@ package larc.ludicon.Activities;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -15,7 +16,11 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -23,6 +28,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -33,6 +39,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBarActivity;
+import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 
 
 //import com.batch.android.Batch;
@@ -42,6 +54,7 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.firebase.client.annotations.Nullable;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
@@ -70,9 +83,12 @@ import larc.ludicon.R;
 import larc.ludicon.UserInfo.ActivityInfo;
 import larc.ludicon.UserInfo.User;
 import larc.ludicon.Services.FriendlyService;
+import larc.ludicon.Utils.MainPageUtils.ViewPagerAdapter;
+import larc.ludicon.Utils.ui.SlidingTabLayout;
+
 import android.support.v4.widget.SwipeRefreshLayout;
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
 
     // Left side panel
     private ListView mDrawerList;
@@ -86,9 +102,17 @@ public class MainActivity extends Activity {
     Button frButton;
     Button myButton;
 
+    /* SlideTab */
+    Toolbar toolbar;
+    ViewPager pager;
+    ViewPagerAdapter adapter;
+    SlidingTabLayout tabs;
+    CharSequence Titles[]={"My Activities","Around me"};
+    int Numboftabs =2;
+
 
     class Event {
-        Map<String, Boolean> usersUID = new HashMap<String, Boolean>();
+        Map<String, Boolean> usersUID = new HashMap<String,Boolean>();
         Date date;
         int noUsers;
         String sport;
@@ -99,12 +123,10 @@ public class MainActivity extends Activity {
         String id;
         String creatorName;
         String profileImageURL;
-
         public String getFirstUser() {
             return creator;
         }
     }
-
     private boolean isMyServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
@@ -114,7 +136,6 @@ public class MainActivity extends Activity {
         }
         return false;
     }
-
 
     private void saveUnsavedPointstoFirebase()
     {
@@ -182,7 +203,7 @@ public class MainActivity extends Activity {
                 if ( snapshot.getValue() != null )
                     writeToFirebase(sport, Integer.parseInt(snapshot.getValue().toString()),unsavedPoints,eventID);
                 else
-                     writeToFirebase(sport, 0,unsavedPoints,eventID);
+                    writeToFirebase(sport, 0,unsavedPoints,eventID);
             }
 
             @Override
@@ -190,48 +211,136 @@ public class MainActivity extends Activity {
             }
         });
     }
+
     private void writeToFirebase(final String sport, int points, final int unsavedPoints, final String eventID)
     {
         Firebase pointsRef = User.firebaseRef.child("points").child(sport).child(User.uid);
 
         pointsRef.setValue(points + unsavedPoints);
-/*
-        final Map<String, Object> map = new HashMap<String, Object>();
-        map.put("date",  gmtTime);
-        map.put("createdBy", User.uid);
-        User.firebaseRef.child("users").child("events").child(eventID).setValue(map);
-*/
 
         // Update points for each event in user's details
         User.firebaseRef.child("users").child(User.uid).child("events").child(eventID).child("points").setValue(unsavedPoints);
     }
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         /* Batch.onStart(this);
-
         Batch.User.getEditor()
                 .setIdentifier(User.uid)
                 .save(); // Don't forget to save the changes!
         */
-
         setContentView(R.layout.activity_main);
+
+
+        /* Slide Tab */
+        //toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        //setSupportActionBar(toolbar); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+        saveUnsavedPointstoFirebase();
+
+        // Creating The ViewPagerAdapter and Passing Fragment Manager, Titles fot the Tabs and Number Of Tabs.
+        adapter =  new ViewPagerAdapter(getSupportFragmentManager(),Titles,Numboftabs);
+
+        // Assigning ViewPager View and setting the adapter
+        pager = (ViewPager) findViewById(R.id.pager);
+        pager.setAdapter(adapter);
+
+        // Assiging the Sliding Tab Layout View
+        tabs = (SlidingTabLayout) findViewById(R.id.tabs);
+        tabs.setDistributeEvenly(true); // To make the Tabs Fixed set this true, This makes the tabs Space Evenly in Available width
+
+        // Setting Custom Color for the Scroll bar indicator of the Tab View
+        tabs.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
+            @Override
+            public int getIndicatorColor(int position) {
+                return getResources().getColor(R.color.tabsScrollColor);
+            }
+        });
+
+        // Setting the ViewPager For the SlidingTabsLayout
+        tabs.setViewPager(pager);
+        /**************/
+
+
+
+
+
+        /*
         flipper = (ViewFlipper)findViewById(R.id.viewFlipper);
         flipper.setInAnimation(this, R.anim.right_enter);
         flipper.setOutAnimation(this, R.anim.left_out);
-
          frButton = (Button)findViewById(R.id.fractbutton);
          myButton = (Button)findViewById(R.id.myactbutton);
-
         addFriendsActivityButtonEventListener();
         addMyActivityButtonEventListener();
+        */
 
         final Locale locale = Locale.getDefault();
 
         dialog = ProgressDialog.show(MainActivity.this, "", "Loading. Please wait", true);
 
-        saveUnsavedPointstoFirebase();
+        // Check if there are any unsaved points in SharedPref and put them on Firebase
+        Map<String,Integer> unsavedPointsMap = new HashMap<>();
+        SharedPreferences pSharedPref = getSharedPreferences("Points", Context.MODE_PRIVATE);
+        try{
+            if (pSharedPref != null){
+                String jsonString = pSharedPref.getString("UnsavedPointsMap", (new JSONObject()).toString());
+                JSONObject jsonObject = new JSONObject(jsonString);
+                Iterator<String> keysItr = jsonObject.keys();
+                while(keysItr.hasNext()) {
+                    String key = keysItr.next();
+                    Integer value = (Integer) jsonObject.get(key);
+                    unsavedPointsMap.put(key, value);
+                }
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        for( Map.Entry<String,Integer> entry : unsavedPointsMap.entrySet() )
+        {
+            // Get sport of the current event(entry)
+            Firebase sportNameRef = User.firebaseRef.child("events").child(entry.getKey()).child("sport");
+            final ArrayList<String> eventSport = new ArrayList<>();
+            sportNameRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    eventSport.add(snapshot.getValue().toString());
+                }
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+                }
+            });
+            try {
+                Thread.sleep(100, 1);
+            }
+            catch(Exception exc){}
+
+            // Get and update total number of points for user in sport
+            Firebase pointsRef = User.firebaseRef.child("points").child(eventSport.get(0)).child(User.uid);
+            final ArrayList<Integer> points = new ArrayList<>();
+            pointsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    points.add(Integer.parseInt(snapshot.getValue().toString()));
+                }
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+                }
+            });
+            try {
+                Thread.sleep(100, 1);
+            }
+            catch(Exception exc){}
+            pointsRef.setValue(points.get(0) + entry.getValue());
+
+            // Update points for each event in user's details
+            User.firebaseRef.child("users").child("events").child(entry.getKey().toString()).child("points").setValue(entry.getValue());
+
+        }
+        // Clear UnsavedPointsMap from SharedPref
+        pSharedPref.edit().remove("UnsavedPointsMap").commit();
 
         // Background Service:
         if(!isMyServiceRunning(FriendlyService.class)){
@@ -253,110 +362,110 @@ public class MainActivity extends Activity {
         editor.commit();
         Firebase usersRef = User.firebaseRef.child("users").child(User.uid).child("events");
         usersRef.addValueEventListener(new ValueEventListener() {
-                                           @Override
-                                           public void onDataChange(DataSnapshot snapshot) {
-                                               final List<ActivityInfo> activityInfos = new ArrayList<ActivityInfo>();
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                final List<ActivityInfo> activityInfos = new ArrayList<ActivityInfo>();
 
-                                               if (snapshot == null)
-                                                   Log.v("NULL", "Snapshot e null");
-                                               for (DataSnapshot data : snapshot.getChildren()) {
-                                                    final String id = data.getKey().toString();
-                                                   for( DataSnapshot child : data.getChildren() ) {
-                                                       if ( child.getKey().compareToIgnoreCase("participation") == 0 && (Boolean) child.getValue() == true) {
-                                                           Firebase eventRef = User.firebaseRef.child("events").child(data.getKey().toString());
-                                                           eventRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                if (snapshot == null)
+                    Log.v("NULL", "Snapshot e null");
+                for (DataSnapshot data : snapshot.getChildren()) {
+                    final String id = data.getKey().toString();
+                    for( DataSnapshot child : data.getChildren() ) {
+                        if ( child.getKey().compareToIgnoreCase("participation") == 0 && (Boolean) child.getValue() == true) {
+                            Firebase eventRef = User.firebaseRef.child("events").child(data.getKey().toString());
+                            eventRef.addListenerForSingleValueEvent(new ValueEventListener() {
 
-                                                               @Override
-                                                               public void onDataChange(DataSnapshot dataSnapshot) {
-                                                                   ActivityInfo ai = new ActivityInfo();
-                                                                   ai.id = id;
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    ActivityInfo ai = new ActivityInfo();
+                                    ai.id = id;
 
-                                                                   for (DataSnapshot details : dataSnapshot.getChildren()) {
+                                    for (DataSnapshot details : dataSnapshot.getChildren()) {
 
-                                                                       if (details.getKey().toString().equalsIgnoreCase("users")) {
-                                                                           int count = 0;
+                                        if (details.getKey().toString().equalsIgnoreCase("users")) {
+                                            int count = 0;
 
-                                                                           for (DataSnapshot user : details.getChildren()) {
-                                                                               count++;
-                                                                           }
-                                                                           ai.others = count;
+                                            for (DataSnapshot user : details.getChildren()) {
+                                                count++;
+                                            }
+                                            ai.others = count;
 
-                                                                       }
-                                                                       if (details.getKey().toString().equalsIgnoreCase("date")) {
-                                                                           ai.date = new Date(details.getValue().toString());
-                                                                       }
-                                                                       if (details.getKey().toString().equalsIgnoreCase("sport")) {
-                                                                           ai.sport = details.getValue().toString();
-                                                                       }
-                                                                       if (details.getKey().toString().equalsIgnoreCase("place")) {
-                                                                           for (DataSnapshot eventData : details.getChildren()) {
-                                                                               if (eventData.getKey().toString().equalsIgnoreCase("latitude"))
-                                                                                   ai.latitude = Double.parseDouble(eventData.getValue().toString());
-                                                                               if (eventData.getKey().toString().equalsIgnoreCase("longitude"))
-                                                                                   ai.longitude = Double.parseDouble(eventData.getValue().toString());
-                                                                               if (eventData.getKey().toString().equalsIgnoreCase("name"))
-                                                                                   ai.place = eventData.getValue().toString();
-                                                                           }
+                                        }
+                                        if (details.getKey().toString().equalsIgnoreCase("date")) {
+                                            ai.date = new Date(details.getValue().toString());
+                                        }
+                                        if (details.getKey().toString().equalsIgnoreCase("sport")) {
+                                            ai.sport = details.getValue().toString();
+                                        }
+                                        if (details.getKey().toString().equalsIgnoreCase("place")) {
+                                            for (DataSnapshot eventData : details.getChildren()) {
+                                                if (eventData.getKey().toString().equalsIgnoreCase("latitude"))
+                                                    ai.latitude = Double.parseDouble(eventData.getValue().toString());
+                                                if (eventData.getKey().toString().equalsIgnoreCase("longitude"))
+                                                    ai.longitude = Double.parseDouble(eventData.getValue().toString());
+                                                if (eventData.getKey().toString().equalsIgnoreCase("name"))
+                                                    ai.place = eventData.getValue().toString();
+                                            }
 
-                                                                       }
-                                                                   }
+                                        }
+                                    }
 
-                                                                   String connectionsJSONString = getSharedPreferences("UserDetails", 0).getString("events", null);
-                                                                   Type type = new TypeToken<List<ActivityInfo>>() {}.getType();
-                                                                   List<ActivityInfo> events = null;
-                                                                   if (connectionsJSONString != null) {
-                                                                       events = new Gson().fromJson(connectionsJSONString, type);
-                                                                   }
-                                                                   if (events == null) {
-                                                                       events = new ArrayList<ActivityInfo>();
-                                                                       events.add(ai);
-                                                                   } else {
-                                                                       Boolean exist = false;
-                                                                       for (ActivityInfo act : events) {
-                                                                           // Trash detection
-                                                                           if (ai.date == null) {
-                                                                               exist = true;
-                                                                               break;
-                                                                           }
-                                                                           if (ai.date.compareTo(act.date) == 0) {
-                                                                               exist = true;
-                                                                           }
-                                                                       }
-                                                                       if (!exist) {
-                                                                           events.add(ai);
-                                                                       }
-                                                                   }
+                                    String connectionsJSONString = getSharedPreferences("UserDetails", 0).getString("events", null);
+                                    Type type = new TypeToken<List<ActivityInfo>>() {}.getType();
+                                    List<ActivityInfo> events = null;
+                                    if (connectionsJSONString != null) {
+                                        events = new Gson().fromJson(connectionsJSONString, type);
+                                    }
+                                    if (events == null) {
+                                        events = new ArrayList<ActivityInfo>();
+                                        events.add(ai);
+                                    } else {
+                                        Boolean exist = false;
+                                        for (ActivityInfo act : events) {
+                                            // Trash detection
+                                            if (ai.date == null) {
+                                                exist = true;
+                                                break;
+                                            }
+                                            if (ai.date.compareTo(act.date) == 0) {
+                                                exist = true;
+                                            }
+                                        }
+                                        if (!exist) {
+                                            events.add(ai);
+                                        }
+                                    }
 
-                                                                   //sort by date
-                                                                   Collections.sort(events, new Comparator<ActivityInfo>() {
-                                                                       @Override
-                                                                       public int compare(ActivityInfo lhs, ActivityInfo rhs) {
-                                                                           return lhs.date.compareTo(rhs.date);
-                                                                       }
-                                                                   });
+                                    //sort by date
+                                    Collections.sort(events, new Comparator<ActivityInfo>() {
+                                        @Override
+                                        public int compare(ActivityInfo lhs, ActivityInfo rhs) {
+                                            return lhs.date.compareTo(rhs.date);
+                                        }
+                                    });
 
-                                                                   SharedPreferences.Editor editor = getSharedPreferences("UserDetails", 0).edit();
-                                                                   connectionsJSONString = new Gson().toJson(events);
-                                                                   editor.putString("events", connectionsJSONString);
-                                                                   editor.commit();
+                                    SharedPreferences.Editor editor = getSharedPreferences("UserDetails", 0).edit();
+                                    connectionsJSONString = new Gson().toJson(events);
+                                    editor.putString("events", connectionsJSONString);
+                                    editor.commit();
 
-                                                               }
+                                }
 
-                                                               @Override
-                                                               public void onCancelled(FirebaseError firebaseError) {
+                                @Override
+                                public void onCancelled(FirebaseError firebaseError) {
 
-                                                               }
-                                                           });
-                                                       }
-                                                   }
-                                               }
+                                }
+                            });
+                        }
+                    }
+                }
 
-                                           }
+            }
 
-                                           @Override
-                                           public void onCancelled(FirebaseError firebaseError) {
-                                           }
-                                       });
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+            }
+        });
 
         // Left side panel
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
@@ -373,6 +482,7 @@ public class MainActivity extends Activity {
         userPic.setImageDrawable(d);
         // -------------------------------------------------------------------------------------------------------------
 
+    /*
         final SwipeRefreshLayout mSwipeRefreshLayout1 = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh1);
         mSwipeRefreshLayout1.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -380,9 +490,10 @@ public class MainActivity extends Activity {
                 updateList();
                 mSwipeRefreshLayout1.setRefreshing(false);
             }
-        });
+        });*/
 
-        final SwipeRefreshLayout mSwipeRefreshLayout2 = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh2);
+
+        /*final SwipeRefreshLayout mSwipeRefreshLayout2 = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh2);
         mSwipeRefreshLayout2.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -390,19 +501,25 @@ public class MainActivity extends Activity {
                 mSwipeRefreshLayout2.setRefreshing(false);
             }
         });
+        */
+
+
+
 
         updateList();
+
     }
+
 
     public void updateList()
     {
+        /*
         /// Check from Shared prefs if we have any event happening
         Gson gson = new Gson();
         String json = getSharedPreferences("UserDetails", 0).getString("currentEvent", "");
         final ActivityInfo currentEvent = gson.fromJson(json, ActivityInfo.class);
-        String isHappening = getSharedPreferences("UserDetails",0).getString("currentEventIsActive","0");
 
-        if ( currentEvent != null && Integer.parseInt(isHappening) == 1){
+        if (currentEvent != null){
             RelativeLayout rlCurrEvent = (RelativeLayout)findViewById(R.id.currEventLayout);
 
             ViewGroup.LayoutParams params = rlCurrEvent.getLayoutParams();
@@ -464,18 +581,17 @@ public class MainActivity extends Activity {
                     ShareLinkContent content = new ShareLinkContent.Builder()
                             .setContentUrl(Uri.parse("http://ludicon.info/"))
                             .setImageUrl(Uri.parse("http://www.ludicon.info/img/sports/" + currentEvent.sport +".png"))
-                                    .setContentTitle(User.getFirstName(getApplicationContext()) + " is playing " + currentEvent.sport + audience + " at " + place)
-                                    .setContentDescription("Ludicon ! Let's go and play !")
-                                    .build();
+                            .setContentTitle(User.getFirstName(getApplicationContext()) + " is playing " + currentEvent.sport + audience + " at " + place)
+                            .setContentDescription("Ludicon ! Let's go and play !")
+                            .build();
 
                     if (ShareDialog.canShow(ShareLinkContent.class) == true)
                         shareDialog.show(content);
 
                 }
             });
-
         }
-
+*/
 
         Firebase userRef = User.firebaseRef.child("events"); // check events
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -761,9 +877,7 @@ public class MainActivity extends Activity {
             userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
-
                     for ( DataSnapshot data : snapshot.getChildren() ) {
-
                         if( (data.getKey()).compareTo("name") == 0) {
                             name.setText(data.getValue().toString());
                         }
@@ -812,10 +926,10 @@ public class MainActivity extends Activity {
 
             String day;
             if ( todayDay == getDayOfMonth(list.get(position).date) && todayMonth == list.get(position).date.getMonth() && todayYear == list.get(position).date.getYear() )
-                        day = "Today";
+                day = "Today";
             else if ( todayDay == ( getDayOfMonth(list.get(position).date) - 1 ) && todayMonth == list.get(position).date.getMonth() && todayYear == list.get(position).date.getYear() )
-                        day = "Tomorrow";
-                 else day = getDayOfMonth(list.get(position).date) + "/" + (list.get(position).date.getMonth()+1) + "/" + (list.get(position).date.getYear()+1900);
+                day = "Tomorrow";
+            else day = getDayOfMonth(list.get(position).date) + "/" + (list.get(position).date.getMonth()+1) + "/" + (list.get(position).date.getYear()+1900);
             String dateHour = list.get(position).date.getHours() + "";
             String dateMin = list.get(position).date.getMinutes()+ "";
             if(dateHour.equalsIgnoreCase("0")) dateHour += "0";
@@ -949,9 +1063,7 @@ public class MainActivity extends Activity {
             userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
-
                     for ( DataSnapshot data : snapshot.getChildren() ) {
-
                         if( (data.getKey()).compareTo("name") == 0) {
                             name.setText(data.getValue().toString());
                         }
@@ -1035,5 +1147,4 @@ public class MainActivity extends Activity {
             return view;
         }
     }
-
 }
