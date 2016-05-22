@@ -409,8 +409,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });*/
 
-        /*
-        final SwipeRefreshLayout mSwipeRefreshLayout2 = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh2);
+
+        /*final SwipeRefreshLayout mSwipeRefreshLayout2 = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh2);
         mSwipeRefreshLayout2.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -418,8 +418,9 @@ public class MainActivity extends AppCompatActivity {
                 mSwipeRefreshLayout2.setRefreshing(false);
             }
         });
-
         */
+
+
 
 
         updateList();

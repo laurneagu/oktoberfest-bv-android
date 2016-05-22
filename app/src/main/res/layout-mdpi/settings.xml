@@ -3,50 +3,55 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:id="@+id/drawer_layout_settings"
-    android:background="@drawable/app_bg"
+    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <include layout="@layout/header"/>
-    <include layout="@layout/leftside_panel"/>
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/relLayout">
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="#8f2525"
-        android:text="Log out"
-        android:textSize="20dp"
-        android:id="@+id/logout"
-        android:layout_alignParentBottom="true"
-        android:textColor="#ffffff"
-        android:layout_alignRight="@+id/textView6"
-        android:layout_alignEnd="@+id/textView6"
-        android:layout_alignLeft="@+id/textView6"
-        android:layout_alignStart="@+id/textView6" />
+        <View
+            android:id="@+id/shadow_header"
+            android:layout_width="match_parent"
+            android:layout_height="2.3dp"
+            android:background="@drawable/shadow_layout"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="60dp">
+        </View>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#8f2525"
+            android:text="Log out"
+            android:textSize="20dp"
+            android:id="@+id/logout"
+            android:layout_alignParentBottom="true"
+            android:textColor="#ffffff"
+            android:visibility="invisible"
+            android:layout_alignRight="@+id/textView6"
+            android:layout_alignEnd="@+id/textView6"
+            android:layout_alignLeft="@+id/textView6"
+            android:layout_alignStart="@+id/textView6" />
 
         <GridView
-            android:paddingTop="80dp"
-            android:paddingLeft="100dp"
-            android:paddingRight="100dp"
+            android:paddingTop="50dp"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
             android:layout_width="wrap_content"
-            android:layout_height="300dp"
+            android:layout_height="200dp"
             android:id="@+id/gridView"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_marginTop="70dp"
-            android:layout_toStartOf="@+id/logout"
-            android:numColumns="2"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
+            android:numColumns="2"
             android:layout_above="@+id/textView8" />
 
         <SeekBar
-            android:layout_width="400dp"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:id="@+id/seekBar2"
             android:layout_above="@+id/progressText"
@@ -62,7 +67,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Favourite Sports"
             android:id="@+id/textView6"
             android:layout_alignTop="@+id/gridView"
@@ -71,7 +76,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Pick what sports you would like to play"
             android:id="@+id/textView7"
             android:layout_below="@+id/textView6"
@@ -81,7 +86,7 @@
             android:paddingTop="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Range"
             android:id="@+id/textView8"
             android:layout_above="@+id/textView9"
@@ -90,7 +95,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="This is the area of discovering friends"
             android:id="@+id/textView9"
             android:layout_above="@+id/seekBar2"
@@ -100,11 +105,15 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textAppearance="?android:attr/textAppearanceMedium"
             android:id="@+id/progressText"
-            android:layout_marginBottom="550dp"
             android:layout_centerHorizontal="true"
+            android:layout_marginBottom="40dp"
             android:layout_above="@+id/logout" />
 
     </RelativeLayout>
+
+    <include layout="@layout/header" />
+    <include layout="@layout/leftside_panel" />
+
 </android.support.v4.widget.DrawerLayout>

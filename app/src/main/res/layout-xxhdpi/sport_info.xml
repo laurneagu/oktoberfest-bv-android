@@ -14,7 +14,7 @@
         android:layout_width="220dp"
         android:layout_height="38dp"
         android:orientation="vertical"
-        android:background="#cccccc">
+        android:background="@drawable/unselected">
     <CheckBox
         android:id="@+id/checkBox1"
         android:layout_width="fill_parent"
@@ -32,7 +32,8 @@
         android:layout_alignBaseline="@+id/checkBox1"
         android:layout_alignBottom="@+id/checkBox1"
         android:layout_toRightOf="@+id/checkBox1"
-        android:text="TextView" />
+        android:text="TextView"
+        android:textColor="#ffffff" />
 
     <ImageView
         android:layout_width="wrap_content"

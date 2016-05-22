@@ -1,19 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:id="@+id/drawer_layout_settings"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/app_bg">
+    android:background="@color/white">
 
-    <include layout="@layout/header" />
 
-    <include layout="@layout/leftside_panel" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:id="@+id/relLayout">
+
+        <View
+            android:id="@+id/shadow_header"
+            android:layout_width="match_parent"
+            android:layout_height="2.3dp"
+            android:background="@drawable/shadow_layout"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="60dp">
+        </View>
 
         <ListView
             android:paddingTop="0dp"
@@ -23,10 +31,13 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="70dp"
+            android:layout_marginTop="62.3dp"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true" />
 
     </RelativeLayout>
+
+    <include layout="@layout/header"/>
+    <include layout="@layout/leftside_panel"/>
 </android.support.v4.widget.DrawerLayout>
