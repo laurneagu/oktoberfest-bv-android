@@ -12,6 +12,7 @@ import larc.ludicon.Activities.ChatListActivity;
 import larc.ludicon.Activities.GeneralChatActivity;
 import larc.ludicon.Activities.CreateNewActivity;
 import larc.ludicon.Activities.FriendsActivity;
+import larc.ludicon.Activities.RankingsActivity;
 import larc.ludicon.Activities.SettingsActivity;
 import larc.ludicon.Activities.StatisticsActivity;
 
@@ -41,7 +42,8 @@ public class LeftPanelItemClicker {
                                 i_currActivity.startActivity(chatIntent);
                                 break;
                             case 4:
-                                Toast.makeText(i_context, "Hei, wait for it..", Toast.LENGTH_SHORT).show();
+                                Intent rankingIntent = new Intent(i_currActivity, RankingsActivity.class);
+                                i_currActivity.startActivity(rankingIntent);
                                 break;
                             case 5:
                                 Intent helpIntent = new Intent(i_currActivity, SettingsActivity.class);

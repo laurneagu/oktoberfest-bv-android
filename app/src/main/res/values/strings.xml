@@ -28,6 +28,18 @@
 
     <string name="title_activity_create_new">CreateNewActivity</string>
 
+    <string-array name="rankings_array">
+        <item>General</item>
+        <item>Football</item>
+        <item>Volley</item>
+        <item>Basketball</item>
+        <item>Chess</item>
+        <item>Ping Pong</item>
+        <item>Tennis</item>
+        <item>Cycling</item>
+        <item>Jogging</item>
+    </string-array>
+
     <string-array name="sports_array">
         <item>Football</item>
         <item>Volley</item>
@@ -44,4 +56,5 @@
 
     <string name="title_activity_statistics">StatisticsActivity</string>
     <string name="title_activity_event_details">EventDetails</string>
+    <string name="title_activity_rankings">RankingsActivity</string>
 </resources>

@@ -2,7 +2,6 @@ package larc.ludicon.Activities;
 
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -16,11 +15,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -28,7 +23,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -39,12 +33,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 
 
 //import com.batch.android.Batch;
@@ -54,7 +42,6 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
-import com.firebase.client.annotations.Nullable;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
@@ -83,12 +70,9 @@ import larc.ludicon.R;
 import larc.ludicon.UserInfo.ActivityInfo;
 import larc.ludicon.UserInfo.User;
 import larc.ludicon.Services.FriendlyService;
-import larc.ludicon.Utils.MainPageUtils.ViewPagerAdapter;
-import larc.ludicon.Utils.ui.SlidingTabLayout;
-
 import android.support.v4.widget.SwipeRefreshLayout;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     // Left side panel
     private ListView mDrawerList;
@@ -102,17 +86,9 @@ public class MainActivity extends AppCompatActivity {
     Button frButton;
     Button myButton;
 
-    /* SlideTab */
-    Toolbar toolbar;
-    ViewPager pager;
-    ViewPagerAdapter adapter;
-    SlidingTabLayout tabs;
-    CharSequence Titles[]={"My Activities","Around me"};
-    int Numboftabs =2;
-
 
     class Event {
-        Map<String, Boolean> usersUID = new HashMap<String,Boolean>();
+        Map<String, Boolean> usersUID = new HashMap<String, Boolean>();
         Date date;
         int noUsers;
         String sport;
@@ -123,10 +99,12 @@ public class MainActivity extends AppCompatActivity {
         String id;
         String creatorName;
         String profileImageURL;
+
         public String getFirstUser() {
             return creator;
         }
     }
+
     private boolean isMyServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
@@ -137,67 +115,9 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
-        /* Batch.onStart(this);
-
-        Batch.User.getEditor()
-                .setIdentifier(User.uid)
-                .save(); // Don't forget to save the changes!
-        */
-        setContentView(R.layout.activity_main);
-
-
-        /* Slide Tab */
-        //toolbar = (Toolbar) findViewById(R.id.tool_bar);
-        //setSupportActionBar(toolbar); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-        // Creating The ViewPagerAdapter and Passing Fragment Manager, Titles fot the Tabs and Number Of Tabs.
-        adapter =  new ViewPagerAdapter(getSupportFragmentManager(),Titles,Numboftabs);
-
-        // Assigning ViewPager View and setting the adapter
-        pager = (ViewPager) findViewById(R.id.pager);
-        pager.setAdapter(adapter);
-
-        // Assiging the Sliding Tab Layout View
-        tabs = (SlidingTabLayout) findViewById(R.id.tabs);
-        tabs.setDistributeEvenly(true); // To make the Tabs Fixed set this true, This makes the tabs Space Evenly in Available width
-
-        // Setting Custom Color for the Scroll bar indicator of the Tab View
-        tabs.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
-            @Override
-            public int getIndicatorColor(int position) {
-                return getResources().getColor(R.color.tabsScrollColor);
-            }
-        });
-
-        // Setting the ViewPager For the SlidingTabsLayout
-        tabs.setViewPager(pager);
-        /**************/
-
-
-
-
-
-        /*
-        flipper = (ViewFlipper)findViewById(R.id.viewFlipper);
-        flipper.setInAnimation(this, R.anim.right_enter);
-        flipper.setOutAnimation(this, R.anim.left_out);
-
-         frButton = (Button)findViewById(R.id.fractbutton);
-         myButton = (Button)findViewById(R.id.myactbutton);
-
-        addFriendsActivityButtonEventListener();
-        addMyActivityButtonEventListener();
-        */
-
-        final Locale locale = Locale.getDefault();
-
-        dialog = ProgressDialog.show(MainActivity.this, "", "Loading. Please wait", true);
-
+    private void saveUnsavedPointstoFirebase()
+    {
         // Check if there are any unsaved points in SharedPref and put them on Firebase
         Map<String,Integer> unsavedPointsMap = new HashMap<>();
         SharedPreferences pSharedPref = getSharedPreferences("Points", Context.MODE_PRIVATE);
@@ -218,46 +138,100 @@ public class MainActivity extends AppCompatActivity {
         for( Map.Entry<String,Integer> entry : unsavedPointsMap.entrySet() )
         {
             // Get sport of the current event(entry)
-            Firebase sportNameRef = User.firebaseRef.child("events").child(entry.getKey()).child("sport");
+            Firebase sportNameRef = User.firebaseRef.child("events").child(entry.getKey().toString());
+            Log.v("entry:",entry.getKey().toString() + " " + entry.getValue().toString());
+
+            final int unsavedPoints = entry.getValue();
+            final String eventID = entry.getKey();
+
             final ArrayList<String> eventSport = new ArrayList<>();
             sportNameRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
-                    eventSport.add(snapshot.getValue().toString());
+
+                    for( DataSnapshot data : snapshot.getChildren() )
+                    {
+                        Log.v("data",data.getKey().toString());
+                        if ( data.getKey().toString().compareToIgnoreCase("sport") == 0)
+                        {
+                            eventSport.add(data.getValue().toString());
+                            Log.v("Sport",data.getValue().toString());
+                            getActualPoints(data.getValue().toString(),unsavedPoints,eventID);
+                        }
+                    }
                 }
                 @Override
                 public void onCancelled(FirebaseError firebaseError) {
                 }
             });
-            try {
-                Thread.sleep(100, 1);
-            }
-            catch(Exception exc){}
-
-            // Get and update total number of points for user in sport
-            Firebase pointsRef = User.firebaseRef.child("points").child(eventSport.get(0)).child(User.uid);
-            final ArrayList<Integer> points = new ArrayList<>();
-            pointsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                points.add(Integer.parseInt(snapshot.getValue().toString()));
-            }
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-            }
-            });
-            try {
-                Thread.sleep(100, 1);
-            }
-            catch(Exception exc){}
-            pointsRef.setValue(points.get(0) + entry.getValue());
-
-            // Update points for each event in user's details
-            User.firebaseRef.child("users").child("events").child(entry.getKey().toString()).child("points").setValue(entry.getValue());
 
         }
         // Clear UnsavedPointsMap from SharedPref
         pSharedPref.edit().remove("UnsavedPointsMap").commit();
+    }
+
+    private void getActualPoints(final String sport,final int unsavedPoints,final String eventID)
+    {
+        // Get and update total number of points for user in sport
+        Firebase pointsRef = User.firebaseRef.child("points").child(sport).child(User.uid);
+        //final ArrayList<Integer> points = new ArrayList<>();
+        pointsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                if ( snapshot.getValue() != null )
+                    writeToFirebase(sport, Integer.parseInt(snapshot.getValue().toString()),unsavedPoints,eventID);
+                else
+                     writeToFirebase(sport, 0,unsavedPoints,eventID);
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+            }
+        });
+    }
+    private void writeToFirebase(final String sport, int points, final int unsavedPoints, final String eventID)
+    {
+        Firebase pointsRef = User.firebaseRef.child("points").child(sport).child(User.uid);
+
+        pointsRef.setValue(points + unsavedPoints);
+/*
+        final Map<String, Object> map = new HashMap<String, Object>();
+        map.put("date",  gmtTime);
+        map.put("createdBy", User.uid);
+        User.firebaseRef.child("users").child("events").child(eventID).setValue(map);
+*/
+
+        // Update points for each event in user's details
+        User.firebaseRef.child("users").child(User.uid).child("events").child(eventID).child("points").setValue(unsavedPoints);
+    }
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        /* Batch.onStart(this);
+
+        Batch.User.getEditor()
+                .setIdentifier(User.uid)
+                .save(); // Don't forget to save the changes!
+        */
+
+        setContentView(R.layout.activity_main);
+        flipper = (ViewFlipper)findViewById(R.id.viewFlipper);
+        flipper.setInAnimation(this, R.anim.right_enter);
+        flipper.setOutAnimation(this, R.anim.left_out);
+
+         frButton = (Button)findViewById(R.id.fractbutton);
+         myButton = (Button)findViewById(R.id.myactbutton);
+
+        addFriendsActivityButtonEventListener();
+        addMyActivityButtonEventListener();
+
+        final Locale locale = Locale.getDefault();
+
+        dialog = ProgressDialog.show(MainActivity.this, "", "Loading. Please wait", true);
+
+        saveUnsavedPointstoFirebase();
 
         // Background Service:
         if(!isMyServiceRunning(FriendlyService.class)){
@@ -399,7 +373,6 @@ public class MainActivity extends AppCompatActivity {
         userPic.setImageDrawable(d);
         // -------------------------------------------------------------------------------------------------------------
 
-    /*
         final SwipeRefreshLayout mSwipeRefreshLayout1 = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh1);
         mSwipeRefreshLayout1.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -407,10 +380,9 @@ public class MainActivity extends AppCompatActivity {
                 updateList();
                 mSwipeRefreshLayout1.setRefreshing(false);
             }
-        });*/
+        });
 
-
-        /*final SwipeRefreshLayout mSwipeRefreshLayout2 = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh2);
+        final SwipeRefreshLayout mSwipeRefreshLayout2 = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh2);
         mSwipeRefreshLayout2.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -418,15 +390,9 @@ public class MainActivity extends AppCompatActivity {
                 mSwipeRefreshLayout2.setRefreshing(false);
             }
         });
-        */
-
-
-
 
         updateList();
-
     }
-
 
     public void updateList()
     {
@@ -434,8 +400,9 @@ public class MainActivity extends AppCompatActivity {
         Gson gson = new Gson();
         String json = getSharedPreferences("UserDetails", 0).getString("currentEvent", "");
         final ActivityInfo currentEvent = gson.fromJson(json, ActivityInfo.class);
+        String isHappening = getSharedPreferences("UserDetails",0).getString("currentEventIsActive","0");
 
-        if (currentEvent != null){
+        if ( currentEvent != null && Integer.parseInt(isHappening) == 1){
             RelativeLayout rlCurrEvent = (RelativeLayout)findViewById(R.id.currEventLayout);
 
             ViewGroup.LayoutParams params = rlCurrEvent.getLayoutParams();
@@ -1068,6 +1035,5 @@ public class MainActivity extends AppCompatActivity {
             return view;
         }
     }
+
 }
-
-

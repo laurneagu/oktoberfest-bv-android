@@ -99,6 +99,13 @@ public class StatisticsActivity extends Activity {
     {
         Log.v("ArraySize",userEvents.size() + "");
 
+        // If user has no events attended
+        if ( userEvents.size() == 0 )
+        {
+            displayChart();
+            displayStatistics();
+        }
+        else
         // For each event go to it's details (root->event->ID) and get it's date + sport
         for( int i = 0; i < userEvents.size(); i++ )
         {
@@ -150,6 +157,7 @@ public class StatisticsActivity extends Activity {
         chart.getXAxis().setDrawGridLines(false);
         chart.getAxisLeft().setDrawGridLines(false);
         chart.getAxisRight().setDrawGridLines(false);
+        Log.v("Set data on chart","Dap");
         chart.setData(data);
         chart.setDescription("Months");
         chart.setDrawValueAboveBar(false);

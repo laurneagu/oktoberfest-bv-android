@@ -65,7 +65,7 @@ public class FriendlyService extends Service {
     public static final long MIN = 60 * 1000;
 
     // Time to notify (in minutes)
-    private static int limitTime = 30;
+    private static int limitTime = 20;
 
     private LocationManager mLocationManager;
     private ServiceLocationListener mLocationListener = new ServiceLocationListener(this);
@@ -82,10 +82,9 @@ public class FriendlyService extends Service {
 
         if( mRunning == false) {
             mRunning = true;
-            initializeLocationManager();
+            //initializeLocationManager();
 
-            // Request location updates
-            mLocationListener.requestUpdates(mLocationManager);
+            getSharedPreferences("UserDetails", 0).edit().putString("currentEventIsActive","0").commit();
 
             // Thread for Rewarding user with points
             Runnable eventParticipationChecker = getCheckPointsThread();
@@ -96,7 +95,6 @@ public class FriendlyService extends Service {
             Runnable eventChecker = getCheckNotificationsEventsThread();
             Thread eventCheckerThread = new Thread(eventChecker);
             eventCheckerThread.start();
-
 
             // Thread for Notifying user new chat message
             Runnable chatChecker = getCheckNotificationsChatThread();
@@ -122,13 +120,6 @@ public class FriendlyService extends Service {
 
                 while (true) {
 
-                    // Time to get the location
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
                     // Get the list of events from Shared Prefs
                     String connectionsJSONString = getSharedPreferences("UserDetails", 0).getString("events", null);
                     Type type = new TypeToken<List<ActivityInfo>>() {}.getType();
@@ -139,12 +130,15 @@ public class FriendlyService extends Service {
 
                     if (events != null) {
 
+                        getSharedPreferences("UserDetails", 0).edit().putString("currentEventIsActive","0").commit();
                         // Get current date
                         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, new Locale("English"));
                         df.setTimeZone(TimeZone.getTimeZone("gmt"));
                         String gmtTime = df.format(new Date());
                         Date now = new Date(gmtTime);
+                        // Problem - TimeZone
 
+                        // Check if event is about to happen in the next 20 min
                         Date limit = new Date(now.getTime() + limitTime * MIN);
 
                         // Get the current pending event
@@ -155,22 +149,29 @@ public class FriendlyService extends Service {
                         if (j == events.size()) upcomingEvent = events.get(j - 1);
                         else upcomingEvent = events.get(j);
 
-                        // Pending event starts in the next limitTime minutes - default 30
+                        Log.v("Date.now",now.toString());
+                        Log.v("Upcoming Event",upcomingEvent.date.toString());
+
+                        // Pending event starts in the next 20 min
                         if (upcomingEvent.date.before(limit) && now.before(upcomingEvent.date)) {
                             long diff = upcomingEvent.date.getTime() - now.getTime();
                             long diffMinutes = diff / (60 * 1000) % 60;
 
                             // Less then 10 minutes til event
                             if (diffMinutes <= 10) {
+
+                                Log.v("Event-Service","Event is in less then 10  min");
                                 int diffMin = (int) diffMinutes;
+
+                                // Sleep till the start of the event ( 1 minute error )
                                 if (diffMin > 1) {
                                     try {
-                                        Thread.sleep((diffMin - 1) * 1000, 1);
+                                        Thread.sleep((diffMin - 1) * MIN, 100);
                                     } catch (InterruptedException exc) {
                                     }
                                 }
 
-                                // sleep till the start of the event ( 1 minute error )
+                                getSharedPreferences("UserDetails", 0).edit().putString("currentEventIsActive","1").commit();
 
                                 // SAVE IN SHARED PREFS THE PENDING EVENT
                                 SharedPreferences.Editor editor = getSharedPreferences("UserDetails", 0).edit();
@@ -186,6 +187,11 @@ public class FriendlyService extends Service {
 
                                 // Count points if he has not left the location and if has not scored yet 10 points
                                 while (locationErrors <= 3 && eventPoints <= 10) {
+
+                                    // Start Location Listener
+                                    initializeLocationManager();
+                                    // Request location updates
+                                    mLocationListener.requestUpdates(mLocationManager);
 
                                     // Get last known location from SharedPref
                                     SharedPreferences sharedPrefs = getSharedPreferences("UserDetails", 0);
@@ -204,22 +210,29 @@ public class FriendlyService extends Service {
                                         // User left the location
                                         if (distance[0] >= 500) {
                                             locationErrors++;
+                                            Log.v("Location-Service","User is not in location and has errors: " + locationErrors);
                                         }
 
                                         // User is in location ( difference < 500 m ) add points to the eventPoints
                                         else {
                                             eventPoints++;
+                                            Log.v("Location-Service","User is in location and has: " + eventPoints);
                                         }
                                     }
+
+                                    //  Remove location listener
+                                    removeUpdatesLocationManager();
+
                                     // From 10 to 10 minutes, recheck the user is still there
                                     try {
-                                        Thread.sleep(600000, 1);
+                                        Thread.sleep(10 * MIN, 1);
                                     } catch (InterruptedException exc) {
                                     }
                                 }
 
                                 // Delete current event from shared preferences when ended
                                 getSharedPreferences("UserDetails", 0).edit().putString("currentEvent", "").commit();
+                                getSharedPreferences("UserDetails", 0).edit().putString("currentEventIsActive","0").commit();
 
                                 // Update points with the ones received for the current event and update in Database
                                 // Check if there are unsaved points in SharedPrefs
@@ -257,10 +270,9 @@ public class FriendlyService extends Service {
 
                     Log.v("Ludicon", "i am here !");
 
-                    // Sleep limitTime minutes
                     try {
-                        //Thread.sleep(MIN);
-                        Thread.sleep(limitTime * MIN);
+                        // Sleep 10 min
+                        Thread.sleep(10 * MIN);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -407,7 +419,7 @@ public class FriendlyService extends Service {
                                                 String d = msgData.getValue().toString();
                                                 try {
 
-                                                    SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzzz yyyy");
+                                                    SimpleDateFormat format = new SimpleDateFormat("MMMM dd, HH:mm",Locale.ENGLISH);
                                                     date = format.parse(d);
                                                 } catch (ParseException e) {
                                                     e.printStackTrace();
