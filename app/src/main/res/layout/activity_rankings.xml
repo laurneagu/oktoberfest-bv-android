@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:id="@+id/drawer_layout_chats"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EBEBEB">
+
+    <RelativeLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+        android:paddingTop="70dp">
+
+    <Spinner
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/listSpinner"
+    android:paddingTop="20dp"
+    android:layout_centerHorizontal="true">
+    </Spinner>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/listSpinner"
+            android:layout_centerHorizontal="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="My Rank: "
+                android:textSize="25dp"
+                android:textStyle="bold"
+                android:textColor="#0C3855"
+                android:id="@+id/myrank"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textSize="30dp"
+                android:textStyle="italic"
+                android:textColor="#0C3855"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <include layout="@layout/header"/>
+    <include layout="@layout/leftside_panel" />
+    </android.support.v4.widget.DrawerLayout>

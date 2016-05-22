@@ -221,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
         // Update points for each event in user's details
         User.firebaseRef.child("users").child(User.uid).child("events").child(eventID).child("points").setValue(unsavedPoints);
     }
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
