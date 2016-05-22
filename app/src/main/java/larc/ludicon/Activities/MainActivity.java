@@ -518,8 +518,9 @@ public class MainActivity extends AppCompatActivity {
         Gson gson = new Gson();
         String json = getSharedPreferences("UserDetails", 0).getString("currentEvent", "");
         final ActivityInfo currentEvent = gson.fromJson(json, ActivityInfo.class);
+        String isHappening = getSharedPreferences("UserDetails",0).getString("currentEventIsActive","0");
 
-        if (currentEvent != null){
+        if ( currentEvent != null && Integer.parseInt(isHappening) == 1){
             RelativeLayout rlCurrEvent = (RelativeLayout)findViewById(R.id.currEventLayout);
 
             ViewGroup.LayoutParams params = rlCurrEvent.getLayoutParams();
