@@ -202,7 +202,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         // Set date it will be played
         // TODO GMT format
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, new Locale("English"));
-        df.setTimeZone(TimeZone.getTimeZone("gmt"));
+        df.setTimeZone(TimeZone.getTimeZone("Europe/Bucharest"));
 
         String gmtTime = df.format(calendar.getTime());
         map.put("date",  gmtTime);

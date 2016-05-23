@@ -133,9 +133,11 @@ public class FriendlyService extends Service {
                         getSharedPreferences("UserDetails", 0).edit().putString("currentEventIsActive","0").commit();
                         // Get current date
                         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, new Locale("English"));
-                        df.setTimeZone(TimeZone.getTimeZone("gmt"));
+                        //df.setTimeZone(TimeZone.getTimeZone("gmt"));
+                        df.setTimeZone(TimeZone.getTimeZone("Europe/Bucharest"));
                         String gmtTime = df.format(new Date());
                         Date now = new Date(gmtTime);
+                        Log.v("Date now",now.toString());
                         // Problem - TimeZone
 
                         // Check if event is about to happen in the next 20 min
