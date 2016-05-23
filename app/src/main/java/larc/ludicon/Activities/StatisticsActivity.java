@@ -295,7 +295,7 @@ public class StatisticsActivity extends Activity {
         }
 
         ViewGroup.LayoutParams par = listView.getLayoutParams();
-        par.height = 5 + totalHeight + (listView.getDividerHeight() * (adapter.getCount() - 1));
+        par.height = 80 + totalHeight + (listView.getDividerHeight() * (adapter.getCount()));
         listView.setLayoutParams(par);
         listView.requestLayout();
     }

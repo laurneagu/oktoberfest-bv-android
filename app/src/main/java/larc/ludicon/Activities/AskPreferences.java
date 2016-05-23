@@ -15,6 +15,7 @@ import android.view.View;
 
 import larc.ludicon.R;
 import larc.ludicon.UserInfo.User;
+import larc.ludicon.Utils.Sport;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,26 +50,6 @@ import com.firebase.client.ValueEventListener;
 //import com.parse.ParseQuery;
 //import com.parse.ParseUser;
 
-
-class Sport {
-    public String name;
-    public String id;
-    public boolean isChecked;
-    public Bitmap icon;
-    public Bitmap desaturated_icon;
-
-    public Sport(String name, String id, boolean isChecked, Bitmap icon, Bitmap desaturated_icon) {
-        this.name = name;
-        this.id = id;
-        this.isChecked = isChecked;
-        this.icon = icon;
-        this.desaturated_icon = desaturated_icon;
-    }
-
-    public void setSelected(boolean value) {
-        this.isChecked = value;
-    }
-}
 
 public class AskPreferences extends Activity {
     private ImageView logo;

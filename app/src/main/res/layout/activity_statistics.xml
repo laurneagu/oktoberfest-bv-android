@@ -90,7 +90,10 @@
          android:layout_height="wrap_content"
          android:layout_below="@id/totalEventsAttend"
          android:id="@+id/statsPerSport"
-         android:paddingTop="20dp"></ListView>
+         android:paddingTop="20dp"
+        >
+
+     </ListView>
 
 </RelativeLayout>
 </ScrollView>

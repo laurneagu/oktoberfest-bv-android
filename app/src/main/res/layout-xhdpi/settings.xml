@@ -116,6 +116,7 @@
             android:id="@+id/progressText"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="40dp"
+            android:textColor="#1971b4"
             android:layout_above="@+id/logout" />
 
     </RelativeLayout>

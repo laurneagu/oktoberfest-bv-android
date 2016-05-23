@@ -3,6 +3,7 @@ package larc.ludicon.Utils.Location;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -62,19 +63,26 @@ public class ServiceLocationListener implements android.location.LocationListene
     public void onStatusChanged(String provider, int status, Bundle extras)
     {}
 
-    public void requestUpdates(LocationManager mLocationManager)
-    {
-        try {
-            mLocationManager.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
-                    this);
-            mLocationManager.requestLocationUpdates(
-                    LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
-                    this);
-        } catch (java.lang.SecurityException ex) {
-            Log.i(TAG, "fail to request location update, ignore", ex);
-        } catch (IllegalArgumentException ex) {
-            Log.d(TAG, "network provider does not exist, " + ex.getMessage());
-        }
+    public void requestUpdates(final LocationManager mLocationManager) {
+        final LocationListener locLis = this;
+
+        new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    mLocationManager.requestLocationUpdates(
+                            LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
+                            locLis);
+                    mLocationManager.requestLocationUpdates(
+                            LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
+                            locLis);
+
+                } catch (java.lang.SecurityException ex) {
+                    Log.i(TAG, "fail to request location update, ignore", ex);
+                } catch (IllegalArgumentException ex) {
+                    Log.d(TAG, "network provider does not exist, " + ex.getMessage());
+                }
+            }
+        };
     }
 }

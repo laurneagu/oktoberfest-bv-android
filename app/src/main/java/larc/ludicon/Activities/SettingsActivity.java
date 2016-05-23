@@ -49,6 +49,7 @@ import larc.ludicon.Adapters.LeftPanelItemClicker;
 import larc.ludicon.Adapters.LeftSidePanelAdapter;
 import larc.ludicon.R;
 import larc.ludicon.UserInfo.User;
+import larc.ludicon.Utils.Sport;
 
 /**
  * Created by Laur User on 12/29/2015.
@@ -364,8 +365,10 @@ public class SettingsActivity extends Activity {
             }
 
             Sport sport = sportsList.get(position);
-            holder.text.setText("");
-            holder.box.setText(sport.name);
+            //holder.text.setText("");
+            holder.text.setText(sport.name);
+            holder.box.setText("");
+            //holder.box.setText(sport.name);
             holder.box.setChecked(sport.isChecked);
             holder.box.setTag(sport);
             if (holder.box.isChecked()) {
