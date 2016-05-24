@@ -6,8 +6,12 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 import java.util.HashMap;
+
 import larc.ludicon.Services.FriendlyService;
 
 /**
@@ -66,23 +70,50 @@ public class ServiceLocationListener implements android.location.LocationListene
     public void requestUpdates(final LocationManager mLocationManager) {
         final LocationListener locLis = this;
 
-        new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    mLocationManager.requestLocationUpdates(
-                            LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
-                            locLis);
-                    mLocationManager.requestLocationUpdates(
-                            LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
-                            locLis);
+        WorkingWithThreads wwt = new WorkingWithThreads(mLocationManager,locLis);
+        Thread tzero = new Thread(wwt);
+        tzero.start();
 
-                } catch (java.lang.SecurityException ex) {
-                    Log.i(TAG, "fail to request location update, ignore", ex);
-                } catch (IllegalArgumentException ex) {
-                    Log.d(TAG, "network provider does not exist, " + ex.getMessage());
-                }
-            }
-        };
     }
 }
+ class WorkingWithThreads implements Runnable {
+     private static final String TAG = "SERVICELL";
+
+     private static final int LOCATION_INTERVAL = 540000; // 9 minutes
+     private static final float LOCATION_DISTANCE = 150; // 150 meters
+
+     private LocationManager mLocationManager;
+     private LocationListener mLocationListener;
+
+     public Handler mHandler;
+
+    public WorkingWithThreads(LocationManager locationManager, LocationListener locLis) {
+        mLocationManager = locationManager;
+        mLocationListener =locLis;
+    }
+
+     @Override
+     public void run() {
+         Looper.prepare();
+
+         mHandler = new Handler() {
+             public void handleMessage(Message msg) {
+
+                 try {
+                     mLocationManager.requestLocationUpdates(
+                             LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
+                             mLocationListener);
+                     mLocationManager.requestLocationUpdates(
+                             LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
+                             mLocationListener);
+
+                 } catch (java.lang.SecurityException ex) {
+                     Log.i(TAG, "fail to request location update, ignore", ex);
+                 } catch (IllegalArgumentException ex) {
+                     Log.d(TAG, "network provider does not exist, " + ex.getMessage());
+                 }
+             }};
+
+         Looper.loop();
+     }
+ }

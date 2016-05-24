@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,6 +17,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -346,7 +349,20 @@ public class MainActivity extends AppCompatActivity {
 
         // Background Service:
         if(!isMyServiceRunning(FriendlyService.class)){
+
             Intent mServiceIntent = new Intent(this, FriendlyService.class);
+            //startService(mServiceIntent);
+            bindService(mServiceIntent, new ServiceConnection() {
+                @Override
+                public void onServiceConnected(ComponentName name, IBinder service) {
+
+                }
+
+                @Override
+                public void onServiceDisconnected(ComponentName name) {
+
+                }
+            }, Context.BIND_AUTO_CREATE | Context.BIND_ABOVE_CLIENT);
             startService(mServiceIntent);
         }
 

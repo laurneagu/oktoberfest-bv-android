@@ -76,13 +76,17 @@ public class FriendlyService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if(mRunning){
 
-        }
+        // Laur For test !!
+        getSharedPreferences("UserDetails", 0).edit().putBoolean("isServiceRunning",false).commit();
+
+        mRunning =  getSharedPreferences("UserDetails", 0).getBoolean("isServiceRunning",false);
 
         if( mRunning == false) {
             mRunning = true;
             //initializeLocationManager();
+
+            getSharedPreferences("UserDetails", 0).edit().putBoolean("isServiceRunning",true).commit();
 
             getSharedPreferences("UserDetails", 0).edit().putString("currentEventIsActive","0").commit();
 
@@ -227,7 +231,7 @@ public class FriendlyService extends Service {
 
                                     // From 10 to 10 minutes, recheck the user is still there
                                     try {
-                                        Thread.sleep(10 * MIN, 1);
+                                        Thread.sleep(1 * MIN, 1);
                                     } catch (InterruptedException exc) {
                                     }
                                 }
@@ -274,7 +278,7 @@ public class FriendlyService extends Service {
 
                     try {
                         // Sleep 10 min
-                        Thread.sleep(10 * MIN);
+                        Thread.sleep(2 * MIN);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -312,7 +316,7 @@ public class FriendlyService extends Service {
                         // User.firebaseRef.child("mesgEventsNrEvenimente").setValue("NR: " + events.size());
 
                         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, new Locale("English"));
-                        df.setTimeZone(TimeZone.getTimeZone("gmt"));
+                        df.setTimeZone(TimeZone.getTimeZone("Europe/Bucharest"));
                         String gmtTime = df.format(new Date());
 
                         Date now = new Date(gmtTime);
