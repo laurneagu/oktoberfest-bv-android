@@ -31,7 +31,7 @@
         android:layout_height="25dp"
         android:id="@+id/more_btn"
         android:background="@drawable/more"
-        android:layout_alignBottom="@+id/linearLayout2"
+        android:layout_marginTop="10dp"
         android:layout_alignLeft="@+id/chat_btn"
         android:layout_alignStart="@+id/chat_btn" />
 
@@ -43,7 +43,7 @@
         android:paddingLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginEnd="22dp"
-        android:layout_below="@+id/linearLayout2"
+        android:layout_below="@+id/more_btn"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="5dp"
@@ -54,11 +54,11 @@
         android:layout_height="wrap_content"
         android:paddingLeft="0dp"
         android:id="@+id/linearLayout2"
-        android:layout_alignTop="@+id/linearLayout3"
         android:layout_toRightOf="@+id/profileImageView"
         android:layout_toEndOf="@+id/profileImageView"
         android:layout_marginLeft="5dp"
-        android:layout_marginTop="5dp">
+        android:layout_marginTop="5dp"
+        android:layout_below="@+id/list_item_string">
 
         <TextView
             android:layout_width="wrap_content"
@@ -71,8 +71,9 @@
             android:layout_alignLeft="@+id/more_btn" />
 
         <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="3dp"
             android:id="@+id/ballImage"
             android:background="@drawable/lsp1"
             android:layout_toRightOf="@id/numberSports" />
@@ -80,16 +81,16 @@
     </LinearLayout>
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textSize="20sp"
+        android:textSize="20dp"
+        android:layout_marginTop="10dp"
         android:textColor="#0e3956"
         android:text="Nume"
         android:singleLine="false"
         android:ellipsize="end"
         android:id="@+id/list_item_string"
-        android:layout_above="@+id/linearLayout2"
         android:layout_alignLeft="@+id/linearLayout2"
         android:layout_alignStart="@+id/linearLayout2"
         android:layout_marginLeft="0dp" />

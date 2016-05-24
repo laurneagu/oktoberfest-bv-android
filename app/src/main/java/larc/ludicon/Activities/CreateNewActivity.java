@@ -186,11 +186,10 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         DatePicker datePicker = (DatePicker) findViewById(R.id.date_picker);
         TimePicker timePicker = (TimePicker) findViewById(R.id.time_picker);
 
-        // Laur Comment there are 3 hours before !!
-        Calendar calendar = new GregorianCalendar(datePicker.getYear(),
+         Calendar calendar = new GregorianCalendar(datePicker.getYear(),
                 datePicker.getMonth(),
                 datePicker.getDayOfMonth(),
-                timePicker.getCurrentHour() + 3,
+                timePicker.getCurrentHour(),
                 timePicker.getCurrentMinute());
 
         UniqueIDCreator idCreator = new UniqueIDCreator();
