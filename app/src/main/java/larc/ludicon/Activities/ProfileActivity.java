@@ -3,6 +3,7 @@ package larc.ludicon.Activities;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -24,9 +25,11 @@ import android.view.View;
 import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -43,12 +46,23 @@ import larc.ludicon.Adapters.LeftSidePanelAdapter;
 import larc.ludicon.R;
 import larc.ludicon.UserInfo.User;
 
+
 public class ProfileActivity extends Activity {
 
     // Left side panel
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
+
+    private class ComparePals{
+        int first_points;
+        int second_points;
+        ComparePals()
+        {
+            first_points = 0;
+            second_points = 0;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,16 +108,16 @@ public class ProfileActivity extends Activity {
                             if (snapshot.getValue() != null) {
                                 ImageView imageView = (ImageView) findViewById(R.id.profileImageView);
                                 new DownloadImageTask(imageView).execute(snapshot.getValue().toString());
-                            } else {}
+                            } else {
+                            }
                         }
 
                         @Override
                         public void onCancelled(FirebaseError firebaseError) {
                         }
                     });
+                } else {
                 }
-
-                else { }
             }
 
             @Override
@@ -128,19 +142,14 @@ public class ProfileActivity extends Activity {
                 userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
-                        if( snapshot == null )
-                        {
+                        if (snapshot == null) {
                             Intent intent = new Intent(getApplicationContext(), ChatTemplateActivity.class);
                             intent.putExtra("uid", uid);
                             intent.putExtra("firstConnection", true);
                             startActivity(intent);
-                        }
-                        else
-                        {
-                            for (DataSnapshot data : snapshot.getChildren() )
-                            {
-                                if ( data.getKey().equalsIgnoreCase(User.uid) )
-                                {
+                        } else {
+                            for (DataSnapshot data : snapshot.getChildren()) {
+                                if (data.getKey().equalsIgnoreCase(User.uid)) {
                                     Intent intent = new Intent(getApplicationContext(), ChatTemplateActivity.class);
                                     intent.putExtra("uid", uid);
                                     intent.putExtra("firstConnection", false);
@@ -162,7 +171,7 @@ public class ProfileActivity extends Activity {
         userSports.addListenerForSingleValueEvent(new ValueEventListener() { // get user sports
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                if( snapshot != null ) {
+                if (snapshot != null) {
                     for (DataSnapshot sport : snapshot.getChildren()) {
                         String uri = "@drawable/" + sport.getKey().toLowerCase().replace(" ", "");
 
@@ -174,10 +183,110 @@ public class ProfileActivity extends Activity {
 
                 listOfSports.setAdapter(new MyAdapter(sportsList));
             }
+
             @Override
             public void onCancelled(FirebaseError firebaseError) {
             }
         });
+
+       final ArrayList<ComparePals> compareArray = new ArrayList<>();
+        for(int i = 0; i <= 7; i++) compareArray.add(new ComparePals());
+        getPoints("football",0,User.uid,uid,compareArray);
+        getPoints("volley",1,User.uid,uid,compareArray);
+        getPoints("basketball",2,User.uid,uid,compareArray);
+        getPoints("squash",3,User.uid,uid,compareArray);
+        getPoints("pingpong",4,User.uid,uid,compareArray);
+        getPoints("tennis",5,User.uid,uid,compareArray);
+        getPoints("cycling",6,User.uid,uid,compareArray);
+        getPoints("jogging",7,User.uid,uid,compareArray);
+
+        try{
+            Thread.sleep(300,1);
+        }catch (InterruptedException exc) {}
+
+        StatsPerSportAdapter myadapter = new StatsPerSportAdapter(compareArray,getApplicationContext());
+
+        ListView mylistView = (ListView) findViewById(R.id.compareList);
+        if (mylistView != null)
+            mylistView.setAdapter(myadapter);
+    }
+
+    void getPoints(String sport, final int sportID, final String myUid, final String friendUid, final ArrayList<ComparePals> compareArray )
+    {
+        Firebase pointsRef = User.firebaseRef.child("points").child(sport);
+        pointsRef.addListenerForSingleValueEvent(new ValueEventListener() { // get user sports
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (snapshot != null) {
+                    for (DataSnapshot sport : snapshot.getChildren()) {
+                        if( sport != null )
+                        {
+                            if (sport.getKey().toString().equalsIgnoreCase(myUid))
+                                compareArray.get(sportID).second_points = Integer.parseInt(sport.getValue().toString());
+                            if (sport.getKey().toString().equalsIgnoreCase(friendUid))
+                            compareArray.get(sportID).first_points = Integer.parseInt(sport.getValue().toString());
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+            }
+        });
+    }
+    // Adapter for the statistics per sport
+    public class StatsPerSportAdapter extends BaseAdapter implements ListAdapter {
+
+        private Context context;
+        ArrayList<ComparePals> compareArray ;
+
+        public StatsPerSportAdapter(ArrayList<ComparePals> compareArray , Context context) {
+            this.compareArray = compareArray;
+            this.context = context;
+        }
+
+        @Override
+        public int getCount() {
+            return compareArray.size();
+        }
+        @Override
+        public Object getItem(int pos) {
+            return compareArray.get(pos);
+        }
+        @Override
+        public long getItemId(int pos) {
+            return 0;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            View view = convertView;
+            if (view == null) {
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.compare_layout, null);
+            }
+
+            final TextView comparePoints = (TextView) view.findViewById(R.id.pointsCompare);
+            final ImageView sportLogo = (ImageView) view.findViewById(R.id.sport_logo_compare);
+
+
+            comparePoints.setText( compareArray.get(position).first_points + " points" + " VS " + compareArray.get(position).second_points + " points (YOU)");
+
+            switch(position)
+            {
+                case 0 : sportLogo.setImageResource(R.drawable.football);break;
+                case 1 : sportLogo.setImageResource(R.drawable.volley);break;
+                case 2 : sportLogo.setImageResource(R.drawable.basketball);break;
+                case 3 : sportLogo.setImageResource(R.drawable.squash);break;
+                case 4 : sportLogo.setImageResource(R.drawable.pingpong);break;
+                case 5 : sportLogo.setImageResource(R.drawable.tennis);break;
+                case 6 : sportLogo.setImageResource(R.drawable.cycling);break;
+                case 7 : sportLogo.setImageResource(R.drawable.jogging);break;
+                default : break;
+            }
+            return view;
+        }
     }
 
     public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {

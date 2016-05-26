@@ -27,6 +27,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Organiser"
+            android:textColor="#0C3855"
             android:id="@+id/event_org"
             android:layout_below="@+id/profileImageView"
             android:layout_centerHorizontal="true" />
@@ -36,6 +37,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Large Text"
+            android:textColor="#0C3855"
             android:id="@+id/event_organiser_name"
             android:layout_below="@+id/event_org"
             android:layout_centerHorizontal="true" />
@@ -45,6 +47,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Small Text"
+            android:textColor="#0C3855"
             android:id="@+id/event_organiser_points"
             android:layout_below="@+id/event_organiser_name"
             android:layout_centerHorizontal="true" />
@@ -83,6 +86,7 @@
                 android:layout_alignLeft="@+id/event_place"
                 android:layout_alignStart="@+id/event_place"
                 android:layout_gravity="center"
+                android:textColor="#0C3855"
                 android:layout_row="2"
                 android:layout_column="2" />
 
@@ -108,6 +112,7 @@
                 android:layout_alignLeft="@+id/event_organiser_points"
                 android:layout_alignStart="@+id/event_organiser_points"
                 android:layout_gravity="center_horizontal|bottom"
+                android:textColor="#0C3855"
                 android:layout_row="1"
                 android:layout_column="2" />
 

@@ -154,7 +154,7 @@
             android:label="@string/title_activity_event_details"
             android:parentActivityName=".Activities.MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/FullscreenTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="larc.ludicon.Activities.MainActivity" />
@@ -162,7 +162,6 @@
         <activity
             android:name=".Activities.RankingsActivity"
             android:label="@string/title_activity_rankings"
-            android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".Activities.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

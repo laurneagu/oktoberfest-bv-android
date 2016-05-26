@@ -1,5 +1,6 @@
 package larc.ludicon.Activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -45,7 +46,7 @@ import larc.ludicon.Adapters.LeftSidePanelAdapter;
 import larc.ludicon.R;
 import larc.ludicon.UserInfo.User;
 
-public class RankingsActivity extends AppCompatActivity {
+public class RankingsActivity extends Activity {
 
     // Left side panel
     private ListView mDrawerList;
@@ -59,6 +60,7 @@ public class RankingsActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_rankings);
 
+//        getActionBar().hide();
         // Left side panel initializing
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
         initializeLeftSidePanel();
@@ -206,12 +208,25 @@ public class RankingsActivity extends AppCompatActivity {
         final TextView firstPlace = (TextView)findViewById(R.id.locul1);
         //Get name for firstPlace
             if ( contestants.get(0).points != -1 ) {
+                final int p = contestants.get(0).points;
                 Firebase nameRef = User.firebaseRef.child("users").child(contestants.get(0).id).child("name");
                 nameRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
                         if (snapshot != null && snapshot.getValue() != null) {
-                            firstPlace.setText(snapshot.getValue().toString());
+                            String[] splits = snapshot.getValue().toString().split(" ");
+                            firstPlace.setText(splits[0]);
+                            for (int i = 1; i < splits.length && i == 1; i ++)
+                                firstPlace.append(" " + splits[i]);
+                            firstPlace.append("\n");
+                            boolean hasMoreThan3 = false;
+                            for (int i = 2; i < splits.length; i ++) {
+                                hasMoreThan3 = true;
+                                firstPlace.append(splits[i] + " ");
+                            }
+                            if ( hasMoreThan3 ) firstPlace.append("\n");
+                            firstPlace.append("(" + p + ")");
+
                         }
                     }
 
@@ -225,12 +240,24 @@ public class RankingsActivity extends AppCompatActivity {
         final TextView secondPlace = (TextView)findViewById(R.id.locul2);
         //Get name for firstPlace
         if ( contestants.get(1).points != -1 ) {
+            final int p = contestants.get(1).points;
             Firebase nameRef = User.firebaseRef.child("users").child(contestants.get(1).id).child("name");
             nameRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
                     if (snapshot != null && snapshot.getValue() != null) {
-                        secondPlace.setText(snapshot.getValue().toString());
+                        String[] splits = snapshot.getValue().toString().split(" ");
+                        secondPlace.setText(splits[0]);
+                        for (int i = 1; i < splits.length && i == 1; i ++)
+                            secondPlace.append(" " + splits[i]);
+                        secondPlace.append("\n");
+                        boolean hasMoreThan3 = false;
+                        for (int i = 2; i < splits.length; i ++) {
+                            hasMoreThan3 = true;
+                            secondPlace.append(splits[i] + " ");
+                        }
+                        if ( hasMoreThan3 ) secondPlace.append("\n");
+                        secondPlace.append("(" + p + ")");
                     }
                 }
 
@@ -244,12 +271,24 @@ public class RankingsActivity extends AppCompatActivity {
         final TextView thirdPlace = (TextView)findViewById(R.id.locul3);
         //Get name for firstPlace
         if ( contestants.get(2).points != -1 ) {
+            final int p = contestants.get(2).points;
             Firebase nameRef = User.firebaseRef.child("users").child(contestants.get(2).id).child("name");
             nameRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
                     if (snapshot != null && snapshot.getValue() != null) {
-                        thirdPlace.setText(snapshot.getValue().toString());
+                        String[] splits = snapshot.getValue().toString().split(" ");
+                        thirdPlace.setText(splits[0]);
+                        for (int i = 1; i < splits.length && i == 1; i ++)
+                            thirdPlace.append(" " + splits[i]);
+                        thirdPlace.append("\n");
+                        boolean hasMoreThan3 = false;
+                        for (int i = 2; i < splits.length; i ++) {
+                            hasMoreThan3 = true;
+                            thirdPlace.append(splits[i] + " ");
+                        }
+                        if ( hasMoreThan3 ) thirdPlace.append("\n");
+                        thirdPlace.append("(" + p + ")");
                     }
                 }
 
@@ -336,7 +375,7 @@ public class RankingsActivity extends AppCompatActivity {
         sportName.put(0,"football");
         sportName.put(1,"volley");
         sportName.put(2,"basketball");
-        sportName.put(3,"chess");
+        sportName.put(3,"squash");
         sportName.put(4,"pingpong");
         sportName.put(5,"tennis");
         sportName.put(6,"cycling");

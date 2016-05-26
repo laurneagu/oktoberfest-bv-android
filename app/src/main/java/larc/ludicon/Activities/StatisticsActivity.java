@@ -88,7 +88,7 @@ public class StatisticsActivity extends Activity {
         sportsMap.put("football", 0);
         sportsMap.put("volley",1);
         sportsMap.put("basketball",2);
-        sportsMap.put("chess",3);
+        sportsMap.put("squash",3);
         sportsMap.put("pingpong",4);
         sportsMap.put("tennis",5);
         sportsMap.put("cycling",6);
@@ -261,7 +261,7 @@ public class StatisticsActivity extends Activity {
                 case 0 : sportLogo.setImageResource(R.drawable.football); sport = "football";    break;
                 case 1 : sportLogo.setImageResource(R.drawable.volley);sport = "volley";      break;
                 case 2 : sportLogo.setImageResource(R.drawable.basketball);sport = "basketball";  break;
-                case 3 : sportLogo.setImageResource(R.drawable.chess);sport = "chess";       break;
+                case 3 : sportLogo.setImageResource(R.drawable.squash);sport = "squash";       break;
                 case 4 : sportLogo.setImageResource(R.drawable.pingpong);sport = "pingpong";    break;
                 case 5 : sportLogo.setImageResource(R.drawable.tennis);sport = "tennis";      break;
                 case 6 : sportLogo.setImageResource(R.drawable.cycling);sport = "cycling";     break;

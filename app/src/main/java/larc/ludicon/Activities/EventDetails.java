@@ -1,5 +1,6 @@
 package larc.ludicon.Activities;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -57,7 +58,7 @@ import larc.ludicon.Utils.CustomView.NonScrollListView;
 import larc.ludicon.Utils.UserInfo;
 
 
-public class EventDetails extends AppCompatActivity {
+public class EventDetails extends Activity {
 
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -69,6 +70,7 @@ public class EventDetails extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_details);
+        getActionBar().hide();
         TextView title = (TextView)findViewById(R.id.hello_message_activity);
         title.setText("Event Details");
 

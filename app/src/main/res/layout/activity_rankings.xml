@@ -16,7 +16,8 @@
     android:id="@+id/listSpinner"
     android:paddingTop="20dp"
         android:spinnerMode="dropdown"
-    android:layout_centerHorizontal="true">
+    android:layout_centerHorizontal="true"
+        android:paddingBottom="20dp">
     </Spinner>
 
         <LinearLayout
@@ -26,7 +27,8 @@
             android:layout_below="@+id/listSpinner"
             android:layout_centerHorizontal="true"
             android:id="@+id/linearLay"
-            android:paddingLeft="90dp">
+            android:paddingLeft="90dp"
+            android:paddingBottom="30dp">
 
             <ImageView
                 android:layout_width="30dp"
@@ -51,7 +53,7 @@
                 android:id="@+id/myRank" />
         </LinearLayout>
         <ImageView
-            android:layout_width="350dp"
+            android:layout_width="300dp"
             android:layout_height="150dp"
             android:paddingTop="20dp"
             android:layout_below="@id/linearLay"
@@ -66,6 +68,9 @@
             android:text="Locul 1"
             android:textColor="#0C3855"
             android:id="@+id/locul1"
+            android:maxLines="3"
+            android:textStyle="bold"
+            android:singleLine="false"
             android:layout_alignTop="@+id/imageView2"
             android:layout_centerHorizontal="true" />
 
@@ -76,7 +81,10 @@
             android:text="Locul 3"
             android:textColor="#0C3855"
             android:id="@+id/locul3"
-            android:layout_below="@+id/locul2"
+            android:maxLines="3"
+            android:singleLine="false"
+            android:textStyle="bold"
+            android:layout_below="@+id/locul1"
             android:layout_alignRight="@+id/imageView2"
             android:layout_alignEnd="@+id/imageView2" />
 
@@ -87,6 +95,9 @@
             android:text="Locul 2"
             android:textColor="#0C3855"
             android:id="@+id/locul2"
+            android:maxLines="3"
+            android:singleLine="false"
+            android:textStyle="bold"
             android:layout_below="@+id/locul1"
             android:layout_alignLeft="@+id/imageView2"
             android:layout_alignStart="@+id/imageView2" />
