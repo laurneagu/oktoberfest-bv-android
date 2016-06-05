@@ -80,7 +80,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
     public void onMapReady(GoogleMap map) {
         m_gmap = map;
 
-        locationListener = new ActivitiesLocationListener();
+        locationListener = new ActivitiesLocationListener(getApplication());
         locationListener.BindMap(map);
         lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -367,8 +367,10 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        latitude = data.getDoubleExtra("latitude", 0);
-        longitude = data.getDoubleExtra("longitude", 0);
+        if(data != null) {
+            latitude = data.getDoubleExtra("latitude", 0);
+            longitude = data.getDoubleExtra("longitude", 0);
+        }
 
         try {
             if(lm != null)
@@ -387,7 +389,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
         m_gmap.addMarker(new MarkerOptions()
                 .position(latLng)
-                //.icon(BitmapDescriptorFactory.fromResource(R.drawable.football))
+                        //.icon(BitmapDescriptorFactory.fromResource(R.drawable.football))
                 .title("This is your selected area"));
         m_gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
     }
