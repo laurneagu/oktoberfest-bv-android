@@ -86,6 +86,7 @@ import larc.ludicon.R;
 import larc.ludicon.UserInfo.ActivityInfo;
 import larc.ludicon.UserInfo.User;
 import larc.ludicon.Services.FriendlyService;
+import larc.ludicon.Utils.Event;
 import larc.ludicon.Utils.MainPageUtils.ViewPagerAdapter;
 import larc.ludicon.Utils.ui.SlidingTabLayout;
 
@@ -114,22 +115,8 @@ public class MainActivity extends AppCompatActivity {
     int Numboftabs =2;
     boolean addedSwipe = false;
 
-    class Event {
-        Map<String, Boolean> usersUID = new HashMap<String,Boolean>();
-        Date date;
-        int noUsers;
-        String sport;
-        String creator;
-        String place;
-        double latitude;
-        double longitude;
-        String id;
-        String creatorName;
-        String profileImageURL;
-        public String getFirstUser() {
-            return creator;
-        }
-    }
+    private final ArrayList<Event> myEventsList = new ArrayList<>();
+
     private boolean isMyServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
@@ -441,7 +428,7 @@ public class MainActivity extends AppCompatActivity {
                                         Boolean exist = false;
                                         for (ActivityInfo act : events) {
                                             // Trash detection
-                                            if (ai.date == null) {
+                                            if (ai.date == null || act.date == null ) {
                                                 exist = true;
                                                 break;
                                             }
@@ -617,7 +604,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 final ArrayList<Event> eventList = new ArrayList<>();
-                final ArrayList<Event> myEventsList = new ArrayList<>();
+
                 final ArrayList<Event> friendsEventsList = new ArrayList<>();
                 for (DataSnapshot data : snapshot.getChildren()) {
                     Event event = new Event();
@@ -643,6 +630,9 @@ public class MainActivity extends AppCompatActivity {
                             event.sport = details.getValue().toString();
                         if (details.getKey().equalsIgnoreCase("createdBy"))
                             event.creator = details.getValue().toString();
+
+                        if (details.getKey().toString().equalsIgnoreCase("isofficial"))
+                            event.isOfficial = Integer.parseInt(details.getValue().toString());
 
                         if (details.getKey().toString().equalsIgnoreCase("date"))
                             event.date = new Date(details.getValue().toString());
@@ -700,6 +690,11 @@ public class MainActivity extends AppCompatActivity {
                         return lhs.date.compareTo(rhs.date);
                     }
                 });
+
+                // Save my events also locally - to be used in the Create Activity
+                SharedPreferences.Editor editor = getSharedPreferences("UserDetails", 0).edit();
+                editor.putString("myEvents",  new Gson().toJson(myEventsList));
+                editor.commit();
 
                 /* Friends */
                 TimelineAroundActAdapter fradapter = new TimelineAroundActAdapter(friendsEventsList, getApplicationContext());
@@ -1203,10 +1198,15 @@ public class MainActivity extends AppCompatActivity {
                 secondPart.setText(" with no others");
             }*/
 
-            if(list.get(position) != null )
+            if(list.get(position) != null ) {
+                if(list.get(position).isOfficial==0){
+                    holder.place.setTextColor(Color.DKGRAY);
+                }
                 holder.place.setText(list.get(position).place);
+            }
             else
                 holder.place.setText("Unknown");
+
             Calendar c = Calendar.getInstance();
             Date today = c.getTime();
             int todayDay = getDayOfMonth(today);

@@ -74,7 +74,7 @@ public class GMapsFullActivity extends Activity implements OnMapReadyCallback, C
         if (ActivitiesLocationListener.hasSetPosition == true){
             SharedPreferences sharedPref = getApplication().getSharedPreferences("LocationPrefs", 0);
             String latString, longString;
-            double latitude=0, longitude=0;
+            double latitude, longitude;
             latString = sharedPref.getString("curr_latitude", null);
             longString= sharedPref.getString("curr_longitude", null);
 
@@ -128,6 +128,8 @@ public class GMapsFullActivity extends Activity implements OnMapReadyCallback, C
                 Intent intent = new Intent();
                 intent.putExtra("latitude", latLng.latitude);
                 intent.putExtra("longitude", latLng.longitude);
+                intent.putExtra("isOfficial", 0);
+                intent.putExtra("comment", "Please note this is not an official event! You will get no points !");
 
                 setResult(CreateNewActivity.ASK_COORDS_DONE, intent);
 
@@ -289,6 +291,7 @@ public class GMapsFullActivity extends Activity implements OnMapReadyCallback, C
                 if(!sameId) {
 
                     Drawable drawable = getResources().getDrawable(p.profilePhoto);
+
                     // Laur Neagu
                     drawable.setLevel(p.profilePhoto);
                     drawable.setBounds(0, 0, width, height);
@@ -325,8 +328,7 @@ public class GMapsFullActivity extends Activity implements OnMapReadyCallback, C
     @Override
     public boolean onClusterClick(Cluster<Person> cluster) {
         // Show a toast with some info when the cluster is clicked.
-        String firstName = cluster.getItems().iterator().next().name;
-        Toast.makeText(this, cluster.getSize() + " (including " + firstName + ")", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Here are " + cluster.getSize() + " locations ! Pick just one for the event !" , Toast.LENGTH_SHORT).show();
         return true;
     }
 
@@ -337,8 +339,26 @@ public class GMapsFullActivity extends Activity implements OnMapReadyCallback, C
 
     @Override
     public boolean onClusterItemClick(Person item) {
-        // Does nothing, but you could go into the user's profile page, for example.
-        return false;
+
+        // Laur Neagu
+        //Toast.makeText(this, "Location :" + item.getPosition().longitude + " -- " + item.getPosition().latitude , Toast.LENGTH_SHORT).show();
+
+        Intent intent = new Intent();
+        intent.putExtra("latitude", item.getPosition().latitude);
+        intent.putExtra("longitude", item.getPosition().longitude);
+        intent.putExtra("isOfficial", 1);
+        intent.putExtra("address",item.name);
+        intent.putExtra("comment", "This is an official event you create in " + item.name + " ! You will get points if you attend it!");
+
+        setResult(CreateNewActivity.ASK_COORDS_DONE, intent);
+
+        // Sanity checks
+        lm = null;
+        locationListener =null;
+        finish();
+
+
+        return true;
     }
 
     @Override
@@ -346,8 +366,9 @@ public class GMapsFullActivity extends Activity implements OnMapReadyCallback, C
         // Does nothing, but you could go into the user's profile page, for example.
     }
 
+
     protected void startDemo() {
-        mClusterManager = new ClusterManager<Person>(this, mapFragment.getMap());
+        mClusterManager = new ClusterManager<>(this, mapFragment.getMap());
         mClusterManager.setRenderer(new PersonRenderer());
         mapFragment.getMap().setOnCameraChangeListener(mClusterManager);
         mapFragment.getMap().setOnMarkerClickListener(mClusterManager);
@@ -381,10 +402,6 @@ public class GMapsFullActivity extends Activity implements OnMapReadyCallback, C
         mClusterManager.addItem(new Person(new LatLng(44.4057214,26.103872), "Parc Tineretului", R.drawable.volley));
 
         mClusterManager.addItem(new Person(new LatLng(44.4195959,26.1548647), "Parc Titan", R.drawable.tennis));
-    }
-
-    private LatLng position() {
-        return new LatLng(random(44.4529505,44.4119505), random(26.0522823, 26.0112823));
     }
 
     private double random(double min, double max) {

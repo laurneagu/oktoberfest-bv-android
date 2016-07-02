@@ -28,6 +28,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -39,9 +40,14 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +58,9 @@ import java.util.TimeZone;
 import larc.ludicon.Adapters.LeftPanelItemClicker;
 import larc.ludicon.Adapters.LeftSidePanelAdapter;
 import larc.ludicon.R;
+import larc.ludicon.UserInfo.ActivityInfo;
 import larc.ludicon.UserInfo.User;
+import larc.ludicon.Utils.Event;
 import larc.ludicon.Utils.Location.GPS_Positioning;
 import larc.ludicon.Utils.Location.ActivitiesLocationListener;
 import larc.ludicon.Utils.util.UniqueIDCreator;
@@ -73,8 +81,11 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
     private LocationManager lm;
     private GoogleMap m_gmap;
 
-    private double latitude=0;
-    private double longitude=0;
+    private double latitude = 0;
+    private double longitude = 0;
+    private int isOfficial = 0;
+
+    private String addressName = ""; //default address
 
     @Override
     public void onMapReady(GoogleMap map) {
@@ -204,6 +215,8 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         df.setTimeZone(TimeZone.getTimeZone("Europe/Bucharest"));
 
         String gmtTime = df.format(calendar.getTime());
+        final Date creationDate = calendar.getTime();
+
         map.put("date",  gmtTime);
         map.put("createdBy", User.uid);
         Firebase userRef = new Firebase(FIREBASE_URL).child("users").child(User.uid);
@@ -247,18 +260,21 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
         // Set location
         final Map<String, Object> mapAux = new HashMap<>();
+
+        // location not provided
         if (latitude == 0 || longitude == 0) {
             mapAux.put("latitude",GPS_Positioning.getLatLng().latitude);
             mapAux.put("longitude", GPS_Positioning.getLatLng().longitude);
-
         }
         else{
             Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.ENGLISH );
-            String addressName = "Parc Crangasi";
+
             try {
                 List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
                 if(addresses.size()>0) {
-                    addressName = addresses.get(0).getAddressLine(0);
+                    if(addressName.equals("")) {
+                        addressName = addresses.get(0).getAddressLine(0);
+                    }
                 }
             }
             catch(Exception exc){ addressName = "Unknown";}
@@ -267,8 +283,10 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
             mapAux.put("longitude", longitude);
             mapAux.put("name", addressName);
         }
+        // If the user will get points or not for the event
+        map.put("isOfficial",isOfficial);
+
         map.put("place", mapAux);
-        // TODO Find a known place by coordinates
 
         // Set sport
         // TODO Get sport key
@@ -289,6 +307,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
                 if (snapshot.getValue() == null) { // flush the database everything is crazy
                     //User.firebaseRef.child("mesg").setValue("World is on fire");
 
+                    // Script to refresh sports in the database
                     /*
                     User.firebaseRef.child("sports").child("Football").child("id").setValue("0");
                     User.firebaseRef.child("sports").child("Volley").child("id").setValue("1");
@@ -300,27 +319,51 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
                     User.firebaseRef.child("sports").child("Jogging").child("id").setValue("7");
                     */
                 }
-                User.firebaseRef.child("events").child(id).setValue(map);
-                // Each user has an "events" field which has a list of event ids
-                Map<String,Object> ev =  new HashMap<String,Object>();
-                Map<String,Object> inEv = new HashMap<>();
-                inEv.put("participation",true);
-                inEv.put("points",0);
-                ev.put(id, inEv);
-                User.firebaseRef.child("users").child(User.uid).child("events").updateChildren(ev);
 
-                try {
-                    if(lm != null)
-                        lm.removeUpdates(locationListener);
-                } catch (SecurityException exc) {
-                    exc.printStackTrace();
+                // Get the events from Shared Prefs
+                String connectionsJSONString = getSharedPreferences("UserDetails", 0).getString("myEvents", null);
+                Type type = new TypeToken<ArrayList<Event>>() {}.getType();
+                ArrayList<Event> myCurrentEvents = new Gson().fromJson(connectionsJSONString, type);
+
+                int numberOfEvents = 0;
+                boolean isSameDate = false;
+                for(Event event : myCurrentEvents){
+                    if (event.date.getDay() == creationDate.getDay() && Math.abs(event.date.getHours()-creationDate.getHours()) <=1) {
+                        isSameDate=true; break;
+                    }
+                    if(event.date.getDay() == creationDate.getDay()) numberOfEvents++;
                 }
 
-                // Sanity checks
-                lm = null;
-                locationListener =null;
+                if (isSameDate){
+                    Toast.makeText(getApplicationContext(), "You have scheduled an event at this date already ! Please check your agenda !",Toast.LENGTH_LONG ).show();
+                }
+                else if (numberOfEvents >= 3){
+                    Toast.makeText(getApplicationContext(), "You already reached the limit of 3 events on this day. Please pick another day !",Toast.LENGTH_LONG ).show();
+                }
+                else {
 
-                jumpToMainActivity();
+                    User.firebaseRef.child("events").child(id).setValue(map);
+                    // Each user has an "events" field which has a list of event ids
+                    Map<String, Object> ev = new HashMap<String, Object>();
+                    Map<String, Object> inEv = new HashMap<>();
+                    inEv.put("participation", true);
+                    inEv.put("points", 0);
+                    ev.put(id, inEv);
+                    User.firebaseRef.child("users").child(User.uid).child("events").updateChildren(ev);
+
+                    try {
+                        if (lm != null)
+                            lm.removeUpdates(locationListener);
+                    } catch (SecurityException exc) {
+                        exc.printStackTrace();
+                    }
+
+                    // Sanity checks
+                    lm = null;
+                    locationListener = null;
+
+                    jumpToMainActivity();
+                }
             }
 
             @Override
@@ -354,7 +397,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
             exc.printStackTrace();
         }
 
-        // Sanity checks
+        // Sanity activities
         lm = null;
         locationListener =null;
         finish();
@@ -370,6 +413,12 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         if(data != null) {
             latitude = data.getDoubleExtra("latitude", 0);
             longitude = data.getDoubleExtra("longitude", 0);
+            isOfficial = data.getIntExtra("isOfficial", 0);
+            addressName = data.getStringExtra("address");
+
+            String comment = data.getStringExtra("comment");
+
+            Toast.makeText(getApplication(), comment, Toast.LENGTH_LONG).show();
         }
 
         try {
