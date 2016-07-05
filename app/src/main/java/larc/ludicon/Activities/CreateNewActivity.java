@@ -25,6 +25,7 @@ import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -196,6 +197,17 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
     public void OnCreateEvent(View view) {
         DatePicker datePicker = (DatePicker) findViewById(R.id.date_picker);
         TimePicker timePicker = (TimePicker) findViewById(R.id.time_picker);
+
+        // Stop button to be called more than once
+        Button createEvent = (Button) findViewById(R.id.createEvent);
+        createEvent.setEnabled(false);
+        createEvent.setClickable(false);
+        createEvent.setText("Creating ..");
+        createEvent.setBackgroundColor(Color.TRANSPARENT);
+        createEvent.setTextColor(Color.BLUE);
+        ProgressBar pb = (ProgressBar)findViewById(R.id.marker_progress);
+        pb.setVisibility(View.VISIBLE);
+
 
          Calendar calendar = new GregorianCalendar(datePicker.getYear(),
                 datePicker.getMonth(),
