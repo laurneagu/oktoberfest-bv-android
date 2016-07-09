@@ -132,7 +132,7 @@ public class FriendlyService extends Service {
                         events = new Gson().fromJson(connectionsJSONString, type);
                     }
 
-                    if (events != null) {
+                    if (events != null && events.size() != 0) {
 
                         getSharedPreferences("UserDetails", 0).edit().putString("currentEventIsActive","0").commit();
                         // Get current date
@@ -155,6 +155,7 @@ public class FriendlyService extends Service {
                         }
 
                         ActivityInfo upcomingEvent;
+
                         if (j == events.size()) upcomingEvent = events.get(j - 1);
                         else upcomingEvent = events.get(j);
 

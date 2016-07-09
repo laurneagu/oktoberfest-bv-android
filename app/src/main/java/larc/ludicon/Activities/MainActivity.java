@@ -14,6 +14,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -114,7 +115,8 @@ public class MainActivity extends AppCompatActivity {
     CharSequence Titles[]={"My Activities","Around Me"};
     int Numboftabs =2;
     boolean addedSwipe = false;
-
+    final ArrayList<String> favoriteSports = new ArrayList<>();
+    int userRange = 100;
     private final ArrayList<Event> myEventsList = new ArrayList<>();
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
@@ -221,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
                 .setIdentifier(User.uid)
                 .save(); // Don't forget to save the changes!
         */
-       // getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+        // getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
 
@@ -233,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
         saveUnsavedPointstoFirebase();
 
         // Creating The ViewPagerAdapter and Passing Fragment Manager, Titles fot the Tabs and Number Of Tabs.
-        adapter =  new ViewPagerAdapter(getSupportFragmentManager(),Titles,Numboftabs);
+        adapter = new ViewPagerAdapter(getSupportFragmentManager(), Titles, Numboftabs);
 
         // Assigning ViewPager View and setting the adapter
         pager = (ViewPager) findViewById(R.id.pager);
@@ -274,24 +276,23 @@ public class MainActivity extends AppCompatActivity {
         dialog = ProgressDialog.show(MainActivity.this, "", "Loading. Please wait", true);
 
         // Check if there are any unsaved points in SharedPref and put them on Firebase
-        Map<String,Integer> unsavedPointsMap = new HashMap<>();
+        Map<String, Integer> unsavedPointsMap = new HashMap<>();
         SharedPreferences pSharedPref = getSharedPreferences("Points", Context.MODE_PRIVATE);
-        try{
-            if (pSharedPref != null){
+        try {
+            if (pSharedPref != null) {
                 String jsonString = pSharedPref.getString("UnsavedPointsMap", (new JSONObject()).toString());
                 JSONObject jsonObject = new JSONObject(jsonString);
                 Iterator<String> keysItr = jsonObject.keys();
-                while(keysItr.hasNext()) {
+                while (keysItr.hasNext()) {
                     String key = keysItr.next();
                     Integer value = (Integer) jsonObject.get(key);
                     unsavedPointsMap.put(key, value);
                 }
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        for( Map.Entry<String,Integer> entry : unsavedPointsMap.entrySet() )
-        {
+        for (Map.Entry<String, Integer> entry : unsavedPointsMap.entrySet()) {
             // Get sport of the current event(entry)
             Firebase sportNameRef = User.firebaseRef.child("events").child(entry.getKey()).child("sport");
             final ArrayList<String> eventSport = new ArrayList<>();
@@ -300,14 +301,15 @@ public class MainActivity extends AppCompatActivity {
                 public void onDataChange(DataSnapshot snapshot) {
                     eventSport.add(snapshot.getValue().toString());
                 }
+
                 @Override
                 public void onCancelled(FirebaseError firebaseError) {
                 }
             });
             try {
                 Thread.sleep(100, 1);
+            } catch (Exception exc) {
             }
-            catch(Exception exc){}
 
             // Get and update total number of points for user in sport
             Firebase pointsRef = User.firebaseRef.child("points").child(eventSport.get(0)).child(User.uid);
@@ -317,14 +319,15 @@ public class MainActivity extends AppCompatActivity {
                 public void onDataChange(DataSnapshot snapshot) {
                     points.add(Integer.parseInt(snapshot.getValue().toString()));
                 }
+
                 @Override
                 public void onCancelled(FirebaseError firebaseError) {
                 }
             });
             try {
                 Thread.sleep(100, 1);
+            } catch (Exception exc) {
             }
-            catch(Exception exc){}
             pointsRef.setValue(points.get(0) + entry.getValue());
 
             // Update points for each event in user's details
@@ -335,7 +338,7 @@ public class MainActivity extends AppCompatActivity {
         pSharedPref.edit().remove("UnsavedPointsMap").commit();
 
         // Background Service:
-        if(!isMyServiceRunning(FriendlyService.class)){
+        if (!isMyServiceRunning(FriendlyService.class)) {
 
             Intent mServiceIntent = new Intent(this, FriendlyService.class);
             //startService(mServiceIntent);
@@ -353,14 +356,46 @@ public class MainActivity extends AppCompatActivity {
             startService(mServiceIntent);
         }
 
+        // Get user's favorite sports
+        Firebase usersRef = User.firebaseRef.child("users").child(User.uid);
+        usersRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for (DataSnapshot dataSN : snapshot.getChildren()) {
+                    if (dataSN.getKey().equalsIgnoreCase("sports") )
+                        for (DataSnapshot data : dataSN.getChildren() )
+                        {
+                            if (data.getKey() != null && data.getKey() != " ")
+                                favoriteSports.add(data.getKey().toString());
+                        }
+                    if ( dataSN.getKey().equalsIgnoreCase("range") )
+                    {
+                        userRange = Integer.parseInt(dataSN.getValue().toString());
+                    }
+                }
+                continueUpdatingTimeline();
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+            }
+        });
+
+    }
+    double userLatitude = 0;
+    double userLongitude = 0;
+    public void continueUpdatingTimeline() {
+
+        // Get user's last known location from SharedPref
+        SharedPreferences sharedPref = this.getApplicationContext().getSharedPreferences("LocationPrefs", 0);
+        userLatitude = Double.parseDouble(sharedPref.getString("curr_latitude", "0"));
+        userLongitude = Double.parseDouble(sharedPref.getString("curr_longitude", "0"));
 
         //Clean up shared pref for events: just for debugging
         SharedPreferences.Editor editor = getSharedPreferences("UserDetails", 0).edit();
         String connectionsJSONString = new Gson().toJson(null);
         editor.putString("events", connectionsJSONString);
         editor.commit();
-
-
         // Update sharedpref for events:
         editor = getSharedPreferences("UserDetails", 0).edit();
         editor.putString("uid", User.uid);
@@ -384,9 +419,8 @@ public class MainActivity extends AppCompatActivity {
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     ActivityInfo ai = new ActivityInfo();
                                     ai.id = id;
-
+                                    boolean mustAddEventToList = true;
                                     for (DataSnapshot details : dataSnapshot.getChildren()) {
-
                                         if (details.getKey().toString().equalsIgnoreCase("users")) {
                                             int count = 0;
 
@@ -395,6 +429,9 @@ public class MainActivity extends AppCompatActivity {
                                             }
                                             ai.others = count;
 
+                                        }
+                                        if (details.getKey().toString().equalsIgnoreCase("active")) {
+                                            mustAddEventToList = Boolean.parseBoolean(details.getValue().toString());
                                         }
                                         if (details.getKey().toString().equalsIgnoreCase("date")) {
                                             ai.date = new Date(details.getValue().toString());
@@ -414,6 +451,17 @@ public class MainActivity extends AppCompatActivity {
 
                                         }
                                     }
+                                    // If event's sport is not in user's favourites do not include it
+                                    if ( !favoriteSports.contains(ai.sport) )
+                                        mustAddEventToList = false;
+
+                                    // Get distance between last known location and event location
+                                    float[] distance = new float[10];
+                                    Location.distanceBetween(userLatitude, userLongitude, ai.latitude, ai.longitude, distance);
+
+                                    // If distance from user to event is greater than the selected range do not include it
+                                    if ( distance[0] > userRange * 1000 )
+                                        mustAddEventToList = false;
 
                                     String connectionsJSONString = getSharedPreferences("UserDetails", 0).getString("events", null);
                                     Type type = new TypeToken<List<ActivityInfo>>() {}.getType();
@@ -421,9 +469,10 @@ public class MainActivity extends AppCompatActivity {
                                     if (connectionsJSONString != null) {
                                         events = new Gson().fromJson(connectionsJSONString, type);
                                     }
-                                    if (events == null) {
+                                    if (events == null ) {
                                         events = new ArrayList<ActivityInfo>();
-                                        events.add(ai);
+                                        if ( mustAddEventToList )
+                                            events.add(ai);
                                     } else {
                                         Boolean exist = false;
                                         for (ActivityInfo act : events) {
@@ -436,7 +485,7 @@ public class MainActivity extends AppCompatActivity {
                                                 exist = true;
                                             }
                                         }
-                                        if (!exist) {
+                                        if (!exist && mustAddEventToList ) {
                                             events.add(ai);
                                         }
                                     }
@@ -610,11 +659,15 @@ public class MainActivity extends AppCompatActivity {
                     Event event = new Event();
                     boolean isPublic = true;
                     boolean doIParticipate = false;
+                    boolean mustAddEventToList = true;
                     event.id = data.getKey();
                     Map<String, Boolean> participants = new HashMap<String, Boolean>();
 
 
                     for (DataSnapshot details : data.getChildren()) {
+
+                        if (details.getKey().toString().equalsIgnoreCase("active"))
+                            mustAddEventToList = Boolean.parseBoolean(details.getValue().toString());
 
                         if (details.getKey().toString().equalsIgnoreCase("creatorName"))
                             event.creatorName = details.getValue().toString();
@@ -661,9 +714,23 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
 
+                    //TODO - copy
+
+                    // If event's sport is not in user's favourites do not include it
+                    if ( !favoriteSports.contains(event.sport) )
+                        mustAddEventToList = false;
+
+                    // Get distance between last known location and event location
+                    float[] distance = new float[10];
+                    Location.distanceBetween(userLatitude, userLongitude, event.latitude, event.longitude, distance);
+
+                    // If distance from user to event is greater than the selected range do not include it
+                    if ( distance[0] > userRange * 1000 )
+                        mustAddEventToList = false;
+
                     // Insert event in the correct list
                     //if (new Date().before(event.date) && isPublic) {
-                    if ((new Date().getTime() < event.date.getTime()) && isPublic) {
+                    if ((new Date().getTime() < event.date.getTime()) && isPublic && mustAddEventToList) {
 
                         event.usersUID = participants;
 

@@ -11,6 +11,7 @@ public class Event {
     public Map<String, Boolean> usersUID = new HashMap<String,Boolean>();
     public Date date;
     public int noUsers;
+    public boolean active;
     public String sport;
     public String creator;
     public String place;

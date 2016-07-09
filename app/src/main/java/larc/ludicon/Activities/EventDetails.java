@@ -9,6 +9,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -66,6 +67,20 @@ public class EventDetails extends Activity {
     private ProgressDialog dialog;
     private int TIMEOUT = 80;
 
+    /**
+     * Method that jumps to the MainActivity
+     */
+    public void jumpToMainActivity() {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                // Actions to do after 5 seconds
+                Intent goToNextActivity = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(goToNextActivity);
+                finish();
+            }
+        }, 1); // Delay time for transition to next activity -> insert any time wanted here instead of 5000
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,6 +119,15 @@ public class EventDetails extends Activity {
             }
         });
         // -------------------------------------------------------------------------------------------------------------
+        // Cancel Event Button
+        Button cancelEvent = (Button)findViewById(R.id.cancelbtn);
+        cancelEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                User.firebaseRef.child("events").child(eventUid).child("active").setValue(false);
+                jumpToMainActivity();
+            }
+        });
 
         Firebase eventRef = User.firebaseRef.child("events").child(eventUid);
         eventRef.addListenerForSingleValueEvent(new ValueEventListener() {

@@ -137,7 +137,30 @@
             android:background="@drawable/fbshare"
             android:layout_centerHorizontal="true"/>
 
-    </RelativeLayout>
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cancel Event"
+                android:id="@+id/cancelbtn"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:background="#ff442d"
+                android:enabled="true"
+                android:focusable="true" />
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="EDIT event"
+                android:id="@+id/editbtn"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+        </RelativeLayout>
     </ScrollView>
 
     <include layout="@layout/header" />

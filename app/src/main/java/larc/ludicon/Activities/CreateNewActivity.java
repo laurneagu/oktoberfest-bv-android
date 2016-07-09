@@ -193,21 +193,20 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
                 break;
         }
     }
+    public boolean checkEventDateIsNotInPast(Date creationDate)
+    {
+        Date now = new Date();
+        if ( creationDate.before(now) ) {
+            Toast.makeText(this.getApplicationContext(), "You can't create an event in the past",
+                    Toast.LENGTH_LONG).show();
+            return true;
+        }
+        return false;
+    }
 
     public void OnCreateEvent(View view) {
         DatePicker datePicker = (DatePicker) findViewById(R.id.date_picker);
         TimePicker timePicker = (TimePicker) findViewById(R.id.time_picker);
-
-        // Stop button to be called more than once
-        Button createEvent = (Button) findViewById(R.id.createEvent);
-        createEvent.setEnabled(false);
-        createEvent.setClickable(false);
-        createEvent.setText("Creating ..");
-        createEvent.setBackgroundColor(Color.TRANSPARENT);
-        createEvent.setTextColor(Color.BLUE);
-        ProgressBar pb = (ProgressBar)findViewById(R.id.marker_progress);
-        pb.setVisibility(View.VISIBLE);
-
 
          Calendar calendar = new GregorianCalendar(datePicker.getYear(),
                 datePicker.getMonth(),
@@ -229,8 +228,23 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         String gmtTime = df.format(calendar.getTime());
         final Date creationDate = calendar.getTime();
 
+        if ( checkEventDateIsNotInPast(creationDate) )
+            return;
+
+        // Stop button to be called more than once
+        Button createEvent = (Button) findViewById(R.id.createEvent);
+        createEvent.setEnabled(false);
+        createEvent.setClickable(false);
+        createEvent.setText("Creating ..");
+        createEvent.setBackgroundColor(Color.TRANSPARENT);
+        createEvent.setTextColor(Color.BLUE);
+        ProgressBar pb = (ProgressBar)findViewById(R.id.marker_progress);
+        pb.setVisibility(View.VISIBLE);
+
         map.put("date",  gmtTime);
         map.put("createdBy", User.uid);
+        map.put("active",true);
+
         Firebase userRef = new Firebase(FIREBASE_URL).child("users").child(User.uid);
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
