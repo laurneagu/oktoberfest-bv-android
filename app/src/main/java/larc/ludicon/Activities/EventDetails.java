@@ -1,8 +1,10 @@
 package larc.ludicon.Activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.BitmapDrawable;
@@ -25,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
@@ -79,7 +82,7 @@ public class EventDetails extends Activity {
                 startActivity(goToNextActivity);
                 finish();
             }
-        }, 1); // Delay time for transition to next activity -> insert any time wanted here instead of 5000
+        }, 300); // Delay time for transition to next activity -> insert any time wanted here instead of 5000
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,11 +124,23 @@ public class EventDetails extends Activity {
         // -------------------------------------------------------------------------------------------------------------
         // Cancel Event Button
         Button cancelEvent = (Button)findViewById(R.id.cancelbtn);
+        final Context context = this.getApplicationContext();
         cancelEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                User.firebaseRef.child("events").child(eventUid).child("active").setValue(false);
-                jumpToMainActivity();
+                new AlertDialog.Builder(EventDetails.this)
+                    .setTitle("Cancel Event")
+                    .setMessage("Are you sure you want to cancel the event? This action can't be undone.")
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setNegativeButton("NO", null)
+                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        Toast.makeText(EventDetails.this, "Event will be cancelled", Toast.LENGTH_SHORT).show();
+                        User.firebaseRef.child("events").child(eventUid).child("active").setValue(false);
+                        jumpToMainActivity();
+                    }
+                }).show();
             }
         });
 
