@@ -8,7 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.firebase.client.Query;
+import com.google.firebase.database.Query;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -20,7 +20,7 @@ import larc.ludicon.R;
  * @author greg
  * @since 6/21/13
  *
- * This class is an example of how to use FirebaseListAdapter. It uses the <code>Chat</code> class to encapsulate the
+ * This class is an example of how to use DatabaseReferenceListAdapter. It uses the <code>Chat</code> class to encapsulate the
  * data for each individual chat message
  */
 public class ChatListAdapter extends FirebaseListAdapter<Chat> {
@@ -34,7 +34,7 @@ public class ChatListAdapter extends FirebaseListAdapter<Chat> {
     }
 
     /**
-     * Bind an instance of the <code>Chat</code> class to our view. This method is called by <code>FirebaseListAdapter</code>
+     * Bind an instance of the <code>Chat</code> class to our view. This method is called by <code>DatabaseReferenceListAdapter</code>
      * when there is a data change, and we are given an instance of a View that corresponds to the layout that we passed
      * to the constructor, as well as a single <code>Chat</code> instance that represents the current data to bind.
      *

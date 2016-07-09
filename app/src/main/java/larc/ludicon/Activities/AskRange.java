@@ -14,7 +14,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.client.Firebase;
+import com.google.firebase.database.DatabaseReference;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -79,7 +79,7 @@ public class AskRange extends AppCompatActivity {
         final Button button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Firebase rangeRef = User.firebaseRef.child("users").child(User.uid).child("range");
+                DatabaseReference rangeRef = User.firebaseRef.child("users").child(User.uid).child("range");
                 rangeRef.setValue(Integer.parseInt(progressText.getText().subSequence(0, 2).toString()));
                 jumpToMainActivity();
             }

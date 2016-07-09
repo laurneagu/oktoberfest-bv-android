@@ -33,10 +33,10 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -92,7 +92,7 @@ public class ProfileActivity extends Activity {
         Bundle extras = getIntent().getExtras();
         final String uid = extras.getString("uid");
 
-        Firebase userRef = User.firebaseRef.child("users").child(uid).child("name"); // check user
+        DatabaseReference userRef = User.firebaseRef.child("users").child(uid).child("name"); // check user
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
@@ -101,7 +101,7 @@ public class ProfileActivity extends Activity {
                     TextView name = (TextView) findViewById(R.id.hello_message_activity);
                     name.setText(snapshot.getValue().toString());
 
-                    Firebase userRef = User.firebaseRef.child("users").child(uid).child("profileImageURL");
+                    DatabaseReference userRef = User.firebaseRef.child("users").child(uid).child("profileImageURL");
                     userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
@@ -113,7 +113,7 @@ public class ProfileActivity extends Activity {
                         }
 
                         @Override
-                        public void onCancelled(FirebaseError firebaseError) {
+                        public void onCancelled(DatabaseError firebaseError) {
                         }
                     });
                 } else {
@@ -121,7 +121,7 @@ public class ProfileActivity extends Activity {
             }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
+            public void onCancelled(DatabaseError firebaseError) {
             }
         });
 
@@ -130,7 +130,7 @@ public class ProfileActivity extends Activity {
                 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         listOfSports.setLayoutManager(layoutManager);
 
-        Firebase userSports = User.firebaseRef.child("users").child(uid).child("sports");
+        DatabaseReference userSports = User.firebaseRef.child("users").child(uid).child("sports");
         final ArrayList<Drawable> sportsList = new ArrayList<>();
 
         ImageButton chatButton = (ImageButton)findViewById(R.id.chatbutton);
@@ -138,7 +138,7 @@ public class ProfileActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                Firebase userRef = User.firebaseRef.child("users").child(uid).child("chats");
+                DatabaseReference userRef = User.firebaseRef.child("users").child(uid).child("chats");
                 userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
@@ -162,7 +162,7 @@ public class ProfileActivity extends Activity {
                     }
 
                     @Override
-                    public void onCancelled(FirebaseError firebaseError) {
+                    public void onCancelled(DatabaseError firebaseError) {
                     }
                 });
             }
@@ -185,7 +185,7 @@ public class ProfileActivity extends Activity {
             }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
+            public void onCancelled(DatabaseError firebaseError) {
             }
         });
 
@@ -213,7 +213,7 @@ public class ProfileActivity extends Activity {
 
     void getPoints(String sport, final int sportID, final String myUid, final String friendUid, final ArrayList<ComparePals> compareArray )
     {
-        Firebase pointsRef = User.firebaseRef.child("points").child(sport);
+        DatabaseReference pointsRef = User.firebaseRef.child("points").child(sport);
         pointsRef.addListenerForSingleValueEvent(new ValueEventListener() { // get user sports
             @Override
             public void onDataChange(DataSnapshot snapshot) {
@@ -231,7 +231,7 @@ public class ProfileActivity extends Activity {
             }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
+            public void onCancelled(DatabaseError firebaseError) {
             }
         });
     }

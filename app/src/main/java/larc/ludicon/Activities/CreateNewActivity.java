@@ -31,10 +31,11 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -112,13 +113,19 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
-        mapFragment.getMap().setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+        mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
-            public void onMapClick(LatLng latLng) {
-                Intent goToNextActivity = new Intent(getApplicationContext(), GMapsFullActivity.class); //AskPreferences.class);
-                startActivityForResult(goToNextActivity,ASK_COORDS);
+            public void onMapReady(GoogleMap googleMap) {
+                googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                    @Override
+                    public void onMapClick(LatLng latLng) {
+                        Intent goToNextActivity = new Intent(getApplicationContext(), GMapsFullActivity.class); //AskPreferences.class);
+                        startActivityForResult(goToNextActivity, ASK_COORDS);
+                    }
+                });
             }
         });
+
 
     }
 
@@ -245,7 +252,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         map.put("createdBy", User.uid);
         map.put("active",true);
 
-        Firebase userRef = new Firebase(FIREBASE_URL).child("users").child(User.uid);
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(User.uid);
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
@@ -262,7 +269,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
                }
             }
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
+            public void onCancelled(DatabaseError firebaseError) {
             }
         });
 
@@ -326,7 +333,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         map.put("users", usersAttending);
 
         // Check Events exists
-        Firebase newEventRef = User.firebaseRef.child("events"); // check user
+        DatabaseReference newEventRef = User.firebaseRef.child("events"); // check user
         newEventRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
@@ -393,7 +400,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
             }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
+            public void onCancelled(DatabaseError firebaseError) {
 
             }
         });

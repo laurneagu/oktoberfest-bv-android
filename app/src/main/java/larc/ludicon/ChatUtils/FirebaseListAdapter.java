@@ -7,10 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import com.firebase.client.ChildEventListener;
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.Query;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.Query;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,13 +21,13 @@ import java.util.Map;
  * @author greg
  * @since 6/21/13
  *
- * This class is a generic way of backing an Android ListView with a Firebase location.
- * It handles all of the child events at the given Firebase location. It marshals received data into the given
+ * This class is a generic way of backing an Android ListView with a DatabaseReference location.
+ * It handles all of the child events at the given DatabaseReference location. It marshals received data into the given
  * class type. Extend this class and provide an implementation of <code>populateView</code>, which will be given an
  * instance of your list item mLayout and an instance your class that holds your data. Simply populate the view however
  * you like and this class will handle updating the list as the data changes.
  *
- * @param <T> The class type to use as a model for the data contained in the children of the given Firebase location
+ * @param <T> The class type to use as a model for the data contained in the children of the given DatabaseReference location
  */
 public abstract class FirebaseListAdapter<T> extends BaseAdapter {
 
@@ -41,9 +41,9 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
 
 
     /**
-     * @param mRef        The Firebase location to watch for data changes. Can also be a slice of a location, using some
+     * @param mRef        The DatabaseReference location to watch for data changes. Can also be a slice of a location, using some
      *                    combination of <code>limit()</code>, <code>startAt()</code>, and <code>endAt()</code>,
-     * @param mModelClass Firebase will marshall the data at a location into an instance of a class that you provide
+     * @param mModelClass DatabaseReference will marshall the data at a location into an instance of a class that you provide
      * @param mLayout     This is the mLayout used to represent a single list item. You will be responsible for populating an
      *                    instance of the corresponding view with the data from an instance of mModelClass.
      * @param activity    The activity containing the ListView
@@ -134,7 +134,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
             }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
+            public void onCancelled(DatabaseError firebaseError) {
                 Log.e("FirebaseListAdapter", "Listen was cancelled, no more updates will occur");
             }
 
@@ -176,7 +176,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
     }
 
     /**
-     * Each time the data at the given Firebase location changes, this method will be called for each item that needs
+     * Each time the data at the given DatabaseReference location changes, this method will be called for each item that needs
      * to be displayed. The arguments correspond to the mLayout and mModelClass given to the constructor of this class.
      * <p/>
      * Your implementation should populate the view using the data contained in the model.

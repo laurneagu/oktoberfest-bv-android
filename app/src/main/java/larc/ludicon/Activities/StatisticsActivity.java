@@ -27,10 +27,10 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import larc.ludicon.Adapters.LeftPanelItemClicker;
 import larc.ludicon.Adapters.LeftSidePanelAdapter;
@@ -109,7 +109,7 @@ public class StatisticsActivity extends Activity {
         // For each event go to it's details (root->event->ID) and get it's date + sport
         for( int i = 0; i < userEvents.size(); i++ )
         {
-            Firebase eventRef = User.firebaseRef.child("events").child(userEvents.get(i).id);
+            DatabaseReference eventRef = User.firebaseRef.child("events").child(userEvents.get(i).id);
             final int j = i;
             eventRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -140,7 +140,7 @@ public class StatisticsActivity extends Activity {
                 }
 
                 @Override
-                public void onCancelled(FirebaseError firebaseError) {
+                public void onCancelled(DatabaseError firebaseError) {
                 }
             });
         }
@@ -172,7 +172,7 @@ public class StatisticsActivity extends Activity {
                 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         listOfSports.setLayoutManager(layoutManager);
 
-        Firebase userSports = User.firebaseRef.child("users").child(User.uid).child("sports");
+        DatabaseReference userSports = User.firebaseRef.child("users").child(User.uid).child("sports");
         final ArrayList<Drawable> sportsList = new ArrayList<>();
         userSports.addListenerForSingleValueEvent(new ValueEventListener() { // get user sports
             @Override
@@ -190,7 +190,7 @@ public class StatisticsActivity extends Activity {
             }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
+            public void onCancelled(DatabaseError firebaseError) {
             }
         });
 
@@ -397,7 +397,7 @@ public class StatisticsActivity extends Activity {
 
 
         // Iterate through user's events and foreach event : get it's ID and number of points
-        Firebase userRef = User.firebaseRef.child("users").child(User.uid).child("events");
+        DatabaseReference userRef = User.firebaseRef.child("users").child(User.uid).child("events");
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
@@ -424,7 +424,7 @@ public class StatisticsActivity extends Activity {
             }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
+            public void onCancelled(DatabaseError firebaseError) {
             }
         });
     }

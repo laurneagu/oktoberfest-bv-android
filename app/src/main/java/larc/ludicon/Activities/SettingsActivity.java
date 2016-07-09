@@ -34,10 +34,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import org.w3c.dom.Text;
 
@@ -69,9 +69,9 @@ public class SettingsActivity extends Activity {
     private ImageView pseudoSeekBar;
     private Button saveButton;
     private ArrayList<Sport> sportsList = new ArrayList<Sport>();
-    Firebase rangeRef = User.firebaseRef.child("users").child(User.uid).child("range");
-    Firebase userSports = User.firebaseRef.child("users").child(User.uid).child("sports");
-    final Firebase sportRed = User.firebaseRef.child("sports"); // check user
+    DatabaseReference rangeRef = User.firebaseRef.child("users").child(User.uid).child("range");
+    DatabaseReference userSports = User.firebaseRef.child("users").child(User.uid).child("sports");
+    final DatabaseReference sportRed = User.firebaseRef.child("sports"); // check user
     private int savedProgress = 0;
 
     @Override
@@ -125,7 +125,7 @@ public class SettingsActivity extends Activity {
             }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
+            public void onCancelled(DatabaseError firebaseError) {
             }
         });
 
@@ -281,7 +281,7 @@ public class SettingsActivity extends Activity {
                     }
 
                     @Override
-                    public void onCancelled(FirebaseError firebaseError) {
+                    public void onCancelled(DatabaseError firebaseError) {
                         //User.firebaseRef.child("msge").setValue("The read failed: " + firebaseError.getMessage());
                     }
                 });
@@ -290,7 +290,7 @@ public class SettingsActivity extends Activity {
             }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
+            public void onCancelled(DatabaseError firebaseError) {
             }
         });
 

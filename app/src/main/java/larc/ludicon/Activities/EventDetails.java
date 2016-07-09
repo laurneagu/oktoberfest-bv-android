@@ -31,10 +31,10 @@ import android.widget.Toast;
 
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
@@ -144,7 +144,7 @@ public class EventDetails extends Activity {
             }
         });
 
-        Firebase eventRef = User.firebaseRef.child("events").child(eventUid);
+        DatabaseReference eventRef = User.firebaseRef.child("events").child(eventUid);
         eventRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -212,7 +212,7 @@ public class EventDetails extends Activity {
                                         :String.valueOf(users.size() - 1) + " others")
                                 :" alone :(" ));
 
-                Firebase pointsRef = User.firebaseRef.child("points").child(sport).child(creatorID);
+                DatabaseReference pointsRef = User.firebaseRef.child("points").child(sport).child(creatorID);
                 pointsRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -223,7 +223,7 @@ public class EventDetails extends Activity {
                     }
 
                     @Override
-                    public void onCancelled(FirebaseError firebaseError) {
+                    public void onCancelled(DatabaseError firebaseError) {
 
                     }
                 });
@@ -234,7 +234,7 @@ public class EventDetails extends Activity {
             }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
+            public void onCancelled(DatabaseError firebaseError) {
 
             }
         });
@@ -297,7 +297,7 @@ public class EventDetails extends Activity {
 
             for(int i = 0 ; i  < index ; ++i){
 
-                Firebase pct = User.firebaseRef.child("points").child(sport).child(usersList.get(i).uid);
+                DatabaseReference pct = User.firebaseRef.child("points").child(sport).child(usersList.get(i).uid);
                 final int ind = i;
                 pct.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -312,12 +312,12 @@ public class EventDetails extends Activity {
                     }
 
                     @Override
-                    public void onCancelled(FirebaseError firebaseError) {
+                    public void onCancelled(DatabaseError firebaseError) {
 
                     }
                 });
 
-                Firebase usr = User.firebaseRef.child("users").child(usersList.get(i).uid);
+                DatabaseReference usr = User.firebaseRef.child("users").child(usersList.get(i).uid);
                 usr.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
@@ -337,7 +337,7 @@ public class EventDetails extends Activity {
                     }
 
                     @Override
-                    public void onCancelled(FirebaseError firebaseError) {
+                    public void onCancelled(DatabaseError firebaseError) {
 
                     }
                 });

@@ -11,7 +11,7 @@ public class Chat {
     public String date;
     public boolean seen;
 
-    // Required default constructor for Firebase object mapping
+    // Required default constructor for DatabaseReference object mapping
     @SuppressWarnings("unused")
     private Chat() {
     }

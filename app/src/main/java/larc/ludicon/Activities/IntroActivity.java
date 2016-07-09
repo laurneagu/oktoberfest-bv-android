@@ -10,9 +10,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.Image;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.Menu;
@@ -20,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 //import com.batch.android.Batch;
 //import com.batch.android.Config;
@@ -31,6 +35,7 @@ import larc.ludicon.UserInfo.User;
 import larc.ludicon.Utils.ConnectionChecker.IConnectionChecker;
 import larc.ludicon.Utils.ConnectionChecker.ConnectionChecker;
 import larc.ludicon.Utils.MessageDialog;
+import larc.ludicon.Utils.UserInfo;
 
 
 import com.facebook.FacebookSdk;
@@ -47,16 +52,26 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.facebook.login.widget.ProfilePictureView;
 
-import com.firebase.client.AuthData;
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONStringer;
 
 import java.security.Timestamp;
 import java.text.DateFormat;
@@ -66,6 +81,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TimeZone;
@@ -79,6 +95,7 @@ public class IntroActivity extends Activity {
     private TextView greeting;
     private ImageView logo;
     private ImageView background;
+    private FirebaseAuth mAuth;
 
 
     @Override
@@ -94,13 +111,13 @@ public class IntroActivity extends Activity {
         NotificationManager notifManager= (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
         notifManager.cancelAll();
 
-        /* Firebase Context */
-        Firebase.setAndroidContext(this);
-        /* Firebase Reference */
-        User.firebaseRef = new Firebase("https://ludicon.firebaseio.com/");
+        /* DatabaseReference Context */
+        //DatabaseReference.setAndroidContext(this);
+        /* DatabaseReference Reference */
+        User.firebaseRef = FirebaseDatabase.getInstance().getReference();
 
 
-        //firebaseRef.child("message").setValue("Do you have data? You'll love Firebase.");
+        //firebaseRef.child("message").setValue("Do you have data? You'll love DatabaseReference.");
 
 
         if (isNetworkConnected() == false) {
@@ -237,7 +254,7 @@ public class IntroActivity extends Activity {
     // Update UI
     private void updateUI() {
 
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        final AccessToken accessToken = AccessToken.getCurrentAccessToken();
         final Profile profile = Profile.getCurrentProfile();
         if (accessToken != null && profile != null) // If user has successfully logged in
         {
@@ -254,8 +271,177 @@ public class IntroActivity extends Activity {
 //            Bitmap    bitmap  = ( (BitmapDrawable) fbImage.getDrawable()).getBitmap();
 //            User.setImage(bitmap);
 
-            // Firebase Login - insert data to dataBase (for a new user)
-            User.firebaseRef.authWithOAuthToken("facebook", accessToken.getToken(), new Firebase.AuthResultHandler() {
+            // DatabaseReference Login - insert data to dataBase (for a new user)
+            mAuth = FirebaseAuth.getInstance();
+            AuthCredential credential = FacebookAuthProvider.getCredential(accessToken.getToken());
+
+
+            final AccessToken at = accessToken;
+
+            mAuth.signInWithCredential(credential)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull final Task<AuthResult> task) {
+
+                            // If sign in fails, display a message to the user. If sign in succeeds
+                            // the auth state listener will be notified and logic to handle the
+                            // signed in user can be handled in the listener.
+
+                            if (!task.isSuccessful()) {
+                                Toast.makeText(IntroActivity.this, "Authentication failed.",
+                                        Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+
+                            GraphRequest request = GraphRequest.newMeRequest(at, new GraphRequest.GraphJSONObjectCallback() {
+                                @Override
+                                public void onCompleted(JSONObject user, GraphResponse graphResponse) {
+                                    String email = user.optString("email");
+                                    String id = user.optString("id");
+                                    String name = user.optString("name");
+                                    String firstName = user.optString("first_name");
+                                    String lastName = user.optString("last_name");
+                                    String gender = user.optString("gender");
+                                    String age_range = user.optString("age_range");
+                                    String timezone = user.optString("timezone");
+                                    String picture = user.optString("picture");
+
+
+                                    FirebaseUser userFirebase = task.getResult().getUser();
+                                    final Map<String, Object> map = new HashMap<String, Object>();
+
+
+                                    try {
+                                        JSONObject picurljson = user.getJSONObject("picture");
+                                        JSONObject picurljsondata = picurljson.getJSONObject("data");
+                                        String url = picurljsondata.optString("url");
+                                        //profileImageURL
+                                        if (!url.isEmpty()) {
+                                            map.put("profileImageURL",url);
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    //  provider
+                                    map.put("provider", userFirebase.getProviderId());
+
+                                    //email
+                                    if (!email.isEmpty()) {
+                                        map.put("email", email);
+                                    }
+
+                                    if (!id.isEmpty()) {
+                                        map.put("id", id);
+                                    }
+
+                                    //picture
+                                    if (!picture.isEmpty()) {
+                                        picture = picture.replace("\"", "");
+                                        picture = picture.replace("\\", "");
+                                        map.put("picture", picture);
+                                    }
+
+                                    //name
+                                    if (!name.isEmpty()) {
+                                        map.put("name", name);
+                                        SharedPreferences prefs = getApplication().getSharedPreferences("ChatPrefs", 0);
+                                        prefs.edit().putString("username", name.toString()).commit();
+                                    }
+
+                                    //first_name
+                                    if (!firstName.isEmpty()) {
+                                        map.put("firstName", firstName);
+                                    }
+
+                                    //last_name
+                                    if (!lastName.isEmpty()) {
+                                        map.put("lastName", lastName);
+                                    }
+
+                                    //gender
+                                    if (!gender.isEmpty()) {
+                                        map.put("gender", gender);
+                                    }
+
+                                    //age_range
+                                    if (!age_range.isEmpty()) {
+                                        age_range = age_range.replace("\"", "");
+                                        age_range = age_range.replace("\\", "");
+                                        map.put("ageRange", age_range.toString());
+                                    }
+
+                                    //timezone
+                                    if (!timezone.isEmpty()) {
+                                        map.put("timezone", timezone);
+                                    }
+
+                                    //points
+                                    map.put("points", "0");
+
+                                    //lastLogIn - GMT
+                                    DateFormat df = DateFormat.getDateTimeInstance();
+                                    df.setTimeZone(TimeZone.getTimeZone("gmt"));
+                                    String gmtTime = df.format(new Date());
+                                    map.put("lastLogInTime", gmtTime);
+
+
+                                    final String uid = userFirebase.getUid();
+                                    User.uid = uid;
+
+                                    //profilePictureView.setVisibility(View.VISIBLE);
+                                    ImageView profilePicture = (ImageView) findViewById(R.id.profileImageView);
+                                    profilePicture.setImageBitmap(profilePictureView.getDrawingCache());
+
+                                    greeting.setVisibility(View.VISIBLE);
+                                    greeting.setText(getString(R.string.hello_user, profile.getFirstName()));
+
+
+                                    // Check user exists
+                                    Log.v("UID",uid);
+                                    DatabaseReference userRef = User.firebaseRef.child("users").child(uid); // check user
+                                    userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot snapshot) {
+
+                                            //  for (DataSnapshot sport : snapshot.getChildren()) {
+                                            // }
+
+                                            if (snapshot.getValue() == null) { // new user
+                                                User.firebaseRef.child("mesg").child(User.uid).child("status").setValue("User Nou");
+                                                User.firebaseRef.child("users").child(uid).setValue(map);
+
+                                                jumpToPrefActivity();
+
+                                            } else { // old user
+                                                User.firebaseRef.child("mesg").child(User.uid).child("status").setValue("User vechi");
+                                                User.firebaseRef.child("users").child(uid).updateChildren(map);
+                                                jumpToMainActivity();
+                                            }
+
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError firebaseError) {
+                                            //User.firebaseRef.child("msge").setValue("The read failed: " + firebaseError.getMessage());
+                                        }
+                                    });
+
+                                }
+                            });
+
+
+                            Bundle parameters = new Bundle();
+                            parameters.putString("fields", "id,name,link,email,gender,first_name,last_name, age_range,timezone,picture");
+                            request.setParameters(parameters);
+                            request.executeAsync();
+                        }
+
+
+                    });
+
+            /*
+            User.firebaseRef.authWithOAuthToken("facebook", accessToken.getToken(), new DatabaseReference.AuthResultHandler() {
                 @Override
                 public void onAuthenticated(AuthData authData) {
 
@@ -345,7 +531,7 @@ public class IntroActivity extends Activity {
 
                     // Check user exists
                     Log.v("UID",uid);
-                    Firebase userRef = User.firebaseRef.child("users").child(uid); // check user
+                    DatabaseReference userRef = User.firebaseRef.child("users").child(uid); // check user
                     userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
@@ -372,7 +558,7 @@ public class IntroActivity extends Activity {
                         }
 
                         @Override
-                        public void onCancelled(FirebaseError firebaseError) {
+                        public void onCancelled(DatabaseError firebaseError) {
                             //User.firebaseRef.child("msge").setValue("The read failed: " + firebaseError.getMessage());
                         }
                     });
@@ -380,17 +566,17 @@ public class IntroActivity extends Activity {
                 }
 
                 @Override
-                public void onAuthenticationError(FirebaseError firebaseError) {
+                public void onAuthenticationError(DatabaseError firebaseError) {
                     // TODO Log out from facebook account
                 }
             });
-
+            */
 
 
 
 
         } else { // Login FAILED
-            User.firebaseRef.unauth();
+            FirebaseAuth.getInstance().signOut();
             greeting.setText("");
         }
     }

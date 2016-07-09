@@ -54,11 +54,10 @@ import android.view.MenuItem;
 //import com.batch.android.Batch;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
-import com.firebase.client.annotations.Nullable;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
@@ -129,9 +128,9 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-    private void saveUnsavedPointstoFirebase()
+    private void saveUnsavedPointstoDatabaseReference()
     {
-        // Check if there are any unsaved points in SharedPref and put them on Firebase
+        // Check if there are any unsaved points in SharedPref and put them on DatabaseReference
         Map<String,Integer> unsavedPointsMap = new HashMap<>();
         SharedPreferences pSharedPref = getSharedPreferences("Points", Context.MODE_PRIVATE);
         try{
@@ -151,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
         for( Map.Entry<String,Integer> entry : unsavedPointsMap.entrySet() )
         {
             // Get sport of the current event(entry)
-            Firebase sportNameRef = User.firebaseRef.child("events").child(entry.getKey().toString());
+            DatabaseReference sportNameRef = User.firebaseRef.child("events").child(entry.getKey().toString());
             Log.v("entry:",entry.getKey().toString() + " " + entry.getValue().toString());
 
             final int unsavedPoints = entry.getValue();
@@ -174,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 @Override
-                public void onCancelled(FirebaseError firebaseError) {
+                public void onCancelled(DatabaseError firebaseError) {
                 }
             });
 
@@ -186,27 +185,27 @@ public class MainActivity extends AppCompatActivity {
     private void getActualPoints(final String sport,final int unsavedPoints,final String eventID)
     {
         // Get and update total number of points for user in sport
-        Firebase pointsRef = User.firebaseRef.child("points").child(sport).child(User.uid);
+        DatabaseReference pointsRef = User.firebaseRef.child("points").child(sport).child(User.uid);
         //final ArrayList<Integer> points = new ArrayList<>();
         pointsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
 
                 if (snapshot.getValue() != null)
-                    writeToFirebase(sport, Integer.parseInt(snapshot.getValue().toString()), unsavedPoints, eventID);
+                    writeToDatabaseReference(sport, Integer.parseInt(snapshot.getValue().toString()), unsavedPoints, eventID);
                 else
-                    writeToFirebase(sport, 0, unsavedPoints, eventID);
+                    writeToDatabaseReference(sport, 0, unsavedPoints, eventID);
             }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
+            public void onCancelled(DatabaseError firebaseError) {
             }
         });
     }
 
-    private void writeToFirebase(final String sport, int points, final int unsavedPoints, final String eventID)
+    private void writeToDatabaseReference(final String sport, int points, final int unsavedPoints, final String eventID)
     {
-        Firebase pointsRef = User.firebaseRef.child("points").child(sport).child(User.uid);
+        DatabaseReference pointsRef = User.firebaseRef.child("points").child(sport).child(User.uid);
 
         pointsRef.setValue(points + unsavedPoints);
 
@@ -232,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
         //toolbar = (Toolbar) findViewById(R.id.tool_bar);
         //setSupportActionBar(toolbar); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-        saveUnsavedPointstoFirebase();
+        saveUnsavedPointstoDatabaseReference();
 
         // Creating The ViewPagerAdapter and Passing Fragment Manager, Titles fot the Tabs and Number Of Tabs.
         adapter = new ViewPagerAdapter(getSupportFragmentManager(), Titles, Numboftabs);
@@ -275,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
 
         dialog = ProgressDialog.show(MainActivity.this, "", "Loading. Please wait", true);
 
-        // Check if there are any unsaved points in SharedPref and put them on Firebase
+        // Check if there are any unsaved points in SharedPref and put them on DatabaseReference
         Map<String, Integer> unsavedPointsMap = new HashMap<>();
         SharedPreferences pSharedPref = getSharedPreferences("Points", Context.MODE_PRIVATE);
         try {
@@ -294,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
         }
         for (Map.Entry<String, Integer> entry : unsavedPointsMap.entrySet()) {
             // Get sport of the current event(entry)
-            Firebase sportNameRef = User.firebaseRef.child("events").child(entry.getKey()).child("sport");
+            DatabaseReference sportNameRef = User.firebaseRef.child("events").child(entry.getKey()).child("sport");
             final ArrayList<String> eventSport = new ArrayList<>();
             sportNameRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -303,7 +302,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onCancelled(FirebaseError firebaseError) {
+                public void onCancelled(DatabaseError firebaseError) {
                 }
             });
             try {
@@ -312,7 +311,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             // Get and update total number of points for user in sport
-            Firebase pointsRef = User.firebaseRef.child("points").child(eventSport.get(0)).child(User.uid);
+            DatabaseReference pointsRef = User.firebaseRef.child("points").child(eventSport.get(0)).child(User.uid);
             final ArrayList<Integer> points = new ArrayList<>();
             pointsRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -321,7 +320,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onCancelled(FirebaseError firebaseError) {
+                public void onCancelled(DatabaseError firebaseError) {
                 }
             });
             try {
@@ -357,7 +356,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Get user's favorite sports
-        Firebase usersRef = User.firebaseRef.child("users").child(User.uid);
+        DatabaseReference usersRef = User.firebaseRef.child("users").child(User.uid);
         usersRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
@@ -377,7 +376,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
+            public void onCancelled(DatabaseError firebaseError) {
             }
         });
 
@@ -400,7 +399,7 @@ public class MainActivity extends AppCompatActivity {
         editor = getSharedPreferences("UserDetails", 0).edit();
         editor.putString("uid", User.uid);
         editor.commit();
-        Firebase usersRef = User.firebaseRef.child("users").child(User.uid).child("events");
+        DatabaseReference usersRef = User.firebaseRef.child("users").child(User.uid).child("events");
         usersRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
@@ -412,7 +411,7 @@ public class MainActivity extends AppCompatActivity {
                     final String id = data.getKey().toString();
                     for( DataSnapshot child : data.getChildren() ) {
                         if ( child.getKey().compareToIgnoreCase("participation") == 0 && (Boolean) child.getValue() == true) {
-                            Firebase eventRef = User.firebaseRef.child("events").child(data.getKey().toString());
+                            DatabaseReference eventRef = User.firebaseRef.child("events").child(data.getKey().toString());
                             eventRef.addListenerForSingleValueEvent(new ValueEventListener() {
 
                                 @Override
@@ -506,7 +505,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
 
                                 @Override
-                                public void onCancelled(FirebaseError firebaseError) {
+                                public void onCancelled(DatabaseError firebaseError) {
 
                                 }
                             });
@@ -517,7 +516,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
+            public void onCancelled(DatabaseError firebaseError) {
             }
         });
 
@@ -648,7 +647,7 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-        Firebase userRef = User.firebaseRef.child("events"); // check events
+        DatabaseReference userRef = User.firebaseRef.child("events"); // check events
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
@@ -812,7 +811,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
+            public void onCancelled(DatabaseError firebaseError) {
             }
         });
     }
@@ -1005,7 +1004,7 @@ public class MainActivity extends AppCompatActivity {
             });
 
             /*
-            Firebase userRef = User.firebaseRef.child("users").child(userUID);
+            DatabaseReference userRef = User.firebaseRef.child("users").child(userUID);
             userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
@@ -1018,7 +1017,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 @Override
-                public void onCancelled(FirebaseError firebaseError) {
+                public void onCancelled(DatabaseError firebaseError) {
                 }
             });*/
 
@@ -1080,7 +1079,7 @@ public class MainActivity extends AppCompatActivity {
             holder.join.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    Firebase usersRef = User.firebaseRef.child("events").child(list.get(position).id).child("users");
+                    DatabaseReference usersRef = User.firebaseRef.child("events").child(list.get(position).id).child("users");
                     usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
@@ -1092,7 +1091,7 @@ public class MainActivity extends AppCompatActivity {
 
                             map.put(User.uid,true);
                             // NOTE: I need userRef to set the map value
-                            Firebase userRef = User.firebaseRef.child("events").child(list.get(position).id).child("users");
+                            DatabaseReference userRef = User.firebaseRef.child("events").child(list.get(position).id).child("users");
                             userRef.updateChildren(map);
 
 
@@ -1108,7 +1107,7 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onCancelled(FirebaseError firebaseError) {
+                        public void onCancelled(DatabaseError firebaseError) {
                         }
                     });
                 }
@@ -1224,7 +1223,7 @@ public class MainActivity extends AppCompatActivity {
             });
 
             /*
-            Firebase userRef = User.firebaseRef.child("users").child(userUID);
+            DatabaseReference userRef = User.firebaseRef.child("users").child(userUID);
             userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
@@ -1237,7 +1236,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 @Override
-                public void onCancelled(FirebaseError firebaseError) {
+                public void onCancelled(DatabaseError firebaseError) {
                 }
             });*/
 

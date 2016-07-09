@@ -40,10 +40,10 @@ import com.facebook.GraphRequestAsyncTask;
 import com.facebook.AccessToken;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -177,7 +177,7 @@ public class FriendsActivity extends Activity {
             textName.setText(list.get(position).name);
 
             // Set Image in ImageView
-            Firebase userRef = User.firebaseRef.child("users").child(list.get(position).uid).child("profileImageURL");
+            DatabaseReference userRef = User.firebaseRef.child("users").child(list.get(position).uid).child("profileImageURL");
             Log.v("Position", position + "");
             userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -193,10 +193,10 @@ public class FriendsActivity extends Activity {
                 }
 
                 @Override
-                public void onCancelled(FirebaseError firebaseError) {
+                public void onCancelled(DatabaseError firebaseError) {
                 }
             });
-            Firebase userSports = User.firebaseRef.child("users").child(list.get(position).uid).child("sports");
+            DatabaseReference userSports = User.firebaseRef.child("users").child(list.get(position).uid).child("sports");
             userSports.addListenerForSingleValueEvent(new ValueEventListener() { // get user sports
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
@@ -208,7 +208,7 @@ public class FriendsActivity extends Activity {
                 }
 
                 @Override
-                public void onCancelled(FirebaseError firebaseError) {
+                public void onCancelled(DatabaseError firebaseError) {
                 }
             });
             // Buttons behaviour
@@ -224,7 +224,7 @@ public class FriendsActivity extends Activity {
             chatButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Firebase userRef = User.firebaseRef.child("users").child(list.get(position).uid).child("chats");
+                    DatabaseReference userRef = User.firebaseRef.child("users").child(list.get(position).uid).child("chats");
                     userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
@@ -246,7 +246,7 @@ public class FriendsActivity extends Activity {
                         }
 
                         @Override
-                        public void onCancelled(FirebaseError firebaseError) {
+                        public void onCancelled(DatabaseError firebaseError) {
                         }
                     });
                 }

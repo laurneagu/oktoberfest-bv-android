@@ -14,10 +14,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import larc.ludicon.ChatUtils.*;
 
 import larc.ludicon.R;
@@ -28,7 +29,7 @@ public class GeneralChatActivity extends ListActivity {
     private static final String FIREBASE_URL = "https://ludicon.firebaseio.com/";
 
     private String mUsername;
-    private Firebase mFirebaseRef;
+    private DatabaseReference mDatabaseReferenceRef;
     private ValueEventListener mConnectedListener;
     private ChatListAdapter mChatListAdapter;
 
@@ -44,9 +45,9 @@ public class GeneralChatActivity extends ListActivity {
         setTitle("Chatting as " + mUsername);
         */
 
-        // Setup our Firebase mFirebaseRef
+        // Setup our DatabaseReference mDatabaseReferenceRef
         // TODO User to User Chat
-        mFirebaseRef = new Firebase(FIREBASE_URL).child("globalChat");
+        mDatabaseReferenceRef = FirebaseDatabase.getInstance().getReference().child("globalChat");
 
         // Setup our input methods. Enter key on the keyboard or pushing the send button
         EditText inputText = (EditText) findViewById(R.id.messageInput);
@@ -67,10 +68,10 @@ public class GeneralChatActivity extends ListActivity {
             }
         });
 
-        Firebase firebaseRef = new Firebase(FIREBASE_URL).child("chat");
+        DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("chat");
         //firebaseRef.push();
 
-        Firebase newRef = firebaseRef.push();
+        DatabaseReference newRef = firebaseRef.push();
         newRef.setValue(1);
         Log.v("impossible", newRef.getKey());
     }
@@ -81,7 +82,7 @@ public class GeneralChatActivity extends ListActivity {
         // Setup our view and list adapter. Ensure it scrolls to the bottom as data changes
         final ListView listView = getListView();
         // Tell our list adapter that we only want 50 messages at a time
-        mChatListAdapter = new ChatListAdapter(mFirebaseRef.limit(50), this, R.layout.chat_message, mUsername);
+        mChatListAdapter = new ChatListAdapter(mDatabaseReferenceRef.limitToFirst(50), this, R.layout.chat_message, mUsername);
         listView.setAdapter(mChatListAdapter);
         mChatListAdapter.registerDataSetObserver(new DataSetObserver() {
             @Override
@@ -92,19 +93,19 @@ public class GeneralChatActivity extends ListActivity {
         });
 
         // Finally, a little indication of connection status
-        mConnectedListener = mFirebaseRef.getRoot().child(".info/connected").addValueEventListener(new ValueEventListener() {
+        mConnectedListener = mDatabaseReferenceRef.getRoot().child(".info/connected").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 boolean connected = (Boolean) dataSnapshot.getValue();
                 if (connected) {
-                    Toast.makeText(GeneralChatActivity.this, "Connected to Firebase", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(GeneralChatActivity.this, "Connected to DatabaseReference", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(GeneralChatActivity.this, "Disconnected from Firebase", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(GeneralChatActivity.this, "Disconnected from DatabaseReference", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
+            public void onCancelled(DatabaseError firebaseError) {
                 // No-op
             }
         });
@@ -113,7 +114,7 @@ public class GeneralChatActivity extends ListActivity {
     @Override
     public void onStop() {
         super.onStop();
-        mFirebaseRef.getRoot().child(".info/connected").removeEventListener(mConnectedListener);
+        mDatabaseReferenceRef.getRoot().child(".info/connected").removeEventListener(mConnectedListener);
         mChatListAdapter.cleanup();
     }
 
@@ -133,7 +134,7 @@ public class GeneralChatActivity extends ListActivity {
             // Create our 'model', a Chat object
             Chat chat = new Chat(input, mUsername,"");
             // Create a new, auto-generated child of that chat location, and save our chat data there
-            mFirebaseRef.push().setValue(chat);
+            mDatabaseReferenceRef.push().setValue(chat);
             inputText.setText("");
         }
     }

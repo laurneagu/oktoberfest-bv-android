@@ -29,10 +29,10 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -126,7 +126,7 @@ public class RankingsActivity extends Activity {
     }
     private void processRankings(String sport)
     {
-        Firebase pointsRef = User.firebaseRef.child("points").child(sport);
+        DatabaseReference pointsRef = User.firebaseRef.child("points").child(sport);
 
         final ArrayList<Contestant>  contestants = new ArrayList<>();
 
@@ -150,7 +150,7 @@ public class RankingsActivity extends Activity {
             }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
+            public void onCancelled(DatabaseError firebaseError) {
             }
         });
     }
@@ -209,7 +209,7 @@ public class RankingsActivity extends Activity {
         //Get name for firstPlace
             if ( contestants.get(0).points != -1 ) {
                 final int p = contestants.get(0).points;
-                Firebase nameRef = User.firebaseRef.child("users").child(contestants.get(0).id).child("name");
+                DatabaseReference nameRef = User.firebaseRef.child("users").child(contestants.get(0).id).child("name");
                 nameRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
@@ -231,7 +231,7 @@ public class RankingsActivity extends Activity {
                     }
 
                     @Override
-                    public void onCancelled(FirebaseError firebaseError) {
+                    public void onCancelled(DatabaseError firebaseError) {
                     }
                 });
             }
@@ -241,7 +241,7 @@ public class RankingsActivity extends Activity {
         //Get name for firstPlace
         if ( contestants.get(1).points != -1 ) {
             final int p = contestants.get(1).points;
-            Firebase nameRef = User.firebaseRef.child("users").child(contestants.get(1).id).child("name");
+            DatabaseReference nameRef = User.firebaseRef.child("users").child(contestants.get(1).id).child("name");
             nameRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
@@ -262,7 +262,7 @@ public class RankingsActivity extends Activity {
                 }
 
                 @Override
-                public void onCancelled(FirebaseError firebaseError) {
+                public void onCancelled(DatabaseError firebaseError) {
                 }
             });
         }
@@ -272,7 +272,7 @@ public class RankingsActivity extends Activity {
         //Get name for firstPlace
         if ( contestants.get(2).points != -1 ) {
             final int p = contestants.get(2).points;
-            Firebase nameRef = User.firebaseRef.child("users").child(contestants.get(2).id).child("name");
+            DatabaseReference nameRef = User.firebaseRef.child("users").child(contestants.get(2).id).child("name");
             nameRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
@@ -293,7 +293,7 @@ public class RankingsActivity extends Activity {
                 }
 
                 @Override
-                public void onCancelled(FirebaseError firebaseError) {
+                public void onCancelled(DatabaseError firebaseError) {
                 }
             });
         }
@@ -350,7 +350,7 @@ public class RankingsActivity extends Activity {
             else
                 place.setText("  " + (position + 4) + ".");
             if ( contestants.get(position).points != -1 ) {
-                Firebase nameRef = User.firebaseRef.child("users").child(contestants.get(position).id).child("name");
+                DatabaseReference nameRef = User.firebaseRef.child("users").child(contestants.get(position).id).child("name");
                 nameRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
@@ -360,7 +360,7 @@ public class RankingsActivity extends Activity {
                     }
 
                     @Override
-                    public void onCancelled(FirebaseError firebaseError) {
+                    public void onCancelled(DatabaseError firebaseError) {
                     }
                 });
             }

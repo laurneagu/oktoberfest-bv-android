@@ -24,14 +24,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
 
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import java.lang.reflect.Type;
 import java.text.DateFormat;
@@ -58,7 +59,7 @@ public class ChatTemplateActivity extends ListActivity {
     private static final String FIREBASE_URL = "https://ludicon.firebaseio.com/";
 
     private String mUsername;
-    private Firebase mFirebaseRef;
+    private DatabaseReference mDatabaseReferenceRef;
     private ValueEventListener mConnectedListener;
     private ChatListAdapter mChatListAdapter;
 
@@ -108,7 +109,7 @@ public class ChatTemplateActivity extends ListActivity {
 
         final TextView hello_message = (TextView) findViewById(R.id.hello_message_activity);
         final ImageView profilePicture = (ImageView) findViewById(R.id.friendPicture);
-        Firebase userRef = User.firebaseRef.child("users").child(otherUserUid);
+        DatabaseReference userRef = User.firebaseRef.child("users").child(otherUserUid);
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
@@ -127,7 +128,7 @@ public class ChatTemplateActivity extends ListActivity {
             }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
+            public void onCancelled(DatabaseError firebaseError) {
 
             }
         });
@@ -145,15 +146,15 @@ public class ChatTemplateActivity extends ListActivity {
 
 
             // Create general Chat for these two
-            Firebase fireRef = new Firebase(FIREBASE_URL).child("chat");
-            Firebase keyRef = fireRef.push();
+            DatabaseReference fireRef = FirebaseDatabase.getInstance().getReference().child("chat");
+            DatabaseReference keyRef = fireRef.push();
             final String newChatID = keyRef.getKey();
 
             Map<String,String> map = new HashMap<>();
             map.put("Users","");
             map.put("Messages","");
             keyRef.setValue(map);
-            Firebase addUserUIDs = keyRef.child("Users");
+            DatabaseReference addUserUIDs = keyRef.child("Users");
 
             Map<String,String> userUIDMap = new HashMap<>();
             userUIDMap.put(User.uid, "");
@@ -165,13 +166,13 @@ public class ChatTemplateActivity extends ListActivity {
                     String.format(new Locale("English"), "%td", now) + ", " +
                     String.format(new Locale("English"), "%tR", now);
             // Create our 'model', a Chat object
-            Firebase newChat = keyRef.child("Messages").push();
+            DatabaseReference newChat = keyRef.child("Messages").push();
             Chat chat = new Chat("Bun venit in chat!", "Ludicon",formattedDate);
             newChat.setValue(chat);
 
             // TODO Create child to "users -> userUID -> chats" for each user
             // For the first User
-            Firebase refCurrentUser = new Firebase(FIREBASE_URL).child("users").child(User.uid).child("chats");
+            DatabaseReference refCurrentUser = FirebaseDatabase.getInstance().getReference().child("users").child(User.uid).child("chats");
             refCurrentUser.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
@@ -181,16 +182,16 @@ public class ChatTemplateActivity extends ListActivity {
                     }
                     map.put(otherUserUid,newChatID);
                     // NOTE: I need userRef to set the map value
-                    Firebase userRef = new Firebase(FIREBASE_URL).child("users").child(User.uid).child("chats");
+                    DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(User.uid).child("chats");
                     userRef.updateChildren(map);
                 }
                 @Override
-                public void onCancelled(FirebaseError firebaseError) {
+                public void onCancelled(DatabaseError firebaseError) {
                 }
             });
 
             // For the second User
-            Firebase refOtherUser = new Firebase(FIREBASE_URL).child("users").child(otherUserUid).child("chats");
+            DatabaseReference refOtherUser = FirebaseDatabase.getInstance().getReference().child("users").child(otherUserUid).child("chats");
             refOtherUser.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
@@ -200,20 +201,20 @@ public class ChatTemplateActivity extends ListActivity {
                     }
                     map.put(User.uid,newChatID);
                     // NOTE: I need userRef to set the map value
-                    Firebase userRef = new Firebase(FIREBASE_URL).child("users").child(otherUserUid).child("chats");
+                    DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(otherUserUid).child("chats");
                     userRef.updateChildren(map);
                 }
                 @Override
-                public void onCancelled(FirebaseError firebaseError) {
+                public void onCancelled(DatabaseError firebaseError) {
                 }
             });
 
 
-            // Setup our Firebase mFirebaseRef
-            mFirebaseRef = new Firebase(FIREBASE_URL).child("chat").child(newChatID).child("Messages");
+            // Setup our DatabaseReference mDatabaseReferenceRef
+            mDatabaseReferenceRef = FirebaseDatabase.getInstance().getReference().child("chat").child(newChatID).child("Messages");
         }
         if ( firstConnection == false )
-             mFirebaseRef = new Firebase(FIREBASE_URL).child("chat").child(chatID).child("Messages");
+             mDatabaseReferenceRef = FirebaseDatabase.getInstance().getReference().child("chat").child(chatID).child("Messages");
 
 
         // Setup our input methods. Enter key on the keyboard or pushing the send button
@@ -245,7 +246,7 @@ public class ChatTemplateActivity extends ListActivity {
         // Setup our view and list adapter. Ensure it scrolls to the bottom as data changes
         final ListView listView = getListView();
         // Tell our list adapter that we only want 50 messages at a time
-        mChatListAdapter = new ChatListAdapter(mFirebaseRef.limit(50), this, R.layout.chat_message, mUsername);
+        mChatListAdapter = new ChatListAdapter(mDatabaseReferenceRef.limitToFirst(50), this, R.layout.chat_message, mUsername);
         listView.setAdapter(mChatListAdapter);
         mChatListAdapter.registerDataSetObserver(new DataSetObserver() {
             @Override
@@ -257,19 +258,19 @@ public class ChatTemplateActivity extends ListActivity {
 
         /*
         // Finally, a little indication of connection status
-        mConnectedListener = mFirebaseRef.getRoot().child(".info/connected").addValueEventListener(new ValueEventListener() {
+        mConnectedListener = mDatabaseReferenceRef.getRoot().child(".info/connected").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 boolean connected = (Boolean) dataSnapshot.getValue();
                 if (connected) {
-                    Toast.makeText(ChatTemplateActivity.this, "Connected to Firebase", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ChatTemplateActivity.this, "Connected to DatabaseReference", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(ChatTemplateActivity.this, "Disconnected from Firebase", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ChatTemplateActivity.this, "Disconnected from DatabaseReference", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
+            public void onCancelled(DatabaseError firebaseError) {
                 // No-op
             }
         });
@@ -291,7 +292,7 @@ public class ChatTemplateActivity extends ListActivity {
     @Override
     public void onStop() {
         super.onStop();
-//        mFirebaseRef.getRoot().child(".info/connected").removeEventListener(mConnectedListener);
+//        mDatabaseReferenceRef.getRoot().child(".info/connected").removeEventListener(mConnectedListener);
         mChatListAdapter.cleanup();
     }
 
@@ -321,7 +322,7 @@ public class ChatTemplateActivity extends ListActivity {
             Chat chat = new Chat(input, mUsername,formattedDate);
 
             // Create a new, auto-generated child of that chat location, and save our chat data there
-            mFirebaseRef.push().setValue(chat);
+            mDatabaseReferenceRef.push().setValue(chat);
 
             inputText.setText("");
         }

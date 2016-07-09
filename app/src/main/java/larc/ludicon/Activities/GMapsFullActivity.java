@@ -121,22 +121,26 @@ public class GMapsFullActivity extends Activity implements OnMapReadyCallback, C
 
         mapFragment= (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-        mapFragment.getMap().setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+        mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
-            public void onMapClick(LatLng latLng) {
-                Intent intent = new Intent();
-                intent.putExtra("latitude", latLng.latitude);
-                intent.putExtra("longitude", latLng.longitude);
-                intent.putExtra("isOfficial", 0);
-                intent.putExtra("comment", "Please note this is not an official event! You will get no points !");
+            public void onMapReady(GoogleMap googleMap) {
+                googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                    @Override
+                    public void onMapClick(LatLng latLng) {
+                        Intent intent = new Intent();
+                        intent.putExtra("latitude", latLng.latitude);
+                        intent.putExtra("longitude", latLng.longitude);
+                        intent.putExtra("isOfficial", 0);
+                        intent.putExtra("comment", "Please note this is not an official event! You will get no points !");
 
-                setResult(CreateNewActivity.ASK_COORDS_DONE, intent);
+                        setResult(CreateNewActivity.ASK_COORDS_DONE, intent);
 
-                // Sanity checks
-                lm = null;
-                locationListener =null;
-                finish();
+                        // Sanity checks
+                        lm = null;
+                        locationListener =null;
+                        finish();
+                    }
+                });
             }
         });
 
@@ -237,8 +241,10 @@ public class GMapsFullActivity extends Activity implements OnMapReadyCallback, C
         private final TextView mClusterNumElems;
         private final int mDimension;
 
-        public PersonRenderer() {
-            super(getApplicationContext(), mapFragment.getMap(), mClusterManager);
+        public PersonRenderer(GoogleMap mapparam) {
+
+
+            super(getApplicationContext(), mapparam, mClusterManager);
 
             View multiProfile = getLayoutInflater().inflate(R.layout.multi_profile, null);
             mClusterIconGenerator.setContentView(multiProfile);
@@ -368,11 +374,20 @@ public class GMapsFullActivity extends Activity implements OnMapReadyCallback, C
 
 
     protected void startDemo() {
-        mClusterManager = new ClusterManager<>(this, mapFragment.getMap());
-        mClusterManager.setRenderer(new PersonRenderer());
-        mapFragment.getMap().setOnCameraChangeListener(mClusterManager);
-        mapFragment.getMap().setOnMarkerClickListener(mClusterManager);
-        mapFragment.getMap().setOnInfoWindowClickListener(mClusterManager);
+        mapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                mClusterManager = new ClusterManager<>(getApplicationContext(), googleMap);
+                googleMap.setOnCameraChangeListener(mClusterManager);
+                googleMap.setOnMarkerClickListener(mClusterManager);
+                googleMap.setOnInfoWindowClickListener(mClusterManager);
+                mClusterManager.setRenderer(new PersonRenderer(googleMap));
+
+            }
+        });
+
+
+
         mClusterManager.setOnClusterClickListener(this);
         mClusterManager.setOnClusterInfoWindowClickListener(this);
         mClusterManager.setOnClusterItemClickListener(this);

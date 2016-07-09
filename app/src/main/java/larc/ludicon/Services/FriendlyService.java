@@ -14,12 +14,12 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.fasterxml.jackson.databind.deser.std.NumberDeserializers;
-import com.firebase.client.ChildEventListener;
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -386,14 +386,14 @@ public class FriendlyService extends Service {
         return new Runnable() {
             public void run() {
 
-                Firebase.setAndroidContext(getApplicationContext());
-                final Firebase ref = new Firebase("https://ludicon.firebaseio.com/");
+                //DatabaseReference.setAndroidContext(getApplicationContext());
+                final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
                 String refJson = getSharedPreferences("UserDetails", 0).getString("uid", null);
 
                 SharedPreferences prefs = getApplication().getSharedPreferences("ChatPrefs", 0);
                 final String myName = prefs.getString("username", null);
 
-                final Firebase userRef = ref.child("users").child(refJson);
+                final DatabaseReference userRef = ref.child("users").child(refJson);
                 final LinkedList<String> chatRefs = new LinkedList<String>(); // chat uid - last message date
 
                 // Listen new conversation
@@ -482,7 +482,7 @@ public class FriendlyService extends Service {
                                     }
 
                                     @Override
-                                    public void onCancelled(FirebaseError firebaseError) {
+                                    public void onCancelled(DatabaseError firebaseError) {
 
                                     }
 
@@ -494,7 +494,7 @@ public class FriendlyService extends Service {
                     }
 
                     @Override
-                    public void onCancelled(FirebaseError firebaseError) {
+                    public void onCancelled(DatabaseError firebaseError) {
                     }
                 });
 

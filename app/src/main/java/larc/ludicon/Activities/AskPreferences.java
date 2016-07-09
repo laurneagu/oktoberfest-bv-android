@@ -41,10 +41,10 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.facebook.login.LoginManager;
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 //import com.parse.ParseObject;
 //import com.parse.ParseQuery;
@@ -72,7 +72,7 @@ public class AskPreferences extends Activity {
             @Override
             public void onClick(View v) {
 
-                Firebase sportsRef = User.firebaseRef.child("users").child(User.uid).child("sports");
+                DatabaseReference sportsRef = User.firebaseRef.child("users").child(User.uid).child("sports");
                 Map<String, Object> map = new HashMap<String, Object>();
                 for(Sport s : sports){
                     if(s.isChecked){
@@ -101,7 +101,7 @@ public class AskPreferences extends Activity {
 
     private void displayListView() {
         //Array list of sports : name, id, isChecked, icon
-        Firebase sportRef = User.firebaseRef.child("sports"); // check user
+        DatabaseReference sportRef = User.firebaseRef.child("sports"); // check user
         sportRef.addListenerForSingleValueEvent(new ValueEventListener() { // get sports
             @Override
             public void onDataChange(DataSnapshot snapshot) {
@@ -138,7 +138,7 @@ public class AskPreferences extends Activity {
             }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
+            public void onCancelled(DatabaseError firebaseError) {
                 //User.firebaseRef.child("msge").setValue("The read failed: " + firebaseError.getMessage());
             }
         });

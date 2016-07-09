@@ -9,7 +9,7 @@ import android.widget.ImageView;
 
 import com.facebook.Profile;
 import com.facebook.login.widget.ProfilePictureView;
-import com.firebase.client.Firebase;
+import com.google.firebase.database.DatabaseReference;
 
 
 import java.io.ByteArrayOutputStream;
@@ -31,8 +31,8 @@ public class User {
     public static  Date birthDate = new Date();
     public static String uid = "";
 
-    // FirebaseRef
-    public static Firebase firebaseRef;
+    // DatabaseReferenceRef
+    public static DatabaseReference firebaseRef;
 
     /* Important: We get the data in these static fields, but after log in
     our user is "parsUser" */
