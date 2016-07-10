@@ -455,12 +455,12 @@ public class MainActivity extends AppCompatActivity {
                                         mustAddEventToList = false;
 
                                     // Get distance between last known location and event location
-                                    float[] distance = new float[10];
-                                    Location.distanceBetween(userLatitude, userLongitude, ai.latitude, ai.longitude, distance);
+                                    //float[] distance = new float[10];
+                                    //Location.distanceBetween(userLatitude, userLongitude, ai.latitude, ai.longitude, distance);
 
                                     // If distance from user to event is greater than the selected range do not include it
-                                    if ( distance[0] > userRange * 1000 )
-                                        mustAddEventToList = false;
+                                   // if ( distance[0] > userRange * 1000 )
+                                    //    mustAddEventToList = false;
 
                                     String connectionsJSONString = getSharedPreferences("UserDetails", 0).getString("events", null);
                                     Type type = new TypeToken<List<ActivityInfo>>() {}.getType();
@@ -720,12 +720,12 @@ public class MainActivity extends AppCompatActivity {
                         mustAddEventToList = false;
 
                     // Get distance between last known location and event location
-                    float[] distance = new float[10];
-                    Location.distanceBetween(userLatitude, userLongitude, event.latitude, event.longitude, distance);
+                   // float[] distance = new float[10];
+                    //Location.distanceBetween(userLatitude, userLongitude, event.latitude, event.longitude, distance);
 
                     // If distance from user to event is greater than the selected range do not include it
-                    if ( distance[0] > userRange * 1000 )
-                        mustAddEventToList = false;
+                  //  if ( distance[0] > userRange * 1000 )
+                   //     mustAddEventToList = false;
 
                     // Insert event in the correct list
                     //if (new Date().before(event.date) && isPublic) {
