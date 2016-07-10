@@ -305,7 +305,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
             try {
                 List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
                 if(addresses.size()>0) {
-                    if(addressName.equals("")) {
+                    if(addressName==null || addressName.equals("")) {
                         addressName = addresses.get(0).getAddressLine(0);
                     }
                 }

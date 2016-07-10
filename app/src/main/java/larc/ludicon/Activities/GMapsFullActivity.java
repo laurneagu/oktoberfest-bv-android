@@ -68,6 +68,7 @@ public class GMapsFullActivity extends Activity implements OnMapReadyCallback, C
 
     @Override
     public void onMapReady(GoogleMap map) {
+        /*
         locationListener = new ActivitiesLocationListener(getApplication());
         locationListener.BindMap(map);
 
@@ -96,8 +97,9 @@ public class GMapsFullActivity extends Activity implements OnMapReadyCallback, C
         } catch (SecurityException exc) {
             exc.printStackTrace();
         }
-
+        */
     }
+
     MapFragment mapFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,7 +159,8 @@ public class GMapsFullActivity extends Activity implements OnMapReadyCallback, C
     public void onBackPressed() {
 
         try {
-            lm.removeUpdates(locationListener);
+            if(lm!=null)
+             lm.removeUpdates(locationListener);
         } catch (SecurityException exc) {
             exc.printStackTrace();
         }
@@ -372,29 +375,58 @@ public class GMapsFullActivity extends Activity implements OnMapReadyCallback, C
         // Does nothing, but you could go into the user's profile page, for example.
     }
 
+    private GMapsFullActivity curr_context = this;
 
     protected void startDemo() {
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
+                locationListener = new ActivitiesLocationListener(getApplication());
+                locationListener.BindMap(googleMap);
+
+                if (ActivitiesLocationListener.hasSetPosition == true){
+                    SharedPreferences sharedPref = getApplication().getSharedPreferences("LocationPrefs", 0);
+                    String latString, longString;
+                    double latitude, longitude;
+                    latString = sharedPref.getString("curr_latitude", null);
+                    longString= sharedPref.getString("curr_longitude", null);
+
+                    latitude = Double.parseDouble(latString);
+                    longitude = Double.parseDouble(longString);
+
+                    googleMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(latitude,longitude))
+                            .title("You are here"));
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude,longitude), 15));
+                }
+
+                lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+                try {
+                    lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 1, locationListener);
+                    lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 100, 1, locationListener);
+
+                } catch (SecurityException exc) {
+                    exc.printStackTrace();
+                }
+
+
                 mClusterManager = new ClusterManager<>(getApplicationContext(), googleMap);
                 googleMap.setOnCameraChangeListener(mClusterManager);
                 googleMap.setOnMarkerClickListener(mClusterManager);
                 googleMap.setOnInfoWindowClickListener(mClusterManager);
                 mClusterManager.setRenderer(new PersonRenderer(googleMap));
 
+                // Initialize everything
+                mClusterManager.setOnClusterClickListener(curr_context);
+                mClusterManager.setOnClusterInfoWindowClickListener(curr_context);
+                mClusterManager.setOnClusterItemClickListener(curr_context);
+                mClusterManager.setOnClusterItemInfoWindowClickListener(curr_context);
+
+                addItems();
+                mClusterManager.cluster();
             }
         });
-
-
-
-        mClusterManager.setOnClusterClickListener(this);
-        mClusterManager.setOnClusterInfoWindowClickListener(this);
-        mClusterManager.setOnClusterItemClickListener(this);
-        mClusterManager.setOnClusterItemInfoWindowClickListener(this);
-
-        addItems();
-        mClusterManager.cluster();
     }
 
     private void addItems() {
