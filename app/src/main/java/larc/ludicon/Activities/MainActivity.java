@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -18,10 +20,13 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
@@ -35,6 +40,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
@@ -117,6 +123,20 @@ public class MainActivity extends AppCompatActivity {
     final ArrayList<String> favoriteSports = new ArrayList<>();
     int userRange = 100;
     private final ArrayList<Event> myEventsList = new ArrayList<>();
+
+    public MainActivity(){
+        try{
+            broadcastManager = LocalBroadcastManager.getInstance(this);
+            broadcastManager.registerReceiver(
+                    receiveIsHappening, new IntentFilter("ServiceToMain_ReceiveIsHappening"));
+            broadcastManager.registerReceiver(receiveStartResponse,
+                    new IntentFilter("ServiceToMain_StartResponse"));
+        }
+        catch(Exception e){
+            broadcastManager=null;
+            e.printStackTrace();
+        }
+    }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
@@ -361,14 +381,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot dataSN : snapshot.getChildren()) {
-                    if (dataSN.getKey().equalsIgnoreCase("sports") )
-                        for (DataSnapshot data : dataSN.getChildren() )
-                        {
+                    if (dataSN.getKey().equalsIgnoreCase("sports"))
+                        for (DataSnapshot data : dataSN.getChildren()) {
                             if (data.getKey() != null && data.getKey() != " ")
                                 favoriteSports.add(data.getKey().toString());
                         }
-                    if ( dataSN.getKey().equalsIgnoreCase("range") )
-                    {
+                    if (dataSN.getKey().equalsIgnoreCase("range")) {
                         userRange = Integer.parseInt(dataSN.getValue().toString());
                     }
                 }
@@ -380,7 +398,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
     }
+    private LocalBroadcastManager broadcastManager=null;
+
+
+
     double userLatitude = 0;
     double userLongitude = 0;
     public void continueUpdatingTimeline() {
@@ -561,6 +585,173 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void hideHappeningRightNow(){
+        RelativeLayout rlCurrEvent = (RelativeLayout)findViewById(R.id.currEventLayout);
+        rlCurrEvent.setVisibility(View.GONE);
+    }
+
+
+    public void showHappeningNow(ActivityInfo ce){
+
+        final ActivityInfo currentEvent = ce;
+
+//        getSharedPreferences("UserDetails", 0).edit().putString("currentEventState","0").commit(); // pending
+
+        RelativeLayout rlCurrEvent = (RelativeLayout)findViewById(R.id.currEventLayout);
+
+        ViewGroup.LayoutParams params = rlCurrEvent.getLayoutParams();
+        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+
+        rlCurrEvent.setLayoutParams(params);
+
+        // Fill the current event details
+
+        final TextView firstPart = (TextView)findViewById(R.id.firstPartofTextCurrEvent);
+        final TextView secondPart = (TextView) findViewById(R.id.secondPartofTextCurrEvent);
+        final TextView time = (TextView) findViewById(R.id.timeTextCurrEvent);
+        final TextView place = (TextView) findViewById(R.id.placeTextCurrEvent);
+        final ImageView icon = (ImageView) findViewById(R.id.sportIconCurrEvent);
+        final ImageButton share = (ImageButton) findViewById(R.id.sharefb_btnCurrEvent);
+        final Button changeStateButton = (Button) findViewById(R.id.stateChangeButton);
+        final Chronometer timer = (Chronometer) findViewById( R.id.chronometer );
+
+
+        // Set name and picture for the first user of the event
+
+        String uri = "@drawable/" + currentEvent.sport.toLowerCase().replace(" ", "");
+
+        int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+        Drawable res = getResources().getDrawable(imageResource);
+
+        icon.setImageDrawable(res);
+        firstPart.setText("You are playing " + currentEvent.sport);
+        String audience = "";
+        if (currentEvent.others > 1) {
+            audience = " with " + (currentEvent.others) + " others";
+        }
+        else {
+            audience = " with no others";
+        }
+        secondPart.setText(audience);
+
+        if(currentEvent.place != null )
+            place.setText(currentEvent.place);
+        else
+            place.setText("Unknown");
+
+        time.setText("Now");
+
+
+
+
+
+        // Start/Stop Button
+        changeStateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String state = getSharedPreferences("UserDetails", 0).getString("currentEventState", "0");
+
+                if (Integer.parseInt(state) == 0) { // is start => Stop
+                    Intent intent = new Intent("MainToService_StartRequest");
+                    intent.putExtra("bla", "bla");
+                    if(broadcastManager != null)
+                        broadcastManager.sendBroadcast(intent);
+
+                } else if (Integer.parseInt(state) == 1) { // is Stop => Hide
+                    timer.stop();
+                    changeStateButton.setVisibility(View.GONE);
+                    getSharedPreferences("UserDetails", 0).edit().putString("currentEventState", "2").commit(); // stopped
+                    Toast.makeText(getApplicationContext(), "Yaay! Activity finished in " + timer.getText().toString(), Toast.LENGTH_LONG).show();
+
+                }
+
+            }
+        });
+
+        // Share on facebook
+        final ShareDialog shareDialog = new ShareDialog(this);
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String audience = "";
+                if (currentEvent.others > 1)
+                    audience = " with " + (currentEvent.others) + " others";
+                else
+                    audience = " with no others";
+
+                String place = "";
+                if (currentEvent.place != null)
+                    place = currentEvent.place;
+                else
+                    place = "Unknown";
+
+                ShareLinkContent content = new ShareLinkContent.Builder()
+                        .setContentUrl(Uri.parse("http://ludicon.info/"))
+                        .setImageUrl(Uri.parse("http://www.ludicon.info/img/sports/" + currentEvent.sport + ".png"))
+                        .setContentTitle(User.getFirstName(getApplicationContext()) + " is playing " + currentEvent.sport + audience + " at " + place)
+                        .setContentDescription("Ludicon ! Let's go and play !")
+                        .build();
+
+                if (ShareDialog.canShow(ShareLinkContent.class) == true)
+                    shareDialog.show(content);
+
+            }
+        });
+    }
+
+    // Start response from service:
+    private BroadcastReceiver receiveStartResponse = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            String action = intent.getAction();
+            String msg = intent.getStringExtra("Response");
+            final Button changeStateButton = (Button) findViewById(R.id.stateChangeButton);
+            final Chronometer timer = (Chronometer) findViewById( R.id.chronometer );
+
+            if(msg == "0"){ // Ok, start, location ok
+                timer.setBase(SystemClock.elapsedRealtime());
+                timer.start();
+                changeStateButton.setText("Stop");
+                changeStateButton.setBackgroundColor(Color.parseColor("#BF3636"));
+                Toast.makeText(getApplicationContext(), "Activity started. Do not close the application if you want to sweat on points.", Toast.LENGTH_LONG).show();
+            }
+            else{ // location is not the right one
+                Toast.makeText(getApplicationContext(), "You are not in the right location!", Toast.LENGTH_LONG).show();
+            }
+
+
+        }
+    };
+
+    private BroadcastReceiver receiveIsHappening = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            String action = intent.getAction();
+            String msg = intent.getStringExtra("isActive");
+
+
+            if(msg == "0"){ // New event right Now, show Happening now
+                Toast.makeText(getApplicationContext(), "Awesome, you have an activity right now! :-)", Toast.LENGTH_LONG).show();
+                /// Get Current event:
+                Gson gson = new Gson();
+                String json = getSharedPreferences("UserDetails", 0).getString("currentEvent", "");
+                final ActivityInfo currentEvent = gson.fromJson(json, ActivityInfo.class);
+
+                if ( currentEvent != null ) {
+                    showHappeningNow(currentEvent);
+                    updateList();
+                }
+            }
+            else{ // Event ended
+                hideHappeningRightNow();
+                updateList();
+            }
+
+
+        }
+    };
 
 
 
@@ -568,85 +759,7 @@ public class MainActivity extends AppCompatActivity {
     public void updateList()
     {
 
-        /// Check from Shared prefs if we have any event happening
-        Gson gson = new Gson();
-        String json = getSharedPreferences("UserDetails", 0).getString("currentEvent", "");
-        final ActivityInfo currentEvent = gson.fromJson(json, ActivityInfo.class);
-        String isHappening = getSharedPreferences("UserDetails",0).getString("currentEventIsActive","0");
-
-        if ( currentEvent != null && Integer.parseInt(isHappening) == 1){
-            RelativeLayout rlCurrEvent = (RelativeLayout)findViewById(R.id.currEventLayout);
-
-            ViewGroup.LayoutParams params = rlCurrEvent.getLayoutParams();
-            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-
-            rlCurrEvent.setLayoutParams(params);
-
-            // Fill the current event details
-
-            final TextView firstPart = (TextView)findViewById(R.id.firstPartofTextCurrEvent);
-            final TextView secondPart = (TextView) findViewById(R.id.secondPartofTextCurrEvent);
-            final TextView time = (TextView) findViewById(R.id.timeTextCurrEvent);
-            final TextView place = (TextView) findViewById(R.id.placeTextCurrEvent);
-            final ImageView icon = (ImageView) findViewById(R.id.sportIconCurrEvent);
-            final ImageButton share = (ImageButton) findViewById(R.id.sharefb_btnCurrEvent);
-
-            // Set name and picture for the first user of the event
-
-            String uri = "@drawable/" + currentEvent.sport.toLowerCase().replace(" ", "");
-
-            int imageResource = getResources().getIdentifier(uri, null, getPackageName());
-            Drawable res = getResources().getDrawable(imageResource);
-
-            icon.setImageDrawable(res);
-            firstPart.setText("You are playing " + currentEvent.sport);
-            String audience = "";
-            if (currentEvent.others > 1) {
-                audience = " with " + (currentEvent.others) + " others";
-            }
-            else {
-                audience = " with no others";
-            }
-            secondPart.setText(audience);
-
-            if(currentEvent.place != null )
-                place.setText(currentEvent.place);
-            else
-                place.setText("Unknown");
-
-            time.setText("Now");
-
-            // Share on facebook
-            final ShareDialog shareDialog = new ShareDialog(this);
-            share.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String audience = "";
-                    if (currentEvent.others > 1)
-                        audience = " with " + (currentEvent.others) + " others";
-                    else
-                        audience = " with no others";
-
-                    String place ="";
-                    if(currentEvent.place != null )
-                        place= currentEvent.place;
-                    else
-                        place ="Unknown";
-
-                    ShareLinkContent content = new ShareLinkContent.Builder()
-                            .setContentUrl(Uri.parse("http://ludicon.info/"))
-                            .setImageUrl(Uri.parse("http://www.ludicon.info/img/sports/" + currentEvent.sport +".png"))
-                            .setContentTitle(User.getFirstName(getApplicationContext()) + " is playing " + currentEvent.sport + audience + " at " + place)
-                            .setContentDescription("Ludicon ! Let's go and play !")
-                            .build();
-
-                    if (ShareDialog.canShow(ShareLinkContent.class) == true)
-                        shareDialog.show(content);
-
-                }
-            });
-        }
-
+        // Envent lists:
         DatabaseReference userRef = User.firebaseRef.child("events"); // check events
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -716,16 +829,16 @@ public class MainActivity extends AppCompatActivity {
                     //TODO - copy
 
                     // If event's sport is not in user's favourites do not include it
-                    if ( !favoriteSports.contains(event.sport) )
+                    if (!favoriteSports.contains(event.sport))
                         mustAddEventToList = false;
 
                     // Get distance between last known location and event location
-                   // float[] distance = new float[10];
+                    // float[] distance = new float[10];
                     //Location.distanceBetween(userLatitude, userLongitude, event.latitude, event.longitude, distance);
 
                     // If distance from user to event is greater than the selected range do not include it
-                  //  if ( distance[0] > userRange * 1000 )
-                   //     mustAddEventToList = false;
+                    //  if ( distance[0] > userRange * 1000 )
+                    //     mustAddEventToList = false;
 
                     // Insert event in the correct list
                     //if (new Date().before(event.date) && isPublic) {
@@ -759,27 +872,27 @@ public class MainActivity extends AppCompatActivity {
 
                 // Save my events also locally - to be used in the Create Activity
                 SharedPreferences.Editor editor = getSharedPreferences("UserDetails", 0).edit();
-                editor.putString("myEvents",  new Gson().toJson(myEventsList));
+                editor.putString("myEvents", new Gson().toJson(myEventsList));
                 editor.commit();
 
                 /* Friends */
                 TimelineAroundActAdapter fradapter = new TimelineAroundActAdapter(friendsEventsList, getApplicationContext());
                 ListView frlistView = (ListView) findViewById(R.id.events_listView1);
-                if (frlistView != null){
+                if (frlistView != null) {
                     frlistView.setAdapter(fradapter);
-                   // frlistView.setScrollingCacheEnabled(true);
+                    // frlistView.setScrollingCacheEnabled(true);
                 }
 
                 /* My */
                 TimelineMyActAdapter myadapter = new TimelineMyActAdapter(myEventsList, getApplicationContext());
                 ListView mylistView = (ListView) findViewById(R.id.events_listView2);
-                if (mylistView != null){
+                if (mylistView != null) {
                     mylistView.setAdapter(myadapter);
-                   // mylistView.setScrollingCacheEnabled(true);
+                    // mylistView.setScrollingCacheEnabled(true);
                 }
 
                 /*Swipe */
-                if(!addedSwipe) {
+                if (!addedSwipe) {
                     final SwipeRefreshLayout mSwipeRefreshLayout1 = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh1);
                     mSwipeRefreshLayout1.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                         @Override

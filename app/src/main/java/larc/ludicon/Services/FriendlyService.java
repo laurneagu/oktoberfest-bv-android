@@ -3,16 +3,20 @@ package larc.ludicon.Services;
 import android.Manifest;
 import android.app.ActivityManager;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -74,121 +78,12 @@ public class FriendlyService extends Service {
     private static ChatNotifier chatNotifier = new ChatNotifier();
     private static Notifier notifier = new Notifier();
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    private LocalBroadcastManager broadcastManager=null;
 
-        // Laur For test !!
-        getSharedPreferences("UserDetails", 0).edit().putBoolean("isServiceRunning",false).commit();
+    private Object waitForNextEvent = new Object();
 
-        mRunning =  getSharedPreferences("UserDetails", 0).getBoolean("isServiceRunning",false);
-
-        if( mRunning == false) {
-            mRunning = true;
-            //initializeLocationManager();
-
-            getSharedPreferences("UserDetails", 0).edit().putBoolean("isServiceRunning",true).commit();
-
-            getSharedPreferences("UserDetails", 0).edit().putString("currentEventIsActive","0").commit();
-
-            // Thread for Rewarding user with points
-            Runnable eventParticipationChecker = getCheckPointsThread();
-            Thread eventParticipationThread = new Thread(eventParticipationChecker);
-            eventParticipationThread.start();
-
-            // Thread for Notifying user for upcoming events
-            Runnable eventChecker = getCheckNotificationsEventsThread();
-            Thread eventCheckerThread = new Thread(eventChecker);
-            eventCheckerThread.start();
-
-            // Thread for Notifying user new chat message
-            Runnable chatChecker = getCheckNotificationsChatThread();
-            Thread chatCheckerThread = new Thread(chatChecker);
-            chatCheckerThread.start();
-
-            // Persistent Run:
-            return Service.START_STICKY;
-        }
-        // Persistent Run:
-        return Service.START_STICKY;
-    }
-
-    private Runnable getCheckPointsThread(){
-        return new Runnable() {
-            public void run() {
-
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                while (true) {
-
-                    // Get the list of events from Shared Prefs
-                    String connectionsJSONString = getSharedPreferences("UserDetails", 0).getString("events", null);
-                    Type type = new TypeToken<List<ActivityInfo>>() {}.getType();
-                    List<ActivityInfo> events = null;
-                    if (connectionsJSONString != null) {
-                        events = new Gson().fromJson(connectionsJSONString, type);
-                    }
-
-                    if (events != null && events.size() != 0) {
-
-                        getSharedPreferences("UserDetails", 0).edit().putString("currentEventIsActive","0").commit();
-                        // Get current date
-                        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, new Locale("English"));
-                        //df.setTimeZone(TimeZone.getTimeZone("gmt"));
-                        df.setTimeZone(TimeZone.getTimeZone("Europe/Bucharest"));
-                        String gmtTime = df.format(new Date());
-                        Date now = new Date(gmtTime);
-                        Log.v("Date now",now.toString());
-                        // Problem - TimeZone
-
-                        // Check if event is about to happen in the next 20 min
-                        Date limit = new Date(now.getTime() + limitTime * MIN);
-
-                        // Get the current pending event
-                        int j = 0;
-                        while (j < events.size()){
-                            if (events.get(j).date!=null)
-                                if(now.after(events.get(j).date))  j++;
-                        }
-
-                        ActivityInfo upcomingEvent;
-
-                        if (j == events.size()) upcomingEvent = events.get(j - 1);
-                        else upcomingEvent = events.get(j);
-
-                        Log.v("Date.now",now.toString());
-                        Log.v("Upcoming Event",upcomingEvent.date.toString());
-
-                        // Pending event starts in the next 20 min
-                        if (upcomingEvent.date.before(limit) && now.before(upcomingEvent.date)) {
-                            long diff = upcomingEvent.date.getTime() - now.getTime();
-                            long diffMinutes = diff / (60 * 1000) % 60;
-
-                            // Less then 10 minutes til event
-                            if (diffMinutes <= 10) {
-
-                                Log.v("Event-Service","Event is in less then 10  min");
-                                int diffMin = (int) diffMinutes;
-
-                                // Sleep till the start of the event ( 1 minute error )
-                                if (diffMin > 1) {
-                                    try {
-                                        Thread.sleep((diffMin - 1) * MIN, 100);
-                                    } catch (InterruptedException exc) {
-                                    }
-                                }
-
-                                getSharedPreferences("UserDetails", 0).edit().putString("currentEventIsActive","1").commit();
-
-                                // SAVE IN SHARED PREFS THE PENDING EVENT
-                                SharedPreferences.Editor editor = getSharedPreferences("UserDetails", 0).edit();
-                                Gson gson = new Gson();
-                                String json = gson.toJson(upcomingEvent); // Type is activity info
-                                editor.putString("currentEvent", json);
-                                editor.commit();
+    private boolean isLocationOk(){
+            /*
 
                                 // Point where the event starts
                                 final ArrayList<Integer> pointsList = new ArrayList<>();
@@ -273,19 +168,303 @@ public class FriendlyService extends Service {
                                     editor.putString("UnsavedPointsMap", jsonString);
                                     editor.commit();
                                 }
+
+                                */
+        return true;
+    }
+
+    private BroadcastReceiver receiveStartRequest = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+
+
+            Intent resp = new Intent("ServiceToMain_StartResponse");
+            if(isLocationOk()) {
+                resp.putExtra("Response", "0");
+                getSharedPreferences("UserDetails", 0).edit().putString("currentEventState", "1").commit(); // started
+
+                // Notify thread to start counting
+                synchronized (waitForNextEvent) {
+                        waitForNextEvent.notify();
+                }
+            }
+            else{
+                resp.putExtra("Response", "1");
+            }
+
+
+            if(broadcastManager != null)
+                broadcastManager.sendBroadcast(resp);
+        }
+    };
+
+    public FriendlyService(){
+        try{
+            broadcastManager = LocalBroadcastManager.getInstance(this);
+            broadcastManager.registerReceiver(
+                    receiveStartRequest, new IntentFilter("MainToService_StartRequest"));
+
+
+        }
+        catch(Exception e){
+            broadcastManager=null;
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
+        // Laur For test !!
+       // getSharedPreferences("UserDetails", 0).edit().putBoolean("isServiceRunning",false).commit();
+
+       // mRunning =  getSharedPreferences("UserDetails", 0).getBoolean("isServiceRunning",false);
+
+        //if( mRunning == false) {
+        mRunning = true;
+        //initializeLocationManager();
+
+        getSharedPreferences("UserDetails", 0).edit().putBoolean("isServiceRunning",true).commit();
+
+        final DatabaseReference ref1 = FirebaseDatabase.getInstance().getReference();
+        getSharedPreferences("UserDetails", 0).edit().putString("currentEventIsActive", "0").commit();
+        ref1.child("mesg").child("service").child("currentEventIsActive").setValue("0___" + new Date().toString());
+
+
+        // Thread for Rewarding user with points
+        Runnable eventParticipationChecker = getCheckPointsThread();
+        Thread eventParticipationThread = new Thread(eventParticipationChecker);
+        eventParticipationThread.start();
+
+        // Thread for Notifying user for upcoming events
+        Runnable eventChecker = getCheckNotificationsEventsThread();
+        Thread eventCheckerThread = new Thread(eventChecker);
+        eventCheckerThread.start();
+
+        // Thread for Notifying user new chat message
+        Runnable chatChecker = getCheckNotificationsChatThread();
+        Thread chatCheckerThread = new Thread(chatChecker);
+        chatCheckerThread.start();
+
+        // Check Alive - Testing
+//        Runnable aliveCheck = getCheckAliveThread();
+//        Thread aliveCheckThread = new Thread(aliveCheck);
+//        aliveCheckThread.start();
+
+                // Persistent Run:
+        //return Service.START_STICKY;
+        //}
+
+        // Persistent Run:
+        return Service.START_STICKY;
+    }
+
+
+
+
+    private Runnable getCheckPointsThread(){
+        return new Runnable() {
+            public void run() {
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+
+                while (true) {
+
+//                    ref.child("mesg").child("service").child("whileBIG").setValue("here"+new Date().toString());
+
+                    // Get the list of events from Shared Prefs
+                    String connectionsJSONString = getSharedPreferences("UserDetails", 0).getString("events", null);
+                    Type type = new TypeToken<List<ActivityInfo>>() {}.getType();
+                    List<ActivityInfo> events = null;
+                    if (connectionsJSONString != null) {
+                        events = new Gson().fromJson(connectionsJSONString, type);
+                    }
+
+
+                    if (events != null && events.size() != 0) {
+
+                        getSharedPreferences("UserDetails", 0).edit().putString("currentEventIsActive", "0").commit();
+//                        ref.child("mesg").child("service").child("currentEventIsActive").setValue("0___" + new Date().toString());
+
+
+                        // Get current date
+                        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, new Locale("English"));
+                        //df.setTimeZone(TimeZone.getTimeZone("gmt"));
+                        df.setTimeZone(TimeZone.getTimeZone("Europe/Bucharest"));
+                        String gmtTime = df.format(new Date());
+                        Date now = new Date(gmtTime);
+//                        ref.child("mesg").child("service").child("whileBIGTimeNOW").setValue(now.toString());
+
+                        Log.v("Date now",now.toString());
+                        // Problem - TimeZone
+
+                        // Check if event is about to happen in the next 20 min
+                        Date limit = new Date(now.getTime() + limitTime * MIN);
+
+                        // Get the current pending event
+                        int j = 0;
+                        int jj = 0;
+                        while (j < events.size()){
+                            if (events.get(j).date!=null) {
+                                if (now.after(events.get(j).date))
+                                    j++;
+                                else break;
+                            }
+                            // else nu are cum
+                        }
+
+                        ActivityInfo upcomingEvent;
+
+                        if (j == events.size()) upcomingEvent = events.get(j - 1);
+                        else upcomingEvent = events.get(j);
+
+                        Log.v("Date.now",now.toString());
+                        Log.v("Upcoming Event", upcomingEvent.date.toString());
+
+//                        ref.child("mesg").child("service").child("upcommingEventDate").setValue(upcomingEvent.date.toString());
+
+                        // Pending event starts in the next 20 min
+                        if (upcomingEvent.date.before(limit) && now.before(upcomingEvent.date)) {
+                            long diff = upcomingEvent.date.getTime() - now.getTime();
+                            long diffMinutes = diff / (60 * 1000) % 60;
+
+//                            ref.child("mesg").child("service").child("upcommingEventDateIn20min").setValue("here");
+
+                            // Less then 10 minutes til event
+                            if (diffMinutes <= 10) {
+                                //ref.child("mesg").child("service").child("upcommingEventDateIn10min").setValue("here");
+
+                                Log.v("Event-Service","Event is in less then 10  min");
+                                int diffMin = (int) diffMinutes;
+
+                                // Sleep till the start of the event ( 1 minute error )
+                                if (diffMin > 1) {
+                                    try {
+                                        Thread.sleep((diffMin - 1) * MIN, 100);
+                                    } catch (InterruptedException exc) {
+                                    }
+                                }
+
+
+
+                                // SAVE IN SHARED PREFS THE PENDING EVENT
+                                SharedPreferences.Editor editor = getSharedPreferences("UserDetails", 0).edit();
+                                Gson gson = new Gson();
+                                String json = gson.toJson(upcomingEvent); // Type is activity info
+                                editor.putString("currentEvent", json);
+                                editor.commit();
+
+                                getSharedPreferences("UserDetails", 0).edit().putString("currentEventIsActive", "1").commit();
+//                                ref.child("mesg").child("service").child("currentEventIsActive").setValue("1___" + new Date().toString());
+                                Date limitPending = new Date(new Date().getTime() + 5 * MIN); // 5 min pending
+
+                                // Right here the event is about to start
+                                // Notify MainActivity to show happening now panel:
+                                getSharedPreferences("UserDetails", 0).edit().putString("currentEventState", "0").commit(); // pending
+                                Intent intent = new Intent("ServiceToMain_ReceiveIsHappening");
+                                intent.putExtra("isActive", "0");
+                                if(broadcastManager != null)
+                                    broadcastManager.sendBroadcast(intent);
+
+                                // Wait until the current event is started
+                                synchronized (waitForNextEvent) {
+                                    try {
+                                        waitForNextEvent.wait();
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                // Event started, count points:
+                                int eventPoints = 0, locationErrors = 0;
+                                while(true){
+
+                                    String state = getSharedPreferences("UserDetails", 0).getString("currentEventState", "2");
+
+                                    // If the user didn't press stop, event is started
+                                    if (Integer.parseInt(state) == 1) { // started
+                                        if(isLocationOk()){
+                                            // set points
+
+                                            eventPoints+=100;
+                                        }
+                                        else{ // bad location
+
+                                        }
+                                    }
+
+                                    else{ // stopped
+                                        Intent intent2 = new Intent("ServiceToMain_ReceiveIsHappening");
+                                        intent2.putExtra("isActive", "1");
+                                        if(broadcastManager != null)
+                                            broadcastManager.sendBroadcast(intent2);
+                                        break;
+                                    }
+
+                                    try {
+                                        Thread.sleep(1*MIN);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                }
+                                getSharedPreferences("UserDetails", 0).edit().putString("currentEvent", "").commit();
+                                // Write points:
+                                // Delete current event from shared preferences when ended
+
+                                // Update points with the ones received for the current event and update in Database
+                                // Check if there are unsaved points in SharedPrefs
+                                // Points are tied to events in a Map<Event_ID,Event_Points>
+                                Map<String, Integer> unsavedPointsMap = new HashMap<>();
+                                SharedPreferences pSharedPref = getSharedPreferences("Points", Context.MODE_PRIVATE);
+                                try {
+                                    if (pSharedPref != null) {
+                                        String jsonString = pSharedPref.getString("UnsavedPointsMap", (new JSONObject()).toString());
+                                        JSONObject jsonObject = new JSONObject(jsonString);
+                                        Iterator<String> keysItr = jsonObject.keys();
+                                        while (keysItr.hasNext()) {
+                                            String key = keysItr.next();
+                                            Integer value = (Integer) jsonObject.get(key);
+                                            unsavedPointsMap.put(key, value);
+                                        }
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                // Add the current event points to SharedPref
+                                unsavedPointsMap.put(upcomingEvent.id, eventPoints);
+                                if (pSharedPref != null) {
+                                    JSONObject jsonObject = new JSONObject(unsavedPointsMap);
+                                    String jsonString = jsonObject.toString();
+                                    editor = pSharedPref.edit();
+                                    editor.remove("UnsavedPointsMap").commit();
+                                    editor.putString("UnsavedPointsMap", jsonString);
+                                    editor.commit();
+                                }
+
+
+
+
                             }
                         }
 
                     }
 
+
+
                     Log.v("Ludicon", "i am here !");
 
                     try {
-                        // Sleep 10 min
-                        Thread.sleep(2 * MIN);
+                        Thread.sleep(1 * MIN);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+
                 }
 
             }
@@ -352,6 +531,34 @@ public class FriendlyService extends Service {
 
             }
         };
+    }
+
+    private Runnable getCheckAliveThread(){
+        return new Runnable() {
+            public void run() {
+                final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+                ref.child("mesg").child("service").child("alive").setValue("RESTART!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                while(true) {
+
+                    ref.child("mesg").child("service").child("alive").setValue(new Date().toString());
+
+                    try {
+                        Thread.sleep(10000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+
+            }
+
+            };
     }
 
     public boolean isForeground(String myPackage) {

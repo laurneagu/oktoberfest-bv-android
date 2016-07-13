@@ -32,7 +32,8 @@
             android:layout_width="wrap_content"
             android:id="@+id/currEventLayout"
             android:layout_height="0dp"
-            android:background="@color/com_facebook_button_background_color"
+            android:background="#166eb1"
+            android:elevation="2dp"
             android:layout_below="@+id/relativeLayout1">
 
             <ImageView
@@ -79,6 +80,44 @@
                     android:layout_marginLeft="10dp"
                     android:id="@+id/placeTextCurrEvent" />
 
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/linearLayout6CurrEvent"
+                android:id="@+id/timerButton"
+                android:weightSum="2">
+
+
+
+                <Button
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="50dp"
+                    android:text="Start"
+                    android:id="@+id/stateChangeButton"
+                    android:layout_gravity="right"
+                    android:background="#6ca34f"
+                    android:textColor="#ffffff"
+                    android:textStyle="bold"
+                    android:textSize="30dp" />
+
+                <Chronometer
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="50dp"
+                    android:id="@+id/chronometer"
+                    android:textStyle="bold"
+                    android:textColor="#ffffff"
+                    android:textSize="30dp"
+                    android:textAlignment="gravity"
+                    android:background="#14609a" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -95,6 +134,7 @@
                     android:text=" with x others"
                     android:textColor="#FFFFFF"
                     android:textSize="16sp" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -137,6 +177,8 @@
                     android:layout_marginRight="5dp"
                     android:id="@+id/sharefb_btnCurrEvent" />
 
+
+
             </LinearLayout>
 
             <TextView
@@ -153,7 +195,7 @@
 
         </RelativeLayout>
 
-            <android.support.v4.view.ViewPager
+        <android.support.v4.view.ViewPager
                 android:id="@+id/pager"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
