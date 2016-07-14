@@ -321,6 +321,11 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
         map.put("place", mapAux);
 
+        // Event extra info:
+        map.put("roomCapacity", 0);
+        map.put("priority", 0);
+        map.put("description", 0);
+
         // Set sport
         // TODO Get sport key
         Spinner spinner = (Spinner) findViewById(R.id.sports_spinner);
@@ -413,6 +418,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
+                // Actions to do after 5 seconds
                 // Actions to do after 5 seconds
                 Intent goToNextActivity = new Intent(getApplicationContext(), MainActivity.class); //AskPreferences.class);
                 startActivity(goToNextActivity);

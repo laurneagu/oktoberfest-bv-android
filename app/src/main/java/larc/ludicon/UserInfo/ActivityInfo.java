@@ -15,4 +15,7 @@ public class ActivityInfo {
     public double longitude;
     public double latitude;
     public int points;
+    public int roomCapacity;
+    public int priority;
+    public int description;
 }

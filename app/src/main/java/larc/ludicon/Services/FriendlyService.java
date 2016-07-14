@@ -391,7 +391,7 @@ public class FriendlyService extends Service {
                                         if(isLocationOk()){
                                             // set points
 
-                                            eventPoints+=100;
+                                            eventPoints+=1;
                                         }
                                         else{ // bad location
 
@@ -407,7 +407,7 @@ public class FriendlyService extends Service {
                                     }
 
                                     try {
-                                        Thread.sleep(1*MIN);
+                                        Thread.sleep(5*MIN);
                                     } catch (InterruptedException e) {
                                         e.printStackTrace();
                                     }

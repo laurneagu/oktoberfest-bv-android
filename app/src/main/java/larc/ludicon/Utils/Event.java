@@ -24,5 +24,8 @@ public class Event {
         return creator;
     }
     public int isOfficial;
+    public int roomCapacity;
+    public int priority;
+    public int description;
 
 }
