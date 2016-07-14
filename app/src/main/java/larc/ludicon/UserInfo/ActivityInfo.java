@@ -17,5 +17,6 @@ public class ActivityInfo {
     public int points;
     public int roomCapacity;
     public int priority;
-    public int description;
+    public String description;
+    public String message;
 }

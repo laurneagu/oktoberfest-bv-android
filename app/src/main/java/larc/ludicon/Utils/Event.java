@@ -26,6 +26,7 @@ public class Event {
     public int isOfficial;
     public int roomCapacity;
     public int priority;
-    public int description;
+    public String description;
+    public String message;
 
 }

@@ -324,7 +324,8 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         // Event extra info:
         map.put("roomCapacity", 0);
         map.put("priority", 0);
-        map.put("description", 0);
+        map.put("description", "no description");
+        map.put("message", "no message");
 
         // Set sport
         // TODO Get sport key
