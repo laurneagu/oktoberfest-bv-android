@@ -29,7 +29,7 @@ public class ChatListAdapter extends FirebaseListAdapter<Chat> {
     private String mUsername;
 
     public ChatListAdapter(Query ref, Activity activity, int layout, String mUsername) {
-        super(ref, Chat.class, layout, activity);
+        super( activity,Chat.class, layout, ref);
         this.mUsername = mUsername;
     }
 
@@ -42,7 +42,7 @@ public class ChatListAdapter extends FirebaseListAdapter<Chat> {
      * @param chat An instance representing the current state of a chat message
      */
     @Override
-    protected void populateView(View view, Chat chat) {
+    protected void populateView(View view, Chat chat, int position) {
         // Map a Chat object to an entry in our listview
         String author = chat.getAuthor();
         LinearLayout linLayoutRight;

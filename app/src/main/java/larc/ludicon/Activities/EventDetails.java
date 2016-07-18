@@ -123,7 +123,7 @@ public class EventDetails extends Activity {
         });
         // -------------------------------------------------------------------------------------------------------------
         // Cancel Event Button
-        Button cancelEvent = (Button)findViewById(R.id.cancelbtn);
+        final Button cancelEvent = (Button)findViewById(R.id.cancelbtn);
         final Context context = this.getApplicationContext();
         cancelEvent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,6 +156,9 @@ public class EventDetails extends Activity {
                 String place = "";
                 String sport = "";
                 String privacy = "";
+                String latitude = "";
+                String longitude = "";
+                String isOfficial = "";
 
                 for (DataSnapshot details : dataSnapshot.getChildren()) {
                     if (details.getKey().toString().equalsIgnoreCase("users")) {
@@ -163,6 +166,9 @@ public class EventDetails extends Activity {
                     }
                     if (details.getKey().toString().equalsIgnoreCase("createdBy")) {
                         creatorID = (String) details.getValue();
+                    }
+                    if ( details.getKey().toString().equalsIgnoreCase("isOfficial")) {
+                        isOfficial = details.getValue().toString();
                     }
                     if (details.getKey().toString().equalsIgnoreCase("creatorName")) {
                         creatorName = (String) details.getValue();
@@ -183,14 +189,45 @@ public class EventDetails extends Activity {
                         for (DataSnapshot eventData : details.getChildren()) {
                             if (eventData.getKey().toString().equalsIgnoreCase("name"))
                                 place = eventData.getValue().toString();
+                            if (eventData.getKey().toString().equalsIgnoreCase("latitude"))
+                                latitude = eventData.getValue().toString();
+                            if (eventData.getKey().toString().equalsIgnoreCase("longitude"))
+                                longitude = eventData.getValue().toString();
                         }
 
                     }
                 }
 
+                final String eventDate = date;
+                final String eventSport = sport;
+                final String eventPrivacy = privacy;
+                final String eventLat = latitude;
+                final String eventLong = longitude;
+                final String eventisOfficial = isOfficial;
+                final String eventPlace = place;
+                // Edit Event Button
+                final Button editEvent = (Button)findViewById(R.id.editbtn);
+                editEvent.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getApplicationContext(), EditEventActivity.class);
+                        intent.putExtra("eventID", eventUid);
+                        intent.putExtra("eventDate", eventDate);
+                        intent.putExtra("sport", eventSport);
+                        intent.putExtra("eventPrivacy", eventPrivacy);
+                        intent.putExtra("latitude", eventLat);
+                        intent.putExtra("longitude", eventLong);
+                        intent.putExtra("isOfficial", eventisOfficial);
+                        intent.putExtra("place",eventPlace);
+                        startActivity(intent);
+                    }
+                });
 
-
-
+                // Hide Edit and Cancel Buttons if user is not the owner of the event
+                if ( !creatorID.equalsIgnoreCase(User.uid) ) {
+                    cancelEvent.setVisibility(View.INVISIBLE);
+                    editEvent.setVisibility(View.INVISIBLE);
+                }
 
                 final ImageView profilePicture = (ImageView) findViewById(R.id.profileImageView);
                 Picasso.with(getApplicationContext()).load(creatorImage).into(profilePicture);

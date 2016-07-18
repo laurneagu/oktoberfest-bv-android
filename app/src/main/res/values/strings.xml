@@ -60,4 +60,6 @@
     <string name="title_activity_statistics">StatisticsActivity</string>
     <string name="title_activity_event_details">EventDetails</string>
     <string name="title_activity_rankings">RankingsActivity</string>
+
+    <string name="title_activity_edit_event">EditEventActivity</string>
 </resources>

@@ -667,7 +667,7 @@ public class FriendlyService extends Service {
                                             }
                                             //userRef.child("chatNotif").setValue(author);
                                             // see it!
-                                            ref.child("chat").child(chatUid).child("Messages").child(snapshot.getKey()).child("seen").setValue("true");
+                                            ref.child("chat").child(chatUid).child("Messages").child(snapshot.getKey()).child("seen").setValue(true);
                                         }
 
 

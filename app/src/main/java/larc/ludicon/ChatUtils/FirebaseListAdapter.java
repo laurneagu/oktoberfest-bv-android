@@ -16,173 +16,142 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-/**
- * @author greg
- * @since 6/21/13
+/*
+ * Copyright 2016 Google Inc. All Rights Reserved.
  *
- * This class is a generic way of backing an Android ListView with a DatabaseReference location.
- * It handles all of the child events at the given DatabaseReference location. It marshals received data into the given
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import com.google.firebase.database.DatabaseReference;
+/**
+ * This class is a generic way of backing an Android ListView with a Firebase location.
+ * It handles all of the child events at the given Firebase location. It marshals received data into the given
  * class type. Extend this class and provide an implementation of <code>populateView</code>, which will be given an
  * instance of your list item mLayout and an instance your class that holds your data. Simply populate the view however
  * you like and this class will handle updating the list as the data changes.
  *
- * @param <T> The class type to use as a model for the data contained in the children of the given DatabaseReference location
+ * <blockquote><pre>
+ * {@code
+ *     DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+ *     ListAdapter adapter = new FirebaseListAdapter<ChatMessage>(this, ChatMessage.class, android.R.layout.two_line_list_item, mRef)
+ *     {
+ *         protected void populateView(View view, ChatMessage chatMessage, int position)
+ *         {
+ *             ((TextView)view.findViewById(android.R.id.text1)).setText(chatMessage.getName());
+ *             ((TextView)view.findViewById(android.R.id.text2)).setText(chatMessage.getMessage());
+ *         }
+ *     };
+ *     listView.setListAdapter(adapter);
+ * }
+ * </pre></blockquote>
+ *
+ * @param <T> The class type to use as a model for the data contained in the children of the given Firebase location
  */
 public abstract class FirebaseListAdapter<T> extends BaseAdapter {
 
-    private Query mRef;
-    private Class<T> mModelClass;
-    private int mLayout;
-    private LayoutInflater mInflater;
-    private List<T> mModels;
-    private List<String> mKeys;
-    private ChildEventListener mListener;
+    private final Class<T> mModelClass;
+    protected int mLayout;
+    protected Activity mActivity;
+    FirebaseArray mSnapshots;
 
 
     /**
-     * @param mRef        The DatabaseReference location to watch for data changes. Can also be a slice of a location, using some
-     *                    combination of <code>limit()</code>, <code>startAt()</code>, and <code>endAt()</code>,
-     * @param mModelClass DatabaseReference will marshall the data at a location into an instance of a class that you provide
-     * @param mLayout     This is the mLayout used to represent a single list item. You will be responsible for populating an
-     *                    instance of the corresponding view with the data from an instance of mModelClass.
      * @param activity    The activity containing the ListView
+     * @param modelClass  Firebase will marshall the data at a location into an instance of a class that you provide
+     * @param modelLayout This is the layout used to represent a single list item. You will be responsible for populating an
+     *                    instance of the corresponding view with the data from an instance of modelClass.
+     * @param ref         The Firebase location to watch for data changes. Can also be a slice of a location, using some
+     *                    combination of <code>limit()</code>, <code>startAt()</code>, and <code>endAt()</code>,
      */
-    public FirebaseListAdapter(Query mRef, Class<T> mModelClass, int mLayout, Activity activity) {
-        this.mRef = mRef;
-        this.mModelClass = mModelClass;
-        this.mLayout = mLayout;
-        mInflater = activity.getLayoutInflater();
-        mModels = new ArrayList<T>();
-        mKeys = new ArrayList<String>();
-        // Look for all child events. We will then map them to our own internal ArrayList, which backs ListView
-        mListener = this.mRef.addChildEventListener(new ChildEventListener() {
+    public FirebaseListAdapter(Activity activity, Class<T> modelClass, int modelLayout, Query ref) {
+        mModelClass = modelClass;
+        mLayout = modelLayout;
+        mActivity = activity;
+        mSnapshots = new FirebaseArray(ref);
+        mSnapshots.setOnChangedListener(new FirebaseArray.OnChangedListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
-
-                T model = dataSnapshot.getValue(FirebaseListAdapter.this.mModelClass);
-                String key = dataSnapshot.getKey();
-
-                // Insert into the correct location, based on previousChildName
-                if (previousChildName == null) {
-                    mModels.add(0, model);
-                    mKeys.add(0, key);
-                } else {
-                    int previousIndex = mKeys.indexOf(previousChildName);
-                    int nextIndex = previousIndex + 1;
-                    if (nextIndex == mModels.size()) {
-                        mModels.add(model);
-                        mKeys.add(key);
-                    } else {
-                        mModels.add(nextIndex, model);
-                        mKeys.add(nextIndex, key);
-                    }
-                }
-
+            public void onChanged(EventType type, int index, int oldIndex) {
                 notifyDataSetChanged();
             }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                // One of the mModels changed. Replace it in our list and name mapping
-                String key = dataSnapshot.getKey();
-                T newModel = dataSnapshot.getValue(FirebaseListAdapter.this.mModelClass);
-                int index = mKeys.indexOf(key);
-
-                mModels.set(index, newModel);
-
-                notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-                // A model was removed from the list. Remove it from our list and the name mapping
-                String key = dataSnapshot.getKey();
-                int index = mKeys.indexOf(key);
-
-                mKeys.remove(index);
-                mModels.remove(index);
-
-                notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
-
-                // A model changed position in the list. Update our list accordingly
-                String key = dataSnapshot.getKey();
-                T newModel = dataSnapshot.getValue(FirebaseListAdapter.this.mModelClass);
-                int index = mKeys.indexOf(key);
-                mModels.remove(index);
-                mKeys.remove(index);
-                if (previousChildName == null) {
-                    mModels.add(0, newModel);
-                    mKeys.add(0, key);
-                } else {
-                    int previousIndex = mKeys.indexOf(previousChildName);
-                    int nextIndex = previousIndex + 1;
-                    if (nextIndex == mModels.size()) {
-                        mModels.add(newModel);
-                        mKeys.add(key);
-                    } else {
-                        mModels.add(nextIndex, newModel);
-                        mKeys.add(nextIndex, key);
-                    }
-                }
-                notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError firebaseError) {
-                Log.e("FirebaseListAdapter", "Listen was cancelled, no more updates will occur");
-            }
-
         });
+    }
+    /**
+     * @param activity    The activity containing the ListView
+     * @param modelClass  Firebase will marshall the data at a location into an instance of a class that you provide
+     * @param modelLayout This is the layout used to represent a single list item. You will be responsible for populating an
+     *                    instance of the corresponding view with the data from an instance of modelClass.
+     * @param ref         The Firebase location to watch for data changes. Can also be a slice of a location, using some
+     *                    combination of <code>limit()</code>, <code>startAt()</code>, and <code>endAt()</code>,
+     */
+    public FirebaseListAdapter(Activity activity, Class<T> modelClass, int modelLayout, DatabaseReference ref) {
+        this(activity, modelClass, modelLayout, (Query) ref);
     }
 
     public void cleanup() {
         // We're being destroyed, let go of our mListener and forget about all of the mModels
-        mRef.removeEventListener(mListener);
-        mModels.clear();
-        mKeys.clear();
+        mSnapshots.cleanup();
     }
 
     @Override
     public int getCount() {
-        return mModels.size();
+        return mSnapshots.getCount();
     }
 
     @Override
-    public Object getItem(int i) {
-        return mModels.get(i);
+    public T getItem(int position) {
+        return parseSnapshot(mSnapshots.getItem(position));
     }
+
+    /**
+     * This method parses the DataSnapshot into the requested type. You can override it in subclasses
+     * to do custom parsing.
+     *
+     * @param snapshot the DataSnapshot to extract the model from
+     * @return the model extracted from the DataSnapshot
+     */
+    protected T parseSnapshot(DataSnapshot snapshot) {
+        return snapshot.getValue(mModelClass);
+    }
+
+    public DatabaseReference getRef(int position) { return mSnapshots.getItem(position).getRef(); }
 
     @Override
     public long getItemId(int i) {
-        return i;
+        // http://stackoverflow.com/questions/5100071/whats-the-purpose-of-item-ids-in-android-listview-adapter
+        return mSnapshots.getItem(i).getKey().hashCode();
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
+    public View getView(int position, View view, ViewGroup viewGroup) {
         if (view == null) {
-            view = mInflater.inflate(mLayout, viewGroup, false);
+            view = mActivity.getLayoutInflater().inflate(mLayout, viewGroup, false);
         }
 
-        T model = mModels.get(i);
+        T model = getItem(position);
+
         // Call out to subclass to marshall this model into the provided view
-        populateView(view, model);
+        populateView(view, model, position);
         return view;
     }
 
     /**
-     * Each time the data at the given DatabaseReference location changes, this method will be called for each item that needs
-     * to be displayed. The arguments correspond to the mLayout and mModelClass given to the constructor of this class.
-     * <p/>
+     * Each time the data at the given Firebase location changes, this method will be called for each item that needs
+     * to be displayed. The first two arguments correspond to the mLayout and mModelClass given to the constructor of
+     * this class. The third argument is the item's position in the list.
+     * <p>
      * Your implementation should populate the view using the data contained in the model.
      *
-     * @param v     The view to populate
-     * @param model The object containing the data used to populate the view
+     * @param v         The view to populate
+     * @param model     The object containing the data used to populate the view
+     * @param position  The position in the list of the view being populated
      */
-    protected abstract void populateView(View v, T model);
+    abstract protected void populateView(View v, T model, int position);
+
 }

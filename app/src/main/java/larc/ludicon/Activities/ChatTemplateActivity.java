@@ -116,12 +116,15 @@ public class ChatTemplateActivity extends ListActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     if (data.getKey().compareToIgnoreCase("firstName") == 0) {
+                        Log.v("HEERE", "OK21");
                         hello_message.setText(data.getValue().toString());
+                        Log.v("HEERE", "OK22");
                     }
 
                     if (data.getKey().compareToIgnoreCase("profileImageURL") == 0) {
-
+                        Log.v("HEERE", "OK31");
                         Picasso.with(getApplicationContext()).load(data.getValue().toString()).into(profilePicture);
+                        Log.v("HEERE", "OK32");
                     }
 
                 }
@@ -167,7 +170,7 @@ public class ChatTemplateActivity extends ListActivity {
                     String.format(new Locale("English"), "%tR", now);
             // Create our 'model', a Chat object
             DatabaseReference newChat = keyRef.child("Messages").push();
-            Chat chat = new Chat("Bun venit in chat!", "Ludicon",formattedDate);
+            Chat chat = new Chat("Welcome to our chat! :)", "Ludicon",formattedDate);
             newChat.setValue(chat);
 
             // TODO Create child to "users -> userUID -> chats" for each user
@@ -213,6 +216,7 @@ public class ChatTemplateActivity extends ListActivity {
             // Setup our DatabaseReference mDatabaseReferenceRef
             mDatabaseReferenceRef = FirebaseDatabase.getInstance().getReference().child("chat").child(newChatID).child("Messages");
         }
+
         if ( firstConnection == false )
              mDatabaseReferenceRef = FirebaseDatabase.getInstance().getReference().child("chat").child(chatID).child("Messages");
 
@@ -246,6 +250,8 @@ public class ChatTemplateActivity extends ListActivity {
         // Setup our view and list adapter. Ensure it scrolls to the bottom as data changes
         final ListView listView = getListView();
         // Tell our list adapter that we only want 50 messages at a time
+        // TODO - Don't use ChatListAdapter
+
         mChatListAdapter = new ChatListAdapter(mDatabaseReferenceRef.limitToFirst(50), this, R.layout.chat_message, mUsername);
         listView.setAdapter(mChatListAdapter);
         mChatListAdapter.registerDataSetObserver(new DataSetObserver() {
@@ -255,26 +261,6 @@ public class ChatTemplateActivity extends ListActivity {
                 listView.setSelection(mChatListAdapter.getCount() - 1);
             }
         });
-
-        /*
-        // Finally, a little indication of connection status
-        mConnectedListener = mDatabaseReferenceRef.getRoot().child(".info/connected").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                boolean connected = (Boolean) dataSnapshot.getValue();
-                if (connected) {
-                    Toast.makeText(ChatTemplateActivity.this, "Connected to DatabaseReference", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(ChatTemplateActivity.this, "Disconnected from DatabaseReference", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError firebaseError) {
-                // No-op
-            }
-        });
-      */
     }
 
     @Override
