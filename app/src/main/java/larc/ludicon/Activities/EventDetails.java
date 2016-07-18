@@ -96,6 +96,8 @@ public class EventDetails extends Activity {
         ((TextView)findViewById(R.id.event_organiser_name)).setText("");
         ((TextView)findViewById(R.id.event_date)).setText("");
         ((TextView)findViewById(R.id.event_place)).setText("");
+        ((TextView)findViewById(R.id.event_players)).setText("");
+        ((TextView)findViewById(R.id.event_desc)).setText("");
 
         Intent intent = getIntent();
         final String eventUid  = intent.getStringExtra("eventUid");
@@ -159,6 +161,8 @@ public class EventDetails extends Activity {
                 String latitude = "";
                 String longitude = "";
                 String isOfficial = "";
+                int players = 0;
+                String desc = "";
 
                 for (DataSnapshot details : dataSnapshot.getChildren()) {
                     if (details.getKey().toString().equalsIgnoreCase("users")) {
@@ -185,6 +189,12 @@ public class EventDetails extends Activity {
                     if (details.getKey().toString().equalsIgnoreCase("sport")) {
                         sport = (String) details.getValue();
                     }
+                    if (details.getKey().toString().equalsIgnoreCase("description")) {
+                        desc = details.getValue().toString();
+                    }
+                    if (details.getKey().toString().equalsIgnoreCase("roomCapacity")) {
+                        players = Integer.parseInt(details.getValue().toString());
+                    }
                     if (details.getKey().toString().equalsIgnoreCase("place")) {
                         for (DataSnapshot eventData : details.getChildren()) {
                             if (eventData.getKey().toString().equalsIgnoreCase("name"))
@@ -205,6 +215,8 @@ public class EventDetails extends Activity {
                 final String eventLong = longitude;
                 final String eventisOfficial = isOfficial;
                 final String eventPlace = place;
+                final String eventDesc = desc;
+
                 // Edit Event Button
                 final Button editEvent = (Button)findViewById(R.id.editbtn);
                 editEvent.setOnClickListener(new View.OnClickListener() {
@@ -219,6 +231,7 @@ public class EventDetails extends Activity {
                         intent.putExtra("longitude", eventLong);
                         intent.putExtra("isOfficial", eventisOfficial);
                         intent.putExtra("place",eventPlace);
+                        intent.putExtra("desc", eventDesc);
                         startActivity(intent);
                     }
                 });
@@ -241,6 +254,9 @@ public class EventDetails extends Activity {
                 ((TextView)findViewById(R.id.event_organiser_name)).setText(creatorName);
                 ((TextView)findViewById(R.id.event_date)).setText(date);
                 ((TextView)findViewById(R.id.event_place)).setText(place);
+                ((TextView)findViewById(R.id.event_desc)).setText(desc);
+                ((TextView)findViewById(R.id.event_players)).setText(users.size()+"/"+players+" players");
+
 
                 ((TextView)findViewById(R.id.event_play)).setText("Will play "+ sport +
                         (users.size()-1>0?

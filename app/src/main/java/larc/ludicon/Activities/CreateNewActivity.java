@@ -18,14 +18,18 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.NumberPicker;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -159,6 +163,20 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+       // Clear auto scroll
+        final EditText editTextDesc = (EditText) findViewById(R.id.DescriptionInput);
+        ScrollView scroll = (ScrollView)findViewById(R.id.scroll);
+        scroll.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (editTextDesc.hasFocus()) {
+                    editTextDesc.clearFocus();
+                }
+                return false;
+            }
+        });
+
         // DropDown for the sports
 
         Spinner spinner = (Spinner) findViewById(R.id.sports_spinner);
@@ -177,6 +195,11 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
         TextView hello_message = (TextView) findViewById(R.id.hello_message_activity);
         hello_message.setText("Create activity");
+
+        NumberPicker numberPicker = (NumberPicker) findViewById(R.id.maxPlayersInput);
+        numberPicker.setMinValue(2);
+        numberPicker.setMaxValue(50);
+        numberPicker.setWrapSelectorWheel(false);
     }
 
     public void onPrivacyButtonsClicked(View view) {
@@ -215,7 +238,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         DatePicker datePicker = (DatePicker) findViewById(R.id.date_picker);
         TimePicker timePicker = (TimePicker) findViewById(R.id.time_picker);
 
-         Calendar calendar = new GregorianCalendar(datePicker.getYear(),
+        Calendar calendar = new GregorianCalendar(datePicker.getYear(),
                 datePicker.getMonth(),
                 datePicker.getDayOfMonth(),
                 timePicker.getCurrentHour(),
@@ -321,11 +344,17 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
         map.put("place", mapAux);
 
+        NumberPicker numberPicker = (NumberPicker) findViewById(R.id.maxPlayersInput);
+        int maxPlayers = numberPicker.getValue();
+
+        EditText editTextDesc = (EditText) findViewById(R.id.DescriptionInput);
+        String description = editTextDesc.getText().toString();
+
         // Event extra info:
-        map.put("roomCapacity", 0);
+        map.put("roomCapacity", maxPlayers);
         map.put("priority", 0);
-        map.put("description", "no description");
-        map.put("message", "no message");
+        map.put("description", description);
+        map.put("message", null);
 
         // Set sport
         // TODO Get sport key

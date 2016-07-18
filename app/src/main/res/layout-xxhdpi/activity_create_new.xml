@@ -5,14 +5,15 @@
     android:id="@+id/drawer_layout_createnew"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <!--android:paddingTop="@dimen/activity_vertical_margin"-->
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/scroll"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/activity_vertical_margin"
                 android:paddingBottom="@dimen/activity_vertical_margin"
                 android:layout_marginTop="60dp"
                 android:fillViewport="true">
@@ -86,9 +87,9 @@
         />
     </LinearLayout>
 
-    <!-- INVITE FRIENDS -->
 
 
+<!--MAX PLAYERS-->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -101,6 +102,41 @@
             android:textStyle="bold"
             android:textSize="20dp" />
 
+            <NumberPicker
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/MaxPlayers"
+                android:id="@+id/maxPlayersInput"
+                android:layout_centerInParent="true"
+                android:orientation="vertical"
+                android:scrollIndicators="top|bottom" />
+
+
+
+            <!--DESCRIPTION-->
+            <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:text="Description"
+            android:textColor="#81878b"
+            android:id="@+id/Description"
+            android:layout_below="@+id/maxPlayersInput"
+            android:textStyle="bold"
+            android:textSize="20dp" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/Description"
+                android:id="@+id/DescriptionInput" />
+
+            <!--INVITE FRIENDS -->
+
+
+
             <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -109,7 +145,7 @@
         android:text="Invite a friend"
         android:textColor="#81878b"
         android:id="@+id/inviteFriendsTB"
-        android:layout_below="@+id/MaxPlayers"
+        android:layout_below="@+id/DescriptionInput"
         android:textStyle="bold"
         android:textSize="20dp" />
 
@@ -217,6 +253,8 @@
                 android:layout_toRightOf="@+id/createEvent"
                 android:layout_marginLeft="10dp"
                 android:visibility="invisible"/>
+
+
 
 
         </RelativeLayout>

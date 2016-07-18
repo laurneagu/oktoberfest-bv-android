@@ -129,5 +129,40 @@
         android:layout_toRightOf="@+id/firstPartofText"
         android:layout_toEndOf="@+id/firstPartofText" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Small Text"
+        android:id="@+id/playersID"
+        android:textColor="#0e3956"
+        android:layout_alignBottom="@+id/linearLayout6"
+        android:layout_alignRight="@+id/details_btn"
+        android:layout_alignEnd="@+id/details_btn"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No description"
+        android:textColor="#0e3956"
+        android:textSize="14sp"
+        android:id="@+id/descriptionID"
+        android:layout_below="@+id/playersID"
+        android:layout_toRightOf="@+id/placeImage1"
+        android:layout_toEndOf="@+id/placeImage1"
+        android:paddingLeft="1dp" />
+
+    <ImageView
+        android:layout_width="17dp"
+        android:layout_height="17dp"
+        android:background="@drawable/desc_photo"
+        android:id="@+id/placeImage1"
+        android:layout_below="@+id/playersID"
+        android:layout_alignLeft="@+id/linearLayout6"
+        android:layout_alignStart="@+id/linearLayout6" />
+
+
+
 
 </RelativeLayout>

@@ -70,6 +70,7 @@ import com.squareup.picasso.Picasso;
 
 
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.InputStream;
 import java.lang.reflect.Type;
@@ -462,6 +463,12 @@ public class MainActivity extends AppCompatActivity {
                                         if (details.getKey().toString().equalsIgnoreCase("sport")) {
                                             ai.sport = details.getValue().toString();
                                         }
+                                        if (details.getKey().toString().equalsIgnoreCase("description")) {
+                                            ai.description = details.getValue().toString();
+                                        }
+                                        if (details.getKey().toString().equalsIgnoreCase("roomCapacity")) {
+                                            ai.roomCapacity = Integer.parseInt(details.getValue().toString());
+                                        }
                                         if (details.getKey().toString().equalsIgnoreCase("place")) {
                                             for (DataSnapshot eventData : details.getChildren()) {
                                                 if (eventData.getKey().toString().equalsIgnoreCase("latitude"))
@@ -614,6 +621,8 @@ public class MainActivity extends AppCompatActivity {
         final ImageButton share = (ImageButton) findViewById(R.id.sharefb_btnCurrEvent);
         final Button changeStateButton = (Button) findViewById(R.id.stateChangeButton);
         final Chronometer timer = (Chronometer) findViewById( R.id.chronometer );
+        //final TextView descriprionText = (TextView) findViewById(R.id.);
+        //final TextView players = (TextView) findViewById(R.id.players);
 
 
         // Set name and picture for the first user of the event
@@ -626,8 +635,8 @@ public class MainActivity extends AppCompatActivity {
         icon.setImageDrawable(res);
         firstPart.setText("You are playing " + currentEvent.sport);
         String audience = "";
-        if (currentEvent.others > 1) {
-            audience = " with " + (currentEvent.others) + " others";
+        if (currentEvent.others-1 > 1) {
+            audience = " with " + (currentEvent.others-1) + " others";
         }
         else {
             audience = " with no others";
@@ -798,6 +807,14 @@ public class MainActivity extends AppCompatActivity {
 
                         if (details.getKey().toString().equalsIgnoreCase("isofficial"))
                             event.isOfficial = Integer.parseInt(details.getValue().toString());
+
+
+                        if (details.getKey().toString().equalsIgnoreCase("description"))
+                            event.description = details.getValue().toString();
+
+                        if (details.getKey().toString().equalsIgnoreCase("roomCapacity")) {
+                            event.roomCapacity = Integer.parseInt(details.getValue().toString());
+                        }
 
                         if (details.getKey().toString().equalsIgnoreCase("date"))
                             event.date = new Date(details.getValue().toString());
@@ -1037,6 +1054,8 @@ public class MainActivity extends AppCompatActivity {
              ImageView icon;
              ImageButton details;
              ImageButton join;
+             TextView players;
+             TextView description;
         };
         private ArrayList<Event> list = new ArrayList<>();
         private Context context;
@@ -1081,6 +1100,10 @@ public class MainActivity extends AppCompatActivity {
                 holder.icon = (ImageView) view.findViewById(R.id.sportIcon);
                 holder.details = (ImageButton) view.findViewById(R.id.details_btn);
                 holder.join = (ImageButton) view.findViewById(R.id.join_btn);
+                holder.description = (TextView) view.findViewById(R.id.descriptionID);
+                holder.players = (TextView) view.findViewById(R.id.playersID);
+
+
 
                 view.setTag(holder);
             }
@@ -1148,6 +1171,11 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 holder.secondPart.setText(" with no others");
             }
+
+            holder.description.setText(list.get(position).description);
+            holder.players.setText( list.get(position).usersUID.size() + "/" + list.get(position).roomCapacity);
+
+
             /*
             firstPart.setText("Will play " + list.get(position).sport);
             if ((list.get(position).usersUID.size() - 1) > 1) {
@@ -1256,6 +1284,8 @@ public class MainActivity extends AppCompatActivity {
              TextView place;
              ImageView icon;
              ImageButton details;
+            TextView description;
+            TextView players;
         }
 
         private ArrayList<Event> list = new ArrayList<>();
@@ -1298,6 +1328,8 @@ public class MainActivity extends AppCompatActivity {
                 holder.place = (TextView) view.findViewById(R.id.placeText);
                 holder.icon = (ImageView) view.findViewById(R.id.sportIcon);
                 holder.details = (ImageButton) view.findViewById(R.id.details_btn);
+                holder.description = (TextView) view.findViewById(R.id.descriptionID);
+                holder.players = (TextView) view.findViewById(R.id.playersID);
 
                 view.setTag(holder);
             }
@@ -1376,6 +1408,9 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 secondPart.setText(" with no others");
             }*/
+
+            holder.description.setText(list.get(position).description);
+            holder.players.setText( list.get(position).usersUID.size() + "/" + list.get(position).roomCapacity);
 
             if(list.get(position) != null ) {
                 if(list.get(position).isOfficial==0){
