@@ -492,6 +492,7 @@ public class MainActivity extends AppCompatActivity {
                                     // If distance from user to event is greater than the selected range do not include it
                                    // if ( distance[0] > userRange * 1000 )
                                     //    mustAddEventToList = false;
+                                    //
 
                                     String connectionsJSONString = getSharedPreferences("UserDetails", 0).getString("events", null);
                                     Type type = new TypeToken<List<ActivityInfo>>() {}.getType();
