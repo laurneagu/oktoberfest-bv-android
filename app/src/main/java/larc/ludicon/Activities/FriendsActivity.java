@@ -61,6 +61,7 @@ import larc.ludicon.Adapters.LeftPanelItemClicker;
 import larc.ludicon.Adapters.LeftSidePanelAdapter;
 import larc.ludicon.R;
 import larc.ludicon.UserInfo.User;
+import larc.ludicon.Utils.Event;
 
 public class FriendsActivity extends Activity {
 
@@ -71,6 +72,7 @@ public class FriendsActivity extends Activity {
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
+    final ArrayList<FriendItem> friends = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +102,10 @@ public class FriendsActivity extends Activity {
             }
         });
 
+        Runnable getFirebaseInfo = getFirebaseInfoThread();
+        Thread FirebaseInfoThread = new Thread(getFirebaseInfo);
+        FirebaseInfoThread.start();
+
         new GraphRequest(
                 AccessToken.getCurrentAccessToken(),
                 "/me/friends",
@@ -110,7 +116,7 @@ public class FriendsActivity extends Activity {
                             /* handle the result */
                         try{
                             JSONArray friendsList = response.getJSONObject().getJSONArray("data");
-                            ArrayList<FriendItem> friends = new ArrayList<>();
+
                             for (int l=0; l < friendsList.length(); l++) {
                                 FriendItem friend =  new FriendItem();
                                 friend.name = friendsList.getJSONObject(l).getString("name");
@@ -119,10 +125,15 @@ public class FriendsActivity extends Activity {
                             }
                             // friends contains all the names of my Facebook friends who use Ludicon
                             // Display in ListView
-                            MyCustomAdapter adapter = new MyCustomAdapter(friends,getApplicationContext());
-                            ListView listView = (ListView) findViewById(R.id.friends_listView);
-                            Log.v("TAG",friends.size()+"");
-                            listView.setAdapter(adapter);
+
+                            synchronized (waitForFriends) {
+                                try {
+                                    waitForFriends.notify(); // ready, notify thread to get data from firebase
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -130,12 +141,76 @@ public class FriendsActivity extends Activity {
                     }
                 }
         ).executeAsync();
+
+
+
     }
+
+    Object waitForFriends = new Object();
+
+    public Runnable getFirebaseInfoThread() {
+        return new Runnable() {
+            public void run() {
+
+                synchronized (waitForFriends){
+                    try {
+                        waitForFriends.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+                for(int i = 0; i < friends.size() ; ++i){
+                    final int index = i;
+                    DatabaseReference userSports = User.firebaseRef.child("users").child(friends.get(i).uid);
+                    userSports.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            if (snapshot != null) {
+                                for (DataSnapshot data : snapshot.getChildren()) {
+                                    if (data.getKey().toString().equalsIgnoreCase("profileImageURL"))
+                                        friends.get(index).ImageUrl = data.getValue().toString();
+                                    if (data.getKey().toString().equalsIgnoreCase("sports"))
+                                        friends.get(index).numberOfSports = data.getChildrenCount() + " sports";
+                                }
+
+
+                            }
+
+                            if (index == friends.size()-1){ // if it is the last one, you can start the ui
+                                MyCustomAdapter adapter = new MyCustomAdapter(friends,getApplicationContext());
+                                ListView listView = (ListView) findViewById(R.id.friends_listView);
+                                Log.v("TAG",friends.size()+"");
+                                listView.setAdapter(adapter);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError firebaseError) {
+                        }
+                    });
+
+
+
+                }
+
+
+
+
+            }
+
+        };
+    }
+
+
 
     class FriendItem
     {
         public String name;
         public String uid;
+        public String ImageUrl;
+        public String numberOfSports;
     }
     public class MyCustomAdapter extends BaseAdapter implements ListAdapter {
 
@@ -146,6 +221,14 @@ public class FriendsActivity extends Activity {
             this.list = list;
             this.context = context;
         }
+
+        class ViewHolder {
+            TextView textName;
+            ImageView imageView;
+            ImageButton moreButton;
+            ImageButton chatButton;
+            TextView numberSports;
+        };
 
         @Override
         public int getCount() {
@@ -162,57 +245,41 @@ public class FriendsActivity extends Activity {
 
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
+
+
             View view = convertView;
+            ViewHolder holder = null;
             if (view == null) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.friends_layout, null);
+
+                holder = new ViewHolder();
+                holder.textName = (TextView) view.findViewById(R.id.list_item_string);
+                holder.imageView = (ImageView) view.findViewById(R.id.profileImageView);
+                holder.moreButton = (ImageButton) view.findViewById(R.id.more_btn);
+                holder.chatButton = (ImageButton) view.findViewById(R.id.chat_btn);
+                holder.numberSports = (TextView) view.findViewById(R.id.numberSports);
+
+                view.setTag(holder);
+            }
+            else {
+                holder = (ViewHolder)view.getTag();
             }
 
-            final TextView textName = (TextView) view.findViewById(R.id.list_item_string);
-            final ImageView imageView = (ImageView) view.findViewById(R.id.profileImageView);
-            ImageButton moreButton = (ImageButton) view.findViewById(R.id.more_btn);
-            ImageButton chatButton = (ImageButton) view.findViewById(R.id.chat_btn);
-            final TextView numberSports = (TextView) view.findViewById(R.id.numberSports);
+
             // Set name in TextView
-            textName.setText(list.get(position).name);
+            holder.textName.setText(list.get(position).name);
 
             // Set Image in ImageView
             DatabaseReference userRef = User.firebaseRef.child("users").child(list.get(position).uid).child("profileImageURL");
             Log.v("Position", position + "");
-            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot snapshot) {
-                    if (snapshot.getValue() != null) {
-                        String label = textName.getText().toString();
-                        String strURL = snapshot.getValue().toString();
-                        if ((list.get(position).name).compareTo(label) == 0)
-                            //new DownloadImageTask(imageView).execute(strURL);
-                            Picasso.with(context).load(strURL).into(imageView);
-                    } else
-                        imageView.setImageResource(R.drawable.logo);
-                }
+//
 
-                @Override
-                public void onCancelled(DatabaseError firebaseError) {
-                }
-            });
-            DatabaseReference userSports = User.firebaseRef.child("users").child(list.get(position).uid).child("sports");
-            userSports.addListenerForSingleValueEvent(new ValueEventListener() { // get user sports
-                @Override
-                public void onDataChange(DataSnapshot snapshot) {
-                    if (snapshot != null) {
-                        String label = textName.getText().toString();
-                        if ((list.get(position).name).compareTo(label) == 0)
-                            numberSports.setText(snapshot.getChildrenCount() + " sports");
-                    }
-                }
+            Picasso.with(context).load(list.get(position).ImageUrl).into(holder.imageView);
 
-                @Override
-                public void onCancelled(DatabaseError firebaseError) {
-                }
-            });
+            holder.numberSports.setText(list.get(position).numberOfSports);
             // Buttons behaviour
-            moreButton.setOnClickListener(new View.OnClickListener(){
+            holder.moreButton.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
@@ -221,7 +288,7 @@ public class FriendsActivity extends Activity {
                 }
             });
 
-            chatButton.setOnClickListener(new View.OnClickListener() {
+            holder.chatButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     DatabaseReference userRef = User.firebaseRef.child("users").child(list.get(position).uid).child("chats");
