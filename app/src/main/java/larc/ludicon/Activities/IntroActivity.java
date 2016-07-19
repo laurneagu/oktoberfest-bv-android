@@ -432,7 +432,7 @@ public class IntroActivity extends Activity {
 
 
                             Bundle parameters = new Bundle();
-                            parameters.putString("fields", "id,name,link,email,gender,first_name,last_name, age_range,timezone,picture");
+                            parameters.putString("fields", "id,name,link,email,gender,first_name,last_name, age_range,timezone,picture.width(300).height(300)");
                             request.setParameters(parameters);
                             request.executeAsync();
                         }
