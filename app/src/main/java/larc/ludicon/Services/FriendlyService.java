@@ -663,7 +663,7 @@ public class FriendlyService extends Service {
                                             if(!isForeground("larc.ludicon")){ // if chat is not open
 
 
-                                                chatNotifier.sendNotification(FriendlyService.this, getSystemService(NOTIFICATION_SERVICE), getResources(), getNotificationIndex(), author, message, date);
+                                                chatNotifier.sendNotification(FriendlyService.this, getSystemService(NOTIFICATION_SERVICE), getResources(), getNotificationIndex(), author, message, date, chatUid);
                                             }
                                             //userRef.child("chatNotif").setValue(author);
                                             // see it!

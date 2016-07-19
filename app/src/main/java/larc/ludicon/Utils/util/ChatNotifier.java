@@ -11,6 +11,14 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.util.Log;
+import android.widget.ListView;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Date;
 import java.util.Objects;
@@ -18,6 +26,7 @@ import java.util.Objects;
 import larc.ludicon.Activities.ChatListActivity;
 import larc.ludicon.Activities.IntroActivity;
 import larc.ludicon.R;
+import larc.ludicon.UserInfo.User;
 
 /**
  * Created by Andrei on 4/18/2016.
@@ -27,8 +36,16 @@ public class ChatNotifier {
     public static int chatNotificationFirstIndex = 0;
     public static int chatNotificationIndex = 0;
     public static Object lock = new Object();
+    public Object waitForPhoto = new Object();
+    String chat;
+    String photoUrl;
 
-    public void sendNotification(Service m_service, Object m_systemService,Resources m_resources, int notificationNumber, String author, String message, Date date){
+    public void sendNotification(Service m_service, Object m_systemService,Resources m_resources, int notificationNumber, String author, String message, Date date, String chatUid){
+        chat = chatUid;
+
+        Runnable getPhoto = GetPhotoThread();
+        Thread photoThread = new Thread(getPhoto);
+        photoThread.start();
 
         NotificationManager manager = (NotificationManager)m_systemService;
         Notification myNotification;
@@ -42,7 +59,19 @@ public class ChatNotifier {
 
         builder.setContentTitle(author);
         builder.setContentText(message);
-        builder.setSmallIcon(R.drawable.logo);
+        builder.setSmallIcon(R.drawable.logo_notif);
+        builder.setColor(Color.parseColor("#0e3956"));
+
+        // Asta e Daca vreau sa vad poza celuilalt
+        // asta implica sa adaug url-ul in firebase la event!!!!!!!!!!!
+//        synchronized (waitForPhoto){
+//            try {
+//                waitForPhoto.wait();
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
+
 
         Bitmap largeIcon = BitmapFactory.decodeResource(m_resources, R.drawable.logo);
         builder.setLargeIcon(largeIcon);
@@ -68,5 +97,34 @@ public class ChatNotifier {
     public void deleteNotification(Object m_systemService, int notificationNumber){
         NotificationManager manager = (NotificationManager)m_systemService;
         manager.cancel(notificationNumber);
+    }
+
+    public Runnable GetPhotoThread() {
+        return new Runnable() {
+            public void run() {
+
+                final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+                ref.child("chat").child(chat).child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot data : dataSnapshot.getChildren()) {
+                            if(!data.getKey().equalsIgnoreCase(User.uid)){
+                                photoUrl="";//TODO
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
+
+
+            }
+
+        };
     }
 }
