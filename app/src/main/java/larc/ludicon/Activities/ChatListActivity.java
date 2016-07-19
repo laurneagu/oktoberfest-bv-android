@@ -60,7 +60,7 @@ public class ChatListActivity extends Activity {
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private ProgressDialog dialog;
-    private int TIMEOUT = 100;
+    private int TIMEOUT = 1;
     public static boolean isForeground = false;
 
     private static final String FIREBASE_URL = "https://ludicon.firebaseio.com/";
@@ -69,6 +69,7 @@ public class ChatListActivity extends Activity {
         String userUID;
         String chatID;
         String userName;
+        String friendPhoto;
     }
     @Override
     public void onStart() {
@@ -87,6 +88,9 @@ public class ChatListActivity extends Activity {
         super.onResume();
         isForeground = true;
     }
+
+    Object waitForFriends = new Object();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,16 +140,54 @@ public class ChatListActivity extends Activity {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
 
-                List<Chat1to1> chatList = new ArrayList<>();
+                final List<Chat1to1> chatList = new ArrayList<>();
+                final long size = snapshot.getChildrenCount();
                 for (DataSnapshot data : snapshot.getChildren()) {
-                    Chat1to1 chat = new Chat1to1();
+                    final Chat1to1 chat = new Chat1to1();
                     chat.userUID = data.getKey().toString();
                     chat.chatID = data.getValue().toString();
-                    chatList.add(chat);
+
+
+                    DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(chat.userUID);
+                    firebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+
+                            for (DataSnapshot data : snapshot.getChildren()) {
+                                if ((data.getKey()).compareTo("name") == 0) {
+                                    String name = data.getValue().toString();
+                                    chat.userName = name;
+                                }
+                                if ((data.getKey()).compareTo("profileImageURL") == 0)
+                                    if (data.getValue() != null) {
+                                        //new DownloadImageTask(imageView).execute(data.getValue().toString());
+                                        chat.friendPhoto = data.getValue().toString();
+                                    } else {
+                                        chat.friendPhoto = "";
+                                    }
+                            }
+
+                            chatList.add(chat);
+                            if(chatList.size()==size){
+                                MyCustomAdapter adapter = new MyCustomAdapter(chatList, getApplicationContext());
+                                ListView listView = (ListView) findViewById(R.id.chat_list);
+                                listView.setAdapter(adapter);
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+
+
+                    });
+
                 }
-                MyCustomAdapter adapter = new MyCustomAdapter(chatList, getApplicationContext());
-                ListView listView = (ListView) findViewById(R.id.chat_list);
-                listView.setAdapter(adapter);
+
+
+
 
                 // Dismiss loading dialog after  2 * TIMEOUT * chatList.size() ms
                 Timer timer = new Timer();
@@ -166,15 +208,30 @@ public class ChatListActivity extends Activity {
             }
 
             @Override
-            public void onCancelled(DatabaseError firebaseError) {
+            public void onCancelled(DatabaseError databaseError) {
+
             }
+
         });
+
+
+
     }
+
+
+
     public class MyCustomAdapter extends BaseAdapter implements ListAdapter {
 
         private List<Chat1to1> list = new ArrayList<>();
         private Context context;
         //private final Map<String,Boolean> states = new HashMap<String,Boolean>();
+
+
+        class ViewHolder {
+             TextView textName;
+             ImageView imageView;
+            Button chatButton;
+        };
 
 
         public MyCustomAdapter(List<Chat1to1> list, Context context) {
@@ -198,49 +255,38 @@ public class ChatListActivity extends Activity {
 
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
+
             View view = convertView;
+            ViewHolder holder = null;
             if (view == null) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.chat1to1_layout, null);
+                holder = new ViewHolder();
+
+                holder.textName = (TextView) view.findViewById(R.id.friend_name);
+                holder.imageView = (ImageView) view.findViewById(R.id.friend_photo);
+                holder.chatButton = (Button) view.findViewById(R.id.gotoChat);
+
+
+                view.setTag(holder);
+            }
+            else {
+                holder = (ViewHolder)view.getTag();
             }
 
-            final TextView textName = (TextView) view.findViewById(R.id.friend_name);
-            final ImageView imageView = (ImageView) view.findViewById(R.id.friend_photo);
-            Button chatButton = (Button) view.findViewById(R.id.gotoChat);
 
-            // Set friend's name and image
+            final Button chatButton = holder.chatButton;
 
-            DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(list.get(position).userUID);
-            firebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot snapshot) {
+            holder.textName.setText(list.get(position).userName);
 
-                            for (DataSnapshot data : snapshot.getChildren()) {
-                                if ((data.getKey()).compareTo("name") == 0) {
-                                    String name = data.getValue().toString();
-                                    Log.v("Name", "Set name:" + name + "to position:" + position);
-                                    textName.setText(name);
-                                }
-                                if ((data.getKey()).compareTo("profileImageURL") == 0)
-                                    if (data.getValue() != null) {
-                                        //new DownloadImageTask(imageView).execute(data.getValue().toString());
-                                        Picasso.with(context).load(data.getValue().toString()).into(imageView);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.logo);
-                                    }
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError firebaseError) {
-                        }
-                    });
-
-            try{
-                Thread.sleep(TIMEOUT,1);
+            if (list.get(position).friendPhoto != "") {
+                //new DownloadImageTask(imageView).execute(data.getValue().toString());
+                Picasso.with(context).load(list.get(position).friendPhoto).into(holder.imageView);
+            } else {
+                holder.imageView.setImageResource(R.drawable.logo);
             }
-            catch(InterruptedException exc ){}
-            // Buttons behaviour
+
+
             chatButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
