@@ -662,8 +662,8 @@ public class FriendlyService extends Service {
                                             Log.v("Name vs Author", myName + " " + author);
                                             if(!isForeground("larc.ludicon")){ // if chat is not open
 
-
-                                                chatNotifier.sendNotification(FriendlyService.this, getSystemService(NOTIFICATION_SERVICE), getResources(), getNotificationIndex(), author, message, date, chatUid);
+                                                SimpleDateFormat form = new SimpleDateFormat("dd-mm-yyyy hh:mm:ss");
+                                                chatNotifier.sendNotification(FriendlyService.this, getSystemService(NOTIFICATION_SERVICE), getResources(), getNotificationIndex(), author, message, form.format(date), chatUid);
                                             }
                                             //userRef.child("chatNotif").setValue(author);
                                             // see it!

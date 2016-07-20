@@ -131,6 +131,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/Description"
+                android:textColorLink="@color/com_facebook_blue"
+                android:textColorHint="@color/com_facebook_blue"
+                android:textColor="@color/com_facebook_blue"
                 android:id="@+id/DescriptionInput" />
 
             <!--INVITE FRIENDS -->

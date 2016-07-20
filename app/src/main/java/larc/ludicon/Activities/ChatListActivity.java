@@ -30,6 +30,9 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.facebook.AccessToken;
+import com.facebook.Profile;
+import com.facebook.login.widget.ProfilePictureView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.DatabaseError;

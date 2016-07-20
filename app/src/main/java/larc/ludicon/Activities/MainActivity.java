@@ -763,9 +763,6 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-
-
-
     public void updateList()
     {
 
@@ -774,6 +771,8 @@ public class MainActivity extends AppCompatActivity {
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
+                myEventsList.clear();
+
                 final ArrayList<Event> eventList = new ArrayList<>();
 
                 final ArrayList<Event> friendsEventsList = new ArrayList<>();
@@ -1173,7 +1172,7 @@ public class MainActivity extends AppCompatActivity {
                 holder.secondPart.setText(" with no others");
             }
 
-            holder.description.setText(list.get(position).description);
+            holder.description.setText("\"" + list.get(position).description + "\"");
             holder.players.setText( list.get(position).usersUID.size() + "/" + list.get(position).roomCapacity);
 
 
@@ -1410,7 +1409,7 @@ public class MainActivity extends AppCompatActivity {
                 secondPart.setText(" with no others");
             }*/
 
-            holder.description.setText(list.get(position).description);
+            holder.description.setText("\"" + list.get(position).description + "\"");
             holder.players.setText( list.get(position).usersUID.size() + "/" + list.get(position).roomCapacity);
 
             if(list.get(position) != null ) {

@@ -160,12 +160,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="No description"
-        android:textColor="#0e3956"
+        android:textColor="#4f2f4f"
         android:textSize="14sp"
         android:id="@+id/descriptionID"
+        android:textStyle="italic"
         android:layout_below="@+id/linearLayout6"
         android:layout_toRightOf="@+id/placeImage1"
         android:layout_toEndOf="@+id/placeImage1"
+        android:layout_marginBottom="3dp"
         android:paddingLeft="1dp" />
 
     <ImageView

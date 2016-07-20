@@ -40,7 +40,7 @@ public class ChatNotifier {
     String chat;
     String photoUrl;
 
-    public void sendNotification(Service m_service, Object m_systemService,Resources m_resources, int notificationNumber, String author, String message, Date date, String chatUid){
+    public void sendNotification(Service m_service, Object m_systemService,Resources m_resources, int notificationNumber, String author, String message, String date, String chatUid){
         chat = chatUid;
 
         Runnable getPhoto = GetPhotoThread();
@@ -50,7 +50,7 @@ public class ChatNotifier {
         NotificationManager manager = (NotificationManager)m_systemService;
         Notification myNotification;
 
-        Intent intent = new Intent(m_service, ChatListActivity.class);                         // here was "this"
+        Intent intent = new Intent(m_service, IntroActivity.class);                         // here was "this"
         PendingIntent pendingIntent = PendingIntent.getActivity(m_service, 1, intent, 0);   // here was "FriendlyService.this"
         Notification.Builder builder = new Notification.Builder(m_service);
 
@@ -78,7 +78,7 @@ public class ChatNotifier {
 
         builder.setContentIntent(pendingIntent);
         //builder.setOngoing(true);
-        builder.setSubText(date.toString());   //API level 16
+        builder.setSubText(date);   //API level 16
         //builder.setNumber(number * 100);
 
         Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
