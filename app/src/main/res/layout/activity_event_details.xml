@@ -182,17 +182,36 @@
                 android:id="@+id/editbtn"
                 android:layout_alignTop="@+id/sharefb"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentBottom="true" />
+                android:layout_alignParentStart="true" />
             <Button
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Chat"
                 android:id="@+id/eventchatbtn"
-                android:layout_below="@id/editbtn"
-                android:layout_toEndOf="@id/editbtn"
-                android:layout_toRightOf="@id/editbtn"/>
+                android:layout_below="@+id/editbtn"
+                android:layout_alignRight="@+id/editbtn"
+                android:layout_alignEnd="@+id/editbtn" />
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add offline friend"
+                android:id="@+id/addfriend"
+                android:layout_alignParentBottom="true"
+                android:layout_alignLeft="@+id/sharefb"
+                android:layout_alignStart="@+id/sharefb" />
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Remove offline friend"
+                android:id="@+id/removefriend"
+                android:layout_alignParentBottom="true"
+                android:layout_toRightOf="@+id/addfriend"
+                android:layout_toEndOf="@+id/addfriend" />
 
         </RelativeLayout>
     </ScrollView>

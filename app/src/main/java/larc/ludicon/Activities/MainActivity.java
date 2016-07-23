@@ -783,7 +783,7 @@ public class MainActivity extends AppCompatActivity {
                     boolean mustAddEventToList = true;
                     event.id = data.getKey();
                     Map<String, Boolean> participants = new HashMap<String, Boolean>();
-
+                    long numberOfParticipants = 0;
 
                     for (DataSnapshot details : data.getChildren()) {
 
@@ -792,6 +792,9 @@ public class MainActivity extends AppCompatActivity {
 
                         if (details.getKey().toString().equalsIgnoreCase("creatorName"))
                             event.creatorName = details.getValue().toString();
+
+                        if (details.getKey().toString().equalsIgnoreCase("users"))
+                            numberOfParticipants = details.getChildrenCount();
 
                         if (details.getKey().toString().equalsIgnoreCase("creatorImage"))
                             event.profileImageURL = details.getValue().toString();
@@ -849,6 +852,9 @@ public class MainActivity extends AppCompatActivity {
                     if (!favoriteSports.contains(event.sport))
                         mustAddEventToList = false;
 
+                    if ( numberOfParticipants == event.roomCapacity )
+                        mustAddEventToList = false;
+
                     // Get distance between last known location and event location
                     // float[] distance = new float[10];
                     //Location.distanceBetween(userLatitude, userLongitude, event.latitude, event.longitude, distance);
@@ -859,16 +865,13 @@ public class MainActivity extends AppCompatActivity {
 
                     // Insert event in the correct list
                     //if (new Date().before(event.date) && isPublic) {
-                    if ((new Date().getTime() < event.date.getTime()) && isPublic && mustAddEventToList) {
+
+                    if (doIParticipate && (new Date().getTime() < event.date.getTime()))
+                        myEventsList.add(event);
+                    if ((new Date().getTime() < event.date.getTime()) && isPublic &&  mustAddEventToList  ) {
 
                         event.usersUID = participants;
-
-                        if (doIParticipate) {
-                            myEventsList.add(event);
-                        } else {
-                            friendsEventsList.add(event);
-                        }
-
+                        friendsEventsList.add(event);
                     }
                 }
 

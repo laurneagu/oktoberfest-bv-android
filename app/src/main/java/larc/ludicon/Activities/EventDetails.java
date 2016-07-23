@@ -16,6 +16,7 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +35,7 @@ import com.facebook.share.widget.ShareDialog;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -59,6 +61,7 @@ import larc.ludicon.Adapters.LeftSidePanelAdapter;
 import larc.ludicon.R;
 import larc.ludicon.UserInfo.User;
 import larc.ludicon.Utils.CustomView.NonScrollListView;
+import larc.ludicon.Utils.Event;
 import larc.ludicon.Utils.UserInfo;
 
 
@@ -69,6 +72,10 @@ public class EventDetails extends Activity {
     private DrawerLayout mDrawerLayout;
     private ProgressDialog dialog;
     private int TIMEOUT = 80;
+    public static int numberOfFriendsAddded = 0;
+    public static long participants = 0;
+    public static int roomCapacity = 0;
+    public static boolean doIparticipate = false;
 
     /**
      * Method that jumps to the MainActivity
@@ -109,7 +116,7 @@ public class EventDetails extends Activity {
         User.setImage();
 
         // User picture and name for HEADER MENU
-        TextView userName = (TextView) findViewById(R.id.userName);
+        final TextView userName = (TextView) findViewById(R.id.userName);
         userName.setText(User.getFirstName(getApplicationContext()) + " " + User.getLastName(getApplicationContext()));
 
         ImageView userPic = (ImageView) findViewById(R.id.userPicture);
@@ -126,6 +133,7 @@ public class EventDetails extends Activity {
         // -------------------------------------------------------------------------------------------------------------
         // Cancel Event Button
         final Button cancelEvent = (Button)findViewById(R.id.cancelbtn);
+        cancelEvent.setVisibility(View.INVISIBLE);
         final Context context = this.getApplicationContext();
         cancelEvent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -194,6 +202,15 @@ public class EventDetails extends Activity {
                     }
                     if (details.getKey().toString().equalsIgnoreCase("roomCapacity")) {
                         players = Integer.parseInt(details.getValue().toString());
+                        roomCapacity = players;
+                    }
+                    if (details.getKey().toString().equalsIgnoreCase("users")) {
+                        participants = details.getChildrenCount();
+                        for (DataSnapshot data : details.getChildren() )
+                        {
+                            if ( data.getKey().equalsIgnoreCase(User.uid))
+                                doIparticipate  = true;
+                        }
                     }
                     if (details.getKey().toString().equalsIgnoreCase("place")) {
                         for (DataSnapshot eventData : details.getChildren()) {
@@ -219,6 +236,7 @@ public class EventDetails extends Activity {
 
                 // Edit Event Button
                 final Button editEvent = (Button)findViewById(R.id.editbtn);
+                editEvent.setVisibility(View.INVISIBLE);
                 editEvent.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -238,8 +256,8 @@ public class EventDetails extends Activity {
 
                 // Hide Edit and Cancel Buttons if user is not the owner of the event
                 if ( !creatorID.equalsIgnoreCase(User.uid) ) {
-                    cancelEvent.setVisibility(View.INVISIBLE);
-                    editEvent.setVisibility(View.INVISIBLE);
+                    cancelEvent.setVisibility(View.VISIBLE);
+                    editEvent.setVisibility(View.VISIBLE);
                 }
 
                 final ImageView profilePicture = (ImageView) findViewById(R.id.profileImageView);
@@ -296,6 +314,7 @@ public class EventDetails extends Activity {
 
         // Share facebook button
         Button shareFb = (Button)findViewById(R.id.sharefb);
+        //shareFb.setVisibility(View.INVISIBLE);
         shareFb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -316,6 +335,7 @@ public class EventDetails extends Activity {
         });
 
         Button chatBtn = (Button) findViewById(R.id.eventchatbtn);
+        //chatBtn.setVisibility(View.INVISIBLE);
         chatBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
@@ -324,6 +344,67 @@ public class EventDetails extends Activity {
                 startActivity(intent);
             }
         });
+
+        // Add offline friend
+        Button addFriend = (Button) findViewById(R.id.addfriend);
+       // addFriend.setVisibility(View.INVISIBLE);
+        addFriend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                if ( EventDetails.participants == EventDetails.roomCapacity ) {
+                    Toast.makeText(getApplicationContext(),"The event has reached its maximum capacity",Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    FirebaseDatabase.getInstance().getReference().child("events").child(eventUid).child("users").child("+" + participants +userName.getText()).setValue(true);
+                    Toast.makeText(getApplicationContext(),"You have added 1 friend",Toast.LENGTH_SHORT).show();
+                    finish();
+                    startActivity(getIntent());
+                }
+            }
+        });
+
+        // Remove offline friend
+        Button removeFriend = (Button) findViewById(R.id.removefriend);
+        //removeFriend.setVisibility(View.INVISIBLE);
+        removeFriend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                 DatabaseReference pct = User.firebaseRef.child("events").child(eventUid).child("users");
+                 pct.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for (DataSnapshot data : dataSnapshot.getChildren())
+                                if (data.getKey().charAt(0) == '+') {
+                                    String users = data.getKey().substring(1);
+                                    int i = 0;
+                                    while (Character.isDigit(users.charAt(i))) i++;
+                                    users = users.substring(i);
+                                    if (users.equalsIgnoreCase(userName.getText().toString())) {
+                                        User.firebaseRef.child("events").child(eventUid).child("users").child(data.getKey()).removeValue();
+                                        finish();
+                                        startActivity(getIntent());
+                                        return;
+                                    }
+                                }
+                            Toast.makeText(getApplicationContext(), "You have added no friends", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError firebaseError) {
+
+                        }
+                    });
+
+                }
+        });
+        /*
+        if ( doIparticipate )
+        {
+            removeFriend.setVisibility(View.VISIBLE);
+            addFriend.setVisibility(View.VISIBLE);
+            chatBtn.setVisibility(View.VISIBLE);
+            shareFb.setVisibility(View.VISIBLE);
+        }*/
 
     }
 
@@ -342,6 +423,7 @@ public class EventDetails extends Activity {
             this.sport = sport;
             this.context = context;
             syncr = new Object();
+            EventDetails.numberOfFriendsAddded = 0;
         }
 
         public void run() {
@@ -352,10 +434,23 @@ public class EventDetails extends Activity {
             while (it.hasNext()) {
                 Map.Entry pair = (Map.Entry)it.next();
                 final String user_uid = pair.getKey().toString();
+                boolean added = false;
+                if ( user_uid.equalsIgnoreCase(User.uid) )
+                    EventDetails.doIparticipate = true;
+                if(user_uid.charAt(0) == '+') {
+                    String user = user_uid.substring(1);
+                    int i = 0;
+                    while (Character.isDigit(user.charAt(i))) i++;
+                    user = user.substring(i);
+                    String photoURL = "http://media3.oakpark.com/Images/2/2/36431/2/1/2_2_36431_2_1_690x520.jpg";
+                    usersList.add(new UserInfo(user+ "'s friend", photoURL, "0", index++ , "friend"));
+                    added = true;
+                }
                 if(creatorID.equalsIgnoreCase(user_uid)){
                     continue;
                 }
-                usersList.add(new UserInfo("","creatorID","", index++, user_uid));
+                if (!added)
+                    usersList.add(new UserInfo("","creatorID","", index++, user_uid));
             }
 
             for(int i = 0 ; i  < index ; ++i){
@@ -390,8 +485,9 @@ public class EventDetails extends Activity {
                             if( (data.getKey()).compareTo("firstName") == 0) {
                                 usersList.get(ind).name = data.getValue().toString();
                             }
-                            if( (data.getKey()).compareTo("profileImageURL") == 0 )
+                            if( (data.getKey()).compareTo("profileImageURL") == 0 ) {
                                 usersList.get(ind).photo = data.getValue().toString();
+                            }
                         }
 
                         synchronized (syncr){
