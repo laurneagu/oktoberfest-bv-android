@@ -315,6 +315,16 @@ public class EventDetails extends Activity {
             }
         });
 
+        Button chatBtn = (Button) findViewById(R.id.eventchatbtn);
+        chatBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(getApplicationContext(), GroupChatTemplate.class);
+                intent.putExtra("eventID",eventUid);
+                startActivity(intent);
+            }
+        });
+
     }
 
     public class UserListThread implements Runnable {

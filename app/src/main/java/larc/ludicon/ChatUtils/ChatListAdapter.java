@@ -27,10 +27,12 @@ public class ChatListAdapter extends FirebaseListAdapter<Chat> {
 
     // The mUsername for this client. We use this to indicate which messages originated from this user
     private String mUsername;
+    private boolean isGroupChat;
 
-    public ChatListAdapter(Query ref, Activity activity, int layout, String mUsername) {
+    public ChatListAdapter(Query ref, Activity activity, int layout, String mUsername, boolean isGroupChat) {
         super( activity,Chat.class, layout, ref);
         this.mUsername = mUsername;
+        this.isGroupChat = isGroupChat;
     }
 
     /**
@@ -74,7 +76,9 @@ public class ChatListAdapter extends FirebaseListAdapter<Chat> {
             msgDateLeft = (TextView) view.findViewById(R.id.message_date_left);
             msgTextLeft = (TextView) view.findViewById(R.id.message_text_left);
             msgDateLeft.setText(chat.date);
-            msgTextLeft.setText(chat.getMessage());
+            if( this.isGroupChat )
+                msgTextLeft.setText(author + ": " + chat.getMessage());
+            else msgTextLeft.setText(chat.getMessage());
             linLayoutRight = (LinearLayout) view.findViewById(R.id.content_with_background_right);
             linLayoutRight.setAlpha(0);
             msgDateRight = (TextView) view.findViewById(R.id.message_date_right);

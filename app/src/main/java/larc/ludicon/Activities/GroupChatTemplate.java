@@ -1,5 +1,49 @@
 package larc.ludicon.Activities;
 
+/**
+ * Created by Ciprian on 7/23/2016.
+ */
+
+import android.app.ListActivity;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.DataSetObserver;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import larc.ludicon.Adapters.LeftPanelItemClicker;
+import larc.ludicon.Adapters.LeftSidePanelAdapter;
+import larc.ludicon.ChatUtils.Chat;
+import larc.ludicon.ChatUtils.ChatListAdapter;
+import larc.ludicon.UserInfo.User;
+
 import android.app.ListActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -53,7 +97,7 @@ import larc.ludicon.R;
 import larc.ludicon.UserInfo.ActivityInfo;
 import larc.ludicon.UserInfo.User;
 
-public class ChatTemplateActivity extends ListActivity {
+public class GroupChatTemplate extends ListActivity {
 
 
     private static final String FIREBASE_URL = "https://ludicon.firebaseio.com/";
@@ -91,135 +135,21 @@ public class ChatTemplateActivity extends ListActivity {
             @Override
             public void onClick(View v) {
                 Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
-                ChatTemplateActivity.this.startActivity(mainIntent);
+                GroupChatTemplate.this.startActivity(mainIntent);
             }
         });
 
-        //TODO Receive intent with the uid of the other user and if this is the first Connection between those two
+        //TODO Receive intent with event ID and enter messages
         Intent intent = getIntent();
-        final String otherUserUid  = intent.getStringExtra("uid");
-        final boolean firstConnection = intent.getBooleanExtra("firstConnection", true);
-        Log.v("UID + firstConnection", otherUserUid + " - " + firstConnection);
-        final String chatID = intent.getStringExtra("chatID");
+        final String eventID = intent.getStringExtra("eventID");
+
+        mDatabaseReferenceRef = FirebaseDatabase.getInstance().getReference().child("events").child(eventID).child("chat");
+
+        TextView hello_message = (TextView) findViewById(R.id.hello_message_activity);
+        hello_message.setText("Event Chat");
 
         // Make sure we have a current Username
         setupUsername();
-
-        //setTitle("Chatting with " + otherUserName);
-
-        final TextView hello_message = (TextView) findViewById(R.id.hello_message_activity);
-        final ImageView profilePicture = (ImageView) findViewById(R.id.friendPicture);
-        DatabaseReference userRef = User.firebaseRef.child("users").child(otherUserUid);
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    if (data.getKey().compareToIgnoreCase("firstName") == 0) {
-                        Log.v("HEERE", "OK21");
-                        hello_message.setText(data.getValue().toString());
-                        Log.v("HEERE", "OK22");
-                    }
-
-                    if (data.getKey().compareToIgnoreCase("profileImageURL") == 0) {
-                        Log.v("HEERE", "OK31");
-                        Picasso.with(getApplicationContext()).load(data.getValue().toString()).into(profilePicture);
-                        Log.v("HEERE", "OK32");
-                    }
-
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError firebaseError) {
-
-            }
-        });
-
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-
-        final List<String> ID = new ArrayList<>();
-
-        if( firstConnection == true ){
-
-
-            // Create general Chat for these two
-            DatabaseReference fireRef = FirebaseDatabase.getInstance().getReference().child("chat");
-            DatabaseReference keyRef = fireRef.push();
-            final String newChatID = keyRef.getKey();
-
-            Map<String,String> map = new HashMap<>();
-            map.put("Users","");
-            map.put("Messages","");
-            keyRef.setValue(map);
-            DatabaseReference addUserUIDs = keyRef.child("Users");
-
-            Map<String,String> userUIDMap = new HashMap<>();
-            userUIDMap.put(User.uid, "");
-            userUIDMap.put(otherUserUid, "");
-            addUserUIDs.setValue(userUIDMap);
-
-            Date now = new Date();
-            String formattedDate = String.format(new Locale("English"), "%tb", now) + " " +
-                    String.format(new Locale("English"), "%td", now) + ", " +
-                    String.format(new Locale("English"), "%tR", now);
-            // Create our 'model', a Chat object
-            DatabaseReference newChat = keyRef.child("Messages").push();
-            Chat chat = new Chat("Welcome to our chat! :)", "Ludicon",formattedDate);
-            newChat.setValue(chat);
-
-            // TODO Create child to "users -> userUID -> chats" for each user
-            // For the first User
-            DatabaseReference refCurrentUser = FirebaseDatabase.getInstance().getReference().child("users").child(User.uid).child("chats");
-            refCurrentUser.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot snapshot) {
-                    Map<String, Object> map = new HashMap<>();
-                    for (DataSnapshot data : snapshot.getChildren()) {
-                        map.put(data.getKey(), data.getValue());
-                    }
-                    map.put(otherUserUid,newChatID);
-                    // NOTE: I need userRef to set the map value
-                    DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(User.uid).child("chats");
-                    userRef.updateChildren(map);
-                }
-                @Override
-                public void onCancelled(DatabaseError firebaseError) {
-                }
-            });
-
-            // For the second User
-            DatabaseReference refOtherUser = FirebaseDatabase.getInstance().getReference().child("users").child(otherUserUid).child("chats");
-            refOtherUser.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot snapshot) {
-                    Map<String, Object> map = new HashMap<>();
-                    for (DataSnapshot data : snapshot.getChildren()) {
-                        map.put(data.getKey(), data.getValue());
-                    }
-                    map.put(User.uid,newChatID);
-                    // NOTE: I need userRef to set the map value
-                    DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(otherUserUid).child("chats");
-                    userRef.updateChildren(map);
-                }
-                @Override
-                public void onCancelled(DatabaseError firebaseError) {
-                }
-            });
-
-
-            // Setup our DatabaseReference mDatabaseReferenceRef
-            mDatabaseReferenceRef = FirebaseDatabase.getInstance().getReference().child("chat").child(newChatID).child("Messages");
-        }
-
-        if ( firstConnection == false )
-             mDatabaseReferenceRef = FirebaseDatabase.getInstance().getReference().child("chat").child(chatID).child("Messages");
-
 
         // Setup our input methods. Enter key on the keyboard or pushing the send button
         EditText inputText = (EditText) findViewById(R.id.messageInput);
@@ -252,7 +182,7 @@ public class ChatTemplateActivity extends ListActivity {
         // Tell our list adapter that we only want 50 messages at a time
         // TODO - Don't use ChatListAdapter
 
-        mChatListAdapter = new ChatListAdapter(mDatabaseReferenceRef.limitToFirst(50), this, R.layout.chat_message, mUsername, false);
+        mChatListAdapter = new ChatListAdapter(mDatabaseReferenceRef.limitToFirst(50), this, R.layout.chat_message, mUsername, true);
         listView.setAdapter(mChatListAdapter);
         mChatListAdapter.registerDataSetObserver(new DataSetObserver() {
             @Override
@@ -305,6 +235,7 @@ public class ChatTemplateActivity extends ListActivity {
                     String.format(new Locale("English"), "%td", now) + ", " +
                     String.format(new Locale("English"), "%tR", now);
             // Create our 'model', a Chat object
+            Log.v("Username", mUsername);
             Chat chat = new Chat(input, mUsername,formattedDate);
 
             // Create a new, auto-generated child of that chat location, and save our chat data there
@@ -320,9 +251,9 @@ public class ChatTemplateActivity extends ListActivity {
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
 
         // Set the adapter for the list view
-        mDrawerList.setAdapter(new LeftSidePanelAdapter(this, ChatTemplateActivity.this));
+        mDrawerList.setAdapter(new LeftSidePanelAdapter(this, GroupChatTemplate.this));
         // Set the list's click listener
-        LeftPanelItemClicker.OnItemClick(mDrawerList, getApplicationContext(), ChatTemplateActivity.this);
+        LeftPanelItemClicker.OnItemClick(mDrawerList, getApplicationContext(), GroupChatTemplate.this);
 
         final ImageButton showPanel = (ImageButton) findViewById(R.id.showPanel);
         showPanel.setOnClickListener(new View.OnClickListener() {
