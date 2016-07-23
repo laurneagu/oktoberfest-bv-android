@@ -66,7 +66,6 @@ public class SettingsActivity extends Activity {
 
     private TextView progressText;
     private SeekBar seekBar;
-    private ImageView pseudoSeekBar;
     private Button saveButton;
     private ArrayList<Sport> sportsList = new ArrayList<Sport>();
     DatabaseReference rangeRef = User.firebaseRef.child("users").child(User.uid).child("range");
@@ -102,26 +101,10 @@ public class SettingsActivity extends Activity {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 savedProgress = Integer.parseInt(snapshot.getValue().toString());
-                int barOffset = (savedProgress + 5) / 10;
-                if (barOffset < 1) {
-                    barOffset = 1;
-                } else if (barOffset > 9) {
-                    barOffset = 9;
-                }
                 progressText = (TextView) findViewById(R.id.progressText);
-                progressText.setText(barOffset * 10 + " km");
+                progressText.setText(savedProgress + " km");
                 seekBar = (SeekBar) findViewById(R.id.seekBar2);
-                seekBar.setProgress(barOffset * 10);
-                //seekBar.setAlpha(0);
-                //seekBar.setBackgroundColor(getResources().getColor(R.color.bg1));
-
-
-                pseudoSeekBar = (ImageView) findViewById(R.id.visibleSeekBar2);
-
-                String uri = "@drawable/range" + barOffset + "0";
-                int imageResource = getResources().getIdentifier(uri, null, getPackageName());
-                Drawable res = getResources().getDrawable(imageResource);
-                //pseudoSeekBar.setImageDrawable(res);
+                seekBar.setProgress(savedProgress);
             }
 
             @Override
@@ -129,14 +112,8 @@ public class SettingsActivity extends Activity {
             }
         });
 
-        int barOffset = (savedProgress + 5) / 10;
-        if (barOffset < 1) {
-            barOffset = 1;
-        } else if (barOffset > 9) {
-            barOffset = 9;
-        }
         progressText = (TextView) findViewById(R.id.progressText);
-        progressText.setText(barOffset * 10 + " km");
+        progressText.setText(savedProgress + " km");
         seekBar = (SeekBar) findViewById(R.id.seekBar2);
         seekBar.setProgress(savedProgress);
         seekBar.setProgressDrawable(getResources()
@@ -149,20 +126,8 @@ public class SettingsActivity extends Activity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
                 progress = progressValue;
-                int barOffset = (progress + 5) / 10;
-                if (barOffset < 1) {
-                    barOffset = 1;
-                } else if (barOffset > 9) {
-                    barOffset = 9;
-                }
-                rangeRef.setValue(barOffset * 10);
-                progressText.setText(barOffset * 10 + " km");
-                pseudoSeekBar = (ImageView) findViewById(R.id.visibleSeekBar2);
-
-                String uri = "@drawable/range" + barOffset + "0";
-                int imageResource = getResources().getIdentifier(uri, null, getPackageName());
-                Drawable res = getResources().getDrawable(imageResource);
-                //pseudoSeekBar.setImageDrawable(res);
+                rangeRef.setValue(progress);
+                progressText.setText(progress + " km");
             }
 
             @Override
@@ -171,7 +136,6 @@ public class SettingsActivity extends Activity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                //progressText.setText(barOffset * 10 + " km");
             }
         });
 

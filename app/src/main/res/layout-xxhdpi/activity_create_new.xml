@@ -136,33 +136,6 @@
                 android:textColor="@color/com_facebook_blue"
                 android:id="@+id/DescriptionInput" />
 
-            <!--INVITE FRIENDS -->
-
-
-
-            <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:text="Invite a friend"
-        android:textColor="#81878b"
-        android:id="@+id/inviteFriendsTB"
-        android:layout_below="@+id/DescriptionInput"
-        android:textStyle="bold"
-        android:textSize="20dp" />
-
-        <AutoCompleteTextView
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:id="@+id/inviteFriendsTV"
-            android:layout_width="200dp"
-            android:layout_marginTop="5dp"
-            android:textColor="#0e64a6"
-            android:background="#FFFFFF"
-            android:layout_below="@+id/inviteFriendsTB"
-            android:layout_marginBottom="10dp" />
-
         <!-- DATE TIME PICK -->
         <TextView
             android:layout_width="wrap_content"
@@ -172,7 +145,7 @@
             android:text="Date and time"
             android:textColor="#81878b"
             android:id="@+id/datetimeTB"
-            android:layout_below="@+id/inviteFriendsTV"
+            android:layout_below="@+id/DescriptionInput"
             android:textStyle="bold"
             android:textSize="20dp" />
 
