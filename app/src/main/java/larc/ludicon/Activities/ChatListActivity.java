@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -268,17 +269,36 @@ public class ChatListActivity extends Activity {
 
                 holder.textName = (TextView) view.findViewById(R.id.friend_name);
                 holder.imageView = (ImageView) view.findViewById(R.id.friend_photo);
-                holder.chatButton = (Button) view.findViewById(R.id.gotoChat);
+                //holder.chatButton = (Button) view.findViewById(R.id.gotoChat);
 
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        DatabaseReference userRef = User.firebaseRef.child("users").child(list.get(position).userUID).child("name");
+                        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot snapshot) {
+                                Intent intent = new Intent(getApplicationContext(), ChatTemplateActivity.class);
+                                intent.putExtra("uid", list.get(position).userUID);
+                                intent.putExtra("firstConnection", false);
+                                intent.putExtra("chatID", list.get(position).chatID);
+
+                                startActivity(intent);
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError firebaseError) {
+                            }
+                        });
+                    }
+                });
 
                 view.setTag(holder);
             }
             else {
                 holder = (ViewHolder)view.getTag();
             }
-
-
-            final Button chatButton = holder.chatButton;
 
             holder.textName.setText(list.get(position).userName);
 
@@ -289,28 +309,6 @@ public class ChatListActivity extends Activity {
                 holder.imageView.setImageResource(R.drawable.logo);
             }
 
-
-            chatButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    DatabaseReference userRef = User.firebaseRef.child("users").child(list.get(position).userUID).child("name");
-                    userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot snapshot) {
-                            Intent intent = new Intent(getApplicationContext(), ChatTemplateActivity.class);
-                            intent.putExtra("uid", list.get(position).userUID);
-                            intent.putExtra("firstConnection", false);
-                            intent.putExtra("chatID", list.get(position).chatID);
-                            startActivity(intent);
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError firebaseError) {
-                        }
-                    });
-                }
-            });
             return view;
         }
     }

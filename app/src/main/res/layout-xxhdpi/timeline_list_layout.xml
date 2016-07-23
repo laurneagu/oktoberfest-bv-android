@@ -118,7 +118,7 @@
         android:layout_alignStart="@+id/nameLabel"
         android:layout_marginBottom="15dp" />
 
-    <ImageButton
+    <!--ImageButton
         android:layout_width="63dp"
         android:layout_height="18dp"
         android:background="@drawable/details"
@@ -127,7 +127,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="2dp" />
+        android:layout_marginTop="2dp" /-->
 
     <TextView
         android:layout_width="wrap_content"
@@ -146,13 +146,12 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Small Text"
         android:id="@+id/playersID"
-        android:textColor="#0e3956"
+        android:textColor="#2d4b2d"
         android:textStyle="bold"
-        android:layout_marginRight="9dp"
-        android:layout_marginEnd="9dp"
-        android:layout_alignBottom="@+id/join_btn"
-        android:layout_toLeftOf="@+id/join_btn"
-        android:layout_toStartOf="@+id/join_btn" />
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="17dp"
+        android:layout_marginRight="15dp"
+         />
 
 
 

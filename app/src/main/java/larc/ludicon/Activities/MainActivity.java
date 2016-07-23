@@ -295,6 +295,9 @@ public class MainActivity extends AppCompatActivity {
 
         dialog = ProgressDialog.show(MainActivity.this, "", "Loading. Please wait", true);
 
+        // test
+        //dialog.dismiss();
+
         // Check if there are any unsaved points in SharedPref and put them on DatabaseReference
         Map<String, Integer> unsavedPointsMap = new HashMap<>();
         SharedPreferences pSharedPref = getSharedPreferences("Points", Context.MODE_PRIVATE);
@@ -1093,6 +1096,16 @@ public class MainActivity extends AppCompatActivity {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.timeline_list_layout, null);
 
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //Toast.makeText(getApplicationContext(), "Hei, wait for it..", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getApplicationContext(), EventDetails.class);
+                        intent.putExtra("eventUid", list.get(position).id);
+                        startActivity(intent);
+                    }
+                });
+
                 holder = new ViewHolder();
                 holder.name = (TextView) view.findViewById(R.id.nameLabel);
                 holder.profilePicture = (ImageView) view.findViewById(R.id.profilePicture);
@@ -1101,12 +1114,10 @@ public class MainActivity extends AppCompatActivity {
                 holder.time = (TextView) view.findViewById(R.id.timeText);
                 holder.place = (TextView) view.findViewById(R.id.placeText);
                 holder.icon = (ImageView) view.findViewById(R.id.sportIcon);
-                holder.details = (ImageButton) view.findViewById(R.id.details_btn);
+                //holder.details = (ImageButton) view.findViewById(R.id.details_btn);
                 holder.join = (ImageButton) view.findViewById(R.id.join_btn);
                 holder.description = (TextView) view.findViewById(R.id.descriptionID);
                 holder.players = (TextView) view.findViewById(R.id.playersID);
-
-
 
                 view.setTag(holder);
             }
@@ -1211,16 +1222,8 @@ public class MainActivity extends AppCompatActivity {
             if(dateMin.equalsIgnoreCase("0")) dateMin += "0";
             String hour = dateHour + ":" + dateMin;
             holder.time.setText(day + " at " + hour);
-            holder.details.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //Toast.makeText(getApplicationContext(), "Hei, wait for it..", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getApplicationContext(), EventDetails.class);
-                    intent.putExtra("eventUid", list.get(position).id);
-                    startActivity(intent);
-                }
-            });
-            holder.join.setOnClickListener(new View.OnClickListener(){
+
+            holder.join.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     DatabaseReference usersRef = User.firebaseRef.child("events").child(list.get(position).id).child("users");
@@ -1233,17 +1236,17 @@ public class MainActivity extends AppCompatActivity {
                                 map.put(data.getKey(), data.getValue());
                             }
 
-                            map.put(User.uid,true);
+                            map.put(User.uid, true);
                             // NOTE: I need userRef to set the map value
                             DatabaseReference userRef = User.firebaseRef.child("events").child(list.get(position).id).child("users");
                             userRef.updateChildren(map);
 
 
-                            Map<String,Object> inEv = new HashMap<>();
-                            inEv.put("participation",true);
+                            Map<String, Object> inEv = new HashMap<>();
+                            inEv.put("participation", true);
                             inEv.put("points", 0);
 
-                            Map<String,Object> ev =  new HashMap<String,Object>();
+                            Map<String, Object> ev = new HashMap<String, Object>();
                             ev.put(list.get(position).id, inEv);
                             list.remove(position);
                             User.firebaseRef.child("users").child(User.uid).child("events").updateChildren(ev);
@@ -1322,6 +1325,16 @@ public class MainActivity extends AppCompatActivity {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.timeline_list_myactivities_layout, null);
 
+                view.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                //Toast.makeText(getApplicationContext(), "Hei, wait for it..", Toast.LENGTH_SHORT).show();
+                                                Intent intent = new Intent(getApplicationContext(), EventDetails.class);
+                                                intent.putExtra("eventUid", list.get(position).id);
+                                                startActivity(intent);
+                                            }
+                                        }
+                );
                 holder = new ViewHolder();
                 holder.name = (TextView) view.findViewById(R.id.nameLabel);
                 holder.profilePicture = (ImageView) view.findViewById(R.id.profilePicture);
@@ -1330,7 +1343,6 @@ public class MainActivity extends AppCompatActivity {
                 holder.time = (TextView) view.findViewById(R.id.timeText);
                 holder.place = (TextView) view.findViewById(R.id.placeText);
                 holder.icon = (ImageView) view.findViewById(R.id.sportIcon);
-                holder.details = (ImageButton) view.findViewById(R.id.details_btn);
                 holder.description = (TextView) view.findViewById(R.id.descriptionID);
                 holder.players = (TextView) view.findViewById(R.id.playersID);
 
@@ -1411,8 +1423,11 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 secondPart.setText(" with no others");
             }*/
+            if(list.get(position).description.equalsIgnoreCase(""))
+                holder.description.setText("no description");
+            else
+                holder.description.setText("\"" + list.get(position).description + "\"");
 
-            holder.description.setText("\"" + list.get(position).description + "\"");
             holder.players.setText( list.get(position).usersUID.size() + "/" + list.get(position).roomCapacity);
 
             if(list.get(position) != null ) {
@@ -1449,16 +1464,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
             */
-
-            holder.details.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //Toast.makeText(getApplicationContext(), "Hei, wait for it..", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getApplicationContext(), EventDetails.class);
-                    intent.putExtra("eventUid", list.get(position).id);
-                    startActivity(intent);
-                }
-            });
 
             /*
             try{

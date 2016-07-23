@@ -600,6 +600,8 @@ public class FriendlyService extends Service {
                 SharedPreferences prefs = getApplication().getSharedPreferences("ChatPrefs", 0);
                 final String myName = prefs.getString("username", null);
 
+                if (refJson == null) return;
+
                 final DatabaseReference userRef = ref.child("users").child(refJson);
                 final LinkedList<String> chatRefs = new LinkedList<String>(); // chat uid - last message date
 

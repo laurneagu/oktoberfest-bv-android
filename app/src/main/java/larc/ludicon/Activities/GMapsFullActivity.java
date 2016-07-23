@@ -177,6 +177,13 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
         // Sanity checks
         lm = null;
         locationListener =null;
+
+        Intent intent = new Intent();
+        intent.putExtra("latitude", latitude);
+        intent.putExtra("longitude", longitude);
+
+        setResult(CreateNewActivity.ASK_COORDS_DONE, intent);
+
         finish();
     }
 
@@ -408,6 +415,7 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
     }
 
     private GMapsFullActivity curr_context = this;
+    private  double latitude, longitude;
 
     protected void startDemo() {
         mapFragment.getMapAsync(new OnMapReadyCallback() {
@@ -419,7 +427,7 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
                 if (ActivitiesLocationListener.hasSetPosition == true){
                     SharedPreferences sharedPref = getApplication().getSharedPreferences("LocationPrefs", 0);
                     String latString, longString;
-                    double latitude, longitude;
+
                     latString = sharedPref.getString("curr_latitude", null);
                     longString= sharedPref.getString("curr_longitude", null);
 

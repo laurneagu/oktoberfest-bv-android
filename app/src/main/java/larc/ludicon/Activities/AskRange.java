@@ -1,5 +1,6 @@
 package larc.ludicon.Activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
@@ -8,6 +9,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -22,7 +25,7 @@ import java.util.Map;
 import larc.ludicon.R;
 import larc.ludicon.UserInfo.User;
 
-public class AskRange extends AppCompatActivity {
+public class AskRange extends Activity{
 
     private ImageView logo;
     private TextView progressText;
@@ -32,7 +35,9 @@ public class AskRange extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_ask_range);
+
 
         logo = (ImageView) findViewById(R.id.logo);
         logo.setImageResource(R.drawable.logo);
