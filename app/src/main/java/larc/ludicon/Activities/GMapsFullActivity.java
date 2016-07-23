@@ -24,6 +24,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -56,7 +60,7 @@ import larc.ludicon.Utils.GMapsCluster.MultiDrawable;
 import larc.ludicon.Utils.GMapsCluster.Person;
 import larc.ludicon.Utils.Location.ActivitiesLocationListener;
 
-public class GMapsFullActivity extends Activity implements OnMapReadyCallback, ClusterManager.OnClusterClickListener<Person>, ClusterManager.OnClusterInfoWindowClickListener<Person>, ClusterManager.OnClusterItemClickListener<Person>, ClusterManager.OnClusterItemInfoWindowClickListener<Person> {
+public class GMapsFullActivity extends Activity implements PlaceSelectionListener, OnMapReadyCallback, ClusterManager.OnClusterClickListener<Person>, ClusterManager.OnClusterInfoWindowClickListener<Person>, ClusterManager.OnClusterItemClickListener<Person>, ClusterManager.OnClusterItemInfoWindowClickListener<Person> {
 
     // Left side panel
     private ListView mDrawerList;
@@ -150,6 +154,11 @@ public class GMapsFullActivity extends Activity implements OnMapReadyCallback, C
         TextView hello_message = (TextView) findViewById(R.id.hello_message_activity);
         hello_message.setText("Pick location");
 
+        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+        autocompleteFragment.setOnPlaceSelectedListener(this);
+        autocompleteFragment.setHint("Search for a location");
+
         // this is it
         startDemo();
     }
@@ -231,6 +240,29 @@ public class GMapsFullActivity extends Activity implements OnMapReadyCallback, C
     // Cluster code !
     private ClusterManager<Person> mClusterManager;
     private Random mRandom = new Random(1984);
+
+    @Override
+    public void onPlaceSelected(Place pl) {
+        final Place place = pl;
+        mapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                googleMap.clear();
+                googleMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(place.getLatLng().latitude, place.getLatLng().longitude))
+                        .title(place.getName().toString()));
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), 15));
+            }
+        });
+
+        lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+    }
+
+    @Override
+    public void onError(Status status) {
+
+    }
 
     /**
      * Draws profile photos inside markers (using IconGenerator).
