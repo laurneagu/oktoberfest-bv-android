@@ -206,7 +206,8 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignLeft="@+id/sharefb"
                 android:layout_alignStart="@+id/sharefb"
-                android:visibility="invisible" />
+                android:visibility="invisible
+                 />
 
             <Button
                 style="?android:attr/buttonStyleSmall"

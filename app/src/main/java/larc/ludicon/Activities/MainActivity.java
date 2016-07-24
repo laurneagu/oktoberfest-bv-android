@@ -872,7 +872,6 @@ public class MainActivity extends AppCompatActivity {
                     if (doIParticipate && (new Date().getTime() < event.date.getTime()))
                         myEventsList.add(event);
                     else if ((new Date().getTime() < event.date.getTime()) && isPublic &&  mustAddEventToList  ) {
-
                         event.usersUID = participants;
                         friendsEventsList.add(event);
                     }

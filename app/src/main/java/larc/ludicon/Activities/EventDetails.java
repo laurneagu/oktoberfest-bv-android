@@ -218,7 +218,7 @@ public class EventDetails extends Activity {
                                 addFriend.setVisibility(View.VISIBLE);
                                 chatBtn.setVisibility(View.VISIBLE);
                                 shareFb.setVisibility(View.VISIBLE);
-                        }
+                            }
                         }
                     }
                     if (details.getKey().toString().equalsIgnoreCase("place")) {
