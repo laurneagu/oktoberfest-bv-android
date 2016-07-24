@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
@@ -32,17 +30,13 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.Circle;
-import com.google.android.gms.maps.model.GroundOverlay;
-import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polygon;
-import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
@@ -56,11 +50,11 @@ import larc.ludicon.Adapters.LeftPanelItemClicker;
 import larc.ludicon.Adapters.LeftSidePanelAdapter;
 import larc.ludicon.R;
 import larc.ludicon.UserInfo.User;
+import larc.ludicon.Utils.GMapsCluster.AuthPlace;
 import larc.ludicon.Utils.GMapsCluster.MultiDrawable;
-import larc.ludicon.Utils.GMapsCluster.Person;
 import larc.ludicon.Utils.Location.ActivitiesLocationListener;
 
-public class GMapsFullActivity extends Activity implements PlaceSelectionListener, OnMapReadyCallback, ClusterManager.OnClusterClickListener<Person>, ClusterManager.OnClusterInfoWindowClickListener<Person>, ClusterManager.OnClusterItemClickListener<Person>, ClusterManager.OnClusterItemInfoWindowClickListener<Person> {
+public class GMapsFullActivity extends Activity implements PlaceSelectionListener, OnMapReadyCallback, ClusterManager.OnClusterClickListener<AuthPlace>, ClusterManager.OnClusterInfoWindowClickListener<AuthPlace>, ClusterManager.OnClusterItemClickListener<AuthPlace>, ClusterManager.OnClusterItemInfoWindowClickListener<AuthPlace> {
 
     // Left side panel
     private ListView mDrawerList;
@@ -245,7 +239,7 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
     }
 
     // Cluster code !
-    private ClusterManager<Person> mClusterManager;
+    private ClusterManager<AuthPlace> mClusterManager;
     private Random mRandom = new Random(1984);
 
     @Override
@@ -275,7 +269,7 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
      * Draws profile photos inside markers (using IconGenerator).
      * When there are multiple people in the cluster, draw multiple photos (using MultiDrawable).
      */
-    private class PersonRenderer extends DefaultClusterRenderer<Person> {
+    private class PersonRenderer extends DefaultClusterRenderer<AuthPlace> {
         private final IconGenerator mIconGenerator = new IconGenerator(getApplicationContext());
         private final IconGenerator mClusterIconGenerator = new IconGenerator(getApplicationContext());
         private final ImageView mImageView;
@@ -302,16 +296,18 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
         }
 
         @Override
-        protected void onBeforeClusterItemRendered(Person person, MarkerOptions markerOptions) {
-            // Draw a single person.
+        protected void onBeforeClusterItemRendered(AuthPlace authPlace, MarkerOptions markerOptions) {
+            // Draw a single authPlace.
             // Set the info window to show their name.
-            mImageView.setImageResource(person.profilePhoto);
+            int picId = getResources().getIdentifier(authPlace.profilePhoto, "drawable", getPackageName());
+            mImageView.setImageResource(picId);
+
             Bitmap icon = mIconGenerator.makeIcon();
-            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(person.name);
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(authPlace.name);
         }
 
         @Override
-        protected void onBeforeClusterRendered(Cluster<Person> cluster, MarkerOptions markerOptions) {
+        protected void onBeforeClusterRendered(Cluster<AuthPlace> cluster, MarkerOptions markerOptions) {
             // Draw multiple people.
             // Note: this method runs on the UI thread. Don't spend too much time in here (like in this example).
             List<Drawable> profilePhotos = new ArrayList<Drawable>(Math.min(4, cluster.getSize()));
@@ -320,28 +316,29 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
 
             int uniquePics=0;
 
-            for (Person p : cluster.getItems()) {
+            for (AuthPlace p : cluster.getItems()) {
                 // Draw 4 at most.
                 if (profilePhotos.size() == 4) break;
-
 
                 // Laur Neagu
                 // Check if it is already added
                 boolean sameId = false;
+                int picId = getResources().getIdentifier(p.profilePhoto, "drawable", getPackageName());
+
                 for (int i = 0; i < profilePhotos.size(); i++) {
                     Drawable currPhoto = profilePhotos.get(i);
                     // Already added
-                    if (currPhoto.getLevel() == p.profilePhoto) {
+                    if (currPhoto.getLevel() == picId) {
                         sameId = true;
                         break;
                     }
                 }
                 if(!sameId) {
 
-                    Drawable drawable = getResources().getDrawable(p.profilePhoto);
+                    Drawable drawable = getResources().getDrawable(picId);
 
                     // Laur Neagu
-                    drawable.setLevel(p.profilePhoto);
+                    drawable.setLevel(picId);
                     drawable.setBounds(0, 0, width, height);
                     profilePhotos.add(drawable);
                     uniquePics++;
@@ -374,19 +371,19 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
     }
 
     @Override
-    public boolean onClusterClick(Cluster<Person> cluster) {
+    public boolean onClusterClick(Cluster<AuthPlace> cluster) {
         // Show a toast with some info when the cluster is clicked.
         Toast.makeText(this, "Here are " + cluster.getSize() + " locations ! Pick just one for the event !" , Toast.LENGTH_SHORT).show();
         return true;
     }
 
     @Override
-    public void onClusterInfoWindowClick(Cluster<Person> cluster) {
+    public void onClusterInfoWindowClick(Cluster<AuthPlace> cluster) {
         // Does nothing, but you could go to a list of the users.
     }
 
     @Override
-    public boolean onClusterItemClick(Person item) {
+    public boolean onClusterItemClick(AuthPlace item) {
 
         // Laur Neagu
         //Toast.makeText(this, "Location :" + item.getPosition().longitude + " -- " + item.getPosition().latitude , Toast.LENGTH_SHORT).show();
@@ -410,7 +407,7 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
     }
 
     @Override
-    public void onClusterItemInfoWindowClick(Person item) {
+    public void onClusterItemInfoWindowClick(AuthPlace item) {
         // Does nothing, but you could go into the user's profile page, for example.
     }
 
@@ -470,25 +467,74 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
     }
 
     private void addItems() {
+        // Create the ArrayList of Authorized Places
+        final ArrayList<AuthPlace> authorizedPlaces = new ArrayList<AuthPlace>();
 
-        // TODO must take them from Firebase
-        mClusterManager.addItem(new Person(new LatLng(44.4367192,26.0874813), "Parc Cismigiu", R.drawable.cycling));
+        // Get and update total number of points for user in sport
+        DatabaseReference authorizedPlacesRef = User.firebaseRef.child("authorized-place");
+        authorizedPlacesRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for (DataSnapshot dataSN : snapshot.getChildren()) {
 
-        mClusterManager.addItem(new Person(new LatLng(44.4057588,26.1404763), "Squash 4 All", R.drawable.squash));
+                    double latitude = 0;
+                    double longitude = 0;
+                    String name ="";
+                    String details ="";
+                    int priority=0;
+                    ArrayList<String> sports = new ArrayList<String>();
+                    ArrayList<Integer> points = new ArrayList<Integer>();
 
-        mClusterManager.addItem(new Person(new LatLng(44.4373334,26.0537076), "Baza Sportivă Libra Phoenix Sport", R.drawable.tennis));
+                    for (DataSnapshot data : dataSN.getChildren()) {
 
-        mClusterManager.addItem(new Person(new LatLng(44.4122762,26.0314658), "Stadion Ghencea", R.drawable.football));
+                            if (data.getKey() != null && data.getKey() != " ") {
+                                if (data.getKey().equalsIgnoreCase("name")) {
+                                    name = data.getValue().toString();
+                                }
 
-        mClusterManager.addItem(new Person(new LatLng(44.4057214,26.103872), "Parc Tineretului", R.drawable.jogging));
+                                if (data.getKey().equalsIgnoreCase("details")) {
+                                    details = data.getValue().toString();
+                                }
 
-        mClusterManager.addItem(new Person(new LatLng(44.4465908,26.1544343), "Terenurile Delfin Arena", R.drawable.football));
+                                if (data.getKey().equalsIgnoreCase("priority")) {
+                                    priority = Integer.parseInt(data.getValue().toString());
+                                }
 
-        mClusterManager.addItem(new Person(new LatLng(44.44318,26.1443157), "Centrul Național de Tenis", R.drawable.tennis));
+                                if (data.getKey().equalsIgnoreCase("location")) {
+                                    for (DataSnapshot dataLocation : data.getChildren()) {
+                                        if(dataLocation.getKey() != null){
+                                            if (dataLocation.getKey().equalsIgnoreCase("latitude"))
+                                                latitude = Double.parseDouble(dataLocation.getValue().toString());
+                                            if (dataLocation.getKey().equalsIgnoreCase("longitude"))
+                                                longitude = Double.parseDouble(dataLocation.getValue().toString());
+                                        }
+                                    }
+                                }
 
-        mClusterManager.addItem(new Person(new LatLng(44.4057214,26.103872), "Parc Tineretului", R.drawable.volley));
+                                if (data.getKey().equalsIgnoreCase("sport")){
+                                    for (DataSnapshot dataSport : data.getChildren()) {
+                                        if(dataSport.getKey() != null){
+                                            sports.add(dataSport.getKey().toString());
+                                            points.add(Integer.parseInt(dataSport.getValue().toString()));
+                                        }
+                                    }
+                                }
 
-        mClusterManager.addItem(new Person(new LatLng(44.4195959,26.1548647), "Parc Titan", R.drawable.tennis));
+                           }
+                    }
+
+                    authorizedPlaces.add(new AuthPlace(new LatLng(latitude,longitude), name, details, sports.get(0), priority));
+
+                }
+
+                // Add them to the cluster !! :)
+                mClusterManager.addItems(authorizedPlaces);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError firebaseError) {
+            }
+        });
     }
 
     private double random(double min, double max) {
