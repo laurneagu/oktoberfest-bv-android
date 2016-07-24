@@ -159,7 +159,8 @@
             android:id="@+id/sharefb"
             android:layout_marginTop="10dp"
             android:background="@drawable/fbshare"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            android:visibility="invisible"/>
 
             <Button
                 style="?android:attr/buttonStyleSmall"
@@ -172,7 +173,8 @@
                 android:focusable="true"
                 android:layout_alignTop="@+id/sharefb"
                 android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true" />
+                android:layout_alignParentEnd="true"
+                android:visibility="invisible"/>
 
             <Button
                 style="?android:attr/buttonStyleSmall"
@@ -182,7 +184,8 @@
                 android:id="@+id/editbtn"
                 android:layout_alignTop="@+id/sharefb"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
+                android:layout_alignParentStart="true"
+                android:visibility="invisible"/>
             <Button
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="wrap_content"
@@ -191,7 +194,8 @@
                 android:id="@+id/eventchatbtn"
                 android:layout_below="@+id/editbtn"
                 android:layout_alignRight="@+id/editbtn"
-                android:layout_alignEnd="@+id/editbtn" />
+                android:layout_alignEnd="@+id/editbtn"
+                android:visibility="invisible"/>
 
             <Button
                 style="?android:attr/buttonStyleSmall"
@@ -201,7 +205,8 @@
                 android:id="@+id/addfriend"
                 android:layout_alignParentBottom="true"
                 android:layout_alignLeft="@+id/sharefb"
-                android:layout_alignStart="@+id/sharefb" />
+                android:layout_alignStart="@+id/sharefb"
+                android:visibility="invisible" />
 
             <Button
                 style="?android:attr/buttonStyleSmall"
@@ -211,7 +216,8 @@
                 android:id="@+id/removefriend"
                 android:layout_alignParentBottom="true"
                 android:layout_toRightOf="@+id/addfriend"
-                android:layout_toEndOf="@+id/addfriend" />
+                android:layout_toEndOf="@+id/addfriend"
+                android:visibility="invisible" />
 
         </RelativeLayout>
     </ScrollView>

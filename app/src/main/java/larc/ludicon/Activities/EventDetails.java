@@ -76,7 +76,6 @@ public class EventDetails extends Activity {
     public static long participants = 0;
     public static int roomCapacity = 0;
     public static boolean doIparticipate = false;
-
     /**
      * Method that jumps to the MainActivity
      */
@@ -98,7 +97,7 @@ public class EventDetails extends Activity {
         getActionBar().hide();
         TextView title = (TextView)findViewById(R.id.hello_message_activity);
         title.setText("Event Details");
-
+        doIparticipate = false;
         ((TextView)findViewById(R.id.event_organiser_points)).setText("");
         ((TextView)findViewById(R.id.event_organiser_name)).setText("");
         ((TextView)findViewById(R.id.event_date)).setText("");
@@ -133,7 +132,7 @@ public class EventDetails extends Activity {
         // -------------------------------------------------------------------------------------------------------------
         // Cancel Event Button
         final Button cancelEvent = (Button)findViewById(R.id.cancelbtn);
-        cancelEvent.setVisibility(View.INVISIBLE);
+        //cancelEvent.setVisibility(View.INVISIBLE);
         final Context context = this.getApplicationContext();
         cancelEvent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -153,6 +152,11 @@ public class EventDetails extends Activity {
                 }).show();
             }
         });
+
+        final Button shareFb = (Button)findViewById(R.id.sharefb);
+        final Button chatBtn = (Button) findViewById(R.id.eventchatbtn);
+        final Button addFriend = (Button) findViewById(R.id.addfriend);
+        final Button removeFriend = (Button) findViewById(R.id.removefriend);
 
         DatabaseReference eventRef = User.firebaseRef.child("events").child(eventUid);
         eventRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -209,7 +213,12 @@ public class EventDetails extends Activity {
                         for (DataSnapshot data : details.getChildren() )
                         {
                             if ( data.getKey().equalsIgnoreCase(User.uid))
-                                doIparticipate  = true;
+                            {
+                                removeFriend.setVisibility(View.VISIBLE);
+                                addFriend.setVisibility(View.VISIBLE);
+                                chatBtn.setVisibility(View.VISIBLE);
+                                shareFb.setVisibility(View.VISIBLE);
+                        }
                         }
                     }
                     if (details.getKey().toString().equalsIgnoreCase("place")) {
@@ -236,7 +245,7 @@ public class EventDetails extends Activity {
 
                 // Edit Event Button
                 final Button editEvent = (Button)findViewById(R.id.editbtn);
-                editEvent.setVisibility(View.INVISIBLE);
+                //editEvent.setVisibility(View.INVISIBLE);
                 editEvent.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -255,7 +264,7 @@ public class EventDetails extends Activity {
                 });
 
                 // Hide Edit and Cancel Buttons if user is not the owner of the event
-                if ( !creatorID.equalsIgnoreCase(User.uid) ) {
+                if ( creatorID.equalsIgnoreCase(User.uid) ) {
                     cancelEvent.setVisibility(View.VISIBLE);
                     editEvent.setVisibility(View.VISIBLE);
                 }
@@ -313,8 +322,6 @@ public class EventDetails extends Activity {
         final ShareDialog shareDialog = new ShareDialog(this);
 
         // Share facebook button
-        Button shareFb = (Button)findViewById(R.id.sharefb);
-        //shareFb.setVisibility(View.INVISIBLE);
         shareFb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -334,8 +341,6 @@ public class EventDetails extends Activity {
             }
         });
 
-        Button chatBtn = (Button) findViewById(R.id.eventchatbtn);
-        //chatBtn.setVisibility(View.INVISIBLE);
         chatBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
@@ -346,8 +351,6 @@ public class EventDetails extends Activity {
         });
 
         // Add offline friend
-        Button addFriend = (Button) findViewById(R.id.addfriend);
-       // addFriend.setVisibility(View.INVISIBLE);
         addFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
@@ -364,8 +367,6 @@ public class EventDetails extends Activity {
         });
 
         // Remove offline friend
-        Button removeFriend = (Button) findViewById(R.id.removefriend);
-        //removeFriend.setVisibility(View.INVISIBLE);
         removeFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
@@ -397,15 +398,6 @@ public class EventDetails extends Activity {
 
                 }
         });
-        /*
-        if ( doIparticipate )
-        {
-            removeFriend.setVisibility(View.VISIBLE);
-            addFriend.setVisibility(View.VISIBLE);
-            chatBtn.setVisibility(View.VISIBLE);
-            shareFb.setVisibility(View.VISIBLE);
-        }*/
-
     }
 
     public class UserListThread implements Runnable {
