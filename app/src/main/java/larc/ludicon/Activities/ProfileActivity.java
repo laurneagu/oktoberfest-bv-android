@@ -32,6 +32,7 @@ import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
@@ -57,10 +58,18 @@ public class ProfileActivity extends Activity {
     private class ComparePals{
         int first_points;
         int second_points;
+        int sport;
         ComparePals()
         {
             first_points = 0;
             second_points = 0;
+            sport = 0;
+        }
+
+        public ComparePals(int fp, int sp, int s) {
+            first_points = fp;
+            second_points = sp;
+            sport = s;
         }
     }
 
@@ -190,7 +199,8 @@ public class ProfileActivity extends Activity {
         });
 
        final ArrayList<ComparePals> compareArray = new ArrayList<>();
-        for(int i = 0; i <= 7; i++) compareArray.add(new ComparePals());
+        int n = 8;
+        for (int i = 0; i < n; i++) compareArray.add(new ComparePals(0, 0, i));
         getPoints("football",0,User.uid,uid,compareArray);
         getPoints("volley",1,User.uid,uid,compareArray);
         getPoints("basketball",2,User.uid,uid,compareArray);
@@ -204,7 +214,7 @@ public class ProfileActivity extends Activity {
             Thread.sleep(300,1);
         }catch (InterruptedException exc) {}
 
-        StatsPerSportAdapter myadapter = new StatsPerSportAdapter(compareArray,getApplicationContext());
+        StatsPerSportAdapter myadapter = new StatsPerSportAdapter(compareArray, getApplicationContext());
 
         ListView mylistView = (ListView) findViewById(R.id.compareList);
         if (mylistView != null)
@@ -224,7 +234,7 @@ public class ProfileActivity extends Activity {
                             if (sport.getKey().toString().equalsIgnoreCase(myUid))
                                 compareArray.get(sportID).second_points = Integer.parseInt(sport.getValue().toString());
                             if (sport.getKey().toString().equalsIgnoreCase(friendUid))
-                            compareArray.get(sportID).first_points = Integer.parseInt(sport.getValue().toString());
+                                compareArray.get(sportID).first_points = Integer.parseInt(sport.getValue().toString());
                         }
                     }
                 }
@@ -235,24 +245,34 @@ public class ProfileActivity extends Activity {
             }
         });
     }
+
     // Adapter for the statistics per sport
     public class StatsPerSportAdapter extends BaseAdapter implements ListAdapter {
 
         private Context context;
         ArrayList<ComparePals> compareArray ;
 
-        public StatsPerSportAdapter(ArrayList<ComparePals> compareArray , Context context) {
-            this.compareArray = compareArray;
+        public StatsPerSportAdapter(ArrayList<ComparePals> compArray, Context context) {
+            this.compareArray = compArray;
+            /*
+            this.compareArray = new ArrayList<ComparePals>();
+
+            for(int i = 0; i < compArray.size(); i++) {
+                if(compArray.get(i).first_points != 0 || compArray.get(i).second_points != 0) {
+                    this.compareArray.add(new ComparePals(compArray.get(i).first_points, compArray.get(i).second_points, compArray.get(i).sport));
+                }
+            }
+*/
             this.context = context;
         }
 
         @Override
         public int getCount() {
-            return compareArray.size();
+            return this.compareArray.size();
         }
         @Override
         public Object getItem(int pos) {
-            return compareArray.get(pos);
+            return this.compareArray.get(pos);
         }
         @Override
         public long getItemId(int pos) {
@@ -270,10 +290,9 @@ public class ProfileActivity extends Activity {
             final TextView comparePoints = (TextView) view.findViewById(R.id.pointsCompare);
             final ImageView sportLogo = (ImageView) view.findViewById(R.id.sport_logo_compare);
 
+            comparePoints.setText(this.compareArray.get(position).first_points + " points" + " VS " + this.compareArray.get(position).second_points + " points (YOU)");
 
-            comparePoints.setText( compareArray.get(position).first_points + " points" + " VS " + compareArray.get(position).second_points + " points (YOU)");
-
-            switch(position)
+            switch (this.compareArray.get(position).sport)
             {
                 case 0 : sportLogo.setImageResource(R.drawable.football);break;
                 case 1 : sportLogo.setImageResource(R.drawable.volley);break;
@@ -285,6 +304,7 @@ public class ProfileActivity extends Activity {
                 case 7 : sportLogo.setImageResource(R.drawable.jogging);break;
                 default : break;
             }
+
             return view;
         }
     }

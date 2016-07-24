@@ -1,5 +1,6 @@
 package larc.ludicon.Activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
@@ -8,6 +9,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -22,30 +25,25 @@ import java.util.Map;
 import larc.ludicon.R;
 import larc.ludicon.UserInfo.User;
 
-public class AskRange extends AppCompatActivity {
+public class AskRange extends Activity{
 
     private ImageView logo;
     private TextView progressText;
     private SeekBar seekBar;
-    private ImageView pseudoSeekBar;
+    //private ImageView pseudoSeekBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_ask_range);
 
         logo = (ImageView) findViewById(R.id.logo);
         logo.setImageResource(R.drawable.logo);
 
         seekBar = (SeekBar) findViewById(R.id.seekBar);
-        seekBar.setAlpha(0);
         progressText = (TextView) findViewById(R.id.textView5);
-        progressText.setText("10 km");
-        pseudoSeekBar = (ImageView) findViewById(R.id.visibleSeekBar);
-        String uri = "@drawable/range10";
-        int imageResource = getResources().getIdentifier(uri, null, getPackageName());
-        Drawable res = getResources().getDrawable(imageResource);
-        pseudoSeekBar.setImageDrawable(res);
+        progressText.setText("0 km");
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
@@ -54,17 +52,8 @@ public class AskRange extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
                 progress = progressValue;
-                int barOffset = (progress + 5) / 10;
-                if (barOffset < 1) {
-                    barOffset = 1;
-                } else if (barOffset > 9) {
-                    barOffset = 9;
-                }
-                progressText.setText(barOffset * 10 + " km");
-                String uri = "@drawable/range" + barOffset + "0";
-                int imageResource = getResources().getIdentifier(uri, null, getPackageName());
-                Drawable res = getResources().getDrawable(imageResource);
-                pseudoSeekBar.setImageDrawable(res);
+                progressText.setText(progress + " km");
+                seekBar.setProgress(progress);
             }
 
             @Override
@@ -73,9 +62,9 @@ public class AskRange extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                //progressText.setText(progress + " km");
             }
         });
+
         final Button button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

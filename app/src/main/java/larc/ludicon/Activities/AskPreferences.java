@@ -225,11 +225,11 @@ public class AskPreferences extends Activity {
                         sport.setSelected(cb.isChecked());
                         if(cb.isChecked()) {
                             rl.setBackgroundColor(Color.parseColor("#777777"));
-                            ((ImageView)rl.getChildAt(2)).setImageBitmap(sport.icon);
+                            ((ImageView)rl.getChildAt(1)).setImageBitmap(sport.icon);
                             cb.setAlpha(1);
                         } else {
                             rl.setBackgroundColor(Color.parseColor("#bbbbbb"));
-                            ((ImageView)rl.getChildAt(2)).setImageBitmap(sport.desaturated_icon);
+                            ((ImageView)rl.getChildAt(1)).setImageBitmap(sport.desaturated_icon);
                             cb.setAlpha((float) 0.5);
                         }
                     }
@@ -239,8 +239,8 @@ public class AskPreferences extends Activity {
             }
 
             Sport sport = sportsList.get(position);
-            holder.text.setText("");
-            holder.box.setText(sport.name);
+            holder.text.setText(sport.name);
+            holder.box.setText("");
             holder.box.setChecked(sport.isChecked);
             holder.box.setTag(sport);
             if(holder.box.isChecked()) {

@@ -465,6 +465,9 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         } catch (SecurityException exc) {
             exc.printStackTrace();
         }
+        catch (Exception ex){
+            // the location is not any more initialized - lm is null
+        }
 
         // Sanity activities
         lm = null;
@@ -486,8 +489,9 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
             addressName = data.getStringExtra("address");
 
             String comment = data.getStringExtra("comment");
-
-            Toast.makeText(getApplication(), comment, Toast.LENGTH_LONG).show();
+            if (comment!=null && !comment.equalsIgnoreCase("")) {
+                Toast.makeText(getApplication(), comment, Toast.LENGTH_LONG).show();
+            }
         }
 
         try {
