@@ -145,6 +145,7 @@
         <activity
             android:name=".Activities.StatisticsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_statistics"
             android:parentActivityName=".Activities.MainActivity"
             android:theme="@style/FullscreenTheme" >
@@ -165,6 +166,7 @@
         <activity
             android:name=".Activities.RankingsActivity"
             android:label="@string/title_activity_rankings"
+            android:screenOrientation="portrait"
             android:parentActivityName=".Activities.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

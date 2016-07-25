@@ -253,10 +253,18 @@ public class FriendsActivity extends Activity {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.friends_layout, null);
 
+                view.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                        intent.putExtra("uid", list.get(position).uid);
+                        startActivity(intent);
+                    }
+                });
+
                 holder = new ViewHolder();
                 holder.textName = (TextView) view.findViewById(R.id.list_item_string);
                 holder.imageView = (ImageView) view.findViewById(R.id.profileImageView);
-                holder.moreButton = (ImageButton) view.findViewById(R.id.more_btn);
                 holder.chatButton = (ImageButton) view.findViewById(R.id.chat_btn);
                 holder.numberSports = (TextView) view.findViewById(R.id.numberSports);
 
@@ -277,17 +285,9 @@ public class FriendsActivity extends Activity {
 
             Picasso.with(context).load(list.get(position).ImageUrl).into(holder.imageView);
 
-            holder.numberSports.setText(list.get(position).numberOfSports);
-            // Buttons behaviour
-            holder.moreButton.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
-                    intent.putExtra("uid", list.get(position).uid);
-                    startActivity(intent);
-                }
-            });
+            holder.numberSports.setText("plays " + list.get(position).numberOfSports);
 
+            // Buttons behaviour
             holder.chatButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

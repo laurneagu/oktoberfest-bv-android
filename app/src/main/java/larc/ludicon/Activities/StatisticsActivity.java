@@ -25,6 +25,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -63,8 +64,8 @@ public class StatisticsActivity extends Activity {
 
     final ArrayList<EventStats> userEvents = new ArrayList<>();
 
-    final int[] eventsPerSport = new int[8];
-    final int[] pointsPerSport = new int[8];
+    final int[] eventsPerSport = new int[10];
+    final int[] pointsPerSport = new int[10];
 
     Map<String,Integer> sportsMap = new HashMap<String,Integer>();
 
@@ -93,6 +94,8 @@ public class StatisticsActivity extends Activity {
         sportsMap.put("tennis",5);
         sportsMap.put("cycling",6);
         sportsMap.put("jogging",7);
+        sportsMap.put("gym",8);
+        sportsMap.put("other",9);
     }
 
     private void getDateAndSport()
@@ -154,6 +157,7 @@ public class StatisticsActivity extends Activity {
         chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
         chart.getAxisLeft().setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
         chart.getAxisRight().setEnabled(false);
+        chart.getXAxis().setAxisMinValue(0);
         chart.getXAxis().setDrawGridLines(false);
         chart.getAxisLeft().setDrawGridLines(false);
         chart.getAxisRight().setDrawGridLines(false);
@@ -165,6 +169,9 @@ public class StatisticsActivity extends Activity {
         chart.animateXY(2000, 2000);
         chart.invalidate();
     }
+
+    private ArrayList<Integer> currUserSportIds = new ArrayList<>();
+
     private void displayStatistics()
     {
         final RecyclerView listOfSports = (RecyclerView) findViewById(R.id.listofSports);
@@ -184,9 +191,22 @@ public class StatisticsActivity extends Activity {
                         int imageResource = getResources().getIdentifier(uri, null, getPackageName());
                         Drawable res = getResources().getDrawable(imageResource);
                         sportsList.add(res);
+
+                        currUserSportIds.add(Integer.parseInt(sport.getValue().toString()));
                     }
                 }
                 listOfSports.setAdapter(new MyAdapter(sportsList));
+
+                StatsPerSportAdapter myadapter = new StatsPerSportAdapter(eventsPerSport, pointsPerSport, getApplicationContext());
+
+                ListView mylistView = (ListView) findViewById(R.id.statsPerSport);
+                if (mylistView != null)
+                    mylistView.setAdapter(myadapter);
+
+                justifyListViewHeightBasedOnChildren(mylistView);
+
+                final TextView totalPoints = (TextView) findViewById(R.id.totalPoints);
+                totalPoints.append(getTotalPoints());
             }
 
             @Override
@@ -194,16 +214,6 @@ public class StatisticsActivity extends Activity {
             }
         });
 
-        StatsPerSportAdapter myadapter = new StatsPerSportAdapter(eventsPerSport,pointsPerSport, getApplicationContext());
-
-        ListView mylistView = (ListView) findViewById(R.id.statsPerSport);
-        if (mylistView != null)
-            mylistView.setAdapter(myadapter);
-
-        justifyListViewHeightBasedOnChildren(mylistView);
-
-        final TextView totalPoints = (TextView)findViewById(R.id.totalPoints);
-        totalPoints.append(getTotalPoints());
     }
 
     private String getTotalPoints()
@@ -219,6 +229,7 @@ public class StatisticsActivity extends Activity {
         private Context context;
         int [] eventsPerSp;
         int [] pointsPerSp;
+        int count = 10;
 
         public StatsPerSportAdapter(int [] eventsPerS, int[] pointsPerS,  Context context) {
             this.eventsPerSp = eventsPerS;
@@ -228,7 +239,7 @@ public class StatisticsActivity extends Activity {
 
         @Override
         public int getCount() {
-            return 8;
+            return count;
         }
         @Override
         public Object getItem(int pos) {
@@ -266,15 +277,20 @@ public class StatisticsActivity extends Activity {
                 case 5 : sportLogo.setImageResource(R.drawable.tennis);sport = "tennis";      break;
                 case 6 : sportLogo.setImageResource(R.drawable.cycling);sport = "cycling";     break;
                 case 7 : sportLogo.setImageResource(R.drawable.jogging);sport = "jogging";     break;
+                case 8 : sportLogo.setImageResource(R.drawable.gym);sport = "gym";     break;
+                case 9 : sportLogo.setImageResource(R.drawable.other);sport = "other";     break;
                 default : break;
             }
 
+            //if(!currUserSportIds.contains(position)){
+                //view.setVisibility(View.INVISIBLE);
+                //view.setLayoutParams(new RelativeLayout.LayoutParams(0, 0));
+            //}
 
            //String uri = "@drawable/" + sport + ".png";
             //Log.v("SPORTDRAWABLE", uri);
 
-            //sportLogo.setImageResource( getResources().getIdentifier(uri, null, getPackageName()));
-
+            //sportLogo.setImageResource( getResources().getIdentifier(uri, null, getPackageName()))
             return view;
         }
     }
@@ -358,7 +374,7 @@ public class StatisticsActivity extends Activity {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_statistics);
 
-        for(int i = 0; i < 8; i++)
+        for(int i = 0; i < 10; i++)
         {
             eventsPerSport[i] = 0;
             pointsPerSport[i] = 0;
