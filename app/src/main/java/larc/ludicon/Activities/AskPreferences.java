@@ -240,6 +240,7 @@ public class AskPreferences extends Activity {
 
             Sport sport = sportsList.get(position);
             holder.text.setText(sport.name);
+            holder.text.setTextColor(getResources().getColor(R.color.white));
             holder.box.setText("");
             holder.box.setChecked(sport.isChecked);
             holder.box.setTag(sport);

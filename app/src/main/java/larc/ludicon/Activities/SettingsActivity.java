@@ -306,11 +306,11 @@ public class SettingsActivity extends Activity {
                         sport.setSelected(cb.isChecked());
                         if (cb.isChecked()) {
                             rl.setBackgroundColor(getResources().getColor(R.color.bg1));
-                            ((ImageView) rl.getChildAt(2)).setImageBitmap(sport.icon);
+                            ((ImageView) rl.getChildAt(1)).setImageBitmap(sport.icon);
                             cb.setAlpha((float) 0.9);
                         } else {
                             rl.setBackgroundColor(getResources().getColor(R.color.bg2));
-                            ((ImageView) rl.getChildAt(2)).setImageBitmap(sport.desaturated_icon);
+                            ((ImageView) rl.getChildAt(1)).setImageBitmap(sport.desaturated_icon);
                             cb.setAlpha((float) 0.7);
                         }
 
@@ -335,9 +335,9 @@ public class SettingsActivity extends Activity {
             //holder.box.setText(sport.name);
             holder.box.setChecked(sport.isChecked);
             holder.box.setTag(sport);
+            holder.text.setTextColor(getResources().getColor(R.color.white));
             if (holder.box.isChecked()) {
                 holder.rl.setBackgroundColor(getResources().getColor(R.color.bg1));
-               // holder.text.setTextColor(getResources().getColor(R.color.white));
                 holder.image.setImageBitmap(sport.icon);
                 holder.box.setTextColor(getResources().getColor(R.color.white));
                 holder.box.setAlpha((float) 0.9);

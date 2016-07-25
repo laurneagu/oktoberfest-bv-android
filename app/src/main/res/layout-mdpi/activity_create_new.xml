@@ -183,10 +183,23 @@
                 android:textStyle="bold"
                 android:textSize="20dp" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5dp"
+                android:text="Please tap on the map to choose the perfect place:"
+                android:textColor="#81878b"
+                android:id="@+id/locationHint"
+                android:layout_below="@+id/locationTB"
+                android:textStyle="italic"
+                android:textSize="10dp" />
+
             <fragment xmlns:android="http://schemas.android.com/apk/res/android"
                 android:name="com.google.android.gms.maps.MapFragment"
                 android:id="@+id/map"
-                android:layout_below="@+id/locationTB"
+                android:layout_below="@+id/locationHint"
+                android:layout_centerInParent="true"
                 android:layout_width="400dp"
                 android:layout_height="200dp"
                 android:layout_marginTop="10dp"
