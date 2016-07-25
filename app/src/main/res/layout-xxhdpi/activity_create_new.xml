@@ -48,47 +48,6 @@
         android:spinnerMode="dropdown"
         android:layout_marginBottom="10dp" />
 
-    <!-- EVENT PRIVACY -->
-
-    <LinearLayout android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:id="@+id/buttonsContainer"
-        android:layout_below="@+id/sports_spinner"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp">
-    <Button
-        android:id="@+id/publicBut"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Public"
-        android:layout_marginTop="10dp"
-        android:width="160dp"
-        android:height="20dp"
-        android:textAllCaps="false"
-        android:background="#0e64a6"
-        android:textColor="#FFFFFF"
-        android:onClick="onPrivacyButtonsClicked"
-        />
-    <Button
-        android:id="@+id/privateBut"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Private"
-        android:layout_marginTop="10dp"
-        android:width="160dp"
-        android:height="20dp"
-        android:textAllCaps="false"
-        android:layout_toRightOf="@+id/publicBut"
-        android:layout_marginLeft="7dp"
-        android:background="#0e64a6"
-        android:textColor="#FFFFFF"
-        android:alpha="0.5"
-        android:onClick="onPrivacyButtonsClicked"
-        />
-    </LinearLayout>
-
-
-
 <!--MAX PLAYERS-->
         <TextView
             android:layout_width="wrap_content"
@@ -98,7 +57,7 @@
             android:text="Maximum number of players"
             android:textColor="#81878b"
             android:id="@+id/MaxPlayers"
-            android:layout_below="@+id/buttonsContainer"
+            android:layout_below="@+id/sports_spinner"
             android:textStyle="bold"
             android:textSize="20dp" />
 

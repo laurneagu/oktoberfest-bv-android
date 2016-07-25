@@ -194,7 +194,7 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
         // TODO - Are these 2 lines important?
         //View v = spinner.getSelectedView();
         //((TextView)v).setTextColor(Color.parseColor("#000000"));
-
+/*
         // Set privacy of event
         String privacy = getIntent().getStringExtra("eventPrivacy");
         if ( privacy.equalsIgnoreCase("public"))
@@ -215,6 +215,7 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
             notselected = (TextView)findViewById(R.id.publicBut);
             notselected.setAlpha((float)0.7);
         }
+        */
         double longitude = Double.parseDouble(getIntent().getStringExtra("longitude"));
         double latitude = Double.parseDouble(getIntent().getStringExtra("latitude"));
         latLNG = new LatLng(latitude,longitude);
@@ -225,7 +226,7 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
         Button editBtn = (Button)findViewById(R.id.createEvent);
         editBtn.setText("Edit");
     }
-
+/*
     public void onPrivacyButtonsClicked(View view) {
         // Is the button now selected
         TextView selected, notselected;
@@ -247,6 +248,7 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
                 break;
         }
     }
+    */
     public boolean checkEventDateIsNotInPast(Date creationDate)
     {
         Date now = new Date();
@@ -328,7 +330,7 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
         Log.v("Name", User.firstName + User.lastName);
         //map.put("date",  java.text.DateFormat.getDateTimeInstance().format(calendar.getTime()));
         //Log.v("date", java.text.DateFormat.getDateTimeInstance().format(calendar.getTime()) );
-
+/*
         // Set privacy
         Button privacy = (Button) findViewById(R.id.publicBut);
         if (privacy.getAlpha() == 1) {
@@ -336,7 +338,8 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
         } else {
             map.put("privacy", "private");
         }
-
+*/
+        map.put("privacy", "public");
 
         // Set location
         final Map<String, Object> mapAux = new HashMap<>();

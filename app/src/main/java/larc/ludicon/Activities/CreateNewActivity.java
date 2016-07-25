@@ -201,7 +201,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         numberPicker.setMaxValue(50);
         numberPicker.setWrapSelectorWheel(false);
     }
-
+/*
     public void onPrivacyButtonsClicked(View view) {
         // Is the button now selected
         TextView selected,notselected;
@@ -223,6 +223,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
                 break;
         }
     }
+    */
     public boolean checkEventDateIsNotInPast(Date creationDate)
     {
         Date now = new Date();
@@ -306,13 +307,15 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         //Log.v("date", java.text.DateFormat.getDateTimeInstance().format(calendar.getTime()) );
 
         // Set privacy
+        /*
         Button privacy = (Button) findViewById(R.id.publicBut);
         if (privacy.getAlpha() == 1) {
             map.put("privacy", "public");
         } else {
             map.put("privacy", "private");
         }
-
+*/
+        map.put("privacy", "public");
 
         // Set location
         final Map<String, Object> mapAux = new HashMap<>();
