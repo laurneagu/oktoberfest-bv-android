@@ -448,14 +448,9 @@ public class MainActivity extends AppCompatActivity {
                                     ai.id = id;
                                     boolean mustAddEventToList = true;
                                     for (DataSnapshot details : dataSnapshot.getChildren()) {
+
                                         if (details.getKey().toString().equalsIgnoreCase("users")) {
-                                            int count = 0;
-
-                                            for (DataSnapshot user : details.getChildren()) {
-                                                count++;
-                                            }
-                                            ai.others = count;
-
+                                            ai.others = (int)details.getChildrenCount();
                                         }
                                         if (details.getKey().toString().equalsIgnoreCase("active")) {
                                             mustAddEventToList = Boolean.parseBoolean(details.getValue().toString());
@@ -797,7 +792,8 @@ public class MainActivity extends AppCompatActivity {
                             event.creatorName = details.getValue().toString();
 
                         if (details.getKey().toString().equalsIgnoreCase("users"))
-                            numberOfParticipants = details.getChildrenCount();
+                            event.noUsers = (int)details.getChildrenCount();
+                            //numberOfParticipants = details.getChildrenCount();
 
                         if (details.getKey().toString().equalsIgnoreCase("creatorImage"))
                             event.profileImageURL = details.getValue().toString();
@@ -855,7 +851,7 @@ public class MainActivity extends AppCompatActivity {
                     if (!favoriteSports.contains(event.sport))
                         mustAddEventToList = false;
 
-                    if ( numberOfParticipants == event.roomCapacity )
+                    if ( event.noUsers == event.roomCapacity )
                         mustAddEventToList = false;
 
                     // Get distance between last known location and event location
@@ -1186,7 +1182,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             holder.description.setText("\"" + list.get(position).description + "\"");
-            holder.players.setText( list.get(position).usersUID.size() + "/" + list.get(position).roomCapacity);
+            holder.players.setText( list.get(position).noUsers + "/" + list.get(position).roomCapacity);
 
 
             /*
@@ -1427,7 +1423,7 @@ public class MainActivity extends AppCompatActivity {
             else
                 holder.description.setText("\"" + list.get(position).description + "\"");
 
-            holder.players.setText( list.get(position).usersUID.size() + "/" + list.get(position).roomCapacity);
+            holder.players.setText( list.get(position).noUsers + "/" + list.get(position).roomCapacity);
 
             if(list.get(position) != null ) {
                 if(list.get(position).isOfficial==0){
