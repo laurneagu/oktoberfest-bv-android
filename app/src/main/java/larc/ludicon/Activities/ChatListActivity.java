@@ -41,6 +41,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import org.w3c.dom.Text;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -74,6 +76,7 @@ public class ChatListActivity extends Activity {
         String chatID;
         String userName;
         String friendPhoto;
+        String lastTimeOnline;
     }
     @Override
     public void onStart() {
@@ -169,6 +172,14 @@ public class ChatListActivity extends Activity {
                                     } else {
                                         chat.friendPhoto = "";
                                     }
+
+                                if  ((data.getKey()).compareTo("lastLogInTime") == 0)
+                                    if (data.getValue() != null) {
+                                        chat.lastTimeOnline=data.getValue().toString();
+                                    }
+                                else{
+                                        chat.lastTimeOnline="";
+                                    }
                             }
 
                             chatList.add(chat);
@@ -234,7 +245,8 @@ public class ChatListActivity extends Activity {
         class ViewHolder {
              TextView textName;
              ImageView imageView;
-            Button chatButton;
+              Button chatButton;
+             TextView lastLoginView;
         };
 
 
@@ -269,6 +281,8 @@ public class ChatListActivity extends Activity {
 
                 holder.textName = (TextView) view.findViewById(R.id.friend_name);
                 holder.imageView = (ImageView) view.findViewById(R.id.friend_photo);
+                holder.lastLoginView = (TextView) view.findViewById(R.id.lastOnline);
+
                 //holder.chatButton = (Button) view.findViewById(R.id.gotoChat);
 
                 view.setOnClickListener(new View.OnClickListener() {
@@ -301,6 +315,15 @@ public class ChatListActivity extends Activity {
             }
 
             holder.textName.setText(list.get(position).userName);
+
+            String lastOnline = list.get(position).lastTimeOnline;
+            lastOnline.replace(",","");
+            lastOnline.replace("PM","");
+            lastOnline.replace("AM","");
+            int ind = lastOnline.lastIndexOf(":");
+            lastOnline = lastOnline.substring(0,ind);
+
+            holder.lastLoginView.setText(lastOnline);
 
             if (list.get(position).friendPhoto != "") {
                 //new DownloadImageTask(imageView).execute(data.getValue().toString());

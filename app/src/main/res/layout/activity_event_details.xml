@@ -140,16 +140,27 @@
                 android:layout_column="2"
                 android:gravity="center_horizontal"
                 android:textColor="#0e3956" />
-
-
         </GridLayout>
 
 
+            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                android:name="com.google.android.gms.maps.MapFragment"
+                android:layout_row="6"
+                android:layout_column="2"
+                android:layout_below="@+id/frameLayout"
+                android:id="@+id/map"
+                android:layout_width="350dp"
+                android:layout_height="140dp"
+                android:layout_marginTop="30dp"
+
+                />
+            
         <larc.ludicon.Utils.CustomView.NonScrollListView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/listViewUsers"
-            android:layout_below="@+id/frameLayout"
+            android:layout_below="@+id/map"
+            android:layout_marginTop="5dp"
             android:layout_centerHorizontal="true"/>
 
         <RelativeLayout
@@ -255,6 +266,7 @@
                 android:layout_alignParentLeft="true"
                 android:visibility="invisible"
                  />
+
 
             <Button
                 style="?android:attr/buttonStyleSmall"

@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.Criteria;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,6 +34,12 @@ import android.widget.Toast;
 
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.DatabaseError;
@@ -62,10 +70,11 @@ import larc.ludicon.R;
 import larc.ludicon.UserInfo.User;
 import larc.ludicon.Utils.CustomView.NonScrollListView;
 import larc.ludicon.Utils.Event;
+import larc.ludicon.Utils.Location.ActivitiesLocationListener;
 import larc.ludicon.Utils.UserInfo;
 
 
-public class EventDetails extends Activity {
+public class EventDetails extends Activity implements OnMapReadyCallback {
 
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -76,6 +85,26 @@ public class EventDetails extends Activity {
     public static long participants = 0;
     public static int roomCapacity = 0;
     public static boolean doIparticipate = false;
+    private GoogleMap m_gmap;
+
+    @Override
+    public void onMapReady(GoogleMap map) {
+        m_gmap = map;
+        MapFragment mapFragment = (MapFragment) getFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                    @Override
+                    public void onMapClick(LatLng latLng) {
+                    }
+                });
+            }
+        });
+
+    }
+
     /**
      * Method that jumps to the MainActivity
      */
@@ -113,6 +142,10 @@ public class EventDetails extends Activity {
         initializeLeftSidePanel();
 
         User.setImage();
+
+        MapFragment mapFragment = (MapFragment) getFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
         // User picture and name for HEADER MENU
         final TextView userName = (TextView) findViewById(R.id.userName);
@@ -231,6 +264,14 @@ public class EventDetails extends Activity {
                                 longitude = eventData.getValue().toString();
                         }
 
+                        LatLng latLng = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
+
+                        m_gmap.clear();
+
+                        m_gmap.addMarker(new MarkerOptions()
+                                .position(latLng)
+                                .title("Event Venue"));
+                        m_gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
                     }
                 }
 
@@ -331,8 +372,8 @@ public class EventDetails extends Activity {
                 ShareLinkContent content = new ShareLinkContent.Builder()
                         .setContentUrl(Uri.parse("http://ludicon.info/"))
                         .setImageUrl(Uri.parse("http://www.ludicon.info/img/sports/jogging.png"))
-                                .setContentTitle("First post")
-                                .setContentDescription("Hello there ! This is first post in facebook")
+                                .setContentTitle("Activity on Ludicon")
+                                .setContentDescription("I will attend an event in Ludicon ! Let's go and play ! ")
                                 .build();
 
                 if (ShareDialog.canShow(ShareLinkContent.class) == true)
