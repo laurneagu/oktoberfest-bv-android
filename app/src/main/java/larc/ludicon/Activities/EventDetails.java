@@ -372,8 +372,8 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
                 ShareLinkContent content = new ShareLinkContent.Builder()
                         .setContentUrl(Uri.parse("http://ludicon.info/"))
                         .setImageUrl(Uri.parse("http://www.ludicon.info/img/sports/jogging.png"))
-                                .setContentTitle("First post")
-                                .setContentDescription("Hello there ! This is first post in facebook")
+                                .setContentTitle("Activity on Ludicon")
+                                .setContentDescription("I will attend an event in Ludicon ! Let's go and play ! ")
                                 .build();
 
                 if (ShareDialog.canShow(ShareLinkContent.class) == true)

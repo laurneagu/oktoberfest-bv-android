@@ -38,6 +38,9 @@ import larc.ludicon.Adapters.LeftSidePanelAdapter;
 import larc.ludicon.R;
 import larc.ludicon.UserInfo.ActivityInfo;
 import larc.ludicon.UserInfo.User;
+import larc.ludicon.Utils.Sport;
+import larc.ludicon.Utils.SportOfUserDetails;
+
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -52,6 +55,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 
 public class StatisticsActivity extends Activity {
@@ -64,8 +68,10 @@ public class StatisticsActivity extends Activity {
 
     final ArrayList<EventStats> userEvents = new ArrayList<>();
 
-    final int[] eventsPerSport = new int[10];
-    final int[] pointsPerSport = new int[10];
+    //final int[] eventsPerSport = new int[10];
+    //final int[] pointsPerSport = new int[10];
+
+    final Map<Integer,SportOfUserDetails> sportOfUserDetails = new HashMap<Integer,SportOfUserDetails>();
 
     Map<String,Integer> sportsMap = new HashMap<String,Integer>();
 
@@ -123,8 +129,22 @@ public class StatisticsActivity extends Activity {
                             int sportID = sportsMap.get(data.getValue().toString());
                             if ( userEvents.get(j).points != 0 )
                             {
-                                eventsPerSport[sportID] ++;
-                                pointsPerSport[sportID] += userEvents.get(j).points;
+                                //eventsPerSport[sportID] ++;
+                                //pointsPerSport[sportID] += userEvents.get(j).points;
+
+                                if(sportOfUserDetails.get(sportID)==null){
+                                    SportOfUserDetails soud = new SportOfUserDetails();
+                                    soud.eventsCreated=1;
+                                    soud.pointsReceived =  userEvents.get(j).points;
+
+                                    sportOfUserDetails.put(sportID,soud);
+                                }
+                                else{
+                                    SportOfUserDetails soud = sportOfUserDetails.get(sportID);
+                                    soud.eventsCreated ++;
+                                    soud.pointsReceived += userEvents.get(j).points;
+                                }
+
                             }
                         }
                         if (data.getKey().compareToIgnoreCase("date") == 0) {
@@ -192,12 +212,25 @@ public class StatisticsActivity extends Activity {
                         Drawable res = getResources().getDrawable(imageResource);
                         sportsList.add(res);
 
-                        currUserSportIds.add(Integer.parseInt(sport.getValue().toString()));
+                        int sportId = Integer.parseInt(sport.getValue().toString());
+                                currUserSportIds.add(sportId);
+
+                        if(sportOfUserDetails.get(sportId)==null){
+                            SportOfUserDetails soud = new SportOfUserDetails();
+                            soud.eventsCreated=0;
+                            soud.pointsReceived =  0;
+
+                            sportOfUserDetails.put(sportId,soud);
+                        }
                     }
                 }
                 listOfSports.setAdapter(new MyAdapter(sportsList));
 
-                StatsPerSportAdapter myadapter = new StatsPerSportAdapter(eventsPerSport, pointsPerSport, getApplicationContext());
+                // sort the keys
+                Map<Integer, SportOfUserDetails> treeMap = new TreeMap<Integer, SportOfUserDetails>(sportOfUserDetails);
+
+                //StatsPerSportAdapter myadapter = new StatsPerSportAdapter(eventsPerSport, pointsPerSport, getApplicationContext());
+                StatsPerSportAdapter myadapter = new StatsPerSportAdapter(treeMap, getApplicationContext());
 
                 ListView mylistView = (ListView) findViewById(R.id.statsPerSport);
                 if (mylistView != null)
@@ -227,23 +260,21 @@ public class StatisticsActivity extends Activity {
     public class StatsPerSportAdapter extends BaseAdapter implements ListAdapter {
 
         private Context context;
-        int [] eventsPerSp;
-        int [] pointsPerSp;
-        int count = 10;
+        private Map<Integer, SportOfUserDetails> m_sportOfUserDetails;
+        private int indexSport=0;
 
-        public StatsPerSportAdapter(int [] eventsPerS, int[] pointsPerS,  Context context) {
-            this.eventsPerSp = eventsPerS;
-            this.pointsPerSp = pointsPerS;
+        public StatsPerSportAdapter(Map<Integer,SportOfUserDetails> sportOfUserDetails,  Context context) {
+            this.m_sportOfUserDetails = sportOfUserDetails;
             this.context = context;
         }
 
         @Override
         public int getCount() {
-            return count;
+            return m_sportOfUserDetails.size();
         }
         @Override
         public Object getItem(int pos) {
-            return eventsPerSp[pos];
+            return m_sportOfUserDetails.get(pos);
         }
         @Override
         public long getItemId(int pos) {
@@ -262,12 +293,21 @@ public class StatisticsActivity extends Activity {
             final TextView totalEvents = (TextView) view.findViewById(R.id.totalEventsAttendedPerSport);
             final ImageView sportLogo = (ImageView) view.findViewById(R.id.sport_logo);
 
+            if(position==0) indexSport=0;
 
-            totalPoints.setText("Total points: " + pointsPerSp[position]);
-            totalEvents.setText("Total events attended: " + eventsPerSp[position]);
+            // not very christianity solution, skips until gets my sports - the position knows though the correct number
+            // -- how many there are
+            SportOfUserDetails soud = m_sportOfUserDetails.get(indexSport);
+            while(soud==null && indexSport <= 9) {
+                indexSport++;
+                soud = m_sportOfUserDetails.get(indexSport);
+            }
+
+            totalPoints.setText("Total points: " + soud.pointsReceived);
+            totalEvents.setText("Total events attended: " + soud.eventsCreated);
 
             String sport = "";
-            switch(position)
+            switch(indexSport)
             {
                 case 0 : sportLogo.setImageResource(R.drawable.football); sport = "football";    break;
                 case 1 : sportLogo.setImageResource(R.drawable.volley);sport = "volley";      break;
@@ -281,6 +321,8 @@ public class StatisticsActivity extends Activity {
                 case 9 : sportLogo.setImageResource(R.drawable.other);sport = "other";     break;
                 default : break;
             }
+
+            indexSport++;
 
             //if(!currUserSportIds.contains(position)){
                 //view.setVisibility(View.INVISIBLE);
@@ -373,12 +415,6 @@ public class StatisticsActivity extends Activity {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_statistics);
-
-        for(int i = 0; i < 10; i++)
-        {
-            eventsPerSport[i] = 0;
-            pointsPerSport[i] = 0;
-        }
 
         addSports();
 

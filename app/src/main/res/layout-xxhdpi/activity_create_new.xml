@@ -62,15 +62,15 @@
             android:textSize="20dp" />
 
             <NumberPicker
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_below="@+id/MaxPlayers"
                 android:id="@+id/maxPlayersInput"
-                android:layout_centerInParent="true"
+                android:layout_below="@+id/MaxPlayers"
+                android:layout_marginTop="10dp"
+                android:solidColor="@android:color/secondary_text_dark_nodisable"
                 android:orientation="vertical"
                 android:scrollIndicators="top|bottom" />
-
 
 
             <!--DESCRIPTION-->

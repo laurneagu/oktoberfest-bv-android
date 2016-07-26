@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
@@ -165,6 +166,8 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
        // Clear auto scroll
         final EditText editTextDesc = (EditText) findViewById(R.id.DescriptionInput);
+        editTextDesc.getBackground().setColorFilter(Color.parseColor("#D3D3D3"), PorterDuff.Mode.MULTIPLY);
+
         ScrollView scroll = (ScrollView)findViewById(R.id.scroll);
         scroll.setOnTouchListener(new View.OnTouchListener() {
 
