@@ -14,10 +14,10 @@
 
         <Button
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="15dp"
             android:background="#8f2525"
             android:text="Log out"
-            android:textSize="20dp"
+            android:textSize="10dp"
             android:id="@+id/logout"
             android:layout_alignParentBottom="true"
             android:textColor="#ffffff"
@@ -50,7 +50,7 @@
             android:textColor="#2275b5" />
 
         <GridView
-            android:paddingTop="50dp"
+            android:paddingTop="40dp"
             android:paddingLeft="50dp"
             android:paddingRight="50dp"
             android:layout_width="wrap_content"
@@ -66,15 +66,6 @@
             android:layout_above="@+id/textView8" />
 
 
-        <SeekBar
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/seekBar2"
-            android:layout_above="@+id/progressText"
-            android:minHeight="3dip"
-            android:maxHeight="3dip"
-            android:layout_margin="5dip"
-            android:layout_centerHorizontal="true" />
 
 
         <ImageView
@@ -87,7 +78,7 @@
 
 
         <TextView
-            android:paddingTop="10dp"
+            android:paddingTop="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
@@ -109,13 +100,24 @@
             android:layout_alignEnd="@+id/textView7"
             android:textColor="#176fb2" />
 
+
+        <SeekBar
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/seekBar2"
+            android:layout_above="@+id/progressText"
+            android:minHeight="3dip"
+            android:maxHeight="3dip"
+            android:layout_margin="5dip"
+            android:layout_centerHorizontal="true" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:id="@+id/progressText"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="40dp"
+            android:layout_marginBottom="0dp"
             android:textColor="#1971b4"
             android:layout_above="@+id/logout" />
 
