@@ -1173,9 +1173,9 @@ public class MainActivity extends AppCompatActivity {
 
             holder.icon.setImageDrawable(res);
             holder.firstPart.setText("Will play " + list.get(position).sport);
-            if ((list.get(position).usersUID.size() - 1) > 1) {
-                holder.secondPart.setText(" with " + (list.get(position).usersUID.size() - 1) + " others");
-            } else if ((list.get(position).usersUID.size() - 1) == 1) {
+            if ((list.get(position).noUsers - 1) > 1) {
+                holder.secondPart.setText(" with " + (list.get(position).noUsers - 1) + " others");
+            } else if ((list.get(position).noUsers - 1) == 1) {
                 holder.secondPart.setText(" with 1 other");
             } else {
                 holder.secondPart.setText(" with no others");
@@ -1402,9 +1402,9 @@ public class MainActivity extends AppCompatActivity {
 
             holder.icon.setImageDrawable(res);
             holder.firstPart.setText("Will play " + list.get(position).sport);
-            if ((list.get(position).usersUID.size() - 1) > 1) {
-                holder.secondPart.setText(" with " + (list.get(position).usersUID.size() - 1) + " others");
-            } else if ((list.get(position).usersUID.size() - 1) == 1) {
+            if ((list.get(position).noUsers - 1) > 1) {
+                holder.secondPart.setText(" with " + (list.get(position).noUsers - 1) + " others");
+            } else if ((list.get(position).noUsers - 1) == 1) {
                 holder.secondPart.setText(" with 1 other");
             } else {
                 holder.secondPart.setText(" with no others");
