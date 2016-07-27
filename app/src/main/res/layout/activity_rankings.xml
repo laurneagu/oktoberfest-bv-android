@@ -52,12 +52,20 @@
                 android:textColor="#0C3855"
                 android:id="@+id/myRank" />
         </LinearLayout>
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/linearLay"
+            android:background="@drawable/rankswinners"
+            android:id="@+id/podiumArea">
+
         <ImageView
             android:layout_width="300dp"
             android:layout_height="150dp"
             android:paddingTop="20dp"
-            android:layout_below="@id/linearLay"
             android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
             android:src="@drawable/podium"
             android:id="@+id/imageView2" />
 
@@ -66,7 +74,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Locul 1"
-            android:textColor="#0C3855"
+            android:textColor="#000000"
             android:id="@+id/locul1"
             android:maxLines="3"
             android:textStyle="bold"
@@ -79,32 +87,37 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Locul 3"
-            android:textColor="#0C3855"
+            android:textColor="#cd7f32"
             android:id="@+id/locul3"
             android:maxLines="3"
             android:singleLine="false"
             android:textStyle="bold"
-            android:layout_below="@+id/locul1"
-            android:layout_alignRight="@+id/imageView2"
-            android:layout_alignEnd="@+id/imageView2" />
+            android:layout_toRightOf="@+id/locul1"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="30dp"
+
+             />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Locul 2"
-            android:textColor="#0C3855"
+            android:textColor="#c0c0c0"
             android:id="@+id/locul2"
             android:maxLines="3"
             android:singleLine="false"
             android:textStyle="bold"
-            android:layout_below="@+id/locul1"
-            android:layout_alignLeft="@+id/imageView2"
-            android:layout_alignStart="@+id/imageView2" />
+            android:layout_toLeftOf="@+id/locul1"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="25dp"
+             />
+
+        </RelativeLayout>
         <ListView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/imageView2"
+            android:layout_below="@+id/podiumArea"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:id="@+id/rankingsList">

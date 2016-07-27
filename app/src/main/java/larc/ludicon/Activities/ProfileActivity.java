@@ -199,7 +199,7 @@ public class ProfileActivity extends Activity {
         });
 
        final ArrayList<ComparePals> compareArray = new ArrayList<>();
-        int n = 8;
+        int n = 10;
         for (int i = 0; i < n; i++) compareArray.add(new ComparePals(0, 0, i));
         getPoints("football",0,User.uid,uid,compareArray);
         getPoints("volley",1,User.uid,uid,compareArray);
@@ -209,6 +209,8 @@ public class ProfileActivity extends Activity {
         getPoints("tennis",5,User.uid,uid,compareArray);
         getPoints("cycling",6,User.uid,uid,compareArray);
         getPoints("jogging",7,User.uid,uid,compareArray);
+        getPoints("gym",8,User.uid,uid,compareArray);
+        getPoints("other",9,User.uid,uid,compareArray);
 
         try{
             Thread.sleep(300,1);
@@ -302,6 +304,8 @@ public class ProfileActivity extends Activity {
                 case 5 : sportLogo.setImageResource(R.drawable.tennis);break;
                 case 6 : sportLogo.setImageResource(R.drawable.cycling);break;
                 case 7 : sportLogo.setImageResource(R.drawable.jogging);break;
+                case 8 : sportLogo.setImageResource(R.drawable.gym);break;
+                case 9 : sportLogo.setImageResource(R.drawable.other);break;
                 default : break;
             }
 

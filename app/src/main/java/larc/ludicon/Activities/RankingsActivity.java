@@ -380,6 +380,8 @@ public class RankingsActivity extends Activity {
         sportName.put(5,"tennis");
         sportName.put(6,"cycling");
         sportName.put(7,"jogging");
+        sportName.put(8,"gym");
+        sportName.put(9,"other");
     }
 
     // Left side menu
