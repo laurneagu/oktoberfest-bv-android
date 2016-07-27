@@ -66,6 +66,7 @@ import larc.ludicon.Utils.Event;
 import larc.ludicon.Utils.Location.GPS_Positioning;
 import larc.ludicon.Utils.Location.ActivitiesLocationListener;
 import larc.ludicon.Utils.util.UniqueIDCreator;
+import larc.ludicon.Utils.util.Utils;
 
 public class EditEventActivity extends Activity implements OnMapReadyCallback {
 
@@ -135,6 +136,7 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        try{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_new);
 
@@ -225,6 +227,10 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
         hello_message.setText("Edit Event");
         Button editBtn = (Button)findViewById(R.id.createEvent);
         editBtn.setText("Edit");
+        }
+        catch(Exception exc) {
+            Utils.quit();
+        }
     }
 /*
     public void onPrivacyButtonsClicked(View view) {

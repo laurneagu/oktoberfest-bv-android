@@ -62,6 +62,7 @@ import larc.ludicon.Adapters.LeftSidePanelAdapter;
 import larc.ludicon.R;
 import larc.ludicon.UserInfo.User;
 import larc.ludicon.Utils.Event;
+import larc.ludicon.Utils.util.Utils;
 
 public class FriendsActivity extends Activity {
 
@@ -76,6 +77,7 @@ public class FriendsActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        try{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends);
         TextView header = (TextView) findViewById(R.id.hello_message_activity);
@@ -143,6 +145,10 @@ public class FriendsActivity extends Activity {
         ).executeAsync();
 
 
+        }
+        catch(Exception exc) {
+            Utils.quit();
+        }
 
     }
 

@@ -71,6 +71,7 @@ import larc.ludicon.Utils.Event;
 import larc.ludicon.Utils.Location.GPS_Positioning;
 import larc.ludicon.Utils.Location.ActivitiesLocationListener;
 import larc.ludicon.Utils.util.UniqueIDCreator;
+import larc.ludicon.Utils.util.Utils;
 
 public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
@@ -239,6 +240,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
     }
 
     public void OnCreateEvent(View view) {
+        try{
         DatePicker datePicker = (DatePicker) findViewById(R.id.date_picker);
         TimePicker timePicker = (TimePicker) findViewById(R.id.time_picker);
 
@@ -445,6 +447,10 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
             }
         });
+        }
+        catch(Exception exc) {
+            Utils.quit();
+        }
     }
 
     /**

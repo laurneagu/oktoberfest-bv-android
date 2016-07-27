@@ -45,6 +45,7 @@ import larc.ludicon.Adapters.LeftPanelItemClicker;
 import larc.ludicon.Adapters.LeftSidePanelAdapter;
 import larc.ludicon.R;
 import larc.ludicon.UserInfo.User;
+import larc.ludicon.Utils.util.Utils;
 
 public class RankingsActivity extends Activity {
 
@@ -55,7 +56,7 @@ public class RankingsActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+        try{
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_rankings);
@@ -117,6 +118,10 @@ public class RankingsActivity extends Activity {
             }
 
         });
+        }
+        catch(Exception exc) {
+            Utils.quit();
+        }
     }
 
     private class Contestant{
@@ -125,7 +130,7 @@ public class RankingsActivity extends Activity {
         String id;
     }
     private void processRankings(String sport)
-    {
+    { try{
         DatabaseReference pointsRef = User.firebaseRef.child("points").child(sport);
 
         final ArrayList<Contestant>  contestants = new ArrayList<>();
@@ -153,6 +158,10 @@ public class RankingsActivity extends Activity {
             public void onCancelled(DatabaseError firebaseError) {
             }
         });
+    }
+    catch(Exception exc) {
+        Utils.quit();
+    }
     }
 
     private void showRankings( ArrayList<Contestant>  contestants)
