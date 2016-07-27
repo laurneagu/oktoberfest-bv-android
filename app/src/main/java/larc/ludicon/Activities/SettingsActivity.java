@@ -50,6 +50,7 @@ import larc.ludicon.Adapters.LeftSidePanelAdapter;
 import larc.ludicon.R;
 import larc.ludicon.UserInfo.User;
 import larc.ludicon.Utils.Sport;
+import larc.ludicon.Utils.util.Utils;
 
 /**
  * Created by Laur User on 12/29/2015.
@@ -75,74 +76,75 @@ public class SettingsActivity extends Activity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.settings);
+        try {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.settings);
 
-        initializeLeftSidePanel();
+            initializeLeftSidePanel();
 
-        User.setImage();
+            User.setImage();
 
-        // User picture and name for Left side Panel
-        TextView userName = (TextView) findViewById(R.id.userName);
-        userName.setText(User.getFirstName(getApplicationContext()) + " " + User.getLastName(getApplicationContext()));
+            // User picture and name for Left side Panel
+            TextView userName = (TextView) findViewById(R.id.userName);
+            userName.setText(User.getFirstName(getApplicationContext()) + " " + User.getLastName(getApplicationContext()));
 
-        ImageView userPic = (ImageView) findViewById(R.id.userPicture);
-        Drawable d = new BitmapDrawable(getResources(), User.image);
-        userPic.setImageDrawable(d);
-        userPic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
-                SettingsActivity.this.startActivity(mainIntent);
-            }
-        });
+            ImageView userPic = (ImageView) findViewById(R.id.userPicture);
+            Drawable d = new BitmapDrawable(getResources(), User.image);
+            userPic.setImageDrawable(d);
+            userPic.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                    SettingsActivity.this.startActivity(mainIntent);
+                }
+            });
 
-        rangeRef.addListenerForSingleValueEvent(new ValueEventListener() { // get all sports
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                savedProgress = Integer.parseInt(snapshot.getValue().toString());
-                progressText = (TextView) findViewById(R.id.progressText);
-                progressText.setText(savedProgress + " km");
-                seekBar = (SeekBar) findViewById(R.id.seekBar2);
-                seekBar.setProgress(savedProgress);
-            }
+            rangeRef.addListenerForSingleValueEvent(new ValueEventListener() { // get all sports
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    savedProgress = Integer.parseInt(snapshot.getValue().toString());
+                    progressText = (TextView) findViewById(R.id.progressText);
+                    progressText.setText(savedProgress + " km");
+                    seekBar = (SeekBar) findViewById(R.id.seekBar2);
+                    seekBar.setProgress(savedProgress);
+                }
 
-            @Override
-            public void onCancelled(DatabaseError firebaseError) {
-            }
-        });
+                @Override
+                public void onCancelled(DatabaseError firebaseError) {
+                }
+            });
 
-        progressText = (TextView) findViewById(R.id.progressText);
-        progressText.setText(savedProgress + " km");
-        seekBar = (SeekBar) findViewById(R.id.seekBar2);
-        seekBar.setProgress(savedProgress);
-        seekBar.setProgressDrawable(getResources()
-                .getDrawable(R.drawable.progress_bar));
+            progressText = (TextView) findViewById(R.id.progressText);
+            progressText.setText(savedProgress + " km");
+            seekBar = (SeekBar) findViewById(R.id.seekBar2);
+            seekBar.setProgress(savedProgress);
+            seekBar.setProgressDrawable(getResources()
+                    .getDrawable(R.drawable.progress_bar));
 
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
-            int progress = 0;
+                int progress = 0;
 
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
-                progress = progressValue;
-                rangeRef.setValue(progress);
-                progressText.setText(progress + " km");
-            }
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
+                    progress = progressValue;
+                    rangeRef.setValue(progress);
+                    progressText.setText(progress + " km");
+                }
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+                }
 
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
-        });
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+                }
+            });
 
-        displayListView();
+            displayListView();
 
-        TextView hello_message = (TextView) findViewById(R.id.hello_message_activity);
-        hello_message.setText("Settings");
+            TextView hello_message = (TextView) findViewById(R.id.hello_message_activity);
+            hello_message.setText("Settings");
 
         /*// Save button
         saveButton = (Button) findViewById(R.id.saveButton);
@@ -165,69 +167,72 @@ public class SettingsActivity extends Activity {
         });
         */
 
-        // Logout button
-        Button logout = (Button) findViewById(R.id.logout);
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // logout from facebook
-                LoginManager.getInstance().logOut();
-                //clear UserInfo when logout
-                User.clear(getApplicationContext());
-                //go back to IntroActivity
-                Intent goToIntro = new Intent(getApplicationContext(), IntroActivity.class);
-                goToIntro.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(goToIntro);
-            }
-        });
-
+            // Logout button
+            Button logout = (Button) findViewById(R.id.logout);
+            logout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // logout from facebook
+                    LoginManager.getInstance().logOut();
+                    //clear UserInfo when logout
+                    User.clear(getApplicationContext());
+                    //go back to IntroActivity
+                    Intent goToIntro = new Intent(getApplicationContext(), IntroActivity.class);
+                    goToIntro.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(goToIntro);
+                }
+            });
+        }
+        catch(Exception exc) {
+            Utils.quit();
+        }
     }
 
     private void displayListView() {
         //Array list of sports : name, id, isChecked, icon
         // Asa iau datele din cloud
 
+        try {
+            final HashMap<String, Boolean> exist = new HashMap<String, Boolean>();
+            userSports.addListenerForSingleValueEvent(new ValueEventListener() { // get user sports
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    for (DataSnapshot sport : snapshot.getChildren()) {
+                        String uri = "@drawable/" + sport.getKey().toLowerCase().replace(" ", "");
 
-        final HashMap<String, Boolean> exist = new HashMap<String, Boolean>();
-        userSports.addListenerForSingleValueEvent(new ValueEventListener() { // get user sports
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                for (DataSnapshot sport : snapshot.getChildren()) {
-                    String uri = "@drawable/" + sport.getKey().toLowerCase().replace(" ", "");
+                        int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+                        Drawable res1 = getResources().getDrawable(imageResource);
+                        uri = "@drawable/desaturated_" + sport.getKey().toLowerCase().replace(" ", "");
 
-                    int imageResource = getResources().getIdentifier(uri, null, getPackageName());
-                    Drawable res1 = getResources().getDrawable(imageResource);
-                    uri = "@drawable/desaturated_" + sport.getKey().toLowerCase().replace(" ", "");
+                        imageResource = getResources().getIdentifier(uri, null, getPackageName());
+                        Drawable res2 = getResources().getDrawable(imageResource);
+                        sportsList.add(new Sport(sport.getKey(), sport.getValue().toString(),
+                                true, ((BitmapDrawable) res1).getBitmap(), ((BitmapDrawable) res2).getBitmap()));
+                        exist.put(sport.getKey(), true);
+                    }
 
-                    imageResource = getResources().getIdentifier(uri, null, getPackageName());
-                    Drawable res2 = getResources().getDrawable(imageResource);
-                    sportsList.add(new Sport(sport.getKey(), sport.getValue().toString(),
-                            true, ((BitmapDrawable) res1).getBitmap(), ((BitmapDrawable) res2).getBitmap()));
-                    exist.put(sport.getKey(), true);
-                }
+                    sportRed.addListenerForSingleValueEvent(new ValueEventListener() { // get the rest of the sports
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
 
-                sportRed.addListenerForSingleValueEvent(new ValueEventListener() { // get the rest of the sports
-                    @Override
-                    public void onDataChange(DataSnapshot snapshot) {
-
-                        for (DataSnapshot sport : snapshot.getChildren()) {
-                            if (!exist.containsKey(sport.getKey())) {
-                                String uri = "@drawable/" + sport.getKey();
-                                int imageResource = getResources().getIdentifier(uri, null, getPackageName());
-                                Drawable res1 = getResources().getDrawable(imageResource);
-                                uri = "@drawable/desaturated_" + sport.getKey();
-                                imageResource = getResources().getIdentifier(uri, null, getPackageName());
-                                Drawable res2 = getResources().getDrawable(imageResource);
-                                sportsList.add(new Sport(sport.getKey(), sport.child("id").getValue().toString(),
-                                        false, ((BitmapDrawable) res1).getBitmap(), ((BitmapDrawable) res2).getBitmap()));
+                            for (DataSnapshot sport : snapshot.getChildren()) {
+                                if (!exist.containsKey(sport.getKey())) {
+                                    String uri = "@drawable/" + sport.getKey();
+                                    int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+                                    Drawable res1 = getResources().getDrawable(imageResource);
+                                    uri = "@drawable/desaturated_" + sport.getKey();
+                                    imageResource = getResources().getIdentifier(uri, null, getPackageName());
+                                    Drawable res2 = getResources().getDrawable(imageResource);
+                                    sportsList.add(new Sport(sport.getKey(), sport.child("id").getValue().toString(),
+                                            false, ((BitmapDrawable) res1).getBitmap(), ((BitmapDrawable) res2).getBitmap()));
+                                }
                             }
-                        }
 
-                        //create an ArrayAdaptor from the Sport Array
-                        dataAdapter = new MyCustomAdapter(getApplicationContext(), R.layout.sport_info, sportsList);
-                        GridView gridView = (GridView) findViewById(R.id.gridView);
-                        // Assign adapter to ListView
-                        gridView.setAdapter(dataAdapter);
+                            //create an ArrayAdaptor from the Sport Array
+                            dataAdapter = new MyCustomAdapter(getApplicationContext(), R.layout.sport_info, sportsList);
+                            GridView gridView = (GridView) findViewById(R.id.gridView);
+                            // Assign adapter to ListView
+                            gridView.setAdapter(dataAdapter);
 
 /*
                         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -242,23 +247,26 @@ public class SettingsActivity extends Activity {
 
                             }
                         });*/
-                    }
+                        }
 
-                    @Override
-                    public void onCancelled(DatabaseError firebaseError) {
-                        //User.firebaseRef.child("msge").setValue("The read failed: " + firebaseError.getMessage());
-                    }
-                });
-
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError firebaseError) {
-            }
-        });
+                        @Override
+                        public void onCancelled(DatabaseError firebaseError) {
+                            //User.firebaseRef.child("msge").setValue("The read failed: " + firebaseError.getMessage());
+                        }
+                    });
 
 
+                }
+
+                @Override
+                public void onCancelled(DatabaseError firebaseError) {
+                }
+            });
+
+        }
+        catch(Exception exc) {
+            Utils.quit();
+        }
     }
 
     private class MyCustomAdapter extends ArrayAdapter<Sport> {

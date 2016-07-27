@@ -46,6 +46,7 @@ import larc.ludicon.Adapters.LeftPanelItemClicker;
 import larc.ludicon.Adapters.LeftSidePanelAdapter;
 import larc.ludicon.R;
 import larc.ludicon.UserInfo.User;
+import larc.ludicon.Utils.util.Utils;
 
 
 public class ProfileActivity extends Activity {
@@ -75,156 +76,161 @@ public class ProfileActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+        try {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_profile);
 
-        mDrawerList = (ListView) findViewById(R.id.leftMenu);
-        initializeLeftSidePanel();
+            mDrawerList = (ListView) findViewById(R.id.leftMenu);
+            initializeLeftSidePanel();
 
-        User.setImage();
+            User.setImage();
 
-        // User picture and name for HEADER MENU
-        TextView userName = (TextView) findViewById(R.id.userName);
-        userName.setText(User.getFirstName(getApplicationContext()) + " " + User.getLastName(getApplicationContext()));
+            // User picture and name for HEADER MENU
+            TextView userName = (TextView) findViewById(R.id.userName);
+            userName.setText(User.getFirstName(getApplicationContext()) + " " + User.getLastName(getApplicationContext()));
 
-        ImageView userPic = (ImageView) findViewById(R.id.userPicture);
-        Drawable d = new BitmapDrawable(getResources(), User.image);
-        userPic.setImageDrawable(d);
-        userPic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
-                ProfileActivity.this.startActivity(mainIntent);
-            }
-        });
+            ImageView userPic = (ImageView) findViewById(R.id.userPicture);
+            Drawable d = new BitmapDrawable(getResources(), User.image);
+            userPic.setImageDrawable(d);
+            userPic.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                    ProfileActivity.this.startActivity(mainIntent);
+                }
+            });
 
-        Bundle extras = getIntent().getExtras();
-        final String uid = extras.getString("uid");
+            Bundle extras = getIntent().getExtras();
+            final String uid = extras.getString("uid");
 
-        DatabaseReference userRef = User.firebaseRef.child("users").child(uid).child("name"); // check user
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
+            DatabaseReference userRef = User.firebaseRef.child("users").child(uid).child("name"); // check user
+            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
 
-                if (snapshot.getValue() != null) {
-                    TextView name = (TextView) findViewById(R.id.hello_message_activity);
-                    name.setText(snapshot.getValue().toString());
+                    if (snapshot.getValue() != null) {
+                        TextView name = (TextView) findViewById(R.id.hello_message_activity);
+                        name.setText(snapshot.getValue().toString());
 
-                    DatabaseReference userRef = User.firebaseRef.child("users").child(uid).child("profileImageURL");
+                        DatabaseReference userRef = User.firebaseRef.child("users").child(uid).child("profileImageURL");
+                        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot snapshot) {
+                                if (snapshot.getValue() != null) {
+                                    ImageView imageView = (ImageView) findViewById(R.id.profileImageView);
+                                    new DownloadImageTask(imageView).execute(snapshot.getValue().toString());
+                                } else {
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError firebaseError) {
+                            }
+                        });
+                    } else {
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError firebaseError) {
+                }
+            });
+
+            final RecyclerView listOfSports = (RecyclerView) findViewById(R.id.listOfSports);
+            LinearLayoutManager layoutManager
+                    = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+            listOfSports.setLayoutManager(layoutManager);
+
+            DatabaseReference userSports = User.firebaseRef.child("users").child(uid).child("sports");
+            final ArrayList<Drawable> sportsList = new ArrayList<>();
+
+            ImageButton chatButton = (ImageButton) findViewById(R.id.chatbutton);
+            chatButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    DatabaseReference userRef = User.firebaseRef.child("users").child(uid).child("chats");
                     userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
-                            if (snapshot.getValue() != null) {
-                                ImageView imageView = (ImageView) findViewById(R.id.profileImageView);
-                                new DownloadImageTask(imageView).execute(snapshot.getValue().toString());
+                            if (snapshot == null) {
+                                Intent intent = new Intent(getApplicationContext(), ChatTemplateActivity.class);
+                                intent.putExtra("uid", uid);
+                                intent.putExtra("firstConnection", true);
+                                startActivity(intent);
                             } else {
+                                for (DataSnapshot data : snapshot.getChildren()) {
+                                    if (data.getKey().equalsIgnoreCase(User.uid)) {
+                                        Intent intent = new Intent(getApplicationContext(), ChatTemplateActivity.class);
+                                        intent.putExtra("uid", uid);
+                                        intent.putExtra("firstConnection", false);
+                                        intent.putExtra("chatID", data.getValue().toString());
+                                        startActivity(intent);
+                                    }
+                                }
                             }
+
                         }
 
                         @Override
                         public void onCancelled(DatabaseError firebaseError) {
                         }
                     });
-                } else {
                 }
-            }
+            });
 
-            @Override
-            public void onCancelled(DatabaseError firebaseError) {
-            }
-        });
+            userSports.addListenerForSingleValueEvent(new ValueEventListener() { // get user sports
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    if (snapshot != null) {
+                        for (DataSnapshot sport : snapshot.getChildren()) {
+                            String uri = "@drawable/" + sport.getKey().toLowerCase().replace(" ", "");
 
-        final RecyclerView listOfSports = (RecyclerView) findViewById(R.id.listOfSports);
-        LinearLayoutManager layoutManager
-                = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        listOfSports.setLayoutManager(layoutManager);
-
-        DatabaseReference userSports = User.firebaseRef.child("users").child(uid).child("sports");
-        final ArrayList<Drawable> sportsList = new ArrayList<>();
-
-        ImageButton chatButton = (ImageButton)findViewById(R.id.chatbutton);
-        chatButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                DatabaseReference userRef = User.firebaseRef.child("users").child(uid).child("chats");
-                userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot snapshot) {
-                        if (snapshot == null) {
-                            Intent intent = new Intent(getApplicationContext(), ChatTemplateActivity.class);
-                            intent.putExtra("uid", uid);
-                            intent.putExtra("firstConnection", true);
-                            startActivity(intent);
-                        } else {
-                            for (DataSnapshot data : snapshot.getChildren()) {
-                                if (data.getKey().equalsIgnoreCase(User.uid)) {
-                                    Intent intent = new Intent(getApplicationContext(), ChatTemplateActivity.class);
-                                    intent.putExtra("uid", uid);
-                                    intent.putExtra("firstConnection", false);
-                                    intent.putExtra("chatID", data.getValue().toString());
-                                    startActivity(intent);
-                                }
-                            }
+                            int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+                            Drawable res = getResources().getDrawable(imageResource);
+                            sportsList.add(res);
                         }
-
                     }
 
-                    @Override
-                    public void onCancelled(DatabaseError firebaseError) {
-                    }
-                });
-            }
-        });
-
-        userSports.addListenerForSingleValueEvent(new ValueEventListener() { // get user sports
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                if (snapshot != null) {
-                    for (DataSnapshot sport : snapshot.getChildren()) {
-                        String uri = "@drawable/" + sport.getKey().toLowerCase().replace(" ", "");
-
-                        int imageResource = getResources().getIdentifier(uri, null, getPackageName());
-                        Drawable res = getResources().getDrawable(imageResource);
-                        sportsList.add(res);
-                    }
+                    listOfSports.setAdapter(new MyAdapter(sportsList));
                 }
 
-                listOfSports.setAdapter(new MyAdapter(sportsList));
+                @Override
+                public void onCancelled(DatabaseError firebaseError) {
+                }
+            });
+
+            final ArrayList<ComparePals> compareArray = new ArrayList<>();
+            int n = 10;
+            for (int i = 0; i < n; i++) compareArray.add(new ComparePals(0, 0, i));
+            getPoints("football", 0, User.uid, uid, compareArray);
+            getPoints("volley", 1, User.uid, uid, compareArray);
+            getPoints("basketball", 2, User.uid, uid, compareArray);
+            getPoints("squash", 3, User.uid, uid, compareArray);
+            getPoints("pingpong", 4, User.uid, uid, compareArray);
+            getPoints("tennis", 5, User.uid, uid, compareArray);
+            getPoints("cycling", 6, User.uid, uid, compareArray);
+            getPoints("jogging", 7, User.uid, uid, compareArray);
+            getPoints("gym", 8, User.uid, uid, compareArray);
+            getPoints("other", 9, User.uid, uid, compareArray);
+
+            try {
+                Thread.sleep(300, 1);
+            } catch (InterruptedException exc) {
             }
 
-            @Override
-            public void onCancelled(DatabaseError firebaseError) {
-            }
-        });
+            StatsPerSportAdapter myadapter = new StatsPerSportAdapter(compareArray, getApplicationContext());
 
-       final ArrayList<ComparePals> compareArray = new ArrayList<>();
-        int n = 10;
-        for (int i = 0; i < n; i++) compareArray.add(new ComparePals(0, 0, i));
-        getPoints("football",0,User.uid,uid,compareArray);
-        getPoints("volley",1,User.uid,uid,compareArray);
-        getPoints("basketball",2,User.uid,uid,compareArray);
-        getPoints("squash",3,User.uid,uid,compareArray);
-        getPoints("pingpong",4,User.uid,uid,compareArray);
-        getPoints("tennis",5,User.uid,uid,compareArray);
-        getPoints("cycling",6,User.uid,uid,compareArray);
-        getPoints("jogging",7,User.uid,uid,compareArray);
-        getPoints("gym",8,User.uid,uid,compareArray);
-        getPoints("other",9,User.uid,uid,compareArray);
-
-        try{
-            Thread.sleep(300,1);
-        }catch (InterruptedException exc) {}
-
-        StatsPerSportAdapter myadapter = new StatsPerSportAdapter(compareArray, getApplicationContext());
-
-        ListView mylistView = (ListView) findViewById(R.id.compareList);
-        if (mylistView != null)
-            mylistView.setAdapter(myadapter);
+            ListView mylistView = (ListView) findViewById(R.id.compareList);
+            if (mylistView != null)
+                mylistView.setAdapter(myadapter);
+        } catch (Exception exc) {
+            Utils.quit();
+        }
     }
 
     void getPoints(String sport, final int sportID, final String myUid, final String friendUid, final ArrayList<ComparePals> compareArray )
-    {
+    {   try{
         DatabaseReference pointsRef = User.firebaseRef.child("points").child(sport);
         pointsRef.addListenerForSingleValueEvent(new ValueEventListener() { // get user sports
             @Override
@@ -246,6 +252,10 @@ public class ProfileActivity extends Activity {
             public void onCancelled(DatabaseError firebaseError) {
             }
         });
+    }
+    catch(Exception exc) {
+        Utils.quit();
+    }
     }
 
     // Adapter for the statistics per sport

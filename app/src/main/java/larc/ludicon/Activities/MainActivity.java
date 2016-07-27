@@ -96,6 +96,7 @@ import larc.ludicon.Services.FriendlyService;
 import larc.ludicon.Utils.Event;
 import larc.ludicon.Utils.MainPageUtils.ViewPagerAdapter;
 import larc.ludicon.Utils.ui.SlidingTabLayout;
+import larc.ludicon.Utils.util.Utils;
 
 import android.support.v4.widget.SwipeRefreshLayout;
 
@@ -236,6 +237,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        try{
         super.onCreate(savedInstanceState);
 
         /* Batch.onStart(this);
@@ -403,6 +405,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+    }
+    catch(Exception exc) {
+        Utils.quit();
+    }
 
     }
     private LocalBroadcastManager broadcastManager=null;
@@ -412,7 +418,7 @@ public class MainActivity extends AppCompatActivity {
     double userLatitude = 0;
     double userLongitude = 0;
     public void continueUpdatingTimeline() {
-
+    try{
         // Get user's last known location from SharedPref
         SharedPreferences sharedPref = this.getApplicationContext().getSharedPreferences("LocationPrefs", 0);
         userLatitude = Double.parseDouble(sharedPref.getString("curr_latitude", "0"));
@@ -589,6 +595,10 @@ public class MainActivity extends AppCompatActivity {
 
         updateList();
 
+    }
+    catch(Exception exc) {
+        Utils.quit();
+    }
     }
 
     public void hideHappeningRightNow(){

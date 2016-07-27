@@ -40,6 +40,7 @@ import larc.ludicon.UserInfo.ActivityInfo;
 import larc.ludicon.UserInfo.User;
 import larc.ludicon.Utils.Sport;
 import larc.ludicon.Utils.SportOfUserDetails;
+import larc.ludicon.Utils.util.Utils;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -106,94 +107,100 @@ public class StatisticsActivity extends Activity {
 
     private void getDateAndSport()
     {
-        Log.v("ArraySize",userEvents.size() + "");
+        try {
+            Log.v("ArraySize", userEvents.size() + "");
 
-        // If user has no events attended
-        if ( userEvents.size() == 0 )
-        {
-            displayChart();
-            displayStatistics();
-        }
-        else
-        // For each event go to it's details (root->event->ID) and get it's date + sport
-        for( int i = 0; i < userEvents.size(); i++ )
-        {
-            DatabaseReference eventRef = User.firebaseRef.child("events").child(userEvents.get(i).id);
-            final int j = i;
-            eventRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot snapshot) {
-                    for (DataSnapshot data : snapshot.getChildren()) {
-                        if (data.getKey().compareToIgnoreCase("sport") == 0) {
-                            userEvents.get(j).sport = data.getValue().toString();
-                            int sportID = sportsMap.get(data.getValue().toString());
-                            if ( userEvents.get(j).points != 0 )
-                            {
-                                //eventsPerSport[sportID] ++;
-                                //pointsPerSport[sportID] += userEvents.get(j).points;
+            // If user has no events attended
+            if (userEvents.size() == 0) {
+                displayChart();
+                displayStatistics();
+            } else
+                // For each event go to it's details (root->event->ID) and get it's date + sport
+                for (int i = 0; i < userEvents.size(); i++) {
+                    DatabaseReference eventRef = User.firebaseRef.child("events").child(userEvents.get(i).id);
+                    final int j = i;
+                    eventRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            for (DataSnapshot data : snapshot.getChildren()) {
+                                if (data.getKey().compareToIgnoreCase("sport") == 0) {
+                                    userEvents.get(j).sport = data.getValue().toString();
+                                    int sportID = sportsMap.get(data.getValue().toString());
+                                    if (userEvents.get(j).points != 0) {
+                                        //eventsPerSport[sportID] ++;
+                                        //pointsPerSport[sportID] += userEvents.get(j).points;
 
-                                if(sportOfUserDetails.get(sportID)==null){
-                                    SportOfUserDetails soud = new SportOfUserDetails();
-                                    soud.eventsCreated=1;
-                                    soud.pointsReceived =  userEvents.get(j).points;
+                                        if (sportOfUserDetails.get(sportID) == null) {
+                                            SportOfUserDetails soud = new SportOfUserDetails();
+                                            soud.eventsCreated = 1;
+                                            soud.pointsReceived = userEvents.get(j).points;
 
-                                    sportOfUserDetails.put(sportID,soud);
+                                            sportOfUserDetails.put(sportID, soud);
+                                        } else {
+                                            SportOfUserDetails soud = sportOfUserDetails.get(sportID);
+                                            soud.eventsCreated++;
+                                            soud.pointsReceived += userEvents.get(j).points;
+                                        }
+
+                                    }
                                 }
-                                else{
-                                    SportOfUserDetails soud = sportOfUserDetails.get(sportID);
-                                    soud.eventsCreated ++;
-                                    soud.pointsReceived += userEvents.get(j).points;
+                                if (data.getKey().compareToIgnoreCase("date") == 0) {
+                                    userEvents.get(j).date = new Date(data.getValue().toString());
                                 }
-
+                            }
+                            Log.v(userEvents.get(j).date.getMonth() + "", userEvents.get(j).points + "");
+                            // Add event points to respective month
+                            pointsPerMonth[userEvents.get(j).date.getMonth()] += userEvents.get(j).points;
+                            // Something to signal the finish of work
+                            dummy.add(1);
+                            if (dummy.size() == userEvents.size()) {
+                                displayChart();
+                                displayStatistics();
                             }
                         }
-                        if (data.getKey().compareToIgnoreCase("date") == 0) {
-                            userEvents.get(j).date = new Date(data.getValue().toString());
-                        }
-                    }
-                    Log.v(userEvents.get(j).date.getMonth() + "", userEvents.get(j).points + "");
-                    // Add event points to respective month
-                    pointsPerMonth[userEvents.get(j).date.getMonth()] += userEvents.get(j).points;
-                    // Something to signal the finish of work
-                    dummy.add(1);
-                    if ( dummy.size() == userEvents.size() ) {
-                        displayChart();
-                        displayStatistics();
-                    }
-                }
 
-                @Override
-                public void onCancelled(DatabaseError firebaseError) {
+                        @Override
+                        public void onCancelled(DatabaseError firebaseError) {
+                        }
+                    });
                 }
-            });
+        }
+        catch(Exception exc)
+        {
+            Utils.quit();
         }
     }
 
     private void displayChart()
     {
-        Log.v("Display","chart");
-        BarChart chart = (BarChart) findViewById(R.id.chart);
-        BarData data = new BarData (getXAxisValues(),getDataSet());
-        chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
-        chart.getAxisLeft().setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
-        chart.getAxisRight().setEnabled(false);
-        chart.getXAxis().setAxisMinValue(0);
-        chart.getXAxis().setDrawGridLines(false);
-        chart.getAxisLeft().setDrawGridLines(false);
-        chart.getAxisRight().setDrawGridLines(false);
-        Log.v("Set data on chart","Dap");
-        chart.setData(data);
-        chart.setDescription("Months");
-        chart.setDrawValueAboveBar(false);
-        chart.setDrawingCacheEnabled(false);
-        chart.animateXY(2000, 2000);
-        chart.invalidate();
+        try {
+            Log.v("Display", "chart");
+            BarChart chart = (BarChart) findViewById(R.id.chart);
+            BarData data = new BarData(getXAxisValues(), getDataSet());
+            chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+            chart.getAxisLeft().setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+            chart.getAxisRight().setEnabled(false);
+            chart.getXAxis().setAxisMinValue(0);
+            chart.getXAxis().setDrawGridLines(false);
+            chart.getAxisLeft().setDrawGridLines(false);
+            chart.getAxisRight().setDrawGridLines(false);
+            Log.v("Set data on chart", "Dap");
+            chart.setData(data);
+            chart.setDescription("Months");
+            chart.setDrawValueAboveBar(false);
+            chart.setDrawingCacheEnabled(false);
+            chart.animateXY(2000, 2000);
+            chart.invalidate();
+        }
+        catch(Exception exc) {
+            Utils.quit();
+        }
     }
 
     private ArrayList<Integer> currUserSportIds = new ArrayList<>();
 
     private void displayStatistics()
-    {
+    {   try {
         final RecyclerView listOfSports = (RecyclerView) findViewById(R.id.listofSports);
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
@@ -213,14 +220,14 @@ public class StatisticsActivity extends Activity {
                         sportsList.add(res);
 
                         int sportId = Integer.parseInt(sport.getValue().toString());
-                                currUserSportIds.add(sportId);
+                        currUserSportIds.add(sportId);
 
-                        if(sportOfUserDetails.get(sportId)==null){
+                        if (sportOfUserDetails.get(sportId) == null) {
                             SportOfUserDetails soud = new SportOfUserDetails();
-                            soud.eventsCreated=0;
-                            soud.pointsReceived =  0;
+                            soud.eventsCreated = 0;
+                            soud.pointsReceived = 0;
 
-                            sportOfUserDetails.put(sportId,soud);
+                            sportOfUserDetails.put(sportId, soud);
                         }
                     }
                 }
@@ -246,7 +253,10 @@ public class StatisticsActivity extends Activity {
             public void onCancelled(DatabaseError firebaseError) {
             }
         });
-
+    }
+    catch(Exception exc) {
+        Utils.quit();
+    }
     }
 
     private String getTotalPoints()

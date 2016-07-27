@@ -53,6 +53,7 @@ import larc.ludicon.UserInfo.User;
 import larc.ludicon.Utils.GMapsCluster.AuthPlace;
 import larc.ludicon.Utils.GMapsCluster.MultiDrawable;
 import larc.ludicon.Utils.Location.ActivitiesLocationListener;
+import larc.ludicon.Utils.util.Utils;
 
 public class GMapsFullActivity extends Activity implements PlaceSelectionListener, OnMapReadyCallback, ClusterManager.OnClusterClickListener<AuthPlace>, ClusterManager.OnClusterInfoWindowClickListener<AuthPlace>, ClusterManager.OnClusterItemClickListener<AuthPlace>, ClusterManager.OnClusterItemInfoWindowClickListener<AuthPlace> {
 
@@ -101,6 +102,7 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
     MapFragment mapFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        try{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gmaps_full);
 
@@ -155,6 +157,10 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
 
         // this is it
         startDemo();
+        }
+        catch(Exception exc) {
+            Utils.quit();
+        }
     }
 
 

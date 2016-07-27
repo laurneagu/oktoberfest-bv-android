@@ -72,6 +72,7 @@ import larc.ludicon.Utils.CustomView.NonScrollListView;
 import larc.ludicon.Utils.Event;
 import larc.ludicon.Utils.Location.ActivitiesLocationListener;
 import larc.ludicon.Utils.UserInfo;
+import larc.ludicon.Utils.util.Utils;
 
 
 public class EventDetails extends Activity implements OnMapReadyCallback {
@@ -121,6 +122,7 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        try{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_details);
         getActionBar().hide();
@@ -399,7 +401,7 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
                     Toast.makeText(getApplicationContext(),"The event has reached its maximum capacity",Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    FirebaseDatabase.getInstance().getReference().child("events").child(eventUid).child("users").child("+" + participants +userName.getText()).setValue(true);
+                    FirebaseDatabase.getInstance().getReference().child("events").child(eventUid).child("users").child("+" + 5*participants +userName.getText()).setValue(true);
                     Toast.makeText(getApplicationContext(),"You have added 1 friend",Toast.LENGTH_SHORT).show();
                     finish();
                     startActivity(getIntent());
@@ -439,6 +441,10 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
 
                 }
         });
+        }
+        catch(Exception exc) {
+            Utils.quit();
+        }
     }
 
     public class UserListThread implements Runnable {
