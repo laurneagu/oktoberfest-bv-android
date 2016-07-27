@@ -339,7 +339,7 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         ((TextView) findViewById(R.id.event_organiser_points)).setText(
                                 dataSnapshot.getValue() == null ?
-                                        "0 points - begginer" :
+                                        "0 points - Beginner" :
                                         dataSnapshot.getValue() + " points - Grand Master");
                     }
 
@@ -495,7 +495,7 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         usersList.get(ind).points =
                                 dataSnapshot.getValue()==null?
-                                        "0 points - begginer":
+                                        "0 points - Beginner":
                                         dataSnapshot.getValue() + " points - Grand Master";
                         synchronized (syncr){
                             val ++;

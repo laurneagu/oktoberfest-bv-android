@@ -168,7 +168,8 @@
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/buttons"
             android:layout_below="@+id/listViewUsers"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -228,22 +229,14 @@
 
             <Button
                 style="?android:attr/buttonStyleSmall"
-                android:text="Chat"
                 android:id="@+id/eventchatbtn"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
-                android:textColor="#FFFFFF"
-                android:textSize="12sp"
-
                 android:layout_width="100dp"
                 android:layout_height="30dp"
-                android:background="@drawable/buttonshape"
-                android:shadowColor="#A8A8A8"
+                android:background="@drawable/chat"
                 android:layout_marginLeft="10dp"
                 android:layout_marginBottom="10dp"
-                android:shadowDx="0"
-                android:shadowDy="0"
-                android:shadowRadius="5"
                 android:visibility="invisible"/>
 
             <Button
