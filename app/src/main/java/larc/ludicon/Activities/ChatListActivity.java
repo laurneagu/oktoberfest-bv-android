@@ -317,13 +317,18 @@ public class ChatListActivity extends Activity {
             holder.textName.setText(list.get(position).userName);
 
             String lastOnline = list.get(position).lastTimeOnline;
-            lastOnline.replace(",","");
-            lastOnline.replace("PM","");
-            lastOnline.replace("AM","");
-            int ind = lastOnline.lastIndexOf(":");
-            lastOnline = lastOnline.substring(0,ind);
+            if(lastOnline != null) {
+                lastOnline.replace(",", "");
+                lastOnline.replace("PM", "");
+                lastOnline.replace("AM", "");
+                int ind = lastOnline.lastIndexOf(":");
+                lastOnline = lastOnline.substring(0, ind);
 
-            holder.lastLoginView.setText(lastOnline);
+                holder.lastLoginView.setText(lastOnline);
+            }
+            else{
+                holder.lastLoginView.setText("Unknown");
+            }
 
             if (list.get(position).friendPhoto != "") {
                 //new DownloadImageTask(imageView).execute(data.getValue().toString());
