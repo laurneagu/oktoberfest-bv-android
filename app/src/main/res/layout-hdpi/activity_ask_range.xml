@@ -9,11 +9,11 @@
 
     <ImageView
         android:id="@+id/logo"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="110dp"
+        android:layout_marginTop="70dp"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
         />
@@ -25,7 +25,7 @@
         android:indeterminate="false"
         android:layout_below="@+id/textView2"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="57dp" />
+        android:layout_marginTop="40dp" />
 
     <ImageView
         android:layout_width="400dp"
@@ -70,7 +70,6 @@
         android:text="Medium Text"
         android:id="@+id/textView5"
         android:layout_below="@+id/seekBar"
-        android:layout_alignLeft="@+id/textView"
-        android:layout_alignStart="@+id/textView" />
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

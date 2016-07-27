@@ -6,13 +6,10 @@
 
     <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/profileImageView"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="5dp" />
+        android:layout_centerVertical="true" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -29,25 +26,16 @@
     <ImageButton
         android:layout_width="100dp"
         android:layout_height="25dp"
-        android:id="@+id/more_btn"
-        android:background="@drawable/more"
-        android:layout_marginTop="10dp"
-        android:layout_alignLeft="@+id/chat_btn"
-        android:layout_alignStart="@+id/chat_btn" />
-
-    <ImageButton
-        android:layout_width="100dp"
-        android:layout_height="25dp"
         android:id="@+id/chat_btn"
         android:background="@drawable/chat"
-        android:paddingLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginEnd="22dp"
-        android:layout_below="@+id/more_btn"
+        android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp" />
+        android:layout_marginBottom="5dp"
+        />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -65,8 +53,10 @@
             android:layout_height="wrap_content"
             android:id="@+id/numberSports"
             android:textColor="#808080"
+            android:layout_marginBottom="5dp"
             android:text="Sports"
             android:textSize="18dp"
+            android:layout_marginLeft="3dp"
             android:layout_alignTop="@+id/linearLayout"
             android:layout_alignLeft="@+id/more_btn" />
 

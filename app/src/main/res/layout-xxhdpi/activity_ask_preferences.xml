@@ -12,8 +12,7 @@
         android:layout_height="100dp"
         android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="110dp"
-        android:adjustViewBounds="true"
+        android:layout_marginTop="70dp"
         android:scaleType="centerCrop"
         android:layout_gravity="center_horizontal" />
 
@@ -36,11 +35,11 @@
         android:layout_gravity="center_horizontal" />
 
     <GridView
-        android:paddingTop="30dp"
-        android:paddingLeft="50dp"
-        android:paddingRight="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
         android:layout_width="wrap_content"
-        android:layout_height="220dp"
+        android:layout_height="260dp"
         android:id="@+id/gridView1"
         android:numColumns="2"
         android:layout_gravity="center_horizontal" />
@@ -48,6 +47,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:text="OK"
         android:id="@+id/button2"
         android:layout_gravity="center_horizontal" />
