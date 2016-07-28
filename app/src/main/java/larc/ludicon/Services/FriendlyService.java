@@ -12,7 +12,9 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -49,6 +51,7 @@ import larc.ludicon.Activities.ChatListActivity;
 import larc.ludicon.Activities.ChatTemplateActivity;
 import larc.ludicon.Activities.FriendsActivity;
 import larc.ludicon.UserInfo.User;
+import larc.ludicon.Utils.Location.GPSTracker;
 import larc.ludicon.Utils.Location.ServiceLocationListener;
 import larc.ludicon.UserInfo.ActivityInfo;
 import larc.ludicon.Utils.util.ChatNotifier;
@@ -58,21 +61,17 @@ import larc.ludicon.Utils.util.Notifier;
 
 /**
  * Created by Andrei on 2/27/2016.
- * REV HISTORY:
- *  10APR 2016: Laur Neagu
- *      Service purpose : Notify event is close to happen (30 min) + Reward player with points
- *      Refactor the code of the service
  */
 
 public class FriendlyService extends Service {
+
+    public static int maxDistanceMeters = 500; //m
 
     public static final long MIN = 60 * 1000;
 
     // Time to notify (in minutes)
     private static int limitTime = 20;
 
-    private LocationManager mLocationManager;
-    private ServiceLocationListener mLocationListener = new ServiceLocationListener(this);
     private boolean mRunning;
 
     private static ChatNotifier chatNotifier = new ChatNotifier();
@@ -82,94 +81,127 @@ public class FriendlyService extends Service {
 
     private Object waitForNextEvent = new Object();
 
+
+    /* LOCATION */
+    private static final String TAG = "BOOMBOOMTESTGPS";
+    private LocationManager mLocationManager = null;
+    private static final int LOCATION_INTERVAL = 1000*60*1;
+    private static final float LOCATION_DISTANCE = 10f;
+
+    private class LocationListener implements android.location.LocationListener{
+        //Location mLastLocation;
+        public LocationListener(String provider)
+        {
+            Log.e(TAG, "LocationListener " + provider);
+            //mLastLocation = new Location(provider);
+        }
+        @Override
+        public void onLocationChanged(Location location)
+        {
+            Log.e(TAG, "onLocationChanged: " + location);
+            //mLastLocation.set(location);
+        }
+        @Override
+        public void onProviderDisabled(String provider)
+        {
+            Log.e(TAG, "onProviderDisabled: " + provider);
+        }
+        @Override
+        public void onProviderEnabled(String provider)
+        {
+            Log.e(TAG, "onProviderEnabled: " + provider);
+        }
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras)
+        {
+            Log.e(TAG, "onStatusChanged: " + provider);
+        }
+    }
+    LocationListener[] mLocationListeners = new LocationListener[] {
+            new LocationListener(LocationManager.GPS_PROVIDER)
+    };
+
+    private void initializeLocationManager() {
+        Log.e(TAG, "initializeLocationManager");
+        if (mLocationManager == null) {
+            mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        }
+    }
+
+    private Location getLocationOnlyOnce(){
+
+        try {
+
+            initializeLocationManager();
+
+            try {
+                mLocationManager.requestLocationUpdates(
+                        LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
+                        mLocationListeners[0]);
+                if (mLocationManager != null) {
+
+                    try {
+                        Location location = mLocationManager
+                                .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+                        if (location != null) {
+
+
+                            mLocationManager.removeUpdates(mLocationListeners[0]);
+                            return location;
+                        }
+                    } catch (java.lang.SecurityException ex) {
+                        Log.i(TAG, "fail to request location update, ignore", ex);
+                    }
+                }
+
+            } catch (java.lang.SecurityException ex) {
+                Log.i(TAG, "fail to request location update, ignore", ex);
+            } catch (IllegalArgumentException ex) {
+                Log.d(TAG, "gps provider does not exist " + ex.getMessage());
+            }
+
+        }catch(Exception e){
+            // magic
+        }
+
+        return null;
+    }
+
+
+    /*** LOCATION END */
+
     private boolean isLocationOk(){
-            /*
+        //Looper.prepare();
+        Location current = getLocationOnlyOnce();
+        if(current != null){
+            final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+            //ref.child("mesg").child("service").child("alive").setValue(current.getLatitude() + " - " + current.getLongitude() + new Date().toString());
 
-                                // Point where the event starts
-                                final ArrayList<Integer> pointsList = new ArrayList<>();
+            String json = getSharedPreferences("UserDetails", 0).getString("currentEvent", "");
+            Gson gson = new Gson();
+            ActivityInfo currentEvent = gson.fromJson(json, ActivityInfo.class);
 
-                                int eventPoints = 0, locationErrors = 0;
+            if ( currentEvent != null ) {
+                Location targetLocation = new Location("");//provider name is unecessary
+                targetLocation.setLatitude(currentEvent.latitude);//your coords of course
+                targetLocation.setLongitude(currentEvent.longitude);
+                double distance = current.distanceTo(targetLocation);
+                ref.child("mesg").child("service").child("distance").setValue(distance +"   " + new Date().toString());
+                if( distance <= maxDistanceMeters){
+                    // TODO custom maxDistance by Event/Event Location
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
 
-                                // Count points if he has not left the location and if has not scored yet 10 points
-                                while (locationErrors <= 3 && eventPoints <= 10) {
+        }
+        else{
+            return false;
+        }
 
-                                    // Start Location Listener
-                                    initializeLocationManager();
-                                    // Request location updates
-                                    mLocationListener.requestUpdates(mLocationManager);
-
-                                    // Get last known location from SharedPref
-                                    SharedPreferences sharedPrefs = getSharedPreferences("UserDetails", 0);
-                                    double latitude = Double.parseDouble(sharedPrefs.getString("latitude", "0"));
-                                    double longitude = Double.parseDouble(sharedPrefs.getString("longitude", "0"));
-
-                                    // New coordinates received
-                                    if (latitude != 0 || longitude != 0) {
-                                        // Get distance between current location and event location
-                                        float[] distance = new float[10];
-                                        Location.distanceBetween(latitude, longitude, upcomingEvent.latitude, upcomingEvent.longitude, distance);
-
-                                        Log.v("distance1", mLocationListener.getLatitude() + " " + mLocationListener.getLongitude() + " vs " + upcomingEvent.latitude + " " + upcomingEvent.longitude);
-                                        Log.v("distance2", distance[0] + " ");
-
-                                        // User left the location
-                                        if (distance[0] >= 500) {
-                                            locationErrors++;
-                                            Log.v("Location-Service","User is not in location and has errors: " + locationErrors);
-                                        }
-
-                                        // User is in location ( difference < 500 m ) add points to the eventPoints
-                                        else {
-                                            eventPoints++;
-                                            Log.v("Location-Service","User is in location and has: " + eventPoints);
-                                        }
-                                    }
-
-                                    //  Remove location listener
-                                    //removeUpdatesLocationManager();
-
-                                    // From 10 to 10 minutes, recheck the user is still there
-                                    try {
-                                        Thread.sleep(1 * MIN, 1);
-                                    } catch (InterruptedException exc) {
-                                    }
-                                }
-
-                                // Delete current event from shared preferences when ended
-                                getSharedPreferences("UserDetails", 0).edit().putString("currentEvent", "").commit();
-                                getSharedPreferences("UserDetails", 0).edit().putString("currentEventIsActive","0").commit();
-
-                                // Update points with the ones received for the current event and update in Database
-                                // Check if there are unsaved points in SharedPrefs
-                                // Points are tied to events in a Map<Event_ID,Event_Points>
-                                Map<String, Integer> unsavedPointsMap = new HashMap<>();
-                                SharedPreferences pSharedPref = getSharedPreferences("Points", Context.MODE_PRIVATE);
-                                try {
-                                    if (pSharedPref != null) {
-                                        String jsonString = pSharedPref.getString("UnsavedPointsMap", (new JSONObject()).toString());
-                                        JSONObject jsonObject = new JSONObject(jsonString);
-                                        Iterator<String> keysItr = jsonObject.keys();
-                                        while (keysItr.hasNext()) {
-                                            String key = keysItr.next();
-                                            Integer value = (Integer) jsonObject.get(key);
-                                            unsavedPointsMap.put(key, value);
-                                        }
-                                    }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                                // Add the current event points to SharedPref
-                                unsavedPointsMap.put(upcomingEvent.id, eventPoints);
-                                if (pSharedPref != null) {
-                                    JSONObject jsonObject = new JSONObject(unsavedPointsMap);
-                                    String jsonString = jsonObject.toString();
-                                    editor = pSharedPref.edit();
-                                    editor.remove("UnsavedPointsMap").commit();
-                                    editor.putString("UnsavedPointsMap", jsonString);
-                                    editor.commit();
-                                }
-
-                                */
         return true;
     }
 
@@ -248,9 +280,9 @@ public class FriendlyService extends Service {
         chatCheckerThread.start();
 
         // Check Alive - Testing
-//        Runnable aliveCheck = getCheckAliveThread();
-//        Thread aliveCheckThread = new Thread(aliveCheck);
-//        aliveCheckThread.start();
+        Runnable aliveCheck = getCheckAliveThread(getApplicationContext(),this);
+        Thread aliveCheckThread = new Thread(aliveCheck);
+        aliveCheckThread.start();
 
                 // Persistent Run:
         //return Service.START_STICKY;
@@ -364,6 +396,13 @@ public class FriendlyService extends Service {
 //                                ref.child("mesg").child("service").child("currentEventIsActive").setValue("1___" + new Date().toString());
                                 Date limitPending = new Date(new Date().getTime() + 5 * MIN); // 5 min pending
 
+
+                                SharedPreferences.Editor editor1 = getSharedPreferences("UserDetails", 0).edit();
+                                Gson gson1 = new Gson();
+                                String json1 = gson.toJson(upcomingEvent); // Type is activity info
+                                editor.putString("HappeningNowEvent", json);
+                                editor.commit();
+
                                 // Right here the event is about to start
                                 // Notify MainActivity to show happening now panel:
                                 getSharedPreferences("UserDetails", 0).edit().putString("currentEventState", "0").commit(); // pending
@@ -391,7 +430,14 @@ public class FriendlyService extends Service {
                                         if(isLocationOk()){
                                             // set points
 
-                                            eventPoints+=1;
+                                            eventPoints+=1;// TODO add custom amount of points based on event priority
+
+                                            // over two hours
+                                            if(eventPoints > 24){
+
+                                                // TODO STOP
+                                            }
+
                                         }
                                         else{ // bad location
 
@@ -414,6 +460,7 @@ public class FriendlyService extends Service {
 
                                 }
                                 getSharedPreferences("UserDetails", 0).edit().putString("currentEvent", "").commit();
+                                getSharedPreferences("UserDetails", 0).edit().putString("HappeningNowEvent", "").commit();
                                 // Write points:
                                 // Delete current event from shared preferences when ended
 
@@ -533,9 +580,10 @@ public class FriendlyService extends Service {
         };
     }
 
-    private Runnable getCheckAliveThread(){
+    private Runnable getCheckAliveThread(final Context cnt, final Service srv){
         return new Runnable() {
             public void run() {
+                Looper.prepare();
                 final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
                 ref.child("mesg").child("service").child("alive").setValue("RESTART!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 try {
@@ -543,10 +591,11 @@ public class FriendlyService extends Service {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+
+
                 while(true) {
 
-                    ref.child("mesg").child("service").child("alive").setValue(new Date().toString());
-
+                    //isLocationOk();
                     try {
                         Thread.sleep(10000);
                     } catch (InterruptedException e) {
@@ -723,7 +772,15 @@ public class FriendlyService extends Service {
     public void onDestroy() {
         super.onDestroy();
 
-        removeUpdatesLocationManager();
+        if (mLocationManager != null) {
+            for (int i = 0; i < mLocationListeners.length; i++) {
+                try {
+                    mLocationManager.removeUpdates(mLocationListeners[i]);
+                } catch (java.lang.SecurityException ex) {
+                    Log.i(TAG, "fail to remove location listners, ignore", ex);
+                }
+            }
+        }
     }
 
     @Nullable
@@ -732,20 +789,8 @@ public class FriendlyService extends Service {
         return null;
     }
 
-    private void initializeLocationManager() {
-        if (mLocationManager == null) {
-            mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-        }
-    }
 
-    private void removeUpdatesLocationManager() {
-        if (mLocationManager != null && mLocationListener != null) {
-            try {
-                mLocationManager.removeUpdates(mLocationListener);
-            } catch (SecurityException ex) {
-            }
-        }
-    }
+
 
 }
 

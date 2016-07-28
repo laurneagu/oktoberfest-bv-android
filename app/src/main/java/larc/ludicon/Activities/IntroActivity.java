@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Handler;
@@ -34,6 +35,7 @@ import larc.ludicon.R;
 import larc.ludicon.UserInfo.User;
 import larc.ludicon.Utils.ConnectionChecker.IConnectionChecker;
 import larc.ludicon.Utils.ConnectionChecker.ConnectionChecker;
+import larc.ludicon.Utils.Location.GPSTracker;
 import larc.ludicon.Utils.MessageDialog;
 import larc.ludicon.Utils.UserInfo;
 
@@ -123,6 +125,16 @@ public class IntroActivity extends Activity {
         if (isNetworkConnected() == false) {
             openNoInternetConnectionDialog();
         }
+
+        // Clear current Location
+        SharedPreferences.Editor editor = getSharedPreferences("UserDetails", 0).edit();
+        editor.putString("current_latitude", "-1");
+        editor.putString("current_longitude", "-1");
+        editor.commit();
+
+
+
+
         // Facebook init
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();

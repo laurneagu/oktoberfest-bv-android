@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -29,6 +30,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -86,6 +88,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 import larc.ludicon.Adapters.LeftPanelItemClicker;
 import larc.ludicon.Adapters.LeftSidePanelAdapter;
@@ -94,6 +97,7 @@ import larc.ludicon.UserInfo.ActivityInfo;
 import larc.ludicon.UserInfo.User;
 import larc.ludicon.Services.FriendlyService;
 import larc.ludicon.Utils.Event;
+import larc.ludicon.Utils.Location.GPSTracker;
 import larc.ludicon.Utils.MainPageUtils.ViewPagerAdapter;
 import larc.ludicon.Utils.ui.SlidingTabLayout;
 import larc.ludicon.Utils.util.Utils;
@@ -283,6 +287,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+
         /*
         flipper = (ViewFlipper)findViewById(R.id.viewFlipper);
         flipper.setInAnimation(this, R.anim.right_enter);
@@ -403,6 +409,35 @@ public class MainActivity extends AppCompatActivity {
             public void onCancelled(DatabaseError firebaseError) {
             }
         });
+        //getSharedPreferences("UserDetails", 0).edit().putString("HappeningNowEvent", "").commit();
+
+
+        /// Get Current event for HappeningNOW:
+        Gson gson = new Gson();
+        String json = getSharedPreferences("UserDetails", 0).getString("HappeningNowEvent", "");
+        final ActivityInfo currentEvent = gson.fromJson(json, ActivityInfo.class);
+        if ( currentEvent != null ) {
+
+            long diffInMillisec = currentEvent.date.getTime() -new Date().getTime();
+            long diffInSec = TimeUnit.MILLISECONDS.toSeconds(diffInMillisec);
+            diffInSec/= 3600;
+
+            if(diffInSec > 2){ // over 2 hours
+                getSharedPreferences("UserDetails", 0).edit().putString("HappeningNowEvent", "").commit();
+            }
+            else {
+                Toast.makeText(getApplicationContext(), "Awesome, you have an activity right now! :-)", Toast.LENGTH_LONG).show();
+                SharedPreferences.Editor editor = getSharedPreferences("UserDetails", 0).edit();
+                Gson gson1 = new Gson();
+                String json1 = gson.toJson(currentEvent); // Type is activity info
+                editor.putString("currentEvent", json1);
+                editor.commit();
+                showHappeningNow(currentEvent);
+                updateList();
+            }
+
+
+        }
 
 
     }
@@ -421,8 +456,37 @@ public class MainActivity extends AppCompatActivity {
     try{
         // Get user's last known location from SharedPref
         SharedPreferences sharedPref = this.getApplicationContext().getSharedPreferences("LocationPrefs", 0);
-        userLatitude = Double.parseDouble(sharedPref.getString("curr_latitude", "0"));
-        userLongitude = Double.parseDouble(sharedPref.getString("curr_longitude", "0"));
+
+        String lats = getSharedPreferences("UserDetails", 0).getString("current_latitude", "0");
+        String lons = getSharedPreferences("UserDetails", 0).getString("current_longitude", "0");
+
+        userLatitude = Double.parseDouble(lats);
+        userLongitude = Double.parseDouble(lons);
+
+        // it it is first time:
+        if(userLatitude < 0 || userLongitude < 0 ){
+            GPSTracker gps = new GPSTracker(getApplicationContext(), this);
+            if(gps.canGetLocation()) {
+                userLatitude = gps.getLatitude();
+                userLongitude = gps.getLongitude();
+
+                SharedPreferences.Editor editor = getSharedPreferences("UserDetails", 0).edit();
+                editor.putString("current_latitude", String.valueOf(userLatitude));
+                editor.putString("current_longitude", String.valueOf(userLongitude));
+
+                editor.commit();
+
+                gps.stopUsingGPS();
+
+            }
+//            Toast.makeText(getApplicationContext(), "LATTTT:" + userLatitude, Toast.LENGTH_LONG).show();
+//            Toast.makeText(getApplicationContext(), "LONGGGG:" + userLongitude, Toast.LENGTH_LONG).show();
+        }
+
+
+
+
+
 
         //Clean up shared pref for events: just for debugging
         SharedPreferences.Editor editor = getSharedPreferences("UserDetails", 0).edit();
@@ -615,6 +679,7 @@ public class MainActivity extends AppCompatActivity {
 
         RelativeLayout rlCurrEvent = (RelativeLayout)findViewById(R.id.currEventLayout);
 
+
         ViewGroup.LayoutParams params = rlCurrEvent.getLayoutParams();
         params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
 
@@ -675,11 +740,34 @@ public class MainActivity extends AppCompatActivity {
                     if(broadcastManager != null)
                         broadcastManager.sendBroadcast(intent);
 
+                    getSharedPreferences("UserDetails", 0).edit().putString("HappeningNowEvent", "").commit();
+
                 } else if (Integer.parseInt(state) == 1) { // is Stop => Hide
-                    timer.stop();
-                    changeStateButton.setVisibility(View.GONE);
-                    getSharedPreferences("UserDetails", 0).edit().putString("currentEventState", "2").commit(); // stopped
-                    Toast.makeText(getApplicationContext(), "Yaay! Activity finished in " + timer.getText().toString(), Toast.LENGTH_LONG).show();
+
+                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which){
+                                case DialogInterface.BUTTON_POSITIVE:
+                                    timer.stop();
+                                    changeStateButton.setVisibility(View.GONE);
+                                    getSharedPreferences("UserDetails", 0).edit().putString("currentEventState", "2").commit(); // stopped
+                                    Toast.makeText(getApplicationContext(), "Yaay! Activity finished in " + timer.getText().toString(), Toast.LENGTH_LONG).show();
+
+                                    getSharedPreferences("UserDetails", 0).edit().putString("HappeningNowEvent", "").commit();
+                                    hideHappeningRightNow();
+                                    break;
+
+                                case DialogInterface.BUTTON_NEGATIVE:
+                                    //No button clicked
+                                    break;
+                            }
+                        }
+                    };
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, R.style.MyAlertDialogStyle);
+                    builder.setMessage("Are you sure? Once you press Stop you can't start again this event!").setPositiveButton("Yes", dialogClickListener)
+                            .setNegativeButton("No", dialogClickListener).show();
 
                 }
 
@@ -715,6 +803,8 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        rlCurrEvent.setVisibility(View.VISIBLE);
     }
 
     // Start response from service:
@@ -732,6 +822,7 @@ public class MainActivity extends AppCompatActivity {
                 timer.start();
                 changeStateButton.setText("Stop");
                 changeStateButton.setBackgroundColor(Color.parseColor("#BF3636"));
+                getSharedPreferences("UserDetails", 0).edit().putString("HappeningNowEvent", "").commit();
                 Toast.makeText(getApplicationContext(), "Activity started. Do not close the application if you want to sweat on points.", Toast.LENGTH_LONG).show();
             }
             else{ // location is not the right one
@@ -787,13 +878,25 @@ public class MainActivity extends AppCompatActivity {
                 for (DataSnapshot data : snapshot.getChildren()) {
                     Event event = new Event();
                     boolean isPublic = true;
+                    double distance=0;
                     boolean doIParticipate = false;
                     boolean mustAddEventToList = true;
                     event.id = data.getKey();
                     Map<String, Boolean> participants = new HashMap<String, Boolean>();
                     long numberOfParticipants = 0;
 
+                    String currentEventUID="";
+                    String json = getSharedPreferences("UserDetails", 0).getString("currentEvent", "");
+                    Gson gson = new Gson();
+                    final ActivityInfo currentEvent = gson.fromJson(json, ActivityInfo.class);
+                    if ( currentEvent != null ) {
+                        currentEventUID=currentEvent.id;
+
+                    }
+
                     for (DataSnapshot details : data.getChildren()) {
+
+                        // TODO TODO TODO !!!!!!!!!!!!!!!! Create another node with past events!!!!!!!!!!!!!!!!!!!!!!!!
 
                         if (details.getKey().toString().equalsIgnoreCase("active"))
                             mustAddEventToList = Boolean.parseBoolean(details.getValue().toString());
@@ -833,12 +936,41 @@ public class MainActivity extends AppCompatActivity {
 
                         if (details.getKey().toString().equalsIgnoreCase("place")) {
                             Map<String, Object> position = (Map<String, Object>) details.getValue();
+
                             double latitude = (double) position.get("latitude");
                             double longitude = (double) position.get("longitude");
+
                             String addressName = (String) position.get("name");
                             event.place = addressName;
                             event.latitude = latitude;
                             event.longitude = longitude;
+
+                            String lats = getSharedPreferences("UserDetails", 0).getString("current_latitude", "0");
+                            String lons = getSharedPreferences("UserDetails", 0).getString("current_longitude", "0");
+
+                            userLatitude = Double.parseDouble(lats);
+                            userLongitude = Double.parseDouble(lons);
+
+                            // it it is first time:
+                            if(userLatitude != 0 && userLongitude != 0 ){
+
+                                Location el = new Location("");//provider name is unecessary
+                                el.setLatitude(latitude);//your coords of course
+                                el.setLongitude(longitude);
+
+                                Location ml = new Location("");//provider name is unecessary
+                                ml.setLatitude(userLatitude);//your coords of course
+                                ml.setLongitude(userLongitude);
+
+
+                                distance = ml.distanceTo(el);
+
+//                                Toast.makeText(getApplicationContext(), "Distance: "+ distance, Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(getApplicationContext(), "Range: "+ userRange, Toast.LENGTH_SHORT).show();
+
+                            }
+
+
                         }
 
                         if (details.getKey().toString().equalsIgnoreCase("users")) {
@@ -875,11 +1007,15 @@ public class MainActivity extends AppCompatActivity {
                     // Insert event in the correct list
                     //if (new Date().before(event.date) && isPublic) {
 
-                    if (doIParticipate && (new Date().getTime() < event.date.getTime()))
-                        myEventsList.add(event);
+                    if (doIParticipate && (new Date().getTime() < event.date.getTime())) {
+                        if(currentEventUID != event.id)
+                            myEventsList.add(event);
+                    }
                     else if ((new Date().getTime() < event.date.getTime()) && isPublic &&  mustAddEventToList  ) {
-                        event.usersUID = participants;
-                        friendsEventsList.add(event);
+                        if(distance < (double)userRange*1000) {
+                            event.usersUID = participants;
+                            friendsEventsList.add(event);
+                        }
                     }
                 }
 

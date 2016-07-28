@@ -83,7 +83,8 @@
 
         <activity
             android:name=".Activities.MainActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat" >
         </activity>
         <activity
             android:name=".Activities.SettingsActivity"
