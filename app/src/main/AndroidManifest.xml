@@ -64,7 +64,8 @@
         <!-- android:value="@integer/google_play_services_version" /> -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAlcEKCo_BjVBuya9kJ702WsiYsqI3diq4"/>
+            android:value="AIzaSyD991omwjLzWzfgpVTPayQ62d-2XbjphLA"/>
+                    <!--"AIzaSyAlcEKCo_BjVBuya9kJ702WsiYsqI3diq4"/> -->
                     <!-- "AIzaSyDWlOprYmSxitza5Mz-p1Mc1cFhRheTpho" /> -->
 
         <!-- <service android:name="com.batch.android.BatchPushService" /> -->
