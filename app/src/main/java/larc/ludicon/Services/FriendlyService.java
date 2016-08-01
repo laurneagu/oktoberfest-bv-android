@@ -264,10 +264,10 @@ public class FriendlyService extends Service {
         ref1.child("mesg").child("service").child("currentEventIsActive").setValue("0___" + new Date().toString());
 
 
-        // Thread for Rewarding user with points
-        Runnable eventParticipationChecker = getCheckPointsThread();
-        Thread eventParticipationThread = new Thread(eventParticipationChecker);
-        eventParticipationThread.start();
+        // Thread for Rewarding user with points - ADIOS
+//        Runnable eventParticipationChecker = getCheckPointsThread();
+//        Thread eventParticipationThread = new Thread(eventParticipationChecker);
+//        eventParticipationThread.start();
 
         // Thread for Notifying user for upcoming events
         Runnable eventChecker = getCheckNotificationsEventsThread();
@@ -280,9 +280,9 @@ public class FriendlyService extends Service {
         chatCheckerThread.start();
 
         // Check Alive - Testing
-        Runnable aliveCheck = getCheckAliveThread(getApplicationContext(),this);
-        Thread aliveCheckThread = new Thread(aliveCheck);
-        aliveCheckThread.start();
+//        Runnable aliveCheck = getCheckAliveThread(getApplicationContext(),this);
+//        Thread aliveCheckThread = new Thread(aliveCheck);
+//        aliveCheckThread.start();
 
                 // Persistent Run:
         //return Service.START_STICKY;
@@ -570,7 +570,7 @@ public class FriendlyService extends Service {
                     }
 
                     try {
-                        Thread.sleep(30000);
+                        Thread.sleep(MIN/4);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

@@ -410,7 +410,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
                     if(event.date.getDay() == creationDate.getDay()) numberOfEvents++;
                 }
 
-                if (isSameDate){
+                if (false){
                     Toast.makeText(getApplicationContext(), "You have scheduled an event at this date already ! Please check your agenda !",Toast.LENGTH_LONG ).show();
                 }
                 else if (numberOfEvents >= 3){

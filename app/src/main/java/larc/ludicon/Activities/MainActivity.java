@@ -18,10 +18,12 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -65,6 +67,7 @@ import com.facebook.share.widget.ShareDialog;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -76,6 +79,7 @@ import org.w3c.dom.Text;
 
 import java.io.InputStream;
 import java.lang.reflect.Type;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -86,6 +90,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
@@ -258,7 +263,7 @@ public class MainActivity extends AppCompatActivity {
         //toolbar = (Toolbar) findViewById(R.id.tool_bar);
         //setSupportActionBar(toolbar); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-        saveUnsavedPointstoDatabaseReference();
+        //saveUnsavedPointstoDatabaseReference();
 
         // Creating The ViewPagerAdapter and Passing Fragment Manager, Titles fot the Tabs and Number Of Tabs.
         adapter = new ViewPagerAdapter(getSupportFragmentManager(), Titles, Numboftabs);
@@ -413,31 +418,31 @@ public class MainActivity extends AppCompatActivity {
 
 
         /// Get Current event for HappeningNOW:
-        Gson gson = new Gson();
-        String json = getSharedPreferences("UserDetails", 0).getString("HappeningNowEvent", "");
-        final ActivityInfo currentEvent = gson.fromJson(json, ActivityInfo.class);
-        if ( currentEvent != null ) {
-
-            long diffInMillisec = currentEvent.date.getTime() -new Date().getTime();
-            long diffInSec = TimeUnit.MILLISECONDS.toSeconds(diffInMillisec);
-            diffInSec/= 3600;
-
-            if(diffInSec > 2){ // over 2 hours
-                getSharedPreferences("UserDetails", 0).edit().putString("HappeningNowEvent", "").commit();
-            }
-            else {
-                Toast.makeText(getApplicationContext(), "Awesome, you have an activity right now! :-)", Toast.LENGTH_LONG).show();
-                SharedPreferences.Editor editor = getSharedPreferences("UserDetails", 0).edit();
-                Gson gson1 = new Gson();
-                String json1 = gson.toJson(currentEvent); // Type is activity info
-                editor.putString("currentEvent", json1);
-                editor.commit();
-                showHappeningNow(currentEvent);
-                updateList();
-            }
-
-
-        }
+//        Gson gson = new Gson();
+//        String json = getSharedPreferences("UserDetails", 0).getString("HappeningNowEvent", "");
+//        final ActivityInfo currentEvent = gson.fromJson(json, ActivityInfo.class);
+//        if ( currentEvent != null ) {
+//
+//            long diffInMillisec = currentEvent.date.getTime() -new Date().getTime();
+//            long diffInSec = TimeUnit.MILLISECONDS.toSeconds(diffInMillisec);
+//            diffInSec/= 3600;
+//
+//            if(diffInSec > 2){ // over 2 hours
+//                getSharedPreferences("UserDetails", 0).edit().putString("HappeningNowEvent", "").commit();
+//            }
+//            else {
+//                Toast.makeText(getApplicationContext(), "Awesome, you have an activity right now! :-)", Toast.LENGTH_LONG).show();
+//                SharedPreferences.Editor editor = getSharedPreferences("UserDetails", 0).edit();
+//                Gson gson1 = new Gson();
+//                String json1 = gson.toJson(currentEvent); // Type is activity info
+//                editor.putString("currentEvent", json1);
+//                editor.commit();
+//                showHappeningNow(currentEvent);
+//                updateList();
+//            }
+//
+//
+//        }
 
 
     }
@@ -453,187 +458,194 @@ public class MainActivity extends AppCompatActivity {
     double userLatitude = 0;
     double userLongitude = 0;
     public void continueUpdatingTimeline() {
-    try{
-        // Get user's last known location from SharedPref
-        SharedPreferences sharedPref = this.getApplicationContext().getSharedPreferences("LocationPrefs", 0);
+        try {
+            // Get user's last known location from SharedPref
+            SharedPreferences sharedPref = this.getApplicationContext().getSharedPreferences("LocationPrefs", 0);
 
-        String lats = getSharedPreferences("UserDetails", 0).getString("current_latitude", "0");
-        String lons = getSharedPreferences("UserDetails", 0).getString("current_longitude", "0");
+            String lats = getSharedPreferences("UserDetails", 0).getString("current_latitude", "0");
+            String lons = getSharedPreferences("UserDetails", 0).getString("current_longitude", "0");
 
-        userLatitude = Double.parseDouble(lats);
-        userLongitude = Double.parseDouble(lons);
+            userLatitude = Double.parseDouble(lats);
+            userLongitude = Double.parseDouble(lons);
 
-        // it it is first time:
-        if(userLatitude < 0 || userLongitude < 0 ){
-            GPSTracker gps = new GPSTracker(getApplicationContext(), this);
-            if(gps.canGetLocation()) {
-                userLatitude = gps.getLatitude();
-                userLongitude = gps.getLongitude();
+            // it it is first time:
+            if (userLatitude < 0 || userLongitude < 0) {
+                GPSTracker gps = new GPSTracker(getApplicationContext(), this);
+                if (gps.canGetLocation()) {
+                    userLatitude = gps.getLatitude();
+                    userLongitude = gps.getLongitude();
 
-                SharedPreferences.Editor editor = getSharedPreferences("UserDetails", 0).edit();
-                editor.putString("current_latitude", String.valueOf(userLatitude));
-                editor.putString("current_longitude", String.valueOf(userLongitude));
+                    SharedPreferences.Editor editor = getSharedPreferences("UserDetails", 0).edit();
+                    editor.putString("current_latitude", String.valueOf(userLatitude));
+                    editor.putString("current_longitude", String.valueOf(userLongitude));
 
-                editor.commit();
+                    editor.commit();
 
-                gps.stopUsingGPS();
+                    gps.stopUsingGPS();
 
-            }
+                }
 //            Toast.makeText(getApplicationContext(), "LATTTT:" + userLatitude, Toast.LENGTH_LONG).show();
 //            Toast.makeText(getApplicationContext(), "LONGGGG:" + userLongitude, Toast.LENGTH_LONG).show();
-        }
+            }
 
 
+            //Clean up shared pref for events: just for debugging
+            SharedPreferences.Editor editor = getSharedPreferences("UserDetails", 0).edit();
+            String connectionsJSONString = new Gson().toJson(null);
+            editor.putString("events", connectionsJSONString);
+            editor.commit();
+            // Update sharedpref for events:
+            editor = getSharedPreferences("UserDetails", 0).edit();
+            editor.putString("uid", User.uid);
+            editor.commit();
+            DatabaseReference usersRef = User.firebaseRef.child("users").child(User.uid).child("events");
+            usersRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(final DataSnapshot snapshot) {
+                    final List<ActivityInfo> activityInfos = new ArrayList<ActivityInfo>();
 
+                    if (snapshot == null)
+                        Log.v("NULL", "Snapshot e null");
+                    final long  size = snapshot.getChildrenCount();
+                    long index = 0;
+                    for (DataSnapshot data : snapshot.getChildren()) {
+                        index++;
+                        final long ii = index;
+                        final String id = data.getKey().toString();
+                        for (DataSnapshot child : data.getChildren()) {
+                            if (child.getKey().compareToIgnoreCase("participation") == 0 && (Boolean) child.getValue() == true) {
+                                DatabaseReference eventRef = User.firebaseRef.child("events").child(data.getKey().toString());
+                                eventRef.addListenerForSingleValueEvent(new ValueEventListener() {
 
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        ActivityInfo ai = new ActivityInfo();
+                                        ai.id = id;
+                                        boolean mustAddEventToList = true;
+                                        for (DataSnapshot details : dataSnapshot.getChildren()) {
 
-
-        //Clean up shared pref for events: just for debugging
-        SharedPreferences.Editor editor = getSharedPreferences("UserDetails", 0).edit();
-        String connectionsJSONString = new Gson().toJson(null);
-        editor.putString("events", connectionsJSONString);
-        editor.commit();
-        // Update sharedpref for events:
-        editor = getSharedPreferences("UserDetails", 0).edit();
-        editor.putString("uid", User.uid);
-        editor.commit();
-        DatabaseReference usersRef = User.firebaseRef.child("users").child(User.uid).child("events");
-        usersRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                final List<ActivityInfo> activityInfos = new ArrayList<ActivityInfo>();
-
-                if (snapshot == null)
-                    Log.v("NULL", "Snapshot e null");
-                for (DataSnapshot data : snapshot.getChildren()) {
-                    final String id = data.getKey().toString();
-                    for( DataSnapshot child : data.getChildren() ) {
-                        if ( child.getKey().compareToIgnoreCase("participation") == 0 && (Boolean) child.getValue() == true) {
-                            DatabaseReference eventRef = User.firebaseRef.child("events").child(data.getKey().toString());
-                            eventRef.addListenerForSingleValueEvent(new ValueEventListener() {
-
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    ActivityInfo ai = new ActivityInfo();
-                                    ai.id = id;
-                                    boolean mustAddEventToList = true;
-                                    for (DataSnapshot details : dataSnapshot.getChildren()) {
-
-                                        if (details.getKey().toString().equalsIgnoreCase("users")) {
-                                            ai.others = (int)details.getChildrenCount();
-                                        }
-                                        if (details.getKey().toString().equalsIgnoreCase("active")) {
-                                            mustAddEventToList = Boolean.parseBoolean(details.getValue().toString());
-                                        }
-                                        if (details.getKey().toString().equalsIgnoreCase("date")) {
-                                            ai.date = new Date(details.getValue().toString());
-                                        }
-                                        if (details.getKey().toString().equalsIgnoreCase("sport")) {
-                                            ai.sport = details.getValue().toString();
-                                        }
-                                        if (details.getKey().toString().equalsIgnoreCase("description")) {
-                                            ai.description = details.getValue().toString();
-                                        }
-                                        if (details.getKey().toString().equalsIgnoreCase("roomCapacity")) {
-                                            ai.roomCapacity = Integer.parseInt(details.getValue().toString());
-                                        }
-                                        if (details.getKey().toString().equalsIgnoreCase("place")) {
-                                            for (DataSnapshot eventData : details.getChildren()) {
-                                                if (eventData.getKey().toString().equalsIgnoreCase("latitude"))
-                                                    ai.latitude = Double.parseDouble(eventData.getValue().toString());
-                                                if (eventData.getKey().toString().equalsIgnoreCase("longitude"))
-                                                    ai.longitude = Double.parseDouble(eventData.getValue().toString());
-                                                if (eventData.getKey().toString().equalsIgnoreCase("name"))
-                                                    ai.place = eventData.getValue().toString();
+                                            if (details.getKey().toString().equalsIgnoreCase("users")) {
+                                                ai.others = (int) details.getChildrenCount();
                                             }
-
-                                        }
-                                    }
-                                    // If event's sport is not in user's favourites do not include it
-                                    if ( !favoriteSports.contains(ai.sport) )
-                                        mustAddEventToList = false;
-
-                                    // Get distance between last known location and event location
-                                    //float[] distance = new float[10];
-                                    //Location.distanceBetween(userLatitude, userLongitude, ai.latitude, ai.longitude, distance);
-
-                                    // If distance from user to event is greater than the selected range do not include it
-                                   // if ( distance[0] > userRange * 1000 )
-                                    //    mustAddEventToList = false;
-                                    //
-
-                                    String connectionsJSONString = getSharedPreferences("UserDetails", 0).getString("events", null);
-                                    Type type = new TypeToken<List<ActivityInfo>>() {}.getType();
-                                    List<ActivityInfo> events = null;
-                                    if (connectionsJSONString != null) {
-                                        events = new Gson().fromJson(connectionsJSONString, type);
-                                    }
-                                    if (events == null ) {
-                                        events = new ArrayList<ActivityInfo>();
-                                        if ( mustAddEventToList )
-                                            events.add(ai);
-                                    } else {
-                                        Boolean exist = false;
-                                        for (ActivityInfo act : events) {
-                                            // Trash detection
-                                            if (ai.date == null || act.date == null ) {
-                                                exist = true;
-                                                break;
+                                            if (details.getKey().toString().equalsIgnoreCase("active")) {
+                                                mustAddEventToList = Boolean.parseBoolean(details.getValue().toString());
                                             }
-                                            if (ai.date.compareTo(act.date) == 0) {
-                                                exist = true;
+                                            if (details.getKey().toString().equalsIgnoreCase("date")) {
+                                                ai.date = new Date(details.getValue().toString());
+                                            }
+                                            if (details.getKey().toString().equalsIgnoreCase("sport")) {
+                                                ai.sport = details.getValue().toString();
+                                            }
+                                            if (details.getKey().toString().equalsIgnoreCase("description")) {
+                                                ai.description = details.getValue().toString();
+                                            }
+                                            if (details.getKey().toString().equalsIgnoreCase("roomCapacity")) {
+                                                ai.roomCapacity = Integer.parseInt(details.getValue().toString());
+                                            }
+                                            if (details.getKey().toString().equalsIgnoreCase("place")) {
+                                                for (DataSnapshot eventData : details.getChildren()) {
+                                                    if (eventData.getKey().toString().equalsIgnoreCase("latitude"))
+                                                        ai.latitude = Double.parseDouble(eventData.getValue().toString());
+                                                    if (eventData.getKey().toString().equalsIgnoreCase("longitude"))
+                                                        ai.longitude = Double.parseDouble(eventData.getValue().toString());
+                                                    if (eventData.getKey().toString().equalsIgnoreCase("name"))
+                                                        ai.place = eventData.getValue().toString();
+                                                }
+
                                             }
                                         }
-                                        if (!exist && mustAddEventToList ) {
-                                            events.add(ai);
+                                        // If event's sport is not in user's favourites do not include it
+                                        if (!favoriteSports.contains(ai.sport))
+                                            mustAddEventToList = false;
+
+                                        // Get distance between last known location and event location
+                                        //float[] distance = new float[10];
+                                        //Location.distanceBetween(userLatitude, userLongitude, ai.latitude, ai.longitude, distance);
+
+                                        // If distance from user to event is greater than the selected range do not include it
+                                        // if ( distance[0] > userRange * 1000 )
+                                        //    mustAddEventToList = false;
+                                        //
+
+                                        String connectionsJSONString = getSharedPreferences("UserDetails", 0).getString("events", null);
+                                        Type type = new TypeToken<List<ActivityInfo>>() {
+                                        }.getType();
+                                        List<ActivityInfo> events = null;
+                                        if (connectionsJSONString != null) {
+                                            events = new Gson().fromJson(connectionsJSONString, type);
                                         }
+                                        if (events == null) {
+                                            events = new ArrayList<ActivityInfo>();
+                                            if (mustAddEventToList)
+                                                events.add(ai);
+                                        } else {
+                                            Boolean exist = false;
+                                            for (ActivityInfo act : events) {
+                                                // Trash detection
+                                                if (ai.date == null || act.date == null) {
+                                                    exist = true;
+                                                    break;
+                                                }
+                                                if (ai.date.compareTo(act.date) == 0) {
+                                                    exist = true;
+                                                }
+                                            }
+                                            if (!exist && mustAddEventToList) {
+                                                events.add(ai);
+                                            }
+                                        }
+
+                                        //sort by date
+                                        Collections.sort(events, new Comparator<ActivityInfo>() {
+                                            @Override
+                                            public int compare(ActivityInfo lhs, ActivityInfo rhs) {
+                                                return lhs.date.compareTo(rhs.date);
+                                            }
+                                        });
+
+                                        SharedPreferences.Editor editor = getSharedPreferences("UserDetails", 0).edit();
+                                        connectionsJSONString = new Gson().toJson(events);
+                                        editor.putString("events", connectionsJSONString);
+                                        editor.commit();
+
+
+                                        if(size == ii){
+                                            checkHappeningNow();
+                                        }
+
                                     }
 
-                                    //sort by date
-                                    Collections.sort(events, new Comparator<ActivityInfo>() {
-                                        @Override
-                                        public int compare(ActivityInfo lhs, ActivityInfo rhs) {
-                                            return lhs.date.compareTo(rhs.date);
-                                        }
-                                    });
+                                    @Override
+                                    public void onCancelled(DatabaseError firebaseError) {
 
-                                    SharedPreferences.Editor editor = getSharedPreferences("UserDetails", 0).edit();
-                                    connectionsJSONString = new Gson().toJson(events);
-                                    editor.putString("events", connectionsJSONString);
-                                    editor.commit();
-
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError firebaseError) {
-
-                                }
-                            });
+                                    }
+                                });
+                            }
                         }
                     }
+
                 }
 
-            }
+                @Override
+                public void onCancelled(DatabaseError firebaseError) {
+                }
+            });
 
-            @Override
-            public void onCancelled(DatabaseError firebaseError) {
-            }
-        });
 
-        // Left side panel
-        mDrawerList = (ListView) findViewById(R.id.leftMenu);
-        initializeLeftSidePanel();
+            // Left side panel
+            mDrawerList = (ListView) findViewById(R.id.leftMenu);
+            initializeLeftSidePanel();
 
-        User.setImage();
+            User.setImage();
 
-        // User picture and name for HEADER MENU
-        TextView userName = (TextView) findViewById(R.id.userName);
-        userName.setText(User.getFirstName(getApplicationContext()) + " " + User.getLastName(getApplicationContext()));
+            // User picture and name for HEADER MENU
+            TextView userName = (TextView) findViewById(R.id.userName);
+            userName.setText(User.getFirstName(getApplicationContext()) + " " + User.getLastName(getApplicationContext()));
 
-        ImageView userPic = (ImageView) findViewById(R.id.userPicture);
-        Drawable d = new BitmapDrawable(getResources(), User.image);
-        userPic.setImageDrawable(d);
-        // -------------------------------------------------------------------------------------------------------------
+            ImageView userPic = (ImageView) findViewById(R.id.userPicture);
+            Drawable d = new BitmapDrawable(getResources(), User.image);
+            userPic.setImageDrawable(d);
+            // -------------------------------------------------------------------------------------------------------------
 
     /*
         final SwipeRefreshLayout mSwipeRefreshLayout1 = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh1);
@@ -657,12 +669,229 @@ public class MainActivity extends AppCompatActivity {
         */
 
 
-        updateList();
+            updateList();
+
+        } catch (Exception exc) {
+            Utils.quit();
+        }
+
 
     }
-    catch(Exception exc) {
-        Utils.quit();
+
+    public void putEventInSP(ActivityInfo ev){
+        SharedPreferences.Editor editor = getSharedPreferences("UserDetails", 0).edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(ev); // Type is activity info
+        editor.putString("currentEvent", json);
+        editor.commit();
     }
+
+    public ActivityInfo getCurrentEventFromSP(){
+        Gson gson = new Gson();
+        String json = getSharedPreferences("UserDetails", 0).getString("currentEvent", "");
+        if(json != null) {
+            ActivityInfo currentEvent = gson.fromJson(json, ActivityInfo.class);
+            return currentEvent;
+        }
+
+        return null;
+    }
+
+    public void delayHappeningNow(final ActivityInfo ev, long milis){
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                showHappeningNow(ev, false);
+                updateList();
+                getSharedPreferences("UserDetails", 0).edit().putString("currentEventStateCheck","0").commit();
+//                final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+//                ref.child("mesg").child("service").child("stateEvent").setValue("RUN");
+            }
+        }, milis);
+    }
+    public long MIN = 60000;
+    public long INTERVAL = 5; //min
+    public long TIMEOUT_EVENT = 120;//min
+    public final Handler handlerChecker = new Handler();
+
+    public void stopHappeningNowAtTimeout(){
+        final Handler h = new Handler();
+        h.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                final Chronometer timer = (Chronometer) findViewById( R.id.chronometer );
+                String currentP = getSharedPreferences("UserDetails", 0).getString("currentEventPointsCounter", "0");
+                getSharedPreferences("UserDetails", 0).edit().putString("currentEventStateCheck","2").commit();
+                Toast.makeText(getApplicationContext(), "Yaay! Activity finished in " + timer.getText().toString() + "!\nYou got "+currentP + " points! :-)", Toast.LENGTH_LONG).show();
+                timer.stop();
+                hideHappeningRightNow();
+                handlerChecker.removeCallbacks(rCheck);
+                putPointsFromSPInFirebase();// updateFirebase
+            }
+        }, MIN*TIMEOUT_EVENT);
+    }
+
+    public int getPointsByPriority(int priority){
+        if(priority == 0){
+            return 1;
+        }
+        else{
+            return 2;
+        }
+    }
+
+    final Runnable rCheck = new Runnable() {
+        public void run() {
+            final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+            ref.child("mesg").child("service").child("stateEvent").setValue("Check1 " + new Date().getTime());
+
+            if(isLocationOk()) {
+                putPointsInSP(getPointsByPriority(getCurrentEventFromSP().priority));
+            }
+            else{
+                Toast.makeText(getApplicationContext(), "You are not in the right location!", Toast.LENGTH_LONG).show();
+            }
+            handlerChecker.postDelayed(this, INTERVAL*MIN);
+        }
+    };
+    public void runPointsChecker(){
+        handlerChecker.postDelayed(rCheck, INTERVAL*MIN);
+        stopHappeningNowAtTimeout();
+    }
+
+    void putPointsInSP(int points){
+        String current = getSharedPreferences("UserDetails", 0).getString("currentEventPointsCounter", "0");
+        int val = Integer.parseInt(current);
+        val+=points;
+        String nval = String.valueOf(val);
+        getSharedPreferences("UserDetails", 0).edit().putString("currentEventPointsCounter",nval).commit();
+    }
+
+    void putPointsFromSPInFirebase(){
+        String currentVal = getSharedPreferences("UserDetails", 0).getString("currentEventPointsCounter", "0");
+        int val = Integer.parseInt(currentVal);
+        ActivityInfo currentEvent = getCurrentEventFromSP();
+
+        getActualPoints(currentEvent.sport, val, currentEvent.id); // update Firebase
+
+        getSharedPreferences("UserDetails", 0).edit().putString("currentEventPointsCounter","0").commit();
+    }
+
+    public void checkHappeningNow(){
+
+        int MIN = 1000;
+
+        // Get the list of events from Shared Prefs
+        String connectionsJSONString = getSharedPreferences("UserDetails", 0).getString("events", null);
+        Type type = new TypeToken<List<ActivityInfo>>() {}.getType();
+        List<ActivityInfo> events = null;
+        if (connectionsJSONString != null) {
+            events = new Gson().fromJson(connectionsJSONString, type);
+        }
+
+        if (events != null && events.size() != 0) {
+
+            //getSharedPreferences("UserDetails", 0).edit().putString("currentEventIsActive", "0").commit();
+//          ref.child("mesg").child("service").child("currentEventIsActive").setValue("0___" + new Date().toString());
+
+
+            // Get current date
+            DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, new Locale("English"));
+            //df.setTimeZone(TimeZone.getTimeZone("gmt"));
+            df.setTimeZone(TimeZone.getTimeZone("Europe/Bucharest"));
+            String gmtTime = df.format(new Date());
+            Date now = new Date(gmtTime);
+//                        ref.child("mesg").child("service").child("whileBIGTimeNOW").setValue(now.toString());
+
+            Log.v("Date now", now.toString());
+            // Problem - TimeZone
+
+            // Get the current pending event
+            boolean found = false;
+            int j = 0;
+            while (j < events.size()) {
+                if (events.get(j).date != null) {
+                    if (now.after(events.get(j).date))
+                        j++;
+                    else {
+                        found = true;
+                        break;
+                    }
+                }
+                // else nu are cum
+            }
+
+            ActivityInfo upcomingEvent, lastEvent;
+
+            if (!found) {
+                upcomingEvent = null;
+                lastEvent = events.get(events.size() - 1);
+            } else {
+                upcomingEvent = events.get(j);
+                if (j > 0) {
+                    lastEvent = events.get(j - 1);
+                } else {
+                    lastEvent = null;
+                }
+            }
+            Date upEventDate=new Date();
+            long diffMilis=0;
+            if(upcomingEvent!= null) {
+                upEventDate = upcomingEvent.date;
+                now = new Date(gmtTime);
+                diffMilis = Math.abs(upEventDate.getTime() - now.getTime())+3000;
+            }
+
+            if (lastEvent != null) {
+                now = new Date(gmtTime);
+                Date lastEventDate = lastEvent.date;
+
+
+                long diffInMillisec =  Math.abs(now.getTime() - lastEventDate.getTime());
+                long diffInSec = TimeUnit.MILLISECONDS.toSeconds(diffInMillisec);
+                double hours = (double) diffInSec / (double) 3600;
+
+                if (hours < 2.0) {
+
+                    String state = getSharedPreferences("UserDetails", 0).getString("currentEventStateCheck", "3"); // 0 - didn't start, 1 - started, 2 - stopped, 3 - nothing
+
+                    if (state.equalsIgnoreCase("0")) { // last event is the current one
+
+                        putEventInSP(lastEvent);
+                        showHappeningNow(lastEvent, false);
+                        updateList();
+                        getSharedPreferences("UserDetails", 0).edit().putString("currentEventStateCheck","0").commit();
+
+                    } else {
+
+                        if(state.equalsIgnoreCase("1")){ // it is already started
+                            showHappeningNow(lastEvent, true);
+                            updateList();
+                        }
+                        else {
+                            if (upcomingEvent != null && state.equalsIgnoreCase("2")) {
+                                putEventInSP(upcomingEvent);
+                                delayHappeningNow(upcomingEvent, diffMilis);
+                            }
+                        }
+
+                    }
+
+                } else {
+                    if(upcomingEvent != null) {
+                        putEventInSP(upcomingEvent);
+                        delayHappeningNow(upcomingEvent, diffMilis);
+                    }
+                }
+
+            } else {
+                if(upcomingEvent != null) {
+                    putEventInSP(upcomingEvent);
+                    delayHappeningNow(upcomingEvent, diffMilis);
+                }
+            }
+        }
     }
 
     public void hideHappeningRightNow(){
@@ -671,7 +900,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void showHappeningNow(ActivityInfo ce){
+    public void showHappeningNow(ActivityInfo ce, boolean alreadyStarted){
 
         final ActivityInfo currentEvent = ce;
 
@@ -726,36 +955,59 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-
+        changeStateButton.setTag(0);
         // Start/Stop Button
         changeStateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String state = getSharedPreferences("UserDetails", 0).getString("currentEventState", "0");
 
-                if (Integer.parseInt(state) == 0) { // is start => Stop
-                    Intent intent = new Intent("MainToService_StartRequest");
-                    intent.putExtra("bla", "bla");
-                    if(broadcastManager != null)
-                        broadcastManager.sendBroadcast(intent);
+                if ((int)changeStateButton.getTag()==0) { // is start => Stop
 
-                    getSharedPreferences("UserDetails", 0).edit().putString("HappeningNowEvent", "").commit();
 
-                } else if (Integer.parseInt(state) == 1) { // is Stop => Hide
+                    if(!GPSTracker.canGetGPSLocation(getApplicationContext())){
+                        Toast.makeText(getApplicationContext(), "Activate gps location first!", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
+                    if(isLocationOk()){ // Ok, start, location ok
+                        timer.setBase(SystemClock.elapsedRealtime());
+                        timer.start();
+
+                        String state = getSharedPreferences("UserDetails", 0).getString("currentEventStateCheck", "3");
+                        if (!state.equalsIgnoreCase("1")) { // if it is not started yet
+                            getSharedPreferences("UserDetails", 0).edit().putString("eventStartedAt", new Date().toString()).commit();
+                            Toast.makeText(getApplicationContext(), "Activity started. Do not close the application if you want to sweat on points.", Toast.LENGTH_LONG).show();
+                            runPointsChecker();// Start points checker
+
+                        }
+                        changeStateButton.setText("Stop");
+                        changeStateButton.setBackgroundColor(Color.parseColor("#BF3636"));
+                        changeStateButton.setTag(1);
+                        getSharedPreferences("UserDetails", 0).edit().putString("currentEventStateCheck","1").commit();
+
+                    }
+                    else { // location is not the right one
+                        Toast.makeText(getApplicationContext(), "You are not in the right location!", Toast.LENGTH_LONG).show();
+                    }
+
+                } else if ((int)changeStateButton.getTag()==1) { // is Stop => Hide
 
                     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             switch (which){
                                 case DialogInterface.BUTTON_POSITIVE:
+                                    String currentP = getSharedPreferences("UserDetails", 0).getString("currentEventPointsCounter", "0");
+                                    getSharedPreferences("UserDetails", 0).edit().putString("currentEventStateCheck","2").commit();
                                     timer.stop();
                                     changeStateButton.setVisibility(View.GONE);
-                                    getSharedPreferences("UserDetails", 0).edit().putString("currentEventState", "2").commit(); // stopped
-                                    Toast.makeText(getApplicationContext(), "Yaay! Activity finished in " + timer.getText().toString(), Toast.LENGTH_LONG).show();
-
-                                    getSharedPreferences("UserDetails", 0).edit().putString("HappeningNowEvent", "").commit();
+                                    Toast.makeText(getApplicationContext(), "Yaay! Activity finished in " + timer.getText().toString() + "!\nYou got "+currentP + " points! :-)", Toast.LENGTH_LONG).show();
                                     hideHappeningRightNow();
+
+                                    handlerChecker.removeCallbacks(rCheck);
+
+                                    putPointsFromSPInFirebase();// updateFirebase
+                                    changeStateButton.setTag(2);
                                     break;
 
                                 case DialogInterface.BUTTON_NEGATIVE:
@@ -773,6 +1025,22 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+
+        if(alreadyStarted){
+            changeStateButton.performClick();
+
+            String lastTimeString = getSharedPreferences("UserDetails", 0).getString("eventStartedAt", "0");
+            if(!lastTimeString.equalsIgnoreCase("0")){
+                Date startedTime = new Date(lastTimeString);
+                Date now = new Date();
+                long diffMilis = Math.abs(now.getTime() - startedTime.getTime());
+                timer.setBase(SystemClock.elapsedRealtime()-diffMilis);
+            }
+        }
+        else{
+            Toast.makeText(getApplicationContext(), "Awesome, you have an activity right now! :-)", Toast.LENGTH_LONG).show();
+        }
 
         // Share on facebook
         final ShareDialog shareDialog = new ShareDialog(this);
@@ -818,8 +1086,9 @@ public class MainActivity extends AppCompatActivity {
             final Chronometer timer = (Chronometer) findViewById( R.id.chronometer );
 
             if(msg == "0"){ // Ok, start, location ok
-                timer.setBase(SystemClock.elapsedRealtime());
+                timer.setBase(SystemClock.elapsedRealtime()+30000);
                 timer.start();
+
                 changeStateButton.setText("Stop");
                 changeStateButton.setBackgroundColor(Color.parseColor("#BF3636"));
                 getSharedPreferences("UserDetails", 0).edit().putString("HappeningNowEvent", "").commit();
@@ -849,18 +1118,137 @@ public class MainActivity extends AppCompatActivity {
                 final ActivityInfo currentEvent = gson.fromJson(json, ActivityInfo.class);
 
                 if ( currentEvent != null ) {
-                    showHappeningNow(currentEvent);
+                    //showHappeningNow(currentEvent);
                     updateList();
                 }
             }
             else{ // Event ended
-                hideHappeningRightNow();
+                //hideHappeningRightNow();
                 updateList();
             }
 
 
         }
     };
+
+    // *********************************************Location:
+
+    public static int maxDistanceMeters = 500; //m
+    private static final String TAG = "BOOMBOOMTESTGPS";
+    private LocationManager mLocationManager = null;
+    private static final int LOCATION_INTERVAL = 1000*60*1;
+    private static final float LOCATION_DISTANCE = 10f;
+
+    private class LocationListener implements android.location.LocationListener{
+        //Location mLastLocation;
+        public LocationListener(String provider)
+        {
+            //mLastLocation = new Location(provider);
+        }
+        @Override
+        public void onLocationChanged(Location location)
+        {
+            //mLastLocation.set(location);
+        }
+        @Override
+        public void onProviderDisabled(String provider)
+        {
+        }
+        @Override
+        public void onProviderEnabled(String provider)
+        {
+        }
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras)
+        {
+        }
+    }
+    LocationListener[] mLocationListeners = new LocationListener[] {
+            new LocationListener(LocationManager.GPS_PROVIDER)
+    };
+
+    private void initializeLocationManager() {
+        if (mLocationManager == null) {
+            mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        }
+    }
+
+    private Location getLocationOnlyOnce(){
+
+        try {
+
+            initializeLocationManager();
+
+            try {
+                mLocationManager.requestLocationUpdates(
+                        LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
+                        mLocationListeners[0]);
+                if (mLocationManager != null) {
+
+                    try {
+                        Location location = mLocationManager
+                                .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+                        if (location != null) {
+
+
+                            mLocationManager.removeUpdates(mLocationListeners[0]);
+                            return location;
+                        }
+                    } catch (java.lang.SecurityException ex) {
+                        Log.i(TAG, "fail to request location update, ignore", ex);
+                    }
+                }
+
+            } catch (java.lang.SecurityException ex) {
+                Log.i(TAG, "fail to request location update, ignore", ex);
+            } catch (IllegalArgumentException ex) {
+                Log.d(TAG, "gps provider does not exist " + ex.getMessage());
+            }
+
+        }catch(Exception e){
+            // magic
+        }
+
+        return null;
+    }
+
+    private boolean isLocationOk(){
+        //Looper.prepare();
+        Location current = getLocationOnlyOnce();
+        if(current != null){
+            final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+            //ref.child("mesg").child("service").child("alive").setValue(current.getLatitude() + " - " + current.getLongitude() + new Date().toString());
+
+            String json = getSharedPreferences("UserDetails", 0).getString("currentEvent", "");
+            Gson gson = new Gson();
+            ActivityInfo currentEvent = gson.fromJson(json, ActivityInfo.class);
+
+            if ( currentEvent != null ) {
+                Location targetLocation = new Location("");//provider name is unecessary
+                targetLocation.setLatitude(currentEvent.latitude);//your coords of course
+                targetLocation.setLongitude(currentEvent.longitude);
+                double distance = current.distanceTo(targetLocation);
+                ref.child("mesg").child("service").child("distance").setValue(distance +"   " + new Date().toString());
+                if( distance <= maxDistanceMeters){
+                    // TODO custom maxDistance by Event/Event Location
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+
+        }
+        else{
+            return false;
+        }
+
+        return true;
+    }
+
+    // ********************************************* End Location:
+
 
     public void updateList()
     {
@@ -1151,6 +1539,49 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+//    @Override
+//    public void onPause(){
+//        super.onPause();
+//        String state = getSharedPreferences("UserDetails", 0).getString("currentEventStateCheck", "3");
+//        if (state.equalsIgnoreCase("1")) { // if it is started
+//            getSharedPreferences("UserDetails", 0).edit().putString("eventStartedButExitAt",new Date().toString()).commit();
+//            final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+//            ref.child("mesg").child("service").child("stateEvent").setValue("pause + " + new Date().toString());
+//
+//        }
+//    }
+//
+    @Override
+    public void onStop(){
+        super.onStop();
+//        String state = getSharedPreferences("UserDetails", 0).getString("currentEventStateCheck", "3");
+//        if (state.equalsIgnoreCase("1")) { // if it is started
+//            getSharedPreferences("UserDetails", 0).edit().putString("eventStartedButExitAt",new Date().toString()).commit();
+//            final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+//            ref.child("mesg").child("service").child("stateEvent").setValue("stop + " + new Date().toString());
+//        }
+
+//        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+//        ref.child("mesg").child("service").child("stateEvent").setValue("stop + " + new Date().toString());
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+//        String state = getSharedPreferences("UserDetails", 0).getString("currentEventStateCheck", "3");
+//        if (state.equalsIgnoreCase("1")) { // if it is started
+//            getSharedPreferences("UserDetails", 0).edit().putString("eventStartedButExitAt",new Date().toString()).commit();
+//
+//        }
+
+        getSharedPreferences("UserDetails", 0).edit().putString("currentEventStateCheck","2").commit();
+        putPointsFromSPInFirebase();// updateFirebase
+
+        handlerChecker.removeCallbacks(rCheck);
+
+
     }
 
 
