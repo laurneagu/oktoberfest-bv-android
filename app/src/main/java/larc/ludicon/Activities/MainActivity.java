@@ -746,11 +746,16 @@ public class MainActivity extends AppCompatActivity {
             final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
             ref.child("mesg").child("service").child("stateEvent").setValue("Check1 " + new Date().getTime());
 
-            if(isLocationOk()) {
+            if(!GPSTracker.canGetGPSLocation(getApplicationContext())){
+                Toast.makeText(getApplicationContext(), "Activate gps location first!", Toast.LENGTH_LONG).show();
+                return;
+            }
+            DistanceValue dist = new DistanceValue();
+            if(isLocationOk(dist)) {
                 putPointsInSP(getPointsByPriority(getCurrentEventFromSP().priority));
             }
             else{
-                Toast.makeText(getApplicationContext(), "You are not in the right location!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "You are not in the right location!\n"+dist.value+" meters far away!", Toast.LENGTH_LONG).show();
             }
             handlerChecker.postDelayed(this, INTERVAL*MIN);
         }
@@ -968,8 +973,8 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Activate gps location first!", Toast.LENGTH_LONG).show();
                         return;
                     }
-
-                    if(isLocationOk()){ // Ok, start, location ok
+                    DistanceValue dist = new DistanceValue();
+                    if(isLocationOk(dist)){ // Ok, start, location ok
                         timer.setBase(SystemClock.elapsedRealtime());
                         timer.start();
 
@@ -987,7 +992,7 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                     else { // location is not the right one
-                        Toast.makeText(getApplicationContext(), "You are not in the right location!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "You are not in the right location!\n"+dist.value+" meters far away!", Toast.LENGTH_LONG).show();
                     }
 
                 } else if ((int)changeStateButton.getTag()==1) { // is Stop => Hide
@@ -1133,7 +1138,7 @@ public class MainActivity extends AppCompatActivity {
 
     // *********************************************Location:
 
-    public static int maxDistanceMeters = 500; //m
+    public static int maxDistanceMeters = 1500; //m
     private static final String TAG = "BOOMBOOMTESTGPS";
     private LocationManager mLocationManager = null;
     private static final int LOCATION_INTERVAL = 1000*60*1;
@@ -1213,8 +1218,13 @@ public class MainActivity extends AppCompatActivity {
         return null;
     }
 
-    private boolean isLocationOk(){
+    class DistanceValue{
+        public double value;
+    }
+
+    private boolean isLocationOk(DistanceValue dist){
         //Looper.prepare();
+        dist.value = -1.0;
         Location current = getLocationOnlyOnce();
         if(current != null){
             final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
@@ -1229,6 +1239,7 @@ public class MainActivity extends AppCompatActivity {
                 targetLocation.setLatitude(currentEvent.latitude);//your coords of course
                 targetLocation.setLongitude(currentEvent.longitude);
                 double distance = current.distanceTo(targetLocation);
+                dist.value = distance;
                 ref.child("mesg").child("service").child("distance").setValue(distance +"   " + new Date().toString());
                 if( distance <= maxDistanceMeters){
                     // TODO custom maxDistance by Event/Event Location
@@ -1575,11 +1586,16 @@ public class MainActivity extends AppCompatActivity {
 //            getSharedPreferences("UserDetails", 0).edit().putString("eventStartedButExitAt",new Date().toString()).commit();
 //
 //        }
+        String state = getSharedPreferences("UserDetails", 0).getString("currentEventStateCheck", "3"); // 0 - didn't start, 1 - started, 2 - stopped, 3 - nothing
 
-        getSharedPreferences("UserDetails", 0).edit().putString("currentEventStateCheck","2").commit();
-        putPointsFromSPInFirebase();// updateFirebase
+        if (state.equalsIgnoreCase("1")) { // if the event is started
+            getSharedPreferences("UserDetails", 0).edit().putString("currentEventStateCheck", "2").commit(); // stop it
+            handlerChecker.removeCallbacks(rCheck);
+            putPointsFromSPInFirebase();// updateFirebase
+        }
 
-        handlerChecker.removeCallbacks(rCheck);
+
+
 
 
     }
