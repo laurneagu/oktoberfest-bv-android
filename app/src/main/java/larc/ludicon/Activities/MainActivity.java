@@ -1052,6 +1052,15 @@ public class MainActivity extends AppCompatActivity {
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String state = getSharedPreferences("UserDetails", 0).getString("currentEventStateCheck", "3"); // 0 - didn't start, 1 - started, 2 - stopped, 3 - nothing
+
+                if (state.equalsIgnoreCase("0")) { // if the event is not started
+                    getSharedPreferences("UserDetails", 0).edit().putString("currentEventStateCheck", "2").commit(); // stop it
+                    handlerChecker.removeCallbacks(rCheck);
+                    hideHappeningRightNow();
+                }
+
+                /* UNCOMENT THIS
                 String audience = "";
                 if (currentEvent.others > 1)
                     audience = " with " + (currentEvent.others) + " others";
@@ -1073,7 +1082,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (ShareDialog.canShow(ShareLinkContent.class) == true)
                     shareDialog.show(content);
-
+            */
             }
         });
 
@@ -1142,30 +1151,35 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "BOOMBOOMTESTGPS";
     private LocationManager mLocationManager = null;
     private static final int LOCATION_INTERVAL = 1000*30*1;
-    private static final float LOCATION_DISTANCE = 0F;
+    private static final float LOCATION_DISTANCE = 1F;
 
     private class LocationListener implements android.location.LocationListener{
         //Location mLastLocation;
         public LocationListener(String provider)
         {
             //mLastLocation = new Location(provider);
+            int a;
         }
         @Override
         public void onLocationChanged(Location location)
         {
+            int a;
             //mLastLocation.set(location);
         }
         @Override
         public void onProviderDisabled(String provider)
         {
+            int a;
         }
         @Override
         public void onProviderEnabled(String provider)
         {
+            int a;
         }
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras)
         {
+            int a;
         }
     }
     LocationListener[] mLocationListeners = new LocationListener[] {
@@ -1185,6 +1199,12 @@ public class MainActivity extends AppCompatActivity {
             initializeLocationManager();
 
             try {
+
+//                Criteria crit = new Criteria();
+//                crit.setAccuracy(Criteria.ACCURACY_FINE);
+//                best = mgr.getBestProvider(crit, false);
+//                mgr.requestLocationUpdates(best, 0, 1, locationListener);
+
                 mLocationManager.requestLocationUpdates(
                         LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
                         mLocationListeners[0]);
@@ -1225,7 +1245,14 @@ public class MainActivity extends AppCompatActivity {
     private boolean isLocationOk(DistanceValue dist){
         //Looper.prepare();
         dist.value = -1.0;
-        Location current = getLocationOnlyOnce();
+
+        GPSTracker gps = new GPSTracker(getApplicationContext(), this);
+        if (!gps.canGetLocation()) {
+            return false;
+        }
+
+        Location current = gps.getLocation();
+        gps.stopUsingGPS();
         if(current != null){
             //final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
             //ref.child("mesg").child("service").child("alive").setValue(current.getLatitude() + " - " + current.getLongitude() + new Date().toString());
