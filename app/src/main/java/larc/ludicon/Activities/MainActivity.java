@@ -1141,8 +1141,8 @@ public class MainActivity extends AppCompatActivity {
     public static int maxDistanceMeters = 1500; //m
     private static final String TAG = "BOOMBOOMTESTGPS";
     private LocationManager mLocationManager = null;
-    private static final int LOCATION_INTERVAL = 1000*60*1;
-    private static final float LOCATION_DISTANCE = 10f;
+    private static final int LOCATION_INTERVAL = 1000*30*1;
+    private static final float LOCATION_DISTANCE = 0F;
 
     private class LocationListener implements android.location.LocationListener{
         //Location mLastLocation;
@@ -1173,9 +1173,9 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private void initializeLocationManager() {
-        if (mLocationManager == null) {
+        //if (mLocationManager == null) {
             mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-        }
+        //}
     }
 
     private Location getLocationOnlyOnce(){
@@ -1227,7 +1227,7 @@ public class MainActivity extends AppCompatActivity {
         dist.value = -1.0;
         Location current = getLocationOnlyOnce();
         if(current != null){
-            final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+            //final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
             //ref.child("mesg").child("service").child("alive").setValue(current.getLatitude() + " - " + current.getLongitude() + new Date().toString());
 
             String json = getSharedPreferences("UserDetails", 0).getString("currentEvent", "");
@@ -1240,7 +1240,7 @@ public class MainActivity extends AppCompatActivity {
                 targetLocation.setLongitude(currentEvent.longitude);
                 double distance = current.distanceTo(targetLocation);
                 dist.value = distance;
-                ref.child("mesg").child("service").child("distance").setValue(distance +"   " + new Date().toString());
+                //ref.child("mesg").child("service").child("distance").setValue(distance +"   " + new Date().toString());
                 if( distance <= maxDistanceMeters){
                     // TODO custom maxDistance by Event/Event Location
                     return true;
