@@ -240,7 +240,7 @@ public class IntroActivity extends Activity {
                 startActivity(goToNextActivity);
                 finish();
             }
-        }, 1000); // Delay time for transition to next activity -> insert any time wanted here instead of 5000
+        }, 1); // Delay time for transition to next activity -> insert any time wanted here instead of 5000
     }
 
     public void jumpToPrefActivity() {
@@ -391,6 +391,12 @@ public class IntroActivity extends Activity {
                                     //points
                                     map.put("points", "0");
 
+
+                                    final Map<String, Object> mapSports = new HashMap<String, Object>();
+                                    mapSports.put("other",9);
+                                    map.put("sports",mapSports);
+                                    map.put("range", 100);
+                                    
                                     //lastLogIn - GMT
                                     DateFormat df = DateFormat.getDateTimeInstance();
                                     df.setTimeZone(TimeZone.getTimeZone("gmt"));
@@ -398,7 +404,9 @@ public class IntroActivity extends Activity {
                                     map.put("lastLogInTime", gmtTime);
 
 
-                                    final String uid = userFirebase.getUid();
+                                    //final String uid = userFirebase.getUid();
+                                    final String uid = "facebook:" + id;
+                                    Log.v("ID", uid);
                                     User.uid = uid;
 
                                     //profilePictureView.setVisibility(View.VISIBLE);

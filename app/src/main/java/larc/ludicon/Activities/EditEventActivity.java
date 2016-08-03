@@ -22,9 +22,11 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -95,6 +97,7 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
     public void onMapReady(GoogleMap map) {
         m_gmap = map;
         // Set location of event
+        Log.v("Added marker",latLNG.toString());
         m_gmap.addMarker(new MarkerOptions()
                 .position(latLNG)
                 .title("This is your selected area"));
@@ -136,7 +139,6 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        try{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_new);
 
@@ -193,31 +195,26 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
             if ( spinner.getItemAtPosition(i).toString().equalsIgnoreCase(eventSport) )
             {   spinner.setSelection(i); Log.v("selected",i + " ");break;}}
 
-        // TODO - Are these 2 lines important?
-        //View v = spinner.getSelectedView();
-        //((TextView)v).setTextColor(Color.parseColor("#000000"));
-/*
-        // Set privacy of event
-        String privacy = getIntent().getStringExtra("eventPrivacy");
-        if ( privacy.equalsIgnoreCase("public"))
-        {
-            TextView selected,notselected;
-            selected = (TextView)findViewById(R.id.publicBut);
-            selected.setAlpha(1);
 
-            notselected = (TextView)findViewById(R.id.privateBut);
-            notselected.setAlpha((float)0.7);
-        }
-        else
-        {
-            TextView selected,notselected;
-            selected = (TextView)findViewById(R.id.privateBut);
-            selected.setAlpha(1);
+        // TODO - Receive description + max number of players
+            String desc = getIntent().getStringExtra("desc");
+            EditText editTextDesc = (EditText) findViewById(R.id.DescriptionInput);
+            editTextDesc.setText(desc);
 
-            notselected = (TextView)findViewById(R.id.publicBut);
-            notselected.setAlpha((float)0.7);
-        }
-        */
+            int maxPlayers = Integer.parseInt(getIntent().getStringExtra("maxPlayers"));
+            Log.v("Players MAX", maxPlayers+ "");
+            NumberPicker numberPicker = (NumberPicker) findViewById(R.id.maxPlayersInput);
+            String[] nums = new String[20];
+            for(int i=1; i<=nums.length; i++)
+                nums[i-1] = Integer.toString(i);
+
+            numberPicker.setMinValue(1);
+            numberPicker.setMaxValue(20);
+            numberPicker.setWrapSelectorWheel(false);
+            numberPicker.setDisplayedValues(nums);
+            numberPicker.setValue(maxPlayers);
+
+
         double longitude = Double.parseDouble(getIntent().getStringExtra("longitude"));
         double latitude = Double.parseDouble(getIntent().getStringExtra("latitude"));
         latLNG = new LatLng(latitude,longitude);
@@ -227,10 +224,6 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
         hello_message.setText("Edit Event");
         Button editBtn = (Button)findViewById(R.id.createEvent);
         editBtn.setText("Edit");
-        }
-        catch(Exception exc) {
-            Utils.quit();
-        }
     }
 /*
     public void onPrivacyButtonsClicked(View view) {
@@ -303,6 +296,16 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
         ProgressBar pb = (ProgressBar)findViewById(R.id.marker_progress);
         pb.setVisibility(View.VISIBLE);
 
+        NumberPicker numberPicker = (NumberPicker) findViewById(R.id.maxPlayersInput);
+        int maxPlayers = numberPicker.getValue();
+
+        EditText editTextDesc = (EditText) findViewById(R.id.DescriptionInput);
+        String description = editTextDesc.getText().toString();
+
+        // Event extra info:
+        map.put("roomCapacity", maxPlayers);
+        map.put("priority", 0);
+        map.put("description", description);
         map.put("date",  gmtTime);
         map.put("createdBy", User.uid);
         map.put("active",true);
@@ -352,8 +355,11 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
 
         // location not provided
         if (latitude == 0 || longitude == 0) {
-            mapAux.put("latitude",GPS_Positioning.getLatLng().latitude);
-            mapAux.put("longitude", GPS_Positioning.getLatLng().longitude);
+            longitude = Double.parseDouble(getIntent().getStringExtra("longitude"));
+            latitude = Double.parseDouble(getIntent().getStringExtra("latitude"));
+            mapAux.put("latitude",latitude);
+            mapAux.put("longitude", longitude);
+            mapAux.put("name", getIntent().getStringExtra("place"));
         }
         else{
             Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.ENGLISH );
@@ -426,7 +432,7 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
                 startActivity(goToNextActivity);
                 finish();
             }
-        }, 2000); // Delay time for transition to next activity -> insert any time wanted here instead of 5000
+        }, 1); // Delay time for transition to next activity -> insert any time wanted here instead of 5000
     }
 
     @Override
@@ -476,7 +482,7 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
         LatLng latLng = new LatLng(latitude, longitude);
 
         m_gmap.clear();
-
+        Log.v("Added MArker", "AAAA");
         m_gmap.addMarker(new MarkerOptions()
                 .position(latLng)
                         //.icon(BitmapDescriptorFactory.fromResource(R.drawable.football))

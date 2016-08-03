@@ -302,6 +302,7 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
                         intent.putExtra("isOfficial", eventisOfficial);
                         intent.putExtra("place",eventPlace);
                         intent.putExtra("desc", eventDesc);
+                        intent.putExtra("maxPlayers", roomCapacity+"");
                         startActivity(intent);
                     }
                 });

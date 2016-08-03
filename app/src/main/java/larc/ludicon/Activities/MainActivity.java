@@ -1337,6 +1337,12 @@ public class MainActivity extends AppCompatActivity {
                         if (details.getKey().toString().equalsIgnoreCase("creatorImage"))
                             event.profileImageURL = details.getValue().toString();
 
+                        if (details.getKey().toString().equalsIgnoreCase("active"))
+                        {
+                            event.active = Boolean.parseBoolean(details.getValue().toString());
+                            mustAddEventToList = event.active;
+                        }
+
                         if (details.getKey().toString().equalsIgnoreCase("privacy"))
                             if (details.getValue().toString().equalsIgnoreCase("private"))
                                 isPublic = false;
@@ -1433,7 +1439,7 @@ public class MainActivity extends AppCompatActivity {
                     // Insert event in the correct list
                     //if (new Date().before(event.date) && isPublic) {
 
-                    if (doIParticipate && (new Date().getTime() < event.date.getTime())) {
+                    if (event.active && doIParticipate && (new Date().getTime() < event.date.getTime())) {
                         if(currentEventUID != event.id)
                             myEventsList.add(event);
                     }
