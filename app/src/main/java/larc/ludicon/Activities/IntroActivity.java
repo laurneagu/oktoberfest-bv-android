@@ -392,10 +392,6 @@ public class IntroActivity extends Activity {
                                     map.put("points", "0");
 
 
-                                    final Map<String, Object> mapSports = new HashMap<String, Object>();
-                                    mapSports.put("other",9);
-                                    map.put("sports",mapSports);
-                                    map.put("range", 100);
                                     
                                     //lastLogIn - GMT
                                     DateFormat df = DateFormat.getDateTimeInstance();
@@ -428,6 +424,12 @@ public class IntroActivity extends Activity {
                                             // }
 
                                             if (snapshot.getValue() == null) { // new user
+
+                                                final Map<String, Object> mapSports = new HashMap<String, Object>();
+                                                mapSports.put("other",9);
+                                                map.put("sports",mapSports);
+                                                map.put("range", 100);
+
                                                 User.firebaseRef.child("mesg").child(User.uid).child("status").setValue("User Nou");
                                                 User.firebaseRef.child("users").child(uid).setValue(map);
 
