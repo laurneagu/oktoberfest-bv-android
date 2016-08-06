@@ -55,6 +55,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import larc.ludicon.Adapters.LeftPanelItemClicker;
@@ -165,7 +166,7 @@ public class FriendsActivity extends Activity {
                         e.printStackTrace();
                     }
                 }
-
+                final List<Integer> toRemoveNoMoreFriends = new ArrayList<>();
 
                 for(int i = 0; i < friends.size() ; ++i){
                     final int index = i;
@@ -181,10 +182,20 @@ public class FriendsActivity extends Activity {
                                         friends.get(index).numberOfSports = data.getChildrenCount() + " sports";
                                 }
 
-
+                                if(friends.get(index).ImageUrl ==null){
+                                    toRemoveNoMoreFriends.add(index);
+                                }
                             }
 
                             if (index == friends.size()-1){ // if it is the last one, you can start the ui
+
+                                int iRemovedCount=0;
+                                // Remove empty indexes
+                                for(Integer indexToRemove : toRemoveNoMoreFriends){
+                                    friends.remove(friends.get(indexToRemove-iRemovedCount));
+                                    iRemovedCount++;
+                                }
+
                                 MyCustomAdapter adapter = new MyCustomAdapter(friends,getApplicationContext());
                                 ListView listView = (ListView) findViewById(R.id.friends_listView);
                                 Log.v("TAG",friends.size()+"");

@@ -34,6 +34,7 @@ import android.widget.Toast;
 
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -273,7 +274,13 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
                         m_gmap.addMarker(new MarkerOptions()
                                 .position(latLng)
                                 .title("Event Venue"));
-                        m_gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+
+                        CameraUpdate center=
+                                CameraUpdateFactory.newLatLngZoom(latLng,15);
+
+                        m_gmap.moveCamera(center);
+
+                        //m_gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
                     }
                 }
 

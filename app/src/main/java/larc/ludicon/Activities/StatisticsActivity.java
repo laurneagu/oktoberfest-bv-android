@@ -27,6 +27,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
@@ -148,14 +149,71 @@ public class StatisticsActivity extends Activity {
                                     userEvents.get(j).date = new Date(data.getValue().toString());
                                 }
                             }
-                            Log.v(userEvents.get(j).date.getMonth() + "", userEvents.get(j).points + "");
-                            // Add event points to respective month
-                            pointsPerMonth[userEvents.get(j).date.getMonth()] += userEvents.get(j).points;
-                            // Something to signal the finish of work
-                            dummy.add(1);
-                            if (dummy.size() == userEvents.size()) {
-                                displayChart();
-                                displayStatistics();
+                            // event is in the past
+                            if (userEvents.get(j).date == null) {
+                                final DatabaseReference eventPastRef = User.firebaseRef.child("past-events");
+
+                                eventPastRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot snapshot) {
+                                        // this is the date format : 4-2016 (april 2016 , etc..)
+                                        for (DataSnapshot dataPeriod : snapshot.getChildren()) {
+                                            // this are the events for a specific month
+                                            for(DataSnapshot eventInPeriod : dataPeriod.getChildren()) {
+                                                if (eventInPeriod.getKey().compareTo(userEvents.get(j).id) == 0) {
+                                                    for (DataSnapshot dataChild : eventInPeriod.getChildren()) {
+                                                        if (dataChild.getKey().compareToIgnoreCase("sport") == 0) {
+                                                            userEvents.get(j).sport = dataChild.getValue().toString();
+                                                            int sportID = sportsMap.get(dataChild.getValue().toString());
+                                                            if (userEvents.get(j).points != 0) {
+                                                                //eventsPerSport[sportID] ++;
+                                                                //pointsPerSport[sportID] += userEvents.get(j).points;
+
+                                                                if (sportOfUserDetails.get(sportID) == null) {
+                                                                    SportOfUserDetails soud = new SportOfUserDetails();
+                                                                    soud.eventsCreated = 1;
+                                                                    soud.pointsReceived = userEvents.get(j).points;
+
+                                                                    sportOfUserDetails.put(sportID, soud);
+                                                                } else {
+                                                                    SportOfUserDetails soud = sportOfUserDetails.get(sportID);
+                                                                    soud.eventsCreated++;
+                                                                    soud.pointsReceived += userEvents.get(j).points;
+                                                                }
+                                                            }
+                                                        }
+                                                        if (dataChild.getKey().compareToIgnoreCase("date") == 0) {
+                                                            userEvents.get(j).date = new Date(dataChild.getValue().toString());
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        Log.v(userEvents.get(j).date.getMonth() + "", userEvents.get(j).points + "");
+                                        // Add event points to respective month
+                                        pointsPerMonth[userEvents.get(j).date.getMonth()] += userEvents.get(j).points;
+                                        // Something to signal the finish of work
+                                        dummy.add(1);
+                                        if (dummy.size() == userEvents.size()) {
+                                            displayChart();
+                                            displayStatistics();
+                                        }
+                                    }
+                                    @Override
+                                    public void onCancelled(DatabaseError firebaseError) {
+                                    }
+                                });
+                            }
+                            else{
+                                Log.v(userEvents.get(j).date.getMonth() + "", userEvents.get(j).points + "");
+                                // Add event points to respective month
+                                pointsPerMonth[userEvents.get(j).date.getMonth()] += userEvents.get(j).points;
+                                // Something to signal the finish of work
+                                dummy.add(1);
+                                if (dummy.size() == userEvents.size()) {
+                                    displayChart();
+                                    displayStatistics();
+                                }
                             }
                         }
 
