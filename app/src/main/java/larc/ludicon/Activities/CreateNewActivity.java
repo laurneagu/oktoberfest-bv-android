@@ -1,8 +1,12 @@
 package larc.ludicon.Activities;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
@@ -15,21 +19,28 @@ import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -51,8 +62,11 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.sql.Array;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -70,6 +84,7 @@ import larc.ludicon.UserInfo.User;
 import larc.ludicon.Utils.Event;
 import larc.ludicon.Utils.Location.GPS_Positioning;
 import larc.ludicon.Utils.Location.ActivitiesLocationListener;
+import larc.ludicon.Utils.Sport;
 import larc.ludicon.Utils.util.DateManager;
 import larc.ludicon.Utils.util.UniqueIDCreator;
 import larc.ludicon.Utils.util.Utils;
@@ -95,6 +110,20 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
     private int isOfficial = 0;
 
     private String addressName = ""; //default address
+
+    private List<String> sports = new ArrayList<String>() {{
+        add("football");
+        add("volley");
+        add("basketball");
+        add("squash");
+        add("pingpong");
+        add("tennis");
+        add("cycling");
+        add("jogging");
+        add("gym");
+        add("other");
+        ;
+    }};
 
     @Override
     public void onMapReady(GoogleMap map) {
@@ -166,11 +195,10 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-       // Clear auto scroll
+        // Clear auto scroll
         final EditText editTextDesc = (EditText) findViewById(R.id.DescriptionInput);
-        editTextDesc.getBackground().setColorFilter(Color.parseColor("#D3D3D3"), PorterDuff.Mode.MULTIPLY);
 
-        ScrollView scroll = (ScrollView)findViewById(R.id.scroll);
+        ScrollView scroll = (ScrollView) findViewById(R.id.scroll);
         scroll.setOnTouchListener(new View.OnTouchListener() {
 
             @Override
@@ -184,6 +212,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
         // DropDown for the sports
 
+        /*
         Spinner spinner = (Spinner) findViewById(R.id.sports_spinner);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -197,42 +226,193 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         spinner.setSelection(0, true);
         View v = spinner.getSelectedView();
         ((TextView)v).setTextColor(Color.parseColor("#000000"));
+        */
+
+        selectedSportButton = (Button) findViewById(R.id.selectedSportButton);
+        selectedSportButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showGridSportsDialog();
+            }
+        });
 
         TextView hello_message = (TextView) findViewById(R.id.hello_message_activity);
         hello_message.setText("Create activity");
 
-        NumberPicker numberPicker = (NumberPicker) findViewById(R.id.maxPlayersInput);
-        numberPicker.setMinValue(2);
-        numberPicker.setMaxValue(50);
-        numberPicker.setWrapSelectorWheel(false);
+        // Events on buttons of Max players capacity
+
+        final EditText maxCapacityET = (EditText) findViewById(R.id.maxPlayersET);
+
+        Button removePeople = (Button) findViewById(R.id.removePeople);
+        removePeople.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int currValue = Integer.parseInt(maxCapacityET.getText().toString());
+                if (currValue >= 3)
+                    currValue--;
+                maxCapacityET.setText(currValue + "");
+            }
+        });
+
+
+        Button addPeople = (Button) findViewById(R.id.addPeople);
+        addPeople.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int currValue = Integer.parseInt(maxCapacityET.getText().toString());
+                if (currValue <= 50)
+                    currValue++;
+                maxCapacityET.setText(currValue + "");
+            }
+        });
+
+
+        /// Date and Time holders
+
+        editTextDateHolder = (EditText) findViewById(R.id.calendarHolderET);
+        editTextTimeHolder = (EditText) findViewById(R.id.timeHolderET);
+
+        final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                // TODO Auto-generated method stub
+                myCalendar.set(Calendar.YEAR, year);
+                myCalendar.set(Calendar.MONTH, monthOfYear);
+                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                updateLabel();
+            }
+
+        };
+
+        String myFormat = "dd-MMM-yy"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.UK);
+        editTextDateHolder.setText(sdf.format(myCalendar.getTime()));
+
+        editTextDateHolder.setShowSoftInputOnFocus(false);
+        editTextDateHolder.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                DatePickerDialog dpd = new DatePickerDialog(CreateNewActivity.this, R.style.DialogTheme, date, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH));
+                dpd.show();
+            }
+        });
+
+        // Time picker
+        int hour = myCalendar.get(Calendar.HOUR_OF_DAY) + 1;
+        int minute = myCalendar.get(Calendar.MINUTE);
+        editTextTimeHolder.setText(hour + ":" + minute);
+        editTextTimeHolder.setShowSoftInputOnFocus(false);
+        editTextTimeHolder.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                int hour = myCalendar.get(Calendar.HOUR_OF_DAY);
+                int minute = myCalendar.get(Calendar.MINUTE);
+                TimePickerDialog mTimePicker;
+                mTimePicker = new TimePickerDialog(CreateNewActivity.this, R.style.DialogTheme, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                        editTextTimeHolder.setText(selectedHour + ":" + selectedMinute);
+                        myCalendar.set(Calendar.HOUR_OF_DAY, selectedHour);
+                        myCalendar.set(Calendar.MINUTE, selectedMinute);
+
+                    }
+                }, hour, minute, true);//Yes 24 hour time
+                mTimePicker.setTitle("Select Time");
+                mTimePicker.show();
+
+            }
+        });
     }
-/*
-    public void onPrivacyButtonsClicked(View view) {
-        // Is the button now selected
-        TextView selected,notselected;
 
-        switch(view.getId()) {
-            case R.id.publicBut:
-                selected = (TextView)findViewById(R.id.publicBut);
-                selected.setAlpha(1);
+    private Button selectedSportButton;
+    private ArrayList<Sport> sportsList = new ArrayList<Sport>();
+    private MyCustomAdapter dataAdapter = null;
 
-                notselected = (TextView)findViewById(R.id.privateBut);
-                notselected.setAlpha((float)0.7);
-                break;
-            case R.id.privateBut:
-                selected = (TextView)findViewById(R.id.privateBut);
-                selected.setAlpha(1);
+    private void showGridSportsDialog() {
+        if(alertDialog == null) {
+            // Prepare grid view
+            gridView = new GridView(this);
 
-                notselected = (TextView)findViewById(R.id.publicBut);
-                notselected.setAlpha((float)0.7);
-                break;
+            int count = 0;
+            for (String sport : sports) {
+                String uri = "@drawable/" + sport;
+                int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+                Drawable res1 = getResources().getDrawable(imageResource);
+                sportsList.add(new Sport(sport, Integer.toString(count),
+                        false, ((BitmapDrawable) res1).getBitmap(), ((BitmapDrawable) res1).getBitmap()));
+                count++;
+            }
+
+            //create an ArrayAdaptor from the Sport Array
+            dataAdapter = new MyCustomAdapter(getApplicationContext(), R.layout.sport_info, sportsList);
+
+            // Assign adapter to ListView
+            gridView.setAdapter(dataAdapter);
+            gridView.setNumColumns(2);
+
+            // Set grid view to alertDialog
+            builder = new AlertDialog.Builder(this);
+            builder.setView(gridView);
+            builder.setTitle("Pick your favourite sport");
+            alertDialog = builder.show();
+
+            //dialog.getWindow().setBackgroundDrawableResource(android.R.color.holo_blue_light);
         }
+
+        alertDialog.show();
     }
-    */
-    public boolean checkEventDateIsNotInPast(Date creationDate)
-    {
+
+    GridView gridView;
+    AlertDialog alertDialog;
+    AlertDialog.Builder builder;
+
+    EditText editTextDateHolder;
+    EditText editTextTimeHolder;
+    final Calendar myCalendar = Calendar.getInstance();
+
+    private void updateLabel() {
+
+        String myFormat = "dd/MMM/yy"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.UK);
+
+        editTextDateHolder.setText(sdf.format(myCalendar.getTime()));
+    }
+
+
+    /*
+        public void onPrivacyButtonsClicked(View view) {
+            // Is the button now selected
+            TextView selected,notselected;
+
+            switch(view.getId()) {
+                case R.id.publicBut:
+                    selected = (TextView)findViewById(R.id.publicBut);
+                    selected.setAlpha(1);
+
+                    notselected = (TextView)findViewById(R.id.privateBut);
+                    notselected.setAlpha((float)0.7);
+                    break;
+                case R.id.privateBut:
+                    selected = (TextView)findViewById(R.id.privateBut);
+                    selected.setAlpha(1);
+
+                    notselected = (TextView)findViewById(R.id.publicBut);
+                    notselected.setAlpha((float)0.7);
+                    break;
+            }
+        }
+        */
+    public boolean checkEventDateIsNotInPast(Date creationDate) {
         Date now = new Date();
-        if ( creationDate.before(now) ) {
+        if (creationDate.before(now)) {
             Toast.makeText(this.getApplicationContext(), "You can't create an event in the past",
                     Toast.LENGTH_LONG).show();
             return true;
@@ -241,79 +421,81 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
     }
 
     public void OnCreateEvent(View view) {
-        try{
-        DatePicker datePicker = (DatePicker) findViewById(R.id.date_picker);
-        TimePicker timePicker = (TimePicker) findViewById(R.id.time_picker);
-
-        Calendar calendar = new GregorianCalendar(datePicker.getYear(),
-                datePicker.getMonth(),
-                datePicker.getDayOfMonth(),
-                timePicker.getCurrentHour(),
-                timePicker.getCurrentMinute());
-
-        UniqueIDCreator idCreator = new UniqueIDCreator();
-        final String id = idCreator.nextSessionId();
-
-        final Map<String, Object> map = new HashMap<String, Object>();
+        try {
 
 
-        // Set date it will be played
-        // TODO GMT format
-        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, new Locale("English"));
-        df.setTimeZone(TimeZone.getTimeZone("Europe/Bucharest"));
+            Calendar calendar = myCalendar;
 
-        String gmtTime = df.format(calendar.getTime());
-        final Date creationDate = calendar.getTime();
+                /*new GregorianCalendar(myCalendar.get(Calendar.YEAR),
+                myCalendar.get(Calendar.MONTH),
+                myCalendar.get(Calendar.DAY_OF_MONTH), // dono fucking why ?!
+                myCalendar.get(Calendar.HOUR_OF_DAY),
+                myCalendar.get(Calendar.MINUTE));
+                */
+
+            UniqueIDCreator idCreator = new UniqueIDCreator();
+            final String id = idCreator.nextSessionId();
+
+            final Map<String, Object> map = new HashMap<String, Object>();
 
 
-        if ( checkEventDateIsNotInPast(creationDate) )
-            return;
+            // Set date it will be played
+            // TODO GMT format
+            DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, new Locale("English"));
+            df.setTimeZone(TimeZone.getTimeZone("Europe/Bucharest"));
 
-        // Stop button to be called more than once
-        Button createEvent = (Button) findViewById(R.id.createEvent);
-        createEvent.setEnabled(false);
-        createEvent.setClickable(false);
-        createEvent.setText("Creating ..");
-        createEvent.setBackgroundColor(Color.TRANSPARENT);
-        createEvent.setTextColor(Color.BLUE);
-        ProgressBar pb = (ProgressBar)findViewById(R.id.marker_progress);
-        pb.setVisibility(View.VISIBLE);
+            String gmtTime = df.format(calendar.getTime());
+            final Date creationDate = calendar.getTime();
 
-        map.put("date", DateManager.convertFromTextToSeconds(gmtTime));
-        map.put("createdBy", User.uid);
-        map.put("active",true);
 
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(User.uid);
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-               for(DataSnapshot data : snapshot.getChildren() )
-               {
-                   if ( data.getKey().equalsIgnoreCase("name") ) {
-                       map.put("creatorName", data.getValue().toString());
-                       Log.v("CreatorName", data.getValue().toString());
-                   }
-                   if ( data.getKey().equalsIgnoreCase("profileImageURL") ) {
-                       map.put("creatorImage", data.getValue().toString());
-                       Log.v("CreatorImage", data.getValue().toString());
-                   }
-               }
+            if (checkEventDateIsNotInPast(creationDate))
+                return;
+
+            // Stop button to be called more than once
+            Button createEvent = (Button) findViewById(R.id.createEvent);
+            createEvent.setEnabled(false);
+            createEvent.setClickable(false);
+            createEvent.setText("Creating ..");
+            createEvent.setBackgroundColor(Color.TRANSPARENT);
+            createEvent.setTextColor(Color.BLUE);
+            ProgressBar pb = (ProgressBar) findViewById(R.id.marker_progress);
+            pb.setVisibility(View.VISIBLE);
+
+            map.put("date", DateManager.convertFromTextToSeconds(gmtTime));
+            map.put("createdBy", User.uid);
+            map.put("active", true);
+
+            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(User.uid);
+            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    for (DataSnapshot data : snapshot.getChildren()) {
+                        if (data.getKey().equalsIgnoreCase("name")) {
+                            map.put("creatorName", data.getValue().toString());
+                            Log.v("CreatorName", data.getValue().toString());
+                        }
+                        if (data.getKey().equalsIgnoreCase("profileImageURL")) {
+                            map.put("creatorImage", data.getValue().toString());
+                            Log.v("CreatorImage", data.getValue().toString());
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError firebaseError) {
+                }
+            });
+
+            try {
+                Thread.sleep(200, 1);
+            } catch (InterruptedException exc) {
             }
-            @Override
-            public void onCancelled(DatabaseError firebaseError) {
-            }
-        });
 
-        try{
-            Thread.sleep(200,1);
-        }
-        catch(InterruptedException exc){}
+            Log.v("Name", User.firstName + User.lastName);
+            //map.put("date",  java.text.DateFormat.getDateTimeInstance().format(calendar.getTime()));
+            //Log.v("date", java.text.DateFormat.getDateTimeInstance().format(calendar.getTime()) );
 
-        Log.v("Name", User.firstName + User.lastName);
-        //map.put("date",  java.text.DateFormat.getDateTimeInstance().format(calendar.getTime()));
-        //Log.v("date", java.text.DateFormat.getDateTimeInstance().format(calendar.getTime()) );
-
-        // Set privacy
+            // Set privacy
         /*
         Button privacy = (Button) findViewById(R.id.publicBut);
         if (privacy.getAlpha() == 1) {
@@ -322,70 +504,70 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
             map.put("privacy", "private");
         }
 */
-        map.put("privacy", "public");
+            map.put("privacy", "public");
 
-        // Set location
-        final Map<String, Object> mapAux = new HashMap<>();
+            // Set location
+            final Map<String, Object> mapAux = new HashMap<>();
 
-        // location not provided
-        if (latitude == 0 || longitude == 0) {
-            mapAux.put("latitude",GPS_Positioning.getLatLng().latitude);
-            mapAux.put("longitude", GPS_Positioning.getLatLng().longitude);
-        }
-        else{
-            Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.ENGLISH );
+            // location not provided
+            if (latitude == 0 || longitude == 0) {
+                mapAux.put("latitude", GPS_Positioning.getLatLng().latitude);
+                mapAux.put("longitude", GPS_Positioning.getLatLng().longitude);
+            } else {
+                Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.ENGLISH);
 
-            try {
-                List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-                if(addresses.size()>0) {
-                    if(addressName==null || addressName.equals("")) {
-                        addressName = addresses.get(0).getAddressLine(0);
+                try {
+                    List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                    if (addresses.size() > 0) {
+                        if (addressName == null || addressName.equals("")) {
+                            addressName = addresses.get(0).getAddressLine(0);
+                        }
                     }
+                } catch (Exception exc) {
+                    addressName = "Unknown";
                 }
+
+                mapAux.put("latitude", latitude);
+                mapAux.put("longitude", longitude);
+                mapAux.put("name", addressName);
             }
-            catch(Exception exc){ addressName = "Unknown";}
+            // If the user will get points or not for the event
+            map.put("isOfficial", isOfficial);
 
-            mapAux.put("latitude",latitude);
-            mapAux.put("longitude", longitude);
-            mapAux.put("name", addressName);
-        }
-        // If the user will get points or not for the event
-        map.put("isOfficial",isOfficial);
+            map.put("place", mapAux);
 
-        map.put("place", mapAux);
+            EditText number = (EditText) findViewById(R.id.maxPlayersET);
+            int maxPlayers = Integer.parseInt(number.getText().toString());
 
-        NumberPicker numberPicker = (NumberPicker) findViewById(R.id.maxPlayersInput);
-        int maxPlayers = numberPicker.getValue();
+            EditText editTextDesc = (EditText) findViewById(R.id.DescriptionInput);
+            String description = editTextDesc.getText().toString();
 
-        EditText editTextDesc = (EditText) findViewById(R.id.DescriptionInput);
-        String description = editTextDesc.getText().toString();
+            // Event extra info:
+            map.put("roomCapacity", maxPlayers);
+            map.put("priority", 0);
+            map.put("description", description);
+            map.put("message", null);
 
-        // Event extra info:
-        map.put("roomCapacity", maxPlayers);
-        map.put("priority", 0);
-        map.put("description", description);
-        map.put("message", null);
+            // Set sport
+            // TODO Get sport key
+            String sportName = sports.get(sportIndex);
+            //spinner.getSelectedItem().toString().toLowerCase().replaceAll("\\s+", "");
+            map.put("sport", sportName);
 
-        // Set sport
-        // TODO Get sport key
-        Spinner spinner = (Spinner) findViewById(R.id.sports_spinner);
-        String sportName = spinner.getSelectedItem().toString().toLowerCase().replaceAll("\\s+", "");
-        map.put("sport", sportName);
+            // Set users - currently only the one enrolled
+            Map<String, Boolean> usersAttending = new HashMap<String, Boolean>();
+            usersAttending.put(User.uid, true);
+            map.put("users", usersAttending);
 
-        // Set users - currently only the one enrolled
-        Map<String, Boolean> usersAttending = new HashMap<String, Boolean>();
-        usersAttending.put(User.uid,true);
-        map.put("users", usersAttending);
+            // Check Events exists
+            DatabaseReference newEventRef = User.firebaseRef.child("events"); // check user
+            newEventRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    if (snapshot.getValue() == null) { // flush the database everything is crazy
+                        //User.firebaseRef.child("mesg").setValue("World is on fire");
 
-        // Check Events exists
-        DatabaseReference newEventRef = User.firebaseRef.child("events"); // check user
-        newEventRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                if (snapshot.getValue() == null) { // flush the database everything is crazy
-                    //User.firebaseRef.child("mesg").setValue("World is on fire");
-
-                    // Script to refresh sports in the database
+                        // Script to refresh sports in the database
                     /*
                     User.firebaseRef.child("sports").child("Football").child("id").setValue("0");
                     User.firebaseRef.child("sports").child("Volley").child("id").setValue("1");
@@ -396,61 +578,60 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
                     User.firebaseRef.child("sports").child("Cycling").child("id").setValue("6");
                     User.firebaseRef.child("sports").child("Jogging").child("id").setValue("7");
                     */
-                }
-
-                // Get the events from Shared Prefs
-                String connectionsJSONString = getSharedPreferences("UserDetails", 0).getString("myEvents", null);
-                Type type = new TypeToken<ArrayList<Event>>() {}.getType();
-                ArrayList<Event> myCurrentEvents = new Gson().fromJson(connectionsJSONString, type);
-
-                int numberOfEvents = 0;
-                boolean isSameDate = false;
-                for(Event event : myCurrentEvents){
-                    if (event.date.getDay() == creationDate.getDay() && Math.abs(event.date.getHours()-creationDate.getHours()) <=1) {
-                        isSameDate=true; break;
-                    }
-                    if(event.date.getDay() == creationDate.getDay()) numberOfEvents++;
-                }
-
-                if (false){
-                    Toast.makeText(getApplicationContext(), "You have scheduled an event at this date already ! Please check your agenda !",Toast.LENGTH_LONG ).show();
-                }
-                else if (numberOfEvents >= 3){
-                    Toast.makeText(getApplicationContext(), "You already reached the limit of 3 events on this day. Please pick another day !",Toast.LENGTH_LONG ).show();
-                }
-                else {
-
-                    User.firebaseRef.child("events").child(id).setValue(map);
-                    // Each user has an "events" field which has a list of event ids
-                    Map<String, Object> ev = new HashMap<String, Object>();
-                    Map<String, Object> inEv = new HashMap<>();
-                    inEv.put("participation", true);
-                    inEv.put("points", 0);
-                    ev.put(id, inEv);
-                    User.firebaseRef.child("users").child(User.uid).child("events").updateChildren(ev);
-
-                    try {
-                        if (lm != null)
-                            lm.removeUpdates(locationListener);
-                    } catch (SecurityException exc) {
-                        exc.printStackTrace();
                     }
 
-                    // Sanity checks
-                    lm = null;
-                    locationListener = null;
+                    // Get the events from Shared Prefs
+                    String connectionsJSONString = getSharedPreferences("UserDetails", 0).getString("myEvents", null);
+                    Type type = new TypeToken<ArrayList<Event>>() {
+                    }.getType();
+                    ArrayList<Event> myCurrentEvents = new Gson().fromJson(connectionsJSONString, type);
 
-                    jumpToMainActivity();
+                    int numberOfEvents = 0;
+                    boolean isSameDate = false;
+                    for (Event event : myCurrentEvents) {
+                        if (event.date.getDay() == creationDate.getDay() && Math.abs(event.date.getHours() - creationDate.getHours()) <= 1) {
+                            isSameDate = true;
+                            break;
+                        }
+                        if (event.date.getDay() == creationDate.getDay()) numberOfEvents++;
+                    }
+
+                    if (false) {
+                        Toast.makeText(getApplicationContext(), "You have scheduled an event at this date already ! Please check your agenda !", Toast.LENGTH_LONG).show();
+                    } else if (numberOfEvents >= 3) {
+                        Toast.makeText(getApplicationContext(), "You already reached the limit of 3 events on this day. Please pick another day !", Toast.LENGTH_LONG).show();
+                    } else {
+
+                        User.firebaseRef.child("events").child(id).setValue(map);
+                        // Each user has an "events" field which has a list of event ids
+                        Map<String, Object> ev = new HashMap<String, Object>();
+                        Map<String, Object> inEv = new HashMap<>();
+                        inEv.put("participation", true);
+                        inEv.put("points", 0);
+                        ev.put(id, inEv);
+                        User.firebaseRef.child("users").child(User.uid).child("events").updateChildren(ev);
+
+                        try {
+                            if (lm != null)
+                                lm.removeUpdates(locationListener);
+                        } catch (SecurityException exc) {
+                            exc.printStackTrace();
+                        }
+
+                        // Sanity checks
+                        lm = null;
+                        locationListener = null;
+
+                        jumpToMainActivity();
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError firebaseError) {
+                @Override
+                public void onCancelled(DatabaseError firebaseError) {
 
-            }
-        });
-        }
-        catch(Exception exc) {
+                }
+            });
+        } catch (Exception exc) {
             Utils.quit();
         }
     }
@@ -478,17 +659,16 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
             lm.removeUpdates(locationListener);
         } catch (SecurityException exc) {
             exc.printStackTrace();
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             // the location is not any more initialized - lm is null
         }
 
         // Sanity activities
         lm = null;
-        locationListener =null;
+        locationListener = null;
         finish();
 
-        Intent toMain = new Intent(this,MainActivity.class);
+        Intent toMain = new Intent(this, MainActivity.class);
         toMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(toMain);
     }
@@ -496,20 +676,20 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(data != null) {
+        if (data != null) {
             latitude = data.getDoubleExtra("latitude", 0);
             longitude = data.getDoubleExtra("longitude", 0);
             isOfficial = data.getIntExtra("isOfficial", 0);
             addressName = data.getStringExtra("address");
 
             String comment = data.getStringExtra("comment");
-            if (comment!=null && !comment.equalsIgnoreCase("")) {
+            if (comment != null && !comment.equalsIgnoreCase("")) {
                 Toast.makeText(getApplication(), comment, Toast.LENGTH_LONG).show();
             }
         }
 
         try {
-            if(lm != null)
+            if (lm != null)
                 lm.removeUpdates(locationListener);
         } catch (SecurityException exc) {
             exc.printStackTrace();
@@ -517,7 +697,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
         // Sanity checks
         lm = null;
-        locationListener =null;
+        locationListener = null;
 
         LatLng latLng = new LatLng(latitude, longitude);
 
@@ -564,7 +744,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
     }
-    
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -586,4 +766,90 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
         return super.onOptionsItemSelected(item);
     }
+
+    int sportIndex=0;
+
+    private class MyCustomAdapter extends ArrayAdapter<Sport> {
+
+        private ArrayList<Sport> sportsList;
+
+        public MyCustomAdapter(Context context, int textViewResourceId,
+                               ArrayList<Sport> sList) {
+            super(context, textViewResourceId, sList);
+            this.sportsList = new ArrayList<>();
+            this.sportsList.addAll(sList);
+        }
+
+        private class ViewHolder {
+            RelativeLayout rl;
+            ImageView image;
+            TextView text;
+            CheckBox box;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+
+            ViewHolder holder = null;
+            Log.v("ConvertView", String.valueOf(position));
+
+            if (convertView == null) {
+                LayoutInflater vi = (LayoutInflater) getSystemService(
+                        Context.LAYOUT_INFLATER_SERVICE);
+                convertView = vi.inflate(R.layout.sport_info, null);
+
+                holder = new ViewHolder();
+                holder.rl = (RelativeLayout) convertView.findViewById(R.id.irLayout);
+                holder.box = (CheckBox) convertView.findViewById(R.id.checkBox1);
+                holder.text = (TextView) convertView.findViewById(R.id.code);
+                holder.image = (ImageView) convertView.findViewById(R.id.icon);
+
+                convertView.setTag(holder);
+
+                holder.box.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        CheckBox cb = (CheckBox) v;
+                        Sport sport = (Sport) cb.getTag();
+                        RelativeLayout rl = (RelativeLayout) cb.getParent();
+                        sport.setSelected(cb.isChecked());
+
+                        //sportsList = new ArrayList<Sport>();
+                        sportIndex = Integer.parseInt(sport.id);
+                        selectedSportButton.setBackground( new BitmapDrawable(getResources(), sport.icon));
+
+                        alertDialog.dismiss();
+                    }
+                });
+            } else {
+                holder = (ViewHolder) convertView.getTag();
+            }
+
+            Sport sport = sportsList.get(position);
+            //holder.text.setText("");
+            holder.text.setText(sport.name);
+            holder.box.setText("");
+            //holder.box.setText(sport.name);
+            holder.box.setChecked(sport.isChecked);
+            holder.box.setTag(sport);
+            holder.text.setTextColor(getResources().getColor(R.color.white));
+            /*
+            if (sportIndex==position) {
+                holder.rl.setBackgroundColor(getResources().getColor(R.color.bg1));
+                holder.image.setImageBitmap(sport.icon);
+                holder.box.setTextColor(getResources().getColor(R.color.white));
+                holder.box.setAlpha((float) 0.9);
+            } else {
+            */
+                holder.box.setTextColor(getResources().getColor(R.color.white));
+                holder.rl.setBackgroundColor(getResources().getColor(R.color.bg2));
+                holder.image.setImageBitmap(sport.desaturated_icon);
+                holder.box.setAlpha((float) 0.7);
+              //  }
+
+            return convertView;
+
+        }
+    }
 }
+
+
