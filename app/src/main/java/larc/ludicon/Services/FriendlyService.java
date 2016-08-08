@@ -55,6 +55,7 @@ import larc.ludicon.Utils.Location.GPSTracker;
 import larc.ludicon.Utils.Location.ServiceLocationListener;
 import larc.ludicon.UserInfo.ActivityInfo;
 import larc.ludicon.Utils.util.ChatNotifier;
+import larc.ludicon.Utils.util.DateManager;
 import larc.ludicon.Utils.util.Notifier;
 
 
@@ -683,7 +684,7 @@ public class FriendlyService extends Service {
                                             }
 
                                             if (msgData.getKey().toString().equalsIgnoreCase("date")){
-                                                String d = msgData.getValue().toString();
+                                                String d = DateManager.convertFromSecondsToText((long)msgData.getValue());
                                                 try {
 
                                                     SimpleDateFormat format = new SimpleDateFormat("MMMM dd, HH:mm",Locale.ENGLISH);

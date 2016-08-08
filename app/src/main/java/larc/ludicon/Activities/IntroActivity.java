@@ -38,6 +38,7 @@ import larc.ludicon.Utils.ConnectionChecker.ConnectionChecker;
 import larc.ludicon.Utils.Location.GPSTracker;
 import larc.ludicon.Utils.MessageDialog;
 import larc.ludicon.Utils.UserInfo;
+import larc.ludicon.Utils.util.DateManager;
 
 
 import com.facebook.FacebookSdk;
@@ -397,7 +398,7 @@ public class IntroActivity extends Activity {
                                     DateFormat df = DateFormat.getDateTimeInstance();
                                     df.setTimeZone(TimeZone.getTimeZone("gmt"));
                                     String gmtTime = df.format(new Date());
-                                    map.put("lastLogInTime", gmtTime);
+                                    map.put("lastLogInTime", DateManager.convertFromTextToSeconds(gmtTime));
 
 
                                     //final String uid = userFirebase.getUid();

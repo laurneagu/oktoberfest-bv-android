@@ -73,6 +73,7 @@ import larc.ludicon.Utils.CustomView.NonScrollListView;
 import larc.ludicon.Utils.Event;
 import larc.ludicon.Utils.Location.ActivitiesLocationListener;
 import larc.ludicon.Utils.UserInfo;
+import larc.ludicon.Utils.util.DateManager;
 import larc.ludicon.Utils.util.Utils;
 
 
@@ -229,7 +230,7 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
                         creatorImage = (String) details.getValue();
                     }
                     if (details.getKey().toString().equalsIgnoreCase("date")) {
-                        date = (String) details.getValue();
+                        date = (String) DateManager.convertFromSecondsToText((long)details.getValue());
                     }
                     if (details.getKey().toString().equalsIgnoreCase("privacy")) {
                         privacy = (String) details.getValue();

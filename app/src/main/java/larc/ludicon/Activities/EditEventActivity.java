@@ -67,6 +67,7 @@ import larc.ludicon.UserInfo.User;
 import larc.ludicon.Utils.Event;
 import larc.ludicon.Utils.Location.GPS_Positioning;
 import larc.ludicon.Utils.Location.ActivitiesLocationListener;
+import larc.ludicon.Utils.util.DateManager;
 import larc.ludicon.Utils.util.UniqueIDCreator;
 import larc.ludicon.Utils.util.Utils;
 
@@ -306,7 +307,7 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
         map.put("roomCapacity", maxPlayers);
         map.put("priority", 0);
         map.put("description", description);
-        map.put("date",  gmtTime);
+        map.put("date", DateManager.convertFromTextToSeconds(gmtTime));
         map.put("createdBy", User.uid);
         map.put("active",true);
 

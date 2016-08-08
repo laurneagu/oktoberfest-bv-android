@@ -70,6 +70,7 @@ import larc.ludicon.UserInfo.User;
 import larc.ludicon.Utils.Event;
 import larc.ludicon.Utils.Location.GPS_Positioning;
 import larc.ludicon.Utils.Location.ActivitiesLocationListener;
+import larc.ludicon.Utils.util.DateManager;
 import larc.ludicon.Utils.util.UniqueIDCreator;
 import larc.ludicon.Utils.util.Utils;
 
@@ -264,6 +265,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         String gmtTime = df.format(calendar.getTime());
         final Date creationDate = calendar.getTime();
 
+
         if ( checkEventDateIsNotInPast(creationDate) )
             return;
 
@@ -277,7 +279,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         ProgressBar pb = (ProgressBar)findViewById(R.id.marker_progress);
         pb.setVisibility(View.VISIBLE);
 
-        map.put("date",  gmtTime);
+        map.put("date", DateManager.convertFromTextToSeconds(gmtTime));
         map.put("createdBy", User.uid);
         map.put("active",true);
 

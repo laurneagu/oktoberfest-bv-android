@@ -105,6 +105,7 @@ import larc.ludicon.Utils.Event;
 import larc.ludicon.Utils.Location.GPSTracker;
 import larc.ludicon.Utils.MainPageUtils.ViewPagerAdapter;
 import larc.ludicon.Utils.ui.SlidingTabLayout;
+import larc.ludicon.Utils.util.DateManager;
 import larc.ludicon.Utils.util.Utils;
 
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -531,7 +532,7 @@ public class MainActivity extends AppCompatActivity {
                                                 mustAddEventToList = Boolean.parseBoolean(details.getValue().toString());
                                             }
                                             if (details.getKey().toString().equalsIgnoreCase("date")) {
-                                                ai.date = new Date(details.getValue().toString());
+                                                ai.date = DateManager.convertFromSecondsToDate((long)details.getValue());
                                             }
                                             if (details.getKey().toString().equalsIgnoreCase("sport")) {
                                                 ai.sport = details.getValue().toString();
@@ -1364,7 +1365,7 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         if (details.getKey().toString().equalsIgnoreCase("date"))
-                            event.date = new Date(details.getValue().toString());
+                            event.date = DateManager.convertFromSecondsToDate((long)details.getValue());
 
                         if (details.getKey().toString().equalsIgnoreCase("place")) {
                             Map<String, Object> position = (Map<String, Object>) details.getValue();

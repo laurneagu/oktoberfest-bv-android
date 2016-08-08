@@ -58,6 +58,7 @@ import larc.ludicon.Adapters.LeftSidePanelAdapter;
 import larc.ludicon.R;
 import larc.ludicon.UserInfo.User;
 import larc.ludicon.Utils.util.ChatNotifier;
+import larc.ludicon.Utils.util.DateManager;
 
 public class ChatListActivity extends Activity {
 
@@ -175,7 +176,7 @@ public class ChatListActivity extends Activity {
 
                                 if  ((data.getKey()).compareTo("lastLogInTime") == 0)
                                     if (data.getValue() != null) {
-                                        chat.lastTimeOnline=data.getValue().toString();
+                                        chat.lastTimeOnline= DateManager.convertFromSecondsToText((long)data.getValue());
                                     }
                                 else{
                                         chat.lastTimeOnline="";

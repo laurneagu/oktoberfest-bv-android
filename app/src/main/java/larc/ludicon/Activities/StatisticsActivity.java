@@ -146,7 +146,7 @@ public class StatisticsActivity extends Activity {
                                     }
                                 }
                                 if (data.getKey().compareToIgnoreCase("date") == 0) {
-                                    userEvents.get(j).date = new Date(data.getValue().toString());
+                                    userEvents.get(j).date = new Date((long)data.getValue());
                                 }
                             }
                             // event is in the past
