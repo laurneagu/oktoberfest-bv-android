@@ -684,9 +684,9 @@ public class FriendlyService extends Service {
                                             }
 
                                             if (msgData.getKey().toString().equalsIgnoreCase("date")){
-                                                String d = DateManager.convertFromSecondsToText((long)msgData.getValue());
-                                                try {
 
+                                                try {
+                                                    String d = DateManager.convertFromSecondsToText((long)msgData.getValue());
                                                     SimpleDateFormat format = new SimpleDateFormat("MMMM dd, HH:mm",Locale.ENGLISH);
                                                     date = format.parse(d);
                                                 } catch (ParseException e) {

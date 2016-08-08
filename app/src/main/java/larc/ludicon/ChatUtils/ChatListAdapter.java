@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import larc.ludicon.R;
+import larc.ludicon.Utils.util.DateManager;
 
 /**
  * @author greg
@@ -61,7 +62,7 @@ public class ChatListAdapter extends FirebaseListAdapter<Chat> {
             msgDateRight = (TextView) view.findViewById(R.id.message_date_right);
             msgTextRight = (TextView) view.findViewById(R.id.message_text_right);
 
-            msgDateRight.setText(chat.date);
+            msgDateRight.setText(DateManager.convertFromSecondsToText(chat.date));
             msgTextRight.setText(chat.getMessage());
             linLayoutLeft = (LinearLayout) view.findViewById(R.id.content_with_background_left);
             linLayoutLeft.setAlpha(0);
@@ -75,7 +76,7 @@ public class ChatListAdapter extends FirebaseListAdapter<Chat> {
             linLayoutLeft.setBackgroundResource(R.drawable.out_message_bg);
             msgDateLeft = (TextView) view.findViewById(R.id.message_date_left);
             msgTextLeft = (TextView) view.findViewById(R.id.message_text_left);
-            msgDateLeft.setText(chat.date);
+            msgDateLeft.setText(DateManager.convertFromSecondsToText(chat.date));
             if( this.isGroupChat )
                 msgTextLeft.setText(author + ": " + chat.getMessage());
             else msgTextLeft.setText(chat.getMessage());
