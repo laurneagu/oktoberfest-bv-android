@@ -187,7 +187,7 @@ public class IntroActivity extends Activity {
         background = (ImageView) findViewById(R.id.bg);
         background.setImageResource(R.drawable.intro_bg);
         logo = (ImageView) findViewById(R.id.logo);
-        logo.setImageResource(R.drawable.logo_intro);
+        //logo.setImageResource(R.drawable.logo);
 
         LoginButton login_button = (LoginButton) findViewById(R.id.login_button);
         login_button.setReadPermissions(Arrays.asList("public_profile, email, user_friends"));

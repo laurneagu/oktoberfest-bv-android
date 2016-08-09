@@ -1055,13 +1055,15 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String state = getSharedPreferences("UserDetails", 0).getString("currentEventStateCheck", "3"); // 0 - didn't start, 1 - started, 2 - stopped, 3 - nothing
 
+                /* JUST DEBUGGING
                 if (state.equalsIgnoreCase("0")) { // if the event is not started
                     getSharedPreferences("UserDetails", 0).edit().putString("currentEventStateCheck", "2").commit(); // stop it
                     handlerChecker.removeCallbacks(rCheck);
                     hideHappeningRightNow();
                 }
+                */
 
-                /* UNCOMENT THIS
+
                 String audience = "";
                 if (currentEvent.others > 1)
                     audience = " with " + (currentEvent.others) + " others";
@@ -1083,7 +1085,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (ShareDialog.canShow(ShareLinkContent.class) == true)
                     shareDialog.show(content);
-            */
+
             }
         });
 

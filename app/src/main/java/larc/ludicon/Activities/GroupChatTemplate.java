@@ -96,6 +96,7 @@ import larc.ludicon.ChatUtils.ChatListAdapter;
 import larc.ludicon.R;
 import larc.ludicon.UserInfo.ActivityInfo;
 import larc.ludicon.UserInfo.User;
+import larc.ludicon.Utils.util.DateManager;
 
 public class GroupChatTemplate extends ListActivity {
 
@@ -236,7 +237,7 @@ public class GroupChatTemplate extends ListActivity {
                     String.format(new Locale("English"), "%tR", now);
             // Create our 'model', a Chat object
             Log.v("Username", mUsername);
-            Chat chat = new Chat(input, mUsername,formattedDate);
+            Chat chat = new Chat(input, mUsername, DateManager.convertFromDateToText(now));
 
             // Create a new, auto-generated child of that chat location, and save our chat data there
             mDatabaseReferenceRef.push().setValue(chat);

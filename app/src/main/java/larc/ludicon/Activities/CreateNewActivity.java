@@ -337,7 +337,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
     private MyCustomAdapter dataAdapter = null;
 
     private void showGridSportsDialog() {
-        if(alertDialog == null) {
+        if (alertDialog == null) {
             // Prepare grid view
             gridView = new GridView(this);
 
@@ -589,14 +589,15 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
                     int numberOfEvents = 0;
                     boolean isSameDate = false;
                     for (Event event : myCurrentEvents) {
-                        if (event.date.getDay() == creationDate.getDay() && Math.abs(event.date.getHours() - creationDate.getHours()) <= 1) {
+                        // This is not quite correct!!!:
+                        if (event.date.getDay() == creationDate.getDay() && Math.abs(event.date.getHours() - creationDate.getHours()) <= 2) {
                             isSameDate = true;
                             break;
                         }
                         if (event.date.getDay() == creationDate.getDay()) numberOfEvents++;
                     }
 
-                    if (false) {
+                    if (isSameDate) {
                         Toast.makeText(getApplicationContext(), "You have scheduled an event at this date already ! Please check your agenda !", Toast.LENGTH_LONG).show();
                     } else if (numberOfEvents >= 3) {
                         Toast.makeText(getApplicationContext(), "You already reached the limit of 3 events on this day. Please pick another day !", Toast.LENGTH_LONG).show();
@@ -705,7 +706,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
         m_gmap.addMarker(new MarkerOptions()
                 .position(latLng)
-                        //.icon(BitmapDescriptorFactory.fromResource(R.drawable.football))
+                //.icon(BitmapDescriptorFactory.fromResource(R.drawable.football))
                 .title("This is your selected area"));
         m_gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
     }
@@ -767,7 +768,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         return super.onOptionsItemSelected(item);
     }
 
-    int sportIndex=0;
+    int sportIndex = 0;
 
     private class MyCustomAdapter extends ArrayAdapter<Sport> {
 
@@ -815,7 +816,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
                         //sportsList = new ArrayList<Sport>();
                         sportIndex = Integer.parseInt(sport.id);
-                        selectedSportButton.setBackground( new BitmapDrawable(getResources(), sport.icon));
+                        selectedSportButton.setBackground(new BitmapDrawable(getResources(), sport.icon));
 
                         alertDialog.dismiss();
                     }
@@ -840,11 +841,11 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
                 holder.box.setAlpha((float) 0.9);
             } else {
             */
-                holder.box.setTextColor(getResources().getColor(R.color.white));
-                holder.rl.setBackgroundColor(getResources().getColor(R.color.bg2));
-                holder.image.setImageBitmap(sport.desaturated_icon);
-                holder.box.setAlpha((float) 0.7);
-              //  }
+            holder.box.setTextColor(getResources().getColor(R.color.white));
+            holder.rl.setBackgroundColor(getResources().getColor(R.color.bg2));
+            holder.image.setImageBitmap(sport.desaturated_icon);
+            holder.box.setAlpha((float) 0.7);
+            //  }
 
             return convertView;
 

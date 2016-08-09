@@ -142,6 +142,7 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_new);
+        /*
 
         // Left side panel initializing
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
@@ -225,6 +226,7 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
         hello_message.setText("Edit Event");
         Button editBtn = (Button)findViewById(R.id.createEvent);
         editBtn.setText("Edit");
+        */
     }
 /*
     public void onPrivacyButtonsClicked(View view) {
@@ -249,6 +251,8 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
         }
     }
     */
+
+    /*
     public boolean checkEventDateIsNotInPast(Date creationDate)
     {
         Date now = new Date();
@@ -340,16 +344,16 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
         Log.v("Name", User.firstName + User.lastName);
         //map.put("date",  java.text.DateFormat.getDateTimeInstance().format(calendar.getTime()));
         //Log.v("date", java.text.DateFormat.getDateTimeInstance().format(calendar.getTime()) );
-/*
+
         // Set privacy
-        Button privacy = (Button) findViewById(R.id.publicBut);
-        if (privacy.getAlpha() == 1) {
-            map.put("privacy", "public");
-        } else {
-            map.put("privacy", "private");
-        }
-*/
-        map.put("privacy", "public");
+//        Button privacy = (Button) findViewById(R.id.publicBut);
+//        if (privacy.getAlpha() == 1) {
+//            map.put("privacy", "public");
+//        } else {
+//            map.put("privacy", "private");
+//        }
+//
+//        map.put("privacy", "public");
 
         // Set location
         final Map<String, Object> mapAux = new HashMap<>();
@@ -420,7 +424,7 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
 
                     jumpToMainActivity();
     }
-
+*/
     /**
      * Method that jumps to the MainActivity
      */
@@ -547,4 +551,6 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }
