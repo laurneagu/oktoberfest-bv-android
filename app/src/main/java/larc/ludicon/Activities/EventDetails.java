@@ -212,6 +212,7 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
                 String isOfficial = "";
                 int players = 0;
                 String desc = "";
+                long evenDate = 0;
 
                 for (DataSnapshot details : dataSnapshot.getChildren()) {
                     if (details.getKey().toString().equalsIgnoreCase("users")) {
@@ -231,6 +232,7 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
                     }
                     if (details.getKey().toString().equalsIgnoreCase("date")) {
                         date = (String) DateManager.convertFromSecondsToText((long)details.getValue());
+                        evenDate = (long)details.getValue();
                     }
                     if (details.getKey().toString().equalsIgnoreCase("privacy")) {
                         privacy = (String) details.getValue();
@@ -293,7 +295,7 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
                 final String eventisOfficial = isOfficial;
                 final String eventPlace = place;
                 final String eventDesc = desc;
-
+                final Date evDate = new Date(evenDate);
                 // Edit Event Button
                 final Button editEvent = (Button)findViewById(R.id.editbtn);
                 //editEvent.setVisibility(View.INVISIBLE);
@@ -302,7 +304,7 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
                     public void onClick(View v) {
                         Intent intent = new Intent(getApplicationContext(), EditEventActivity.class);
                         intent.putExtra("eventID", eventUid);
-                        intent.putExtra("eventDate", eventDate);
+                        intent.putExtra("eventDate", evDate.getTime() + "");
                         intent.putExtra("sport", eventSport);
                         intent.putExtra("eventPrivacy", eventPrivacy);
                         intent.putExtra("latitude", eventLat);
