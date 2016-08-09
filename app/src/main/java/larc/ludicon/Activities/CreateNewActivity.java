@@ -113,7 +113,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
     private List<String> sports = new ArrayList<String>() {{
         add("football");
-        add("volley");
+        add("volleyball");
         add("basketball");
         add("squash");
         add("pingpong");
@@ -570,7 +570,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
                         // Script to refresh sports in the database
                     /*
                     User.firebaseRef.child("sports").child("Football").child("id").setValue("0");
-                    User.firebaseRef.child("sports").child("Volley").child("id").setValue("1");
+                    User.firebaseRef.child("sports").child("volleyball").child("id").setValue("1");
                     User.firebaseRef.child("sports").child("Basketball").child("id").setValue("2");
                     User.firebaseRef.child("sports").child("Chess").child("id").setValue("3");
                     User.firebaseRef.child("sports").child("Ping Pong").child("id").setValue("4");

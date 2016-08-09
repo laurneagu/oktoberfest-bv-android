@@ -24,8 +24,8 @@
     </LinearLayout>
 
     <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
         android:id="@+id/chat_btn"
         android:background="@drawable/chat"
         android:layout_marginRight="10dp"

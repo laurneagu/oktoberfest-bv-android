@@ -382,7 +382,7 @@ public class RankingsActivity extends Activity {
     private void getSports(Map<Integer,String> sportName)
     {
         sportName.put(0,"football");
-        sportName.put(1,"volley");
+        sportName.put(1,"volleyball");
         sportName.put(2,"basketball");
         sportName.put(3,"squash");
         sportName.put(4,"pingpong");

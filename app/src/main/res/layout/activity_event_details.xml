@@ -187,17 +187,9 @@
 
             <Button
                 style="?android:attr/buttonStyleSmall"
-                android:textColor="#FFFFFF"
-                android:textSize="12sp"
-
                 android:layout_width="100dp"
                 android:layout_height="30dp"
-                android:background="@drawable/buttonshape"
-                android:shadowColor="#A8A8A8"
-                android:shadowDx="0"
-                android:shadowDy="0"
-                android:shadowRadius="5"
-                android:text="Edit"
+                android:background="@drawable/edit"
                 android:id="@+id/editbtn"
                 android:layout_marginBottom="10dp"
                 android:layout_alignParentTop="true"
@@ -207,17 +199,9 @@
 
             <Button
                 style="?android:attr/buttonStyleSmall"
-                android:textColor="#FFFFFF"
-                android:textSize="12sp"
-
                 android:layout_width="100dp"
                 android:layout_height="30dp"
-                android:background="@drawable/redbuttonshape"
-                android:shadowColor="#A8A8A8"
-                android:shadowDx="0"
-                android:shadowDy="0"
-                android:shadowRadius="5"
-                android:text="Cancel"
+                android:background="@drawable/cancel"
                 android:id="@+id/cancelbtn"
                 android:layout_marginRight="10dp"
                 android:enabled="true"
@@ -241,17 +225,9 @@
 
             <Button
                 style="?android:attr/buttonStyleSmall"
-                android:text="+ Offline Friend"
-                android:textColor="#FFFFFF"
-                android:textSize="12sp"
-
                 android:layout_width="100dp"
                 android:layout_height="30dp"
-                android:background="@drawable/buttonshape"
-                android:shadowColor="#A8A8A8"
-                android:shadowDx="0"
-                android:shadowDy="0"
-                android:shadowRadius="5"
+                android:background="@drawable/admin_add"
                 android:id="@+id/addfriend"
                 android:layout_marginLeft="10dp"
                 android:layout_below="@+id/eventchatbtn"
@@ -263,17 +239,9 @@
 
             <Button
                 style="?android:attr/buttonStyleSmall"
-                android:textColor="#FFFFFF"
-                android:textSize="12sp"
-
                 android:layout_width="100dp"
                 android:layout_height="30dp"
-                android:background="@drawable/buttonshape"
-                android:shadowColor="#A8A8A8"
-                android:shadowDx="0"
-                android:shadowDy="0"
-                android:shadowRadius="5"
-                android:text="- Offline Friend"
+                android:background="@drawable/admin_minus"
                 android:id="@+id/removefriend"
                 android:layout_below="@+id/sharefb"
                 android:layout_alignParentBottom="true"

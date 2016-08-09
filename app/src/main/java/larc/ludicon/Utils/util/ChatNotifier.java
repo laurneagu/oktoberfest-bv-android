@@ -60,7 +60,7 @@ public class ChatNotifier {
         builder.setContentTitle(author);
         builder.setContentText(message);
         builder.setSmallIcon(R.drawable.logo_notif);
-        builder.setColor(Color.parseColor("#0e3956"));
+        //builder.setColor(Color.parseColor("#0e3956"));
 
         // Asta e Daca vreau sa vad poza celuilalt
         // asta implica sa adaug url-ul in firebase la event!!!!!!!!!!!

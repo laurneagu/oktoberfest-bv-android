@@ -73,6 +73,7 @@ public class SettingsActivity extends Activity {
     DatabaseReference userSports = User.firebaseRef.child("users").child(User.uid).child("sports");
     final DatabaseReference sportRed = User.firebaseRef.child("sports"); // check user
     private int savedProgress = 0;
+    int progress = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -123,12 +124,10 @@ public class SettingsActivity extends Activity {
 
             seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
-                int progress = 0;
-
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
                     progress = progressValue;
-                    rangeRef.setValue(progress);
+                    //rangeRef.setValue(progress);
                     progressText.setText(progress + " km");
                 }
 
@@ -146,13 +145,13 @@ public class SettingsActivity extends Activity {
             TextView hello_message = (TextView) findViewById(R.id.hello_message_activity);
             hello_message.setText("Settings");
 
-        /*// Save button
-        saveButton = (Button) findViewById(R.id.saveButton);
+        // Save button
+        saveButton = (Button) findViewById(R.id.save);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //TODO Save Range + Sports in FireBase
-
+                rangeRef.setValue((progress == 0 ? savedProgress : progress));
                 Map<String, Object> map = new HashMap<String, Object>();
                 for (Sport s : sportsList) {
                     if (s.isChecked) {
@@ -165,23 +164,7 @@ public class SettingsActivity extends Activity {
 
             }
         });
-        */
 
-            // Logout button
-            Button logout = (Button) findViewById(R.id.logout);
-            logout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // logout from facebook
-                    LoginManager.getInstance().logOut();
-                    //clear UserInfo when logout
-                    User.clear(getApplicationContext());
-                    //go back to IntroActivity
-                    Intent goToIntro = new Intent(getApplicationContext(), IntroActivity.class);
-                    goToIntro.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(goToIntro);
-                }
-            });
         }
         catch(Exception exc) {
             Utils.quit();
@@ -323,6 +306,7 @@ public class SettingsActivity extends Activity {
                         }
 
                         // Update firebase
+                        /*
                         Map<String, Object> map = new HashMap<String, Object>();
                         for (Sport s : sportsList) {
                             if (s.isChecked) {
@@ -330,6 +314,7 @@ public class SettingsActivity extends Activity {
                             }
                         }
                         userSports.setValue(map);
+                        */
                     }
                 });
             } else {

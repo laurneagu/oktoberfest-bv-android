@@ -43,8 +43,8 @@ public class Notifier {
         if(name.equalsIgnoreCase("pingpong")){
             return R.drawable.pingpong;
         }
-        if(name.equalsIgnoreCase("volley")){
-            return R.drawable.volley;
+        if(name.equalsIgnoreCase("volleyball")){
+            return R.drawable.volleyball;
         }
         return R.drawable.logo;
     }

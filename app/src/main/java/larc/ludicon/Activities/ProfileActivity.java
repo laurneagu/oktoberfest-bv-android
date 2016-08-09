@@ -204,7 +204,7 @@ public class ProfileActivity extends Activity {
             int n = 10;
             for (int i = 0; i < n; i++) compareArray.add(new ComparePals(0, 0, i));
             getPoints("football", 0, User.uid, uid, compareArray);
-            getPoints("volley", 1, User.uid, uid, compareArray);
+            getPoints("volleyball", 1, User.uid, uid, compareArray);
             getPoints("basketball", 2, User.uid, uid, compareArray);
             getPoints("squash", 3, User.uid, uid, compareArray);
             getPoints("pingpong", 4, User.uid, uid, compareArray);
@@ -307,7 +307,7 @@ public class ProfileActivity extends Activity {
             switch (this.compareArray.get(position).sport)
             {
                 case 0 : sportLogo.setImageResource(R.drawable.football);break;
-                case 1 : sportLogo.setImageResource(R.drawable.volley);break;
+                case 1 : sportLogo.setImageResource(R.drawable.volleyball);break;
                 case 2 : sportLogo.setImageResource(R.drawable.basketball);break;
                 case 3 : sportLogo.setImageResource(R.drawable.squash);break;
                 case 4 : sportLogo.setImageResource(R.drawable.pingpong);break;
