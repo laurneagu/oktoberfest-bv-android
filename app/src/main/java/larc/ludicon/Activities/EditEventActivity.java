@@ -47,6 +47,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.DatabaseError;
@@ -115,7 +116,7 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
 
     private List<String> sports = new ArrayList<String>() {{
         add("football");
-        add("volley");
+        add("volleyball");
         add("basketball");
         add("squash");
         add("pingpong");
@@ -161,15 +162,22 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
                         startActivityForResult(goToNextActivity, ASK_COORDS);
                     }
                 });
-                m_gmap.clear();
-                m_gmap.addMarker(new MarkerOptions()
-                        .position(latLng)
-                        .title("This is the event venue"));
             }
         });
 
+        m_gmap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+            @Override
+            public void onMapLoaded() {
+                m_gmap.addMarker(new MarkerOptions()
+                        .position(latLng)
+                        .title("This is the event venue"));
+                m_gmap.moveCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds(latLng,latLng), 15));
+
+            }
+        });
 
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -354,13 +362,9 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
             }
         });
 
-        double latitude = Double.parseDouble(getIntent().getStringExtra("latitude"));
-        double longitude = Double.parseDouble(getIntent().getStringExtra("longitude"));
+        latitude = Double.parseDouble(getIntent().getStringExtra("latitude"));
+        longitude = Double.parseDouble(getIntent().getStringExtra("longitude"));
         latLng = new LatLng(latitude,longitude);
-        if ( m_gmap != null )
-            m_gmap.addMarker(new MarkerOptions()
-                    .position(latLng)
-                    .title("This is the event venue"));
 
     }
 
@@ -444,6 +448,7 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
         */
     public boolean checkEventDateIsNotInPast(Date creationDate) {
         Date now = new Date();
+        Log.v("event vs now", creationDate.toString() + " " + now);
         if (creationDate.before(now)) {
             Toast.makeText(this.getApplicationContext(), "You can't organize an event in the past",
                     Toast.LENGTH_LONG).show();
@@ -475,8 +480,9 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
             df.setTimeZone(TimeZone.getTimeZone("Europe/Bucharest"));
 
             String gmtTime = df.format(calendar.getTime());
-            final Date creationDate = calendar.getTime();
+            //final Date creationDate = calendar.getTime();
 
+            final Date creationDate = DateManager.convertFromSecondsToDate(Long.parseLong(getIntent().getStringExtra("eventDate")));
 
             if (checkEventDateIsNotInPast(creationDate))
                 return;
