@@ -42,8 +42,9 @@ public class LeftPanelItemClicker {
                                 i_currActivity.startActivity(chatIntent);
                                 break;
                             case 4:
-                                Intent rankingIntent = new Intent(i_currActivity, RankingsActivity.class);
-                                i_currActivity.startActivity(rankingIntent);
+                                //Intent rankingIntent = new Intent(i_currActivity, RankingsActivity.class);
+                                //i_currActivity.startActivity(rankingIntent);
+                                Toast.makeText(i_context,"Will be available soon..",Toast.LENGTH_LONG).show();
                                 break;
                             case 5:
                                 Intent helpIntent = new Intent(i_currActivity, SettingsActivity.class);
