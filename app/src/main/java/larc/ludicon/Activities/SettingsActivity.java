@@ -69,6 +69,8 @@ public class SettingsActivity extends Activity {
     private SeekBar seekBar;
     private Button saveButton;
     private ArrayList<Sport> sportsList = new ArrayList<Sport>();
+    private HashMap<String, Drawable> regularSportIcons = new HashMap<String, Drawable>();
+    private HashMap<String, Drawable> desaturatedSportIcons = new HashMap<String, Drawable>();
     DatabaseReference rangeRef = User.firebaseRef.child("users").child(User.uid).child("range");
     DatabaseReference userSports = User.firebaseRef.child("users").child(User.uid).child("sports");
     final DatabaseReference sportRed = User.firebaseRef.child("sports"); // check user
@@ -99,6 +101,8 @@ public class SettingsActivity extends Activity {
                     SettingsActivity.this.startActivity(mainIntent);
                 }
             });
+
+            initializeSportIcons();
 
             rangeRef.addListenerForSingleValueEvent(new ValueEventListener() { // get all sports
                 @Override
@@ -159,7 +163,7 @@ public class SettingsActivity extends Activity {
                     }
                 }
                 userSports.setValue(map);
-
+                Toast.makeText(getApplicationContext(), "Saved!", Toast.LENGTH_SHORT).show();
 
 
             }
@@ -168,6 +172,19 @@ public class SettingsActivity extends Activity {
         }
         catch(Exception exc) {
             Utils.quit();
+        }
+    }
+
+    private void initializeSportIcons() {
+        int imageResource;
+        String[] sports = new String[]{"basketball", "cycling", "football", "gym", "jogging", "other",
+                           "pingpong", "squash", "tennis", "volleyball"};
+
+        for (String sport : sports) {
+            imageResource = getResources().getIdentifier("@drawable/" + sport, null, getPackageName());
+            regularSportIcons.put(sport, getResources().getDrawable(imageResource));
+            imageResource = getResources().getIdentifier("@drawable/desaturated_" + sport, null, getPackageName());
+            desaturatedSportIcons.put(sport, getResources().getDrawable(imageResource));
         }
     }
 
@@ -181,16 +198,9 @@ public class SettingsActivity extends Activity {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
                     for (DataSnapshot sport : snapshot.getChildren()) {
-                        String uri = "@drawable/" + sport.getKey().toLowerCase().replace(" ", "");
-
-                        int imageResource = getResources().getIdentifier(uri, null, getPackageName());
-                        Drawable res1 = getResources().getDrawable(imageResource);
-                        uri = "@drawable/desaturated_" + sport.getKey().toLowerCase().replace(" ", "");
-
-                        imageResource = getResources().getIdentifier(uri, null, getPackageName());
-                        Drawable res2 = getResources().getDrawable(imageResource);
-                        sportsList.add(new Sport(sport.getKey(), sport.getValue().toString(),
-                                true, ((BitmapDrawable) res1).getBitmap(), ((BitmapDrawable) res2).getBitmap()));
+                        sportsList.add(new Sport(sport.getKey(), sport.getValue().toString(), true,
+                                ((BitmapDrawable) regularSportIcons.get(sport.getKey())).getBitmap(),
+                                ((BitmapDrawable) desaturatedSportIcons.get(sport.getKey())).getBitmap()));
                         exist.put(sport.getKey(), true);
                     }
 
@@ -200,14 +210,9 @@ public class SettingsActivity extends Activity {
 
                             for (DataSnapshot sport : snapshot.getChildren()) {
                                 if (!exist.containsKey(sport.getKey())) {
-                                    String uri = "@drawable/" + sport.getKey();
-                                    int imageResource = getResources().getIdentifier(uri, null, getPackageName());
-                                    Drawable res1 = getResources().getDrawable(imageResource);
-                                    uri = "@drawable/desaturated_" + sport.getKey();
-                                    imageResource = getResources().getIdentifier(uri, null, getPackageName());
-                                    Drawable res2 = getResources().getDrawable(imageResource);
-                                    sportsList.add(new Sport(sport.getKey(), sport.child("id").getValue().toString(),
-                                            false, ((BitmapDrawable) res1).getBitmap(), ((BitmapDrawable) res2).getBitmap()));
+                                    sportsList.add(new Sport(sport.getKey(), sport.child("id").getValue().toString(), false,
+                                            ((BitmapDrawable) regularSportIcons.get(sport.getKey())).getBitmap(),
+                                            ((BitmapDrawable) desaturatedSportIcons.get(sport.getKey())).getBitmap()));
                                 }
                             }
 
@@ -216,20 +221,6 @@ public class SettingsActivity extends Activity {
                             GridView gridView = (GridView) findViewById(R.id.gridView);
                             // Assign adapter to ListView
                             gridView.setAdapter(dataAdapter);
-
-/*
-                        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            public void onItemClick(AdapterView<?> parent, View view,
-                                                    int position, long id) {
-                                // When clicked, show a toast with the TextView text
-                                Sport sport = (Sport) parent.getItemAtPosition(position);
-                                Toast.makeText(getApplicationContext(),
-                                        "Clicked on Row: " + sport.name,
-                                        Toast.LENGTH_LONG).show();
-
-
-                            }
-                        });*/
                         }
 
                         @Override
@@ -305,16 +296,6 @@ public class SettingsActivity extends Activity {
                             cb.setAlpha((float) 0.7);
                         }
 
-                        // Update firebase
-                        /*
-                        Map<String, Object> map = new HashMap<String, Object>();
-                        for (Sport s : sportsList) {
-                            if (s.isChecked) {
-                                map.put(s.name, s.id);
-                            }
-                        }
-                        userSports.setValue(map);
-                        */
                     }
                 });
             } else {
@@ -322,10 +303,8 @@ public class SettingsActivity extends Activity {
             }
 
             Sport sport = sportsList.get(position);
-            //holder.text.setText("");
             holder.text.setText(sport.name);
             holder.box.setText("");
-            //holder.box.setText(sport.name);
             holder.box.setChecked(sport.isChecked);
             holder.box.setTag(sport);
             holder.text.setTextColor(getResources().getColor(R.color.white));
