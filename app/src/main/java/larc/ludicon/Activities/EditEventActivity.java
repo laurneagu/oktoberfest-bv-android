@@ -114,6 +114,10 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
     EditText editDesc ;
     private String addressName = ""; //default address
 
+    private Boolean dateHasChanged=false;
+    private Boolean timeHasChanged=false;
+    private String defaultDate = "";
+
     private List<String> sports = new ArrayList<String>() {{
         add("football");
         add("volleyball");
@@ -268,6 +272,9 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
         final EditText maxCapacityET = (EditText) findViewById(R.id.maxPlayersET);
         maxCapacityET.setText(getIntent().getStringExtra("maxPlayers"));
 
+        // Get the date default
+        defaultDate = getIntent().getStringExtra("eventDate");
+
         Button removePeople = (Button) findViewById(R.id.removePeople);
         removePeople.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -353,6 +360,7 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
                         editTextTimeHolder.setText(selectedHour + ":" + selectedMinute);
                         myCalendar.set(Calendar.HOUR_OF_DAY, selectedHour);
                         myCalendar.set(Calendar.MINUTE, selectedMinute);
+                        timeHasChanged = true;
 
                     }
                 }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), true);//Yes 24 hour time
@@ -419,6 +427,7 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
         String myFormat = "dd/MMM/yy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.UK);
 
+        dateHasChanged = true;
         editTextDateHolder.setText(sdf.format(myCalendar.getTime()));
     }
 
@@ -459,7 +468,22 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
 
     public void OnCreateEvent(View view) {
 
-            Calendar calendar = myCalendar;
+        if(!dateHasChanged){
+            Date initialDate = DateManager.convertFromSecondsToDate(Long.parseLong(getIntent().getStringExtra("eventDate")));
+            Calendar calendar = new GregorianCalendar();
+            calendar.setTime(initialDate);
+
+            myCalendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR));
+            myCalendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH));
+            myCalendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH));
+        }
+
+        if (!timeHasChanged) {
+            Date initialDate = DateManager.convertFromSecondsToDate(Long.parseLong(getIntent().getStringExtra("eventDate")));
+            myCalendar.set(Calendar.HOUR_OF_DAY, initialDate.getHours());
+            myCalendar.set(Calendar.MINUTE, initialDate.getMinutes());
+        }
+
 
                 /*new GregorianCalendar(myCalendar.get(Calendar.YEAR),
                 myCalendar.get(Calendar.MONTH),
@@ -479,7 +503,8 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
             DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, new Locale("English"));
             df.setTimeZone(TimeZone.getTimeZone("Europe/Bucharest"));
 
-            String gmtTime = df.format(calendar.getTime());
+            String gmtTime = df.format(myCalendar.getTime());
+
             //final Date creationDate = calendar.getTime();
 
             final Date creationDate = DateManager.convertFromSecondsToDate(Long.parseLong(getIntent().getStringExtra("eventDate")));
@@ -497,7 +522,10 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
             ProgressBar pb = (ProgressBar) findViewById(R.id.marker_progress);
             pb.setVisibility(View.VISIBLE);
 
+
             map.put("date", DateManager.convertFromTextToSeconds(gmtTime));
+
+
             map.put("createdBy", User.uid);
             map.put("active", true);
 

@@ -49,7 +49,8 @@ public class DateManager {
         Date date = null;
 
         try {
-            date = new Date(text);
+            long seconds = Long.parseLong(text);
+            date = new Date(seconds * 1000);
         } catch (Exception e) {
             e.printStackTrace();
         }
