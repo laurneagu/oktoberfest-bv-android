@@ -13,16 +13,13 @@
         android:id="@+id/relLayout">
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="30dp"
-            android:background="#1971b4"
-            android:text="SAVE"
-            android:textSize="20dp"
+            android:background="@drawable/save_button"
             android:layout_marginBottom="10dp"
             android:id="@+id/save"
             android:layout_alignParentBottom="true"
             android:textColor="#ffffff"
-            android:visibility="invisible"
             android:layout_alignRight="@+id/textView6"
             android:layout_alignEnd="@+id/textView6"
             android:layout_alignLeft="@+id/textView6"
