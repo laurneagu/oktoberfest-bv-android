@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="larc.ludicon"
-    android:versionCode="2"
-    android:versionName="2" >
+    package="larc.ludiconprod"
+    android:versionCode="1"
+    android:versionName="1" >
 
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="21" />
+        android:targetSdkVersion="20" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -130,7 +130,7 @@
             android:parentActivityName=".Activities.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="larc.ludicon.Activities.MainActivity" />
+                android:value=".Activities.MainActivity" />
         </activity>
         <activity
             android:name=".Activities.ChatTemplateActivity"
@@ -153,7 +153,7 @@
             android:theme="@style/FullscreenTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="larc.ludicon.Activities.MainActivity" />
+                android:value=".Activities.MainActivity" />
         </activity>
         <activity
             android:name=".Activities.EventDetails"
@@ -163,7 +163,7 @@
             android:theme="@style/FullscreenTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="larc.ludicon.Activities.MainActivity" />
+                android:value=".Activities.MainActivity" />
         </activity>
         <activity
             android:name=".Activities.RankingsActivity"
@@ -172,7 +172,7 @@
             android:parentActivityName=".Activities.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="larc.ludicon.Activities.MainActivity" />
+                android:value=".Activities.MainActivity" />
         </activity>
         <activity
             android:name=".Activities.EditEventActivity"

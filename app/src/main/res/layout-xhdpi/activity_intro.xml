@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:facebook="http://schemas.android.com/apk/res-auto"
-    tools:context="larc.ludicon.Activities.IntroActivity"
+    tools:context="larc.ludiconprod.Activities.IntroActivity"
     android:id="@+id/intro">
 
     <ImageView

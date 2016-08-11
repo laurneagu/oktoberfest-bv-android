@@ -155,7 +155,7 @@
 
                 />
             
-        <larc.ludicon.Utils.CustomView.NonScrollListView
+        <larc.ludiconprod.Utils.CustomView.NonScrollListView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/listViewUsers"

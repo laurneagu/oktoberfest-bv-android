@@ -24,7 +24,7 @@
             android:layout_height="1dp"
             android:background="#FFFFFF" />
 
-        <larc.ludicon.Utils.ui.SlidingTabLayout
+        <larc.ludiconprod.Utils.ui.SlidingTabLayout
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

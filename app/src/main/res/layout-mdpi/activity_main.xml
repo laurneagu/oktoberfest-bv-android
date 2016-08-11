@@ -20,7 +20,7 @@
                 android:layout_width="match_parent"
                 />
 
-            <larc.ludicon.Utils.ui.SlidingTabLayout
+            <larc.ludiconprod.Utils.ui.SlidingTabLayout
                 android:id="@+id/tabs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
