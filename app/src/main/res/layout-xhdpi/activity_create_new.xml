@@ -148,7 +148,6 @@
                 android:background="@drawable/create_edittext"
                 android:singleLine="false"
                 android:lines="3"
-                android:textAlignment="center"
                 android:textColorHint="#0e64a6"
                 android:id="@+id/DescriptionInput" />
 

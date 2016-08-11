@@ -98,7 +98,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="This is the area of discovering friends"
+            android:text="This is the area of discovering sport events"
             android:id="@+id/textView9"
             android:layout_above="@+id/seekBar2"
             android:layout_alignRight="@+id/textView7"

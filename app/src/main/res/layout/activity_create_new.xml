@@ -41,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="5dp"
-                android:text="Tap on the ball to select your desired sport"
+                android:text="Tap on the sport icon to select your desired sport"
                 android:textColor="#81878b"
                 android:id="@+id/sportPickAdviceTV"
                 android:layout_below="@+id/sportPickTV"
@@ -148,7 +148,6 @@
                 android:background="@drawable/create_edittext"
                 android:singleLine="false"
                 android:lines="3"
-                android:textAlignment="center"
                 android:textColorHint="#0e64a6"
                 android:id="@+id/DescriptionInput" />
 

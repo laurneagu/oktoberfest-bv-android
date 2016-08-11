@@ -287,12 +287,12 @@ public class SettingsActivity extends Activity {
                         RelativeLayout rl = (RelativeLayout) cb.getParent();
                         sport.setSelected(cb.isChecked());
                         if (cb.isChecked()) {
-                            rl.setBackgroundColor(getResources().getColor(R.color.bg1));
-                            ((ImageView) rl.getChildAt(1)).setImageBitmap(sport.icon);
+                            rl.setBackgroundColor(Color.parseColor("#0C3855"));
+                            //((ImageView) rl.getChildAt(1)).setImageBitmap(sport.icon);
                             cb.setAlpha((float) 0.9);
                         } else {
-                            rl.setBackgroundColor(getResources().getColor(R.color.bg2));
-                            ((ImageView) rl.getChildAt(1)).setImageBitmap(sport.desaturated_icon);
+                            rl.setBackgroundColor(Color.parseColor("#910c3855"));
+                            //((ImageView) rl.getChildAt(1)).setImageBitmap(sport.desaturated_icon);
                             cb.setAlpha((float) 0.7);
                         }
 
@@ -309,13 +309,13 @@ public class SettingsActivity extends Activity {
             holder.box.setTag(sport);
             holder.text.setTextColor(getResources().getColor(R.color.white));
             if (holder.box.isChecked()) {
-                holder.rl.setBackgroundColor(getResources().getColor(R.color.bg1));
+                holder.rl.setBackgroundColor(Color.parseColor("#0C3855"));
                 holder.image.setImageBitmap(sport.icon);
                 holder.box.setTextColor(getResources().getColor(R.color.white));
                 holder.box.setAlpha((float) 0.9);
             } else {
                 holder.box.setTextColor(getResources().getColor(R.color.white));
-                holder.rl.setBackgroundColor(getResources().getColor(R.color.bg2));
+                holder.rl.setBackgroundColor(Color.parseColor("#910c3855"));
                 holder.image.setImageBitmap(sport.desaturated_icon);
                 holder.box.setAlpha((float) 0.7);
             }

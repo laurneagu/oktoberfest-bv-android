@@ -618,9 +618,9 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
             map.put("sport", sportName);
 
             // Set users - currently only the one enrolled
-            Map<String, Boolean> usersAttending = new HashMap<String, Boolean>();
-            usersAttending.put(User.uid, true);
-            map.put("users", usersAttending);
+            //Map<String, Boolean> usersAttending = new HashMap<String, Boolean>();
+            //usersAttending.put(User.uid, true);
+            //map.put("users", usersAttending);
 
             // Check Events exists
             DatabaseReference newEventRef = User.firebaseRef.child("events"); // check user
