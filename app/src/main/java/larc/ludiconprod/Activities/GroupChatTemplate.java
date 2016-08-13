@@ -11,6 +11,7 @@ import android.database.DataSetObserver;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
@@ -179,7 +180,7 @@ public class GroupChatTemplate extends ListActivity {
                     String.format(new Locale("English"), "%tR", now);
             // Create our 'model', a Chat object
             Log.v("Username", mUsername);
-            Chat chat = new Chat(input, mUsername, DateManager.convertFromDateToText(now));
+            Chat chat = new Chat(input, mUsername, DateManager.getTimeNowInSeconds());
 
             // Create a new, auto-generated child of that chat location, and save our chat data there
             mDatabaseReferenceRef.push().setValue(chat);

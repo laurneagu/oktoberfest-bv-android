@@ -5,6 +5,7 @@ import android.app.ListActivity;
 import android.content.SharedPreferences;
 import android.database.DataSetObserver;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -23,6 +24,7 @@ import com.google.firebase.database.ValueEventListener;
 import larc.ludiconprod.R;
 import larc.ludiconprod.ChatUtils.Chat;
 import larc.ludiconprod.ChatUtils.ChatListAdapter;
+import larc.ludiconprod.Utils.util.DateManager;
 
 public class GeneralChatActivity extends ListActivity {
 
@@ -133,7 +135,7 @@ public class GeneralChatActivity extends ListActivity {
         String input = inputText.getText().toString();
         if (!input.equals("")) {
             // Create our 'model', a Chat object
-            Chat chat = new Chat(input, mUsername,"");
+            Chat chat = new Chat(input, mUsername, DateManager.getTimeNowInSeconds());
             // Create a new, auto-generated child of that chat location, and save our chat data there
             mDatabaseReferenceRef.push().setValue(chat);
             inputText.setText("");

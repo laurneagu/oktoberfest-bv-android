@@ -94,5 +94,9 @@ public class DateManager {
         return sec;
     }
 
+    public static long getTimeNowInSeconds(){
+        return System.currentTimeMillis()/ONEoverMILI;
+    }
+
 
 }

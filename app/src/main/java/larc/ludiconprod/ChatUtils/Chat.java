@@ -18,10 +18,10 @@ public class Chat {
     private Chat() {
     }
 
-    public Chat(String message, String author,String date) {
+    public Chat(String message, String author,long date) {
         this.message = message;
         this.author = author;
-        this.date = DateManager.convertFromTextToSeconds(date);
+        this.date = date;
         this.seen = false;
     }
 
