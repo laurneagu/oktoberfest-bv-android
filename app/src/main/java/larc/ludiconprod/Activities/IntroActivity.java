@@ -374,7 +374,7 @@ public class IntroActivity extends Activity {
                                     DateFormat df = DateFormat.getDateTimeInstance();
                                     df.setTimeZone(TimeZone.getTimeZone("gmt"));
                                     String gmtTime = df.format(new Date());
-                                    map.put("lastLogInTime", DateManager.convertFromDateToSeconds(new Date()));
+                                    map.put("lastLogInTime", DateManager.convertFromTextToSeconds(gmtTime));
 
 
                                     //final String uid = userFirebase.getUid();

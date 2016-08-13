@@ -28,7 +28,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -156,11 +155,9 @@ public class ChatTemplateActivity extends ListActivity {
             addUserUIDs.setValue(userUIDMap);
 
             Date now = new Date();
-//            String formattedDate = String.format(new Locale("English"), "%tb", now) + " " +
-//                    String.format(new Locale("English"), "%td", now) + ", " +
-//                    String.format(new Locale("English"), "%tR", now);
-            DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, new Locale("ENGLISH"));
-            String formattedDate = df.format(now);
+            String formattedDate = String.format(new Locale("English"), "%tb", now) + " " +
+                    String.format(new Locale("English"), "%td", now) + ", " +
+                    String.format(new Locale("English"), "%tR", now);
             // Create our 'model', a Chat object
             DatabaseReference newChat = keyRef.child("Messages").push();
             Chat chat = new Chat("Welcome to our chat! :)", "Ludicon", formattedDate);
@@ -291,14 +288,14 @@ public class ChatTemplateActivity extends ListActivity {
 
             Date now = new Date();
 
-            DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, new Locale("ENGLISH"));
-            String formattedDate = df.format(now);
+            //DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, new Locale("ENGLISH"));
+            //String formattedDate = df.format(now);
 
-//            String formattedDate = String.format(new Locale("English"), "%tb", now) + " " +
-//                    String.format(new Locale("English"), "%td", now) + ", " +
-//                    String.format(new Locale("English"), "%tR", now);
+            String formattedDate = String.format(new Locale("English"), "%tb", now) + " " +
+                    String.format(new Locale("English"), "%td", now) + ", " +
+                    String.format(new Locale("English"), "%tR", now);
             // Create our 'model', a Chat object
-            Chat chat = new Chat(input, mUsername, formattedDate);
+            Chat chat = new Chat(input, mUsername,formattedDate);
 
             // Create a new, auto-generated child of that chat location, and save our chat data there
             mDatabaseReferenceRef.push().setValue(chat);
