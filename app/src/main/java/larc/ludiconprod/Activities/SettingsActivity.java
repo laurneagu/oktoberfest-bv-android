@@ -62,7 +62,7 @@ public class SettingsActivity extends Activity {
     private Button saveButton;
     private ArrayList<Sport> sportsList = new ArrayList<Sport>();
     private HashMap<String, Drawable> regularSportIcons = new HashMap<String, Drawable>();
-    private HashMap<String, Drawable> desaturatedSportIcons = new HashMap<String, Drawable>();
+    //private HashMap<String, Drawable> desaturatedSportIcons = new HashMap<String, Drawable>();
     DatabaseReference rangeRef = User.firebaseRef.child("users").child(User.uid).child("range");
     DatabaseReference userSports = User.firebaseRef.child("users").child(User.uid).child("sports");
     final DatabaseReference sportRed = User.firebaseRef.child("sports"); // check user
@@ -167,16 +167,18 @@ public class SettingsActivity extends Activity {
         }
     }
 
+    final String[] sports = new String[]{"football", "volleyball", "basketball", "squash", "pingpong", "tennis",
+            "cycling", "jogging", "gym", "other"};
+
     private void initializeSportIcons() {
         int imageResource;
-        String[] sports = new String[]{"basketball", "cycling", "football", "gym", "jogging", "other",
-                           "pingpong", "squash", "tennis", "volleyball"};
+
 
         for (String sport : sports) {
             imageResource = getResources().getIdentifier("@drawable/" + sport, null, getPackageName());
             regularSportIcons.put(sport, getResources().getDrawable(imageResource));
-            imageResource = getResources().getIdentifier("@drawable/desaturated_" + sport, null, getPackageName());
-            desaturatedSportIcons.put(sport, getResources().getDrawable(imageResource));
+            //imageResource = getResources().getIdentifier("@drawable/desaturated_" + sport, null, getPackageName());
+            //desaturatedSportIcons.put(sport, getResources().getDrawable(imageResource));
         }
     }
 
@@ -191,11 +193,28 @@ public class SettingsActivity extends Activity {
                 public void onDataChange(DataSnapshot snapshot) {
                     for (DataSnapshot sport : snapshot.getChildren()) {
                         sportsList.add(new Sport(sport.getKey(), sport.getValue().toString(), true,
-                                ((BitmapDrawable) regularSportIcons.get(sport.getKey())).getBitmap(),
-                                ((BitmapDrawable) desaturatedSportIcons.get(sport.getKey())).getBitmap()));
+                                ((BitmapDrawable) regularSportIcons.get(sport.getKey())).getBitmap()
+                               ));
                         exist.put(sport.getKey(), true);
                     }
 
+                    int count = 0;
+                    for (String sport : sports) {
+                        if (!exist.containsKey(sport)) {
+                            sportsList.add(new Sport(sport, Integer.toString(count) , false,
+                                    ((BitmapDrawable) regularSportIcons.get(sport)).getBitmap()));
+                        }
+                        count ++;
+                    }
+
+                    //create an ArrayAdaptor from the Sport Array
+                    dataAdapter = new MyCustomAdapter(getApplicationContext(), R.layout.sport_info, sportsList);
+                    GridView gridView = (GridView) findViewById(R.id.gridView);
+                    // Assign adapter to ListView
+                    gridView.setAdapter(dataAdapter);
+
+
+                    /*
                     sportRed.addListenerForSingleValueEvent(new ValueEventListener() { // get the rest of the sports
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
@@ -203,23 +222,18 @@ public class SettingsActivity extends Activity {
                             for (DataSnapshot sport : snapshot.getChildren()) {
                                 if (!exist.containsKey(sport.getKey())) {
                                     sportsList.add(new Sport(sport.getKey(), sport.child("id").getValue().toString(), false,
-                                            ((BitmapDrawable) regularSportIcons.get(sport.getKey())).getBitmap(),
-                                            ((BitmapDrawable) desaturatedSportIcons.get(sport.getKey())).getBitmap()));
+                                            ((BitmapDrawable) regularSportIcons.get(sport.getKey())).getBitmap()));
                                 }
                             }
-
-                            //create an ArrayAdaptor from the Sport Array
-                            dataAdapter = new MyCustomAdapter(getApplicationContext(), R.layout.sport_info, sportsList);
-                            GridView gridView = (GridView) findViewById(R.id.gridView);
-                            // Assign adapter to ListView
-                            gridView.setAdapter(dataAdapter);
                         }
+
 
                         @Override
                         public void onCancelled(DatabaseError firebaseError) {
                             //User.firebaseRef.child("msge").setValue("The read failed: " + firebaseError.getMessage());
                         }
                     });
+                        */
 
 
                 }
@@ -308,7 +322,8 @@ public class SettingsActivity extends Activity {
             } else {
                 holder.box.setTextColor(getResources().getColor(R.color.white));
                 holder.rl.setBackgroundColor(Color.parseColor("#910c3855"));
-                holder.image.setImageBitmap(sport.desaturated_icon);
+                holder.image.setImageBitmap(sport.icon);
+                //holder.image.setImageBitmap(sport.desaturated_icon);
                 holder.box.setAlpha((float) 0.7);
             }
 

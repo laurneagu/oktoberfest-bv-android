@@ -25,6 +25,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -279,12 +280,15 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         String myFormat = "dd-MMM-yy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.UK);
         editTextDateHolder.setText(sdf.format(myCalendar.getTime()));
-
-        editTextDateHolder.setShowSoftInputOnFocus(false);
+        editTextDateHolder.setFocusable(false);
         editTextDateHolder.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
                 // TODO Auto-generated method stub
                 DatePickerDialog dpd = new DatePickerDialog(CreateNewActivity.this, R.style.DialogTheme, date, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
@@ -294,15 +298,19 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         });
 
         // Time picker
-        int hour = myCalendar.get(Calendar.HOUR_OF_DAY) + 1;
+        int hour = myCalendar.get(Calendar.HOUR_OF_DAY);
         int minute = myCalendar.get(Calendar.MINUTE);
         editTextTimeHolder.setText(hour + ":" + minute);
-        editTextTimeHolder.setShowSoftInputOnFocus(false);
+        editTextTimeHolder.setFocusable(false);
         editTextTimeHolder.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
+                InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
+
                 int hour = myCalendar.get(Calendar.HOUR_OF_DAY);
                 int minute = myCalendar.get(Calendar.MINUTE);
                 TimePickerDialog mTimePicker;
@@ -337,7 +345,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
                 int imageResource = getResources().getIdentifier(uri, null, getPackageName());
                 Drawable res1 = getResources().getDrawable(imageResource);
                 sportsList.add(new Sport(sport, Integer.toString(count),
-                        false, ((BitmapDrawable) res1).getBitmap(), ((BitmapDrawable) res1).getBitmap()));
+                        false, ((BitmapDrawable) res1).getBitmap()));
                 count++;
             }
 
@@ -500,9 +508,28 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
             final Map<String, Object> mapAux = new HashMap<>();
 
             // location not provided
-            if (latitude == 0 || longitude == 0) {
+            if (latitude == 0 && longitude == 0) {
                 mapAux.put("latitude", GPS_Positioning.getLatLng().latitude);
                 mapAux.put("longitude", GPS_Positioning.getLatLng().longitude);
+
+                latitude = GPS_Positioning.getLatLng().latitude;
+                longitude = GPS_Positioning.getLatLng().longitude;
+
+                Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.ENGLISH);
+
+                try {
+                    List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                    if (addresses.size() > 0) {
+                        if (addressName == null || addressName.equals("")) {
+                            addressName = addresses.get(0).getAddressLine(0);
+                        }
+                    }
+                } catch (Exception exc) {
+                    addressName = "Unknown";
+                }
+
+                mapAux.put("name", addressName);
+
             } else {
                 Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.ENGLISH);
 
@@ -833,7 +860,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
             */
             holder.box.setTextColor(getResources().getColor(R.color.white));
             holder.rl.setBackgroundColor(getResources().getColor(R.color.bg2));
-            holder.image.setImageBitmap(sport.desaturated_icon);
+            holder.image.setImageBitmap(sport.icon);
             holder.box.setAlpha((float) 0.7);
             //  }
 

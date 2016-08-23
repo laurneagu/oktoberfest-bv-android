@@ -63,7 +63,7 @@ public class Notifier {
         builder.setContentTitle(sport + " activity remainder");
         builder.setContentText("In less than " + minutesToEvent + " minutes you will play " + sport.toLowerCase() + " with " + otherPlayers + " other player" + (otherPlayers != 1 ? "s" : "") + " at " + place);
         builder.setSmallIcon(R.drawable.logo_notif);
-        builder.setColor(Color.parseColor("#0e3956"));
+        //builder.setColor(Color.parseColor("#0e3956"));
 
         int sportImg = getSportImg(sport.toLowerCase());
 

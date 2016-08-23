@@ -327,8 +327,6 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
             }
         })
         ;
-        Button editEvent = (Button) findViewById(R.id.createEvent);
-        editEvent.setText("Edit");
 
         // Time picker
         int hour = cal.get(Calendar.HOUR_OF_DAY);
@@ -381,7 +379,7 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
                 int imageResource = getResources().getIdentifier(uri, null, getPackageName());
                 Drawable res1 = getResources().getDrawable(imageResource);
                 sportsList.add(new Sport(sport, Integer.toString(count),
-                        false, ((BitmapDrawable) res1).getBitmap(), ((BitmapDrawable) res1).getBitmap()));
+                        false, ((BitmapDrawable) res1).getBitmap()));
                 count++;
             }
 
@@ -897,7 +895,7 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
             // TODO - IF sport is selected put saturate icon
             if ( holder.text.getText().equals(sports.get(sportIndex)))
                 holder.rl.setBackgroundColor(getResources().getColor(R.color.bg2));
-            holder.image.setImageBitmap(sport.desaturated_icon);
+            holder.image.setImageBitmap(sport.icon);
             holder.box.setAlpha((float) 0.7);
             //  }
 

@@ -102,7 +102,7 @@ public class AskPreferences extends Activity {
                     Drawable res2 = getResources().getDrawable(imageResource);
 
                     sports.add(new Sport(sport.getKey(), sport.child("id").getValue().toString(),
-                            false, ((BitmapDrawable) res1).getBitmap(), ((BitmapDrawable) res1).getBitmap()));
+                            false, ((BitmapDrawable) res1).getBitmap()));
                 }
 
 
@@ -213,11 +213,11 @@ public class AskPreferences extends Activity {
                         sport.setSelected(cb.isChecked());
                         if(cb.isChecked()) {
                             rl.setBackgroundColor(Color.parseColor("#777777"));
-                            ((ImageView)rl.getChildAt(1)).setImageBitmap(sport.icon);
+                            //((ImageView)rl.getChildAt(1)).setImageBitmap(sport.icon);
                             cb.setAlpha(1);
                         } else {
                             rl.setBackgroundColor(Color.parseColor("#bbbbbb"));
-                            ((ImageView)rl.getChildAt(1)).setImageBitmap(sport.desaturated_icon);
+                            //((ImageView)rl.getChildAt(1)).setImageBitmap(sport.desaturated_icon);
                             cb.setAlpha((float) 0.5);
                         }
                     }
@@ -239,7 +239,8 @@ public class AskPreferences extends Activity {
             } else {
 
                 holder.rl.setBackgroundColor(Color.parseColor("#bbbbbb"));
-                holder.image.setImageBitmap(sport.desaturated_icon);
+                holder.image.setImageBitmap(sport.icon);
+                //holder.image.setImageBitmap(sport.desaturated_icon);
                 holder.box.setAlpha((float)0.5);
             }
 

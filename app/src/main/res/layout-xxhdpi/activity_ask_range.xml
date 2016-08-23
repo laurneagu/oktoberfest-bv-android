@@ -20,8 +20,6 @@
         android:id="@+id/seekBar"
         android:layout_width="300dp"
         android:layout_below="@+id/textView2"
-        android:foreground="@color/cardview_dark_background"
-        android:foregroundTint="@color/white"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp" />
 

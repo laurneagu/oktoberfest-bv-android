@@ -707,7 +707,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 final Chronometer timer = (Chronometer) findViewById( R.id.chronometer );
                 String currentP = getSharedPreferences("UserDetails", 0).getString("currentEventPointsCounter", "0");
-                getSharedPreferences("UserDetails", 0).edit().putString("currentEventStateCheck","2").commit();
+                getSharedPreferences("UserDetails", 0).edit().putString("currentEventStateCheck","0").commit();
                 Toast.makeText(getApplicationContext(), "Yaay! Activity finished in " + timer.getText().toString() + "!\nYou got "+currentP + " points! :-)", Toast.LENGTH_LONG).show();
                 timer.stop();
                 hideHappeningRightNow();
@@ -787,12 +787,9 @@ public class MainActivity extends AppCompatActivity {
 
 
             // Get current date
-            DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, new Locale("English"));
-            //df.setTimeZone(TimeZone.getTimeZone("gmt"));
-            df.setTimeZone(TimeZone.getTimeZone("Europe/Bucharest"));
-            String gmtTime = df.format(new Date());
-            Date now = new Date(gmtTime);
+            Date now = new Date(); //gmtTime);
 //                        ref.child("mesg").child("service").child("whileBIGTimeNOW").setValue(now.toString());
+
 
             Log.v("Date now", now.toString());
             // Problem - TimeZone
@@ -816,6 +813,8 @@ public class MainActivity extends AppCompatActivity {
 
             if (!found) {
                 upcomingEvent = null;
+
+                /// LAUR What the fuck is this ?!?!
                 lastEvent = events.get(events.size() - 1);
             } else {
                 upcomingEvent = events.get(j);
@@ -829,12 +828,12 @@ public class MainActivity extends AppCompatActivity {
             long diffMilis=0;
             if(upcomingEvent!= null) {
                 upEventDate = upcomingEvent.date;
-                now = new Date(gmtTime);
+                now = new Date();
                 diffMilis = Math.abs(upEventDate.getTime() - now.getTime())+3000;
             }
 
             if (lastEvent != null) {
-                now = new Date(gmtTime);
+                now = new Date();
                 Date lastEventDate = lastEvent.date;
 
 
@@ -842,9 +841,10 @@ public class MainActivity extends AppCompatActivity {
                 long diffInSec = TimeUnit.MILLISECONDS.toSeconds(diffInMillisec);
                 double hours = (double) diffInSec / (double) 3600;
 
-                if (hours < 2.0) {
+                if (hours < 1.0) {
 
-                    String state = getSharedPreferences("UserDetails", 0).getString("currentEventStateCheck", "3"); // 0 - didn't start, 1 - started, 2 - stopped, 3 - nothing
+                    // 0 - didn't start, 1 - started, 2 - stopped, 3 - nothing
+                    String state = getSharedPreferences("UserDetails", 0).getString("currentEventStateCheck", "3") ; // it was 3 !!
 
                     if (state.equalsIgnoreCase("0")) { // last event is the current one
 
@@ -988,7 +988,7 @@ public class MainActivity extends AppCompatActivity {
                             switch (which){
                                 case DialogInterface.BUTTON_POSITIVE:
                                     String currentP = getSharedPreferences("UserDetails", 0).getString("currentEventPointsCounter", "0");
-                                    getSharedPreferences("UserDetails", 0).edit().putString("currentEventStateCheck","2").commit();
+                                    getSharedPreferences("UserDetails", 0).edit().putString("currentEventStateCheck","0").commit();
                                     timer.stop();
                                     changeStateButton.setVisibility(View.GONE);
                                     Toast.makeText(getApplicationContext(), "Yaay! Activity finished in " + timer.getText().toString() + "!\nYou got "+currentP + " points! :-)", Toast.LENGTH_LONG).show();
