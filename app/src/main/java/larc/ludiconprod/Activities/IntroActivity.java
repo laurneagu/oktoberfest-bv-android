@@ -35,6 +35,7 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.login.LoginManager;
@@ -55,6 +56,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -375,7 +377,7 @@ public class IntroActivity extends Activity {
                                     df.setTimeZone(TimeZone.getTimeZone("gmt"));
                                     String gmtTime = df.format(new Date());
                                     map.put("lastLogInTime", System.currentTimeMillis()/1000);
-
+                                    Log.v("lastLOginTime", map.get("lastLogInTime").toString());
 
                                     //final String uid = userFirebase.getUid();
                                     final String uid = "facebook:" + id;
@@ -410,11 +412,13 @@ public class IntroActivity extends Activity {
                                                 User.firebaseRef.child("mesg").child(User.uid).child("status").setValue("User Nou");
                                                 User.firebaseRef.child("users").child(uid).setValue(map);
 
+                                                updateFriends();
                                                 jumpToPrefActivity();
 
                                             } else { // old user
                                                 User.firebaseRef.child("mesg").child(User.uid).child("status").setValue("User vechi");
                                                 User.firebaseRef.child("users").child(uid).updateChildren(map);
+                                                updateFriends();
                                                 jumpToMainActivity();
                                             }
 
@@ -446,6 +450,44 @@ public class IntroActivity extends Activity {
             FirebaseAuth.getInstance().signOut();
             greeting.setText("");
         }
+    }
+    public void updateFriends()
+    {
+
+        final DatabaseReference userRef = User.firebaseRef.child("users").child(User.uid); // check user
+        new GraphRequest(
+                AccessToken.getCurrentAccessToken(),
+                "/me/friends",
+                null,
+                HttpMethod.GET,
+                new GraphRequest.Callback() {
+                    public void onCompleted(GraphResponse response) {
+                            /* handle the result */
+                        try{
+                            JSONArray friendsList = response.getJSONObject().getJSONArray("data");
+
+                            for (int l=0; l < friendsList.length(); l++) {
+                                final String uid = "facebook:" + friendsList.getJSONObject(l).getString("id");
+                                DatabaseReference friendRef = userRef.child("friends").child(uid);
+                                friendRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot snapshot) {
+                                            if(!snapshot.exists())
+                                                userRef.child("friends").child(uid).setValue(true);
+                                    }
+                                    @Override
+                                    public void onCancelled(DatabaseError firebaseError) {
+                                    }
+                                });
+
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+        ).executeAsync();
     }
 
     public void openNoInternetConnectionDialog() {

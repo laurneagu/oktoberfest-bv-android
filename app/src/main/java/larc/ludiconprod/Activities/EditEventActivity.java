@@ -126,24 +126,6 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
     public void onMapReady(GoogleMap map) {
         m_gmap = map;
 
-        locationListener = new ActivitiesLocationListener(getApplication());
-        locationListener.BindMap(map);
-        lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        try {
-            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 1, locationListener);
-            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 100, 1, locationListener);
-
-            // Creating a criteria object to retrieve provider
-            Criteria criteria = new Criteria();
-
-            // Getting the name of the best provider
-            String provider = lm.getBestProvider(criteria, true);
-
-        } catch (SecurityException exc) {
-            exc.printStackTrace();
-        }
-
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(new OnMapReadyCallback() {

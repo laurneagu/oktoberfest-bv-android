@@ -61,7 +61,6 @@ public class FriendsActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        try{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends);
         TextView header = (TextView) findViewById(R.id.hello_message_activity);
@@ -92,49 +91,32 @@ public class FriendsActivity extends Activity {
         Thread FirebaseInfoThread = new Thread(getFirebaseInfo);
         FirebaseInfoThread.start();
 
-        new GraphRequest(
-                AccessToken.getCurrentAccessToken(),
-                "/me/friends",
-                null,
-                HttpMethod.GET,
-                new GraphRequest.Callback() {
-                    public void onCompleted(GraphResponse response) {
-                            /* handle the result */
-                        try{
-                            JSONArray friendsList = response.getJSONObject().getJSONArray("data");
+            DatabaseReference friendRef = User.firebaseRef.child("users").child(User.uid).child("friends");
+            friendRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    for(DataSnapshot data : snapshot.getChildren())
+                    {
+                        FriendItem friend = new FriendItem();
+                        if (data.getValue() == true) {
+                            friend.uid = data.getKey();
+                            friends.add(friend);
+                        }
+                    }
 
-                            for (int l=0; l < friendsList.length(); l++) {
-                                FriendItem friend =  new FriendItem();
-                                friend.name = friendsList.getJSONObject(l).getString("name");
-                                friend.uid = "facebook:" + friendsList.getJSONObject(l).getString("id");
-                                friends.add(friend);
-                            }
-                            // friends contains all the names of my Facebook friends who use Ludicon
-                            // Display in ListView
-
-                            synchronized (waitForFriends) {
-                                try {
-                                    waitForFriends.notify(); // ready, notify thread to get data from firebase
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-
-
-                        } catch (JSONException e) {
+                    synchronized (waitForFriends) {
+                        try {
+                            waitForFriends.notify(); // ready, notify thread to get data from firebase
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
                 }
-        ).executeAsync();
-
-
+                @Override
+                public void onCancelled(DatabaseError firebaseError) {
+                }
+            });
         }
-        catch(Exception exc) {
-            Utils.quit();
-        }
-
-    }
 
     Object waitForFriends = new Object();
 
@@ -163,6 +145,8 @@ public class FriendsActivity extends Activity {
                                         friends.get(index).ImageUrl = data.getValue().toString();
                                     if (data.getKey().toString().equalsIgnoreCase("sports"))
                                         friends.get(index).numberOfSports = data.getChildrenCount() + " sports";
+                                    if (data.getKey().toString().equalsIgnoreCase("name"))
+                                        friends.get(index).name = data.getValue().toString();
                                 }
 
                                 if(friends.get(index).ImageUrl ==null){

@@ -2,12 +2,16 @@ package larc.ludiconprod.Activities;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -27,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
@@ -97,8 +102,54 @@ public class ProfileActivity extends Activity {
             Bundle extras = getIntent().getExtras();
             final String uid = extras.getString("uid");
 
+            // TODO - put if not friends
+            final ImageButton addFriend = (ImageButton)findViewById(R.id.header_button);
+            addFriend.setVisibility(View.VISIBLE);
+            //TODO - Check if it a friend
+            DatabaseReference friendRef = User.firebaseRef.child("users").child(User.uid).child("friends").child(uid);
+            friendRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    if (snapshot.getValue() == true)
+                        addFriend.setBackgroundResource(R.drawable.admin_minus2);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError firebaseError) {
+                }
+            });
+            addFriend.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final DatabaseReference friendRef = User.firebaseRef.child("users").child(User.uid).child("friends").child(uid);
+                    friendRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            if (snapshot.getValue() == true) {
+                                friendRef.setValue(false);
+                                Toast.makeText(ProfileActivity.this, "Removed from friends", Toast.LENGTH_SHORT).show();
+                                addFriend.setBackgroundResource(R.drawable.admin_add2);
+
+                            }
+                            else {
+                                friendRef.setValue(true);
+                                Toast.makeText(ProfileActivity.this, "Friend added", Toast.LENGTH_SHORT).show();
+                                addFriend.setBackgroundResource(R.drawable.admin_minus2);
+                             }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError firebaseError) {
+                        }
+                    });
+                }
+            });
+
             DatabaseReference userRef = User.firebaseRef.child("users").child(uid).child("name"); // check user
             userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
 
@@ -181,8 +232,8 @@ public class ProfileActivity extends Activity {
                             String uri = "@drawable/" + sport.getKey().toLowerCase().replace(" ", "");
 
                             int imageResource = getResources().getIdentifier(uri, null, getPackageName());
-                            Drawable res = getResources().getDrawable(imageResource);
-                            sportsList.add(res);
+                        //  Drawable res = getResources().getDrawable(imageResource);
+                         //   sportsList.add(res);
                         }
                     }
 

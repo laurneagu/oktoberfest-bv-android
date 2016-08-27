@@ -2009,7 +2009,7 @@ public class MainActivity extends AppCompatActivity {
             });*/
 
             String uri = "@drawable/" + list.get(position).sport.toLowerCase().replace(" ", "");
-
+            Log.v("drawable", uri);
             int imageResource = getResources().getIdentifier(uri, null, getPackageName());
             Drawable res = getResources().getDrawable(imageResource);
 
