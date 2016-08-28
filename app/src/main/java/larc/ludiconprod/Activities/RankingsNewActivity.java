@@ -531,6 +531,7 @@ public class RankingsNewActivity extends AppCompatActivity {
             TextView points;
             ImageView profilePicture;
             ImageView place;
+            TextView placeText;
         };
         private ArrayList<UserInRanks> list = new ArrayList<>();
         private Context context;
@@ -573,12 +574,32 @@ public class RankingsNewActivity extends AppCompatActivity {
                 holder.name = (TextView) view.findViewById(R.id.nameUserRankTV);
                 holder.profilePicture = (ImageView) view.findViewById(R.id.profilePictureRanks);
                 holder.place = (ImageView) view.findViewById(R.id.placeIV);
+                holder.placeText = (TextView) view.findViewById(R.id.placeTextIV);
                 holder.points = (TextView) view.findViewById(R.id.pointsRankTV);
 
                 view.setTag(holder);
             }
             else {
                 holder = (ViewHolder)view.getTag();
+            }
+
+            // Gold medal
+            if (position == 0){
+
+            }
+            // Silver
+            else if(position == 1){
+
+            }
+            // Bronze
+            else if(position == 2){
+
+            }
+            // Other places
+            else {
+                holder.place.setVisibility(View.INVISIBLE);
+                holder.placeText.setVisibility(View.VISIBLE);
+                holder.placeText.setText("#" + (position+1));
             }
 
             holder.name.setText(list.get(position).name);

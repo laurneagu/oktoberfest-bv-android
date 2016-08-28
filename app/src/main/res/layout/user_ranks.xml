@@ -11,6 +11,17 @@
         android:background="@drawable/medaltest"
         />
 
+    <TextView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:id="@+id/placeTextIV"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="5dp"
+        android:text="#?"
+        android:textColor="#4f2f4f"
+        android:visibility="invisible"
+        />
+
     <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/profilePictureRanks"
         android:layout_width="30dp"

@@ -232,8 +232,8 @@ public class ProfileActivity extends Activity {
                             String uri = "@drawable/" + sport.getKey().toLowerCase().replace(" ", "");
 
                             int imageResource = getResources().getIdentifier(uri, null, getPackageName());
-                        //  Drawable res = getResources().getDrawable(imageResource);
-                         //   sportsList.add(res);
+                          Drawable res = getResources().getDrawable(imageResource);
+                            sportsList.add(res);
                         }
                     }
 
