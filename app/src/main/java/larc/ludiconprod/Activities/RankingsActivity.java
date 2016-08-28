@@ -44,7 +44,7 @@ import larc.ludiconprod.UserInfo.User;
 import larc.ludiconprod.Utils.util.Utils;
 
 public class RankingsActivity extends Activity {
-
+    /*
     // Left side panel
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -443,4 +443,5 @@ public class RankingsActivity extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
+    */
 }

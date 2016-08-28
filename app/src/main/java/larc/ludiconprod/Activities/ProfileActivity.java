@@ -111,7 +111,7 @@ public class ProfileActivity extends Activity {
 
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
-                    if (snapshot.getValue() == true)
+                    if (Boolean.parseBoolean(snapshot.getValue().toString()) == true)
                         addFriend.setBackgroundResource(R.drawable.admin_minus2);
                 }
 
@@ -127,7 +127,7 @@ public class ProfileActivity extends Activity {
 
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
-                            if (snapshot.getValue() == true) {
+                            if (Boolean.parseBoolean(snapshot.getValue().toString()) == true) {
                                 friendRef.setValue(false);
                                 Toast.makeText(ProfileActivity.this, "Removed from friends", Toast.LENGTH_SHORT).show();
                                 addFriend.setBackgroundResource(R.drawable.admin_add2);

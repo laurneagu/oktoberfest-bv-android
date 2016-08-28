@@ -1,130 +1,143 @@
-<?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:id="@+id/drawer_layout_chats"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EBEBEB">
+    android:background="#FFFFFF">
 
-    <RelativeLayout android:layout_width="match_parent"
-    android:layout_height="match_parent"
-        android:paddingTop="70dp">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-    <Spinner
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:id="@+id/listSpinner"
-    android:paddingTop="20dp"
-        android:spinnerMode="dropdown"
-    android:layout_centerHorizontal="true"
-        android:paddingBottom="20dp">
-    </Spinner>
-
-        <LinearLayout
-            android:orientation="horizontal"
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/listSpinner"
-            android:layout_centerHorizontal="true"
-            android:id="@+id/linearLay"
-            android:paddingLeft="90dp"
-            android:paddingBottom="30dp">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:src="@drawable/trophy"/>
-            <TextView
+            <include
+                android:id="@+id/tool_bar"
+                layout="@layout/header_main"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#FFFFFF" />
+
+
+            <RelativeLayout
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:id="@+id/currEventLayout"
+                android:background="#ffffff"
+                android:elevation="2dp"
+                android:layout_below="@+id/tabs"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true">
+
+                    <ImageButton
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_marginLeft="2dp"
+                        android:id="@+id/footballRankIB"
+                        android:background="@drawable/football_small"/>
+
+                        <ImageButton
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_marginLeft="2dp"
+                            android:id="@+id/volleyRankIB"
+                            android:background="@drawable/volleyball_small"
+                           />
+
+
+                        <ImageButton
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_marginLeft="2dp"
+                            android:id="@+id/basketballRankIB"
+                        android:background="@drawable/basketball_small"/>
+
+                        <ImageButton
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_marginLeft="2dp"
+                            android:id="@+id/squashRankIB"
+                            android:background="@drawable/squash_small"/>
+                        <ImageButton
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_marginLeft="2dp"
+                            android:id="@+id/pingpongRankIB"
+                            android:background="@drawable/pingpong_small"/>
+                        <ImageButton
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_marginLeft="2dp"
+                            android:id="@+id/tennisRankIB"
+                            android:background="@drawable/tennis_small"/>
+                        <ImageButton
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_marginLeft="2dp"
+                            android:id="@+id/cyclingRankIB"
+                            android:background="@drawable/cycling_small"/>
+                        <ImageButton
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_marginLeft="2dp"
+                            android:id="@+id/joggingRankIB"
+                            android:background="@drawable/jogging_small"/>
+                        <ImageButton
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_marginLeft="2dp"
+                            android:id="@+id/gymRankIB"
+                            android:background="@drawable/gym_small"/>
+                        <ImageButton
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_marginLeft="2dp"
+                            android:id="@+id/otherRankIB"
+                            android:background="@drawable/other_small"/>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+
+            <larc.ludiconprod.Utils.ui.SlidingTabLayout
+                android:id="@+id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="2dp"
+                android:textColor="@color/tab_text_color"
+                android:background="#166eb1"/>
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/pager"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="My Rank: "
-                android:gravity="center_horizontal"
-                android:textSize="25dp"
-                android:textStyle="bold"
-                android:textColor="#0C3855"
-                android:id="@+id/myrank"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:textSize="30dp"
-                android:textStyle="italic"
-                android:textColor="#0C3855"
-                android:id="@+id/myRank" />
+                android:layout_weight="1"
+                android:textColor="@color/tab_text_color"
+            >
+            </android.support.v4.view.ViewPager>
+
         </LinearLayout>
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/linearLay"
-            android:background="@drawable/rankswinners"
-            android:id="@+id/podiumArea">
-
-        <ImageView
-            android:layout_width="300dp"
-            android:layout_height="150dp"
-            android:paddingTop="20dp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
-            android:src="@drawable/podium"
-            android:id="@+id/imageView2" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Locul 1"
-            android:textColor="#000000"
-            android:id="@+id/locul1"
-            android:maxLines="3"
-            android:textStyle="bold"
-            android:singleLine="false"
-            android:layout_alignTop="@+id/imageView2"
-            android:layout_centerHorizontal="true" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Locul 3"
-            android:textColor="#cd7f32"
-            android:id="@+id/locul3"
-            android:maxLines="3"
-            android:singleLine="false"
-            android:textStyle="bold"
-            android:layout_toRightOf="@+id/locul1"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="30dp"
-
-             />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Locul 2"
-            android:textColor="#c0c0c0"
-            android:id="@+id/locul2"
-            android:maxLines="3"
-            android:singleLine="false"
-            android:textStyle="bold"
-            android:layout_toLeftOf="@+id/locul1"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="25dp"
-             />
-
-        </RelativeLayout>
-        <ListView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/podiumArea"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:id="@+id/rankingsList">
-
-        </ListView>
     </RelativeLayout>
 
-    <include layout="@layout/header"/>
     <include layout="@layout/leftside_panel" />
-    </android.support.v4.widget.DrawerLayout>
+
+</android.support.v4.widget.DrawerLayout>
+
+

@@ -17,6 +17,7 @@
     <!-- android:name="larc.ludicon.permission.C2D_MESSAGE" -->
     <!-- android:protectionLevel="signature" /> -->
 
+
     <uses-permission android:name="larc.ludicon.permission.C2D_MESSAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -166,7 +167,7 @@
                 android:value=".Activities.MainActivity" />
         </activity>
         <activity
-            android:name=".Activities.RankingsActivity"
+            android:name=".Activities.RankingsNewActivity"
             android:label="@string/title_activity_rankings"
             android:screenOrientation="portrait"
             android:parentActivityName=".Activities.MainActivity" >

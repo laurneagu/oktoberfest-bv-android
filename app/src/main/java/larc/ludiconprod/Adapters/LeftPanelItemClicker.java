@@ -11,6 +11,7 @@ import android.widget.Toast;
 import larc.ludiconprod.Activities.ChatListActivity;
 import larc.ludiconprod.Activities.CreateNewActivity;
 import larc.ludiconprod.Activities.FriendsActivity;
+import larc.ludiconprod.Activities.RankingsNewActivity;
 import larc.ludiconprod.Activities.SettingsActivity;
 import larc.ludiconprod.Activities.StatisticsActivity;
 
@@ -40,9 +41,9 @@ public class LeftPanelItemClicker {
                                 i_currActivity.startActivity(chatIntent);
                                 break;
                             case 4:
-                                //Intent rankingIntent = new Intent(i_currActivity, RankingsActivity.class);
-                                //i_currActivity.startActivity(rankingIntent);
-                                Toast.makeText(i_context,"Will be available soon..",Toast.LENGTH_LONG).show();
+                                Intent rankingIntent = new Intent(i_currActivity, RankingsNewActivity.class);
+                                i_currActivity.startActivity(rankingIntent);
+                                //Toast.makeText(i_context,"Will be available soon..",Toast.LENGTH_LONG).show();
                                 break;
                             case 5:
                                 Intent helpIntent = new Intent(i_currActivity, SettingsActivity.class);

@@ -98,7 +98,7 @@ public class FriendsActivity extends Activity {
                     for(DataSnapshot data : snapshot.getChildren())
                     {
                         FriendItem friend = new FriendItem();
-                        if (data.getValue() == true) {
+                        if (Boolean.parseBoolean(data.getValue().toString()) == true) {
                             friend.uid = data.getKey();
                             friends.add(friend);
                         }
