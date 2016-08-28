@@ -229,10 +229,10 @@ public class ProfileActivity extends Activity {
                 public void onDataChange(DataSnapshot snapshot) {
                     if (snapshot != null) {
                         for (DataSnapshot sport : snapshot.getChildren()) {
-                            String uri = "@drawable/" + sport.getKey().toLowerCase().replace(" ", "");
+                            String uri = "@drawable/" + sport.getKey().toLowerCase().replace(" ", "") + "_small";
 
                             int imageResource = getResources().getIdentifier(uri, null, getPackageName());
-                          Drawable res = getResources().getDrawable(imageResource);
+                             Drawable res = getResources().getDrawable(imageResource);
                             sportsList.add(res);
                         }
                     }

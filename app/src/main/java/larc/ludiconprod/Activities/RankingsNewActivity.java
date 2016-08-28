@@ -108,19 +108,21 @@ public class RankingsNewActivity extends AppCompatActivity {
     ViewPager pager;
     ViewPagerAdapter adapter;
     SlidingTabLayout tabs;
-    CharSequence Titles[]={"Friends","Local"};
-    int Numboftabs =2;
+    CharSequence Titles[] = {"Friends", "Local"};
+    int Numboftabs = 2;
     boolean addedSwipe = false;
+    boolean addedSwipe2 = false;
     final ArrayList<String> favoriteSports = new ArrayList<>();
     private final ArrayList<UserInRanks> usersLocalList = new ArrayList<>();
+    private final ArrayList<UserInRanks> usersFriendsList = new ArrayList<>();
     private TextView headerMessage;
 
-    public RankingsNewActivity(){
+    public RankingsNewActivity() {
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        try{
+        try {
             super.onCreate(savedInstanceState);
 
             getSupportActionBar().hide();
@@ -128,7 +130,7 @@ public class RankingsNewActivity extends AppCompatActivity {
 
 
             // Set text message in header
-            headerMessage = (TextView)findViewById(R.id.hello_message_activity);
+            headerMessage = (TextView) findViewById(R.id.hello_message_activity);
             headerMessage.setText("FOOTBALL");
 
             // Creating The ViewPagerAdapter and Passing Fragment Manager, Titles fot the Tabs and Number Of Tabs.
@@ -158,7 +160,7 @@ public class RankingsNewActivity extends AppCompatActivity {
 
             // Add functionality on tapping sport icons
             //// ------------------------------------------------------------  //////////////////
-            ImageButton imButt = (ImageButton)findViewById(R.id.footballRankIB);
+            ImageButton imButt = (ImageButton) findViewById(R.id.footballRankIB);
             imButt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -169,7 +171,7 @@ public class RankingsNewActivity extends AppCompatActivity {
                 }
             });
 
-            imButt = (ImageButton)findViewById(R.id.volleyRankIB);
+            imButt = (ImageButton) findViewById(R.id.volleyRankIB);
             imButt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -180,7 +182,7 @@ public class RankingsNewActivity extends AppCompatActivity {
                 }
             });
 
-            imButt = (ImageButton)findViewById(R.id.basketballRankIB);
+            imButt = (ImageButton) findViewById(R.id.basketballRankIB);
             imButt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -191,7 +193,7 @@ public class RankingsNewActivity extends AppCompatActivity {
                 }
             });
 
-            imButt = (ImageButton)findViewById(R.id.squashRankIB);
+            imButt = (ImageButton) findViewById(R.id.squashRankIB);
             imButt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -202,7 +204,7 @@ public class RankingsNewActivity extends AppCompatActivity {
                 }
             });
 
-            imButt = (ImageButton)findViewById(R.id.pingpongRankIB);
+            imButt = (ImageButton) findViewById(R.id.pingpongRankIB);
             imButt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -213,7 +215,7 @@ public class RankingsNewActivity extends AppCompatActivity {
                 }
             });
 
-            imButt = (ImageButton)findViewById(R.id.tennisRankIB);
+            imButt = (ImageButton) findViewById(R.id.tennisRankIB);
             imButt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -224,7 +226,7 @@ public class RankingsNewActivity extends AppCompatActivity {
                 }
             });
 
-            imButt = (ImageButton)findViewById(R.id.cyclingRankIB);
+            imButt = (ImageButton) findViewById(R.id.cyclingRankIB);
             imButt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -235,7 +237,7 @@ public class RankingsNewActivity extends AppCompatActivity {
                 }
             });
 
-            imButt = (ImageButton)findViewById(R.id.joggingRankIB);
+            imButt = (ImageButton) findViewById(R.id.joggingRankIB);
             imButt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -246,7 +248,7 @@ public class RankingsNewActivity extends AppCompatActivity {
                 }
             });
 
-            imButt = (ImageButton)findViewById(R.id.gymRankIB);
+            imButt = (ImageButton) findViewById(R.id.gymRankIB);
             imButt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -257,7 +259,7 @@ public class RankingsNewActivity extends AppCompatActivity {
                 }
             });
 
-            imButt = (ImageButton)findViewById(R.id.otherRankIB);
+            imButt = (ImageButton) findViewById(R.id.otherRankIB);
             imButt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -271,12 +273,12 @@ public class RankingsNewActivity extends AppCompatActivity {
             //// ------------------------------------------------------------  ///////////////////
             continueUpdatingTimeline();
 
-        }
-        catch(Exception exc) {
+        } catch (Exception exc) {
             Utils.quit();
         }
 
     }
+
     public void continueUpdatingTimeline() {
         try {
 
@@ -302,29 +304,6 @@ public class RankingsNewActivity extends AppCompatActivity {
                 }
             });
             // -------------------------------------------------------------------------------------------------------------
-
-    /*
-        final SwipeRefreshLayout mSwipeRefreshLayout1 = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh1);
-        mSwipeRefreshLayout1.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                updateList();
-                mSwipeRefreshLayout1.setRefreshing(false);
-            }
-        });
-*/
-        /*
-        final SwipeRefreshLayout mSwipeRefreshLayout2 = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh2);
-        mSwipeRefreshLayout2.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                updateList();
-                mSwipeRefreshLayout2.setRefreshing(false);
-            }
-        });
-        */
-
-
             updateList();
 
         } catch (Exception exc) {
@@ -335,17 +314,17 @@ public class RankingsNewActivity extends AppCompatActivity {
 
     public String selectedSport = "football";
 
-    public void updateList()
-    {
+    public void updateList() {
         usersLocalList.clear();
+        usersFriendsList.clear();
 
-        // Event lists:
+        // Points Local Users lists:
         DatabaseReference userRef = User.firebaseRef.child("points").child(selectedSport); // check points
         Query myTopUsers = userRef.orderByValue();
         myTopUsers.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                for (DataSnapshot data : snapshot.getChildren()) {
+                for (final DataSnapshot data : snapshot.getChildren()) {
                     final UserInRanks userInRanks = new UserInRanks(data.getKey());
                     userInRanks.points = Integer.parseInt(data.getValue().toString());
 
@@ -354,21 +333,31 @@ public class RankingsNewActivity extends AppCompatActivity {
                     profileRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
-                            for (DataSnapshot data : snapshot.getChildren()) {
-                                if (data.getKey().equalsIgnoreCase("name"))
-                                    userInRanks.name = data.getValue().toString();
-                                if (data.getKey().equalsIgnoreCase("profileImageURL")) {
-                                    userInRanks.profileImageURL = data.getValue().toString();
+                            for (DataSnapshot datachild : snapshot.getChildren()) {
+                                if (datachild.getKey().equalsIgnoreCase("name"))
+                                    userInRanks.name = datachild.getValue().toString();
+                                if (datachild.getKey().equalsIgnoreCase("profileImageURL")) {
+                                    userInRanks.profileImageURL = datachild.getValue().toString();
 
                                     // Temporary solution to order the result, as for now Query is not working properly
                                     int i = 0;
-                                    while(usersLocalList.size()>i && userInRanks.points < usersLocalList.get(i).points){
+                                    while (usersLocalList.size() > i && userInRanks.points < usersLocalList.get(i).points) {
                                         i++;
                                     }
-                                    usersLocalList.add(i,userInRanks);
 
+                                    usersLocalList.add(i, userInRanks);
                                     if (localAdapter != null) localAdapter.notifyDataSetChanged();
 
+                                    // it's me, man -- add me to the friends list too
+                                    if (data.getKey().equalsIgnoreCase(User.uid)){
+                                            int j = 0;
+                                            while (usersFriendsList.size() > j && userInRanks.points < usersFriendsList.get(j).points) {
+                                                j++;
+                                            }
+                                            usersFriendsList.add(j, userInRanks);
+
+                                            if (friendsAdapter != null) friendsAdapter.notifyDataSetChanged();
+                                    }
                                     break;
                                 }
                             }
@@ -380,35 +369,11 @@ public class RankingsNewActivity extends AppCompatActivity {
                     });
                 }
 
-                /*
-                // Sort by date
-                Collections.sort(friendsEventsList, new Comparator<Event>() {
-                    @Override
-                    public int compare(Event lhs, Event rhs) {
-                        return lhs.date.compareTo(rhs.date);
-                    }
-                });
-                // Sort by date
-                Collections.sort(myEventsList, new Comparator<Event>() {
-                    @Override
-                    public int compare(Event lhs, Event rhs) {
-                        return lhs.date.compareTo(rhs.date);
-                    }
-                });
-                */
-
                 /* Local Ranking */
                 localAdapter = new UsersLocalAdapter(usersLocalList, getApplicationContext());
                 ListView frlistView = (ListView) findViewById(R.id.events_listView1);
                 if (frlistView != null) {
                     frlistView.setAdapter(localAdapter);
-                }
-
-                /* Friends */
-                //TimelineMyActAdapter myadapter = new TimelineMyActAdapter(usersLocalList, getApplicationContext());
-                ListView mylistView = (ListView) findViewById(R.id.events_listView2);
-                if (mylistView != null) {
-                    mylistView.setAdapter(localAdapter);
                 }
 
                 /*Swipe */
@@ -422,6 +387,19 @@ public class RankingsNewActivity extends AppCompatActivity {
                         }
                     });
                     addedSwipe = true;
+                }
+
+                 /*Swipe */
+                if (!addedSwipe2) {
+                    final SwipeRefreshLayout mSwipeRefreshLayout2 = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh2);
+                    mSwipeRefreshLayout2.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                        @Override
+                        public void onRefresh() {
+                            updateList();
+                            mSwipeRefreshLayout2.setRefreshing(false);
+                        }
+                    });
+                    addedSwipe2 = true;
                 }
 
 
@@ -447,9 +425,93 @@ public class RankingsNewActivity extends AppCompatActivity {
             public void onCancelled(DatabaseError firebaseError) {
             }
         });
+
+
+        // Points Friend Users lists:
+        DatabaseReference userFriendsRef = User.firebaseRef.child("users").child(User.uid).child("friends"); // check points friends
+        //Query myTopUserFriends = userFriendsRef.orderByValue();
+        userFriendsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for (final DataSnapshot data : snapshot.getChildren()) {
+                    // This is good we save it
+                    if (data.getValue().toString().equalsIgnoreCase("true")){
+
+                        DatabaseReference pointsRef = User.firebaseRef.child("points").child(selectedSport); // check points
+                        pointsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(final DataSnapshot dataSnapshot) {
+                                for (DataSnapshot dataPoints : dataSnapshot.getChildren()) {
+                                    if (dataPoints.getKey().equalsIgnoreCase(data.getKey())) {
+                                        final UserInRanks user = new UserInRanks(data.getKey());
+                                        user.points = Integer.parseInt(dataPoints.getValue().toString());
+
+                                        DatabaseReference userProfileFriendRef = User.firebaseRef.child("users").child(data.getKey()); // check points friends
+                                        userProfileFriendRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot2) {
+                                                for (DataSnapshot dataFriendProfile : dataSnapshot2.getChildren()) {
+                                                    if (dataFriendProfile.getKey().equalsIgnoreCase("name")) {
+                                                        user.name = dataFriendProfile.getValue().toString();
+                                                        continue;
+                                                    }
+                                                    if(dataFriendProfile.getKey().equalsIgnoreCase("profileImageURL")){
+                                                        user.profileImageURL = dataFriendProfile.getValue().toString();
+                                                        // Temporary solution to order the result
+                                                        int i = 0;
+                                                        while (usersFriendsList.size() > i && user.points < usersFriendsList.get(i).points) {
+                                                            i++;
+                                                        }
+
+                                                        usersFriendsList.add(i,user);
+
+                                                        if (friendsAdapter != null) friendsAdapter.notifyDataSetChanged();
+
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
+
+                                            }
+                                        });
+
+                                        break; /// yey it has points
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+                    }
+                }
+
+
+
+                /* Friends */
+                friendsAdapter = new UsersLocalAdapter(usersFriendsList, getApplicationContext());
+                ListView mylistView = (ListView) findViewById(R.id.events_listView2);
+                if (mylistView != null) {
+                    mylistView.setAdapter(friendsAdapter);
+                }
+
+            }
+            @Override
+            public void onCancelled(DatabaseError firebaseError) {
+            }
+        });
+
+
     }
 
-    private  UsersLocalAdapter localAdapter;
+    private UsersLocalAdapter localAdapter;
+    private UsersLocalAdapter friendsAdapter;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -479,12 +541,12 @@ public class RankingsNewActivity extends AppCompatActivity {
 
 
     @Override
-    public void onStop(){
+    public void onStop() {
         super.onStop();
-  }
+    }
 
     @Override
-    public void onDestroy(){
+    public void onDestroy() {
         super.onDestroy();
     }
 
@@ -532,7 +594,10 @@ public class RankingsNewActivity extends AppCompatActivity {
             ImageView profilePicture;
             ImageView place;
             TextView placeText;
-        };
+            RelativeLayout rl_ranks;
+        }
+
+        ;
         private ArrayList<UserInRanks> list = new ArrayList<>();
         private Context context;
 
@@ -546,10 +611,12 @@ public class RankingsNewActivity extends AppCompatActivity {
         public int getCount() {
             return list.size();
         }
+
         @Override
         public Object getItem(int pos) {
             return list.get(pos);
         }
+
         @Override
         public long getItemId(int pos) {
             return 0;
@@ -571,6 +638,7 @@ public class RankingsNewActivity extends AppCompatActivity {
                 });
 
                 holder = new ViewHolder();
+                holder.rl_ranks = (RelativeLayout)view.findViewById(R.id.bodyOfRanks);
                 holder.name = (TextView) view.findViewById(R.id.nameUserRankTV);
                 holder.profilePicture = (ImageView) view.findViewById(R.id.profilePictureRanks);
                 holder.place = (ImageView) view.findViewById(R.id.placeIV);
@@ -578,239 +646,44 @@ public class RankingsNewActivity extends AppCompatActivity {
                 holder.points = (TextView) view.findViewById(R.id.pointsRankTV);
 
                 view.setTag(holder);
+            } else {
+                holder = (ViewHolder) view.getTag();
             }
-            else {
-                holder = (ViewHolder)view.getTag();
+
+            if (list.get(position).id.equalsIgnoreCase(User.uid)){
+                holder.rl_ranks.setBackgroundColor(Color.LTGRAY);
+            }
+            else{
+                holder.rl_ranks.setBackgroundColor(Color.TRANSPARENT);
             }
 
             // Gold medal
-            if (position == 0){
-
+            if (position == 0) {
+                holder.placeText.setVisibility(View.INVISIBLE);
+                holder.place.setImageResource(R.drawable.medal1);
             }
             // Silver
-            else if(position == 1){
-
+            else if (position == 1) {
+                holder.placeText.setVisibility(View.INVISIBLE);
+                holder.place.setImageResource(R.drawable.medal2);
             }
             // Bronze
-            else if(position == 2){
-
+            else if (position == 2) {
+                holder.placeText.setVisibility(View.INVISIBLE);
+                holder.place.setImageResource(R.drawable.medal3);
             }
             // Other places
             else {
-                holder.place.setVisibility(View.INVISIBLE);
+                holder.place.setImageResource(R.drawable.medal4);
+                //holder.place.setVisibility(View.INVISIBLE);
                 holder.placeText.setVisibility(View.VISIBLE);
-                holder.placeText.setText("#" + (position+1));
+                holder.placeText.setText("" + (position + 1 ));
             }
 
             holder.name.setText(list.get(position).name);
-            Picasso.with(context).load(list.get(position).profileImageURL).into( holder.profilePicture);
-
-            holder.points.setText(list.get(position).points + " points");
-
-            return view;
-        }
-    }
-
-
-    public static int getDayOfMonth(Date aDate) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(aDate);
-        return cal.get(Calendar.DAY_OF_MONTH);
-    }
-
-    // Adapter for the My pending activities tab
-    public class TimelineMyActAdapter extends BaseAdapter implements ListAdapter {
-
-        class ViewHolder{
-            TextView name ;
-            ImageView profilePicture;
-            TextView firstPart;
-            TextView secondPart;
-            TextView time;
-            TextView place;
-            ImageView icon;
-            ImageButton details;
-            TextView description;
-            TextView players;
-        }
-
-        private ArrayList<Event> list = new ArrayList<>();
-        private Context context;
-        final ListView listView = (ListView) findViewById(R.id.events_listView2);
-
-        public TimelineMyActAdapter(ArrayList<Event> list, Context context) {
-            this.list = list;
-            this.context = context;
-        }
-
-        @Override
-        public int getCount() {
-            return list.size();
-        }
-        @Override
-        public Object getItem(int pos) {
-            return list.get(pos);
-        }
-        @Override
-        public long getItemId(int pos) {
-            return 0;
-        }
-
-        @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
-
-            View view = convertView;
-            ViewHolder holder = null;
-            if (view == null) {
-                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(R.layout.timeline_list_myactivities_layout, null);
-
-                view.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                //Toast.makeText(getApplicationContext(), "Hei, wait for it..", Toast.LENGTH_SHORT).show();
-                                                Intent intent = new Intent(getApplicationContext(), EventDetails.class);
-                                                intent.putExtra("eventUid", list.get(position).id);
-                                                startActivity(intent);
-                                            }
-                                        }
-                );
-                holder = new ViewHolder();
-                holder.name = (TextView) view.findViewById(R.id.nameLabel);
-                holder.profilePicture = (ImageView) view.findViewById(R.id.profilePicture);
-                holder.firstPart = (TextView) view.findViewById(R.id.firstPartofText);
-                holder.secondPart = (TextView) view.findViewById(R.id.secondPartofText);
-                holder.time = (TextView) view.findViewById(R.id.timeText);
-                holder.place = (TextView) view.findViewById(R.id.placeText);
-                holder.icon = (ImageView) view.findViewById(R.id.sportIcon);
-                holder.description = (TextView) view.findViewById(R.id.descriptionID);
-                holder.players = (TextView) view.findViewById(R.id.playersID);
-
-                view.setTag(holder);
-            }
-
-            else {
-                holder = (ViewHolder)view.getTag();
-            }
-            /*
-            final TextView name = (TextView) view.findViewById(R.id.nameLabel);
-            final ImageView profilePicture = (ImageView) view.findViewById(R.id.profilePicture);
-            final TextView firstPart = (TextView) view.findViewById(R.id.firstPartofText);
-            final TextView secondPart = (TextView) view.findViewById(R.id.secondPartofText);
-            final TextView time = (TextView) view.findViewById(R.id.timeText);
-            final TextView place = (TextView) view.findViewById(R.id.placeText);
-            final ImageView icon = (ImageView) view.findViewById(R.id.sportIcon);
-            final ImageButton details = (ImageButton) view.findViewById(R.id.details_btn);
-            */
-
-            // Set name and picture for the first user of the event
-            //final String userUID = list.get(position).getFirstUser();
-            String firstName = list.get(position).creatorName.split(" ")[0];
-            holder.name.setText(firstName);
             Picasso.with(context).load(list.get(position).profileImageURL).into(holder.profilePicture);
 
-            // Redirect to user profile on picture click
-            holder.profilePicture.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    if (User.uid.equals(list.get(position).creator)) {
-                        Toast.makeText(context, "This is you ! We can't compare with yourself..", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
-                        intent.putExtra("uid", list.get(position).getFirstUser());
-                        startActivity(intent);
-                    }
-                }
-            });
-
-            /*
-            DatabaseReference userRef = User.firebaseRef.child("users").child(userUID);
-            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot snapshot) {
-                    for ( DataSnapshot data : snapshot.getChildren() ) {
-                        if( (data.getKey()).compareTo("name") == 0) {
-                            name.setText(data.getValue().toString());
-                        }
-                        if( (data.getKey()).compareTo("profileImageURL") == 0 )
-                            new DownloadImageTask(profilePicture).execute(data.getValue().toString());
-                    }
-                }
-                @Override
-                public void onCancelled(DatabaseError firebaseError) {
-                }
-            });*/
-
-            String uri = "@drawable/" + list.get(position).sport.toLowerCase().replace(" ", "");
-
-            int imageResource = getResources().getIdentifier(uri, null, getPackageName());
-            Drawable res = getResources().getDrawable(imageResource);
-
-            holder.icon.setImageDrawable(res);
-            holder.firstPart.setText("Will play " + list.get(position).sport);
-            if ((list.get(position).noUsers - 1) > 1) {
-                holder.secondPart.setText(" with " + (list.get(position).noUsers - 1) + " others");
-            } else if ((list.get(position).noUsers - 1) == 1) {
-                holder.secondPart.setText(" with 1 other");
-            } else {
-                holder.secondPart.setText(" with no others");
-            }
-            /*
-            firstPart.setText("Will play " + list.get(position).sport);
-            if ((list.get(position).usersUID.size() - 1) > 1) {
-                secondPart.setText(" with " + (list.get(position).noUsers) + " others");
-            } else if (list.get(position).noUsers  == 1) {
-                secondPart.setText(" with 1 other");
-            } else {
-                secondPart.setText(" with no others");
-            }*/
-            if(list.get(position).description.equalsIgnoreCase(""))
-                holder.description.setText("no description");
-            else
-                holder.description.setText("\"" + list.get(position).description + "\"");
-
-            holder.players.setText( list.get(position).noUsers + "/" + list.get(position).roomCapacity);
-
-            if(list.get(position) != null ) {
-                if(list.get(position).isOfficial==0){
-                    holder.place.setTextColor(Color.DKGRAY);
-                }
-                holder.place.setText(list.get(position).place);
-            }
-            else
-                holder.place.setText("Unknown");
-
-            Calendar c = Calendar.getInstance();
-            Date today = c.getTime();
-            int todayDay = getDayOfMonth(today);
-            int todayMonth = today.getMonth();
-            int todayYear = today.getYear();
-
-            String day;
-            if ( todayDay == getDayOfMonth(list.get(position).date) && todayMonth == list.get(position).date.getMonth() && todayYear == list.get(position).date.getYear() )
-                day = "Today";
-            else if ( todayDay == ( getDayOfMonth(list.get(position).date) - 1 ) && todayMonth == list.get(position).date.getMonth() && todayYear == list.get(position).date.getYear() )
-                day = "Tomorrow";
-            else day = getDayOfMonth(list.get(position).date) + "/" + (list.get(position).date.getMonth()+1) + "/" + (list.get(position).date.getYear()+1900);
-            String dateHour = list.get(position).date.getHours() + "";
-            String dateMin = list.get(position).date.getMinutes()+ "";
-            if(dateHour.equalsIgnoreCase("0")) dateHour += "0";
-            if(dateMin.equalsIgnoreCase("0")) dateMin += "0";
-            String hour = dateHour + ":" + dateMin;
-            holder.time.setText(day + " at " + hour);
-            /*details.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(getApplicationContext(), "Hei, wait for it..", Toast.LENGTH_SHORT).show();
-                }
-            });
-            */
-
-            /*
-            try{
-                Thread.sleep(50,1);
-            }
-            catch(InterruptedException exc ) {}
-            */
+            holder.points.setText(list.get(position).points + " points");
 
             return view;
         }

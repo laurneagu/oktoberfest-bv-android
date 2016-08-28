@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:id="@+id/bodyOfRanks">
 
     <ImageView
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:id="@+id/placeIV"
         android:layout_marginLeft="10dp"
-        android:background="@drawable/medaltest"
         />
 
     <TextView
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:id="@+id/placeTextIV"
-        android:layout_marginLeft="15dp"
+        android:layout_marginLeft="22dp"
         android:layout_marginTop="5dp"
+        android:textSize="10dp"
         android:text="#?"
         android:textColor="#4f2f4f"
         android:visibility="invisible"
@@ -27,6 +28,7 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_toRightOf="@+id/placeIV"
+        android:layout_centerVertical="true"
         android:layout_marginLeft="10dp"/>
 
 
