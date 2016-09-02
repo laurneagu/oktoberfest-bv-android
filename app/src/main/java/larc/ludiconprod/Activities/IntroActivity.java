@@ -418,6 +418,7 @@ public class IntroActivity extends Activity {
                                             } else { // old user
                                                 User.firebaseRef.child("mesg").child(User.uid).child("status").setValue("User vechi");
                                                 User.firebaseRef.child("users").child(uid).updateChildren(map);
+                                                User.firebaseRef.child("users").child(uid).child("usageStats").child("openedApp").child("" + System.currentTimeMillis()/1000).setValue("open");
                                                 updateFriends();
                                                 jumpToMainActivity();
                                             }
