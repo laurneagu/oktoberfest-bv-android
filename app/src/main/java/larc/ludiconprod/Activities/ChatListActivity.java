@@ -35,8 +35,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import org.w3c.dom.Text;
+
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -66,6 +69,8 @@ public class ChatListActivity extends Activity {
         String userName;
         String friendPhoto;
         String lastTimeOnline;
+        String lastMessageText;
+        String lastMessageAuthor;
     }
     @Override
     public void onStart() {
@@ -143,51 +148,27 @@ public class ChatListActivity extends Activity {
                     chat.userUID = data.getKey().toString();
                     chat.chatID = data.getValue().toString();
 
-
-                    DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(chat.userUID);
-                    firebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    DatabaseReference chatRef = User.firebaseRef.child("chat").child(chat.chatID).child("Messages");
+                    chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
-
-                            for (DataSnapshot data : snapshot.getChildren()) {
-                                if ((data.getKey()).compareTo("name") == 0) {
-                                    String name = data.getValue().toString();
-                                    chat.userName = name;
+                            for(DataSnapshot data : snapshot.getChildren())
+                            {
+                                for(DataSnapshot snap : data.getChildren())
+                                {
+                                    if (snap.getKey().toString().equalsIgnoreCase("author"))
+                                        chat.lastMessageAuthor = snap.getValue().toString().split(" ")[0];
+                                    if (snap.getKey().toString().equalsIgnoreCase("message"))
+                                        chat.lastMessageText = snap.getValue().toString();
                                 }
-                                if ((data.getKey()).compareTo("profileImageURL") == 0)
-                                    if (data.getValue() != null) {
-                                        //new DownloadImageTask(imageView).execute(data.getValue().toString());
-                                        chat.friendPhoto = data.getValue().toString();
-                                    } else {
-                                        chat.friendPhoto = "";
-                                    }
-
-                                if  ((data.getKey()).compareTo("lastLogInTime") == 0)
-                                    if (data.getValue() != null) {
-                                        chat.lastTimeOnline= DateManager.convertFromSecondsToText((long)data.getValue());
-                                    }
-                                else{
-                                        chat.lastTimeOnline="";
-                                    }
                             }
-
-                            chatList.add(chat);
-                            if(chatList.size()==size){
-                                MyCustomAdapter adapter = new MyCustomAdapter(chatList, getApplicationContext());
-                                ListView listView = (ListView) findViewById(R.id.chat_list);
-                                listView.setAdapter(adapter);
-                            }
-
+                            getChatInfo(chatList,chat,size);
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-
                         }
-
-
                     });
-
                 }
 
 
@@ -222,6 +203,49 @@ public class ChatListActivity extends Activity {
 
     }
 
+    public void getChatInfo(final List<Chat1to1> chatList, final Chat1to1 chat, final long size)
+    {
+        DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(chat.userUID);
+        firebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                for (DataSnapshot data : snapshot.getChildren()) {
+                    if ((data.getKey()).compareTo("name") == 0) {
+                        String name = data.getValue().toString();
+                        chat.userName = name;
+                    }
+                    if ((data.getKey()).compareTo("profileImageURL") == 0)
+                        if (data.getValue() != null) {
+                            //new DownloadImageTask(imageView).execute(data.getValue().toString());
+                            chat.friendPhoto = data.getValue().toString();
+                        } else {
+                            chat.friendPhoto = "";
+                        }
+
+                    if  ((data.getKey()).compareTo("lastLogInTime") == 0)
+                        if (data.getValue() != null) {
+                            chat.lastTimeOnline= DateManager.convertFromSecondsToText((long)data.getValue());
+                        }
+                        else{
+                            chat.lastTimeOnline="";
+                        }
+                }
+
+                chatList.add(chat);
+                if(chatList.size()==size){
+                    MyCustomAdapter adapter = new MyCustomAdapter(chatList, getApplicationContext());
+                    ListView listView = (ListView) findViewById(R.id.chat_list);
+                    listView.setAdapter(adapter);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
 
 
     public class MyCustomAdapter extends BaseAdapter implements ListAdapter {
@@ -234,8 +258,9 @@ public class ChatListActivity extends Activity {
         class ViewHolder {
              TextView textName;
              ImageView imageView;
-              Button chatButton;
+             Button chatButton;
              TextView lastLoginView;
+             TextView lastMessage;
         };
 
 
@@ -271,7 +296,7 @@ public class ChatListActivity extends Activity {
                 holder.textName = (TextView) view.findViewById(R.id.friend_name);
                 holder.imageView = (ImageView) view.findViewById(R.id.friend_photo);
                 holder.lastLoginView = (TextView) view.findViewById(R.id.lastOnline);
-
+                holder.lastMessage = (TextView) view.findViewById(R.id.lastMessage);
                 //holder.chatButton = (Button) view.findViewById(R.id.gotoChat);
 
                 view.setOnClickListener(new View.OnClickListener() {
@@ -302,16 +327,24 @@ public class ChatListActivity extends Activity {
             else {
                 holder = (ViewHolder)view.getTag();
             }
-
+            String lastMessageAuthor = "";
+            if (!list.get(position).lastMessageAuthor.equalsIgnoreCase("Ludicon")) {
+                if (!list.get(position).userName.split(" ")[0].equalsIgnoreCase(list.get(position).lastMessageAuthor))
+                    lastMessageAuthor = "You";
+                else lastMessageAuthor = list.get(position).lastMessageAuthor;
+                holder.lastMessage.setText(lastMessageAuthor + ": " + list.get(position).lastMessageText);
+            }
+            else
+            {
+                holder.lastMessage.setText("");
+            }
             holder.textName.setText(list.get(position).userName);
 
             String lastOnline = list.get(position).lastTimeOnline;
             if(lastOnline != null) {
-                lastOnline.replace(",", "");
-                lastOnline.replace("PM", "");
-                lastOnline.replace("AM", "");
-                int ind = lastOnline.lastIndexOf(":");
-                lastOnline = lastOnline.substring(0, ind);
+                lastOnline = lastOnline.replace(",", "");
+                lastOnline = lastOnline.replace("PM", "");
+                lastOnline = lastOnline.replace("AM", "");
 
                 holder.lastLoginView.setText(lastOnline);
             }

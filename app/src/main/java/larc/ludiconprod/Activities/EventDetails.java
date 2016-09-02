@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -67,6 +68,7 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
     public static int roomCapacity = 0;
     public static boolean doIparticipate = false;
     private GoogleMap m_gmap;
+    public ImageButton header_button;
 
     @Override
     public void onMapReady(GoogleMap map) {
@@ -235,6 +237,7 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
                                 addFriend.setVisibility(View.VISIBLE);
                                 chatBtn.setVisibility(View.VISIBLE);
                                 shareFb.setVisibility(View.VISIBLE);
+                                initializeLeaveEventButton(details, eventUid);
                             }
                         }
                     }
@@ -434,6 +437,39 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
         catch(Exception exc) {
             Utils.quit();
         }
+    }
+
+    public void initializeLeaveEventButton (final DataSnapshot details, final String eventUid) {
+
+        header_button = (ImageButton) findViewById(R.id.header_button);
+        header_button.setVisibility(View.VISIBLE);
+        header_button.setBackgroundResource(R.drawable.admin_minus2);
+        header_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(EventDetails.this)
+                        .setTitle("Leave Event")
+                        .setMessage("Are you sure you want to leave the event?")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setNegativeButton("NO", null)
+                        .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                Map<String,Object> users = new HashMap<>();
+                                for(DataSnapshot data : details.getChildren())
+                                {
+                                    if (!data.getKey().equalsIgnoreCase(User.uid))
+                                        users.put(data.getKey().toString(), Boolean.parseBoolean(data.getValue().toString()));
+                                }
+                                User.firebaseRef.child("events").child(eventUid).child("users").setValue(users);
+                                header_button.setVisibility(View.INVISIBLE);
+                                finish();
+                                startActivity(getIntent());
+                            }
+                        }).show();
+            }
+        });
+
     }
 
     public class UserListThread implements Runnable {
