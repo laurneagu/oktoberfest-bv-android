@@ -20,8 +20,8 @@
             android:layout_marginLeft="65dp"
             android:layout_centerVertical="true" />
 
-        <ImageButton android:layout_width="30dp"
-            android:layout_height="30dp"
+        <ImageButton android:layout_width="25dp"
+            android:layout_height="25dp"
             android:background="@drawable/ic_drawer"
             android:layout_marginLeft="30dp"
             android:layout_centerVertical="true"

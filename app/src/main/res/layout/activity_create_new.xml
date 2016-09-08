@@ -29,57 +29,33 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="5dp"
         android:text="Pick a sport"
+        android:layout_marginLeft="20dp"
         android:id="@+id/sportPickTV"
         android:textColor="#81878b"
         android:textStyle="bold"
         android:textSize="20dp" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="5dp"
-                android:text="Tap on the sport icon to select your desired sport"
-                android:textColor="#81878b"
-                android:id="@+id/sportPickAdviceTV"
-                android:layout_below="@+id/sportPickTV"
-                android:textStyle="italic"
-                android:layout_marginBottom="10dp"
-                android:textSize="10dp" />
-
             <Button
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:id="@+id/selectedSportButton"
                 android:layout_marginTop="5dp"
-                android:layout_below="@+id/sportPickAdviceTV"
+                android:layout_below="@+id/sportPickTV"
                 android:layout_marginBottom="10dp"
-                android:layout_centerInParent="true"
+                android:layout_marginLeft="40dp"
                 android:background="@drawable/football"/>
-            <!--Spinner
-        android:id="@+id/sports_spinner"
-        android:layout_width="240dp"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="5dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/sportPickTV"
-        android:background="#FFFFFF"
-        android:spinnerMode="dropdown"
-        android:layout_marginBottom="10dp" /-->
 
 <!--MAX PLAYERS-->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
-            android:text="Maximum number of players"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="40dp"
+            android:text="Num. of players"
             android:textColor="#81878b"
             android:id="@+id/MaxPlayers"
-            android:layout_below="@+id/selectedSportButton"
+            android:layout_toRightOf="@+id/sportPickTV"
             android:textStyle="bold"
             android:textSize="20dp" />
 
@@ -87,8 +63,10 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/maxPlayersLayout"
-                android:layout_marginTop="5dp"
-                android:layout_below="@+id/MaxPlayers">
+                android:layout_marginTop="7dp"
+                android:layout_marginLeft="70dp"
+                android:layout_below="@+id/MaxPlayers"
+                android:layout_toRightOf="@+id/selectedSportButton">
 
                 <Button
                 android:layout_width="25dp"
@@ -140,14 +118,14 @@
             android:textSize="20dp" />
 
             <EditText
-                android:layout_width="200dp"
+                android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/Description"
                 android:textColor="#0e64a6"
                 android:layout_centerHorizontal="true"
                 android:background="@drawable/create_edittext"
                 android:singleLine="false"
-                android:lines="3"
+                android:lines="2"
                 android:textColorHint="#0e64a6"
                 android:id="@+id/DescriptionInput" />
 
@@ -169,7 +147,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="5dp"
-                android:text="Tap date and time to select best moment for your event"
+                android:text="Tap date and time to select the best moment for your event"
                 android:textColor="#81878b"
                 android:id="@+id/dateTimeHint"
                 android:layout_below="@+id/datetimeTB"
@@ -186,8 +164,8 @@
                 android:id="@+id/calendarHolderET"
                 android:textColor="#0e64a6"
                 android:background="@drawable/create_edittext"
-                android:layout_centerHorizontal="true"
                 android:layout_marginBottom="10dp"
+                android:layout_marginLeft="50dp"
                 android:layout_below="@+id/dateTimeHint"/>
 
             <EditText
@@ -199,32 +177,10 @@
                 android:padding="5dp"
                 android:cursorVisible="false"
                 android:textColor="#0e64a6"
-                android:layout_centerHorizontal="true"
+                android:layout_toRightOf="@+id/calendarHolderET"
                 android:layout_marginBottom="10dp"
-                android:layout_below="@+id/calendarHolderET"/>
-
-        <!--DatePicker
-            android:id="@+id/date_picker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:calendarViewShown="false"
-            android:datePickerMode="calendar"
-            android:headerBackground="#0e64a6"
-            android:yearListSelectorColor="#0e64a6"
-            android:elevation="4dp"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/datetimeTB"/>
-
-
-            <TimePicker
-                android:id="@+id/time_picker"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:headerBackground="#0e64a6"
-                android:timePickerMode="clock"
-                android:layout_below="@+id/calendarHolderET"
-                android:layout_marginBottom="10dp" /-->
+                android:layout_marginLeft="60dp"
+                android:layout_below="@+id/dateTimeHint"/>
 
             <!-- MAPS PICK -->
 
@@ -258,21 +214,22 @@
                 android:id="@+id/map"
                 android:layout_below="@+id/locationHint"
                 android:layout_width="400dp"
-                android:layout_height="200dp"
-                android:layout_marginTop="10dp" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"/>
 
-        <Button
+        <!--Button
             android:id="@+id/createEvent"
             android:layout_width="100dp"
             android:layout_height="50dp"
-             android:layout_marginTop="10dp"
+            android:layout_marginTop="10dp"
             android:textAllCaps="false"
             android:background="@drawable/create_button"
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/map"
             android:onClick="OnCreateEvent"
             android:textStyle="bold"
-            android:textSize="20dp" />
+            android:textSize="20dp" /-->
 
 
             <ProgressBar android:indeterminate="true"

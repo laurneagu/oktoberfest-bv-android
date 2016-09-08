@@ -155,7 +155,20 @@ public class ProfileActivity extends Activity {
 
                     if (snapshot.getValue() != null) {
                         TextView name = (TextView) findViewById(R.id.hello_message_activity);
-                        name.setText(snapshot.getValue().toString());
+                        String userName = snapshot.getValue().toString();
+                        String[] names = userName.split(" ");
+                        boolean nameTooLong = false;
+
+                        for(String usernam : names){
+                            if (usernam.length() > 7) {
+                                nameTooLong = true;
+                                break;
+                            }
+                        }
+                        if (nameTooLong)
+                            name.setText(names[0]);
+                        else
+                            name.setText(snapshot.getValue().toString());
 
                         DatabaseReference userRef = User.firebaseRef.child("users").child(uid).child("profileImageURL");
                         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -229,7 +242,7 @@ public class ProfileActivity extends Activity {
                 public void onDataChange(DataSnapshot snapshot) {
                     if (snapshot != null) {
                         for (DataSnapshot sport : snapshot.getChildren()) {
-                            String uri = "@drawable/" + sport.getKey().toLowerCase().replace(" ", "") + "_small";
+                            String uri = "@drawable/" + sport.getKey().toLowerCase().replace(" ", ""); //+ "_small";
 
                             int imageResource = getResources().getIdentifier(uri, null, getPackageName());
                              Drawable res = getResources().getDrawable(imageResource);

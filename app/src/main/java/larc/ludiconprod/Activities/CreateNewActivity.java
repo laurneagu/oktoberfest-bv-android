@@ -374,7 +374,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
             // Set grid view to alertDialog
             builder = new AlertDialog.Builder(this);
             builder.setView(gridView);
-            builder.setTitle("Pick your favourite sport");
+            //builder.setTitle("Pick your favourite sport");
             alertDialog = builder.show();
 
             //dialog.getWindow().setBackgroundDrawableResource(android.R.color.holo_blue_light);

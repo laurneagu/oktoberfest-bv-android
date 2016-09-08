@@ -43,7 +43,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_below="@+id/sportPickTV"
                 android:layout_marginBottom="10dp"
-                android:layout_marginLeft="30dp"
+                android:layout_marginLeft="50dp"
                 android:background="@drawable/football"/>
 
 <!--MAX PLAYERS-->
@@ -64,7 +64,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/maxPlayersLayout"
                 android:layout_marginTop="7dp"
-                android:layout_marginLeft="25dp"
+                android:layout_marginLeft="70dp"
                 android:layout_below="@+id/MaxPlayers"
                 android:layout_toRightOf="@+id/selectedSportButton">
 
@@ -147,7 +147,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="5dp"
-                android:text="Tap date and time to select best moment for your event"
+                android:text="Tap date and time to select the best moment for your event"
                 android:textColor="#81878b"
                 android:id="@+id/dateTimeHint"
                 android:layout_below="@+id/datetimeTB"

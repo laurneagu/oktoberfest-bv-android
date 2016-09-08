@@ -48,14 +48,14 @@
                         android:layout_height="25dp"
                         android:layout_marginLeft="2dp"
                         android:id="@+id/footballRankIB"
-                        android:background="@drawable/football_small"/>
+                        android:background="@drawable/football"/>
 
                         <ImageButton
                             android:layout_width="25dp"
                             android:layout_height="25dp"
                             android:layout_marginLeft="2dp"
                             android:id="@+id/volleyRankIB"
-                            android:background="@drawable/volleyball_small"
+                            android:background="@drawable/volleyball"
                            />
 
 
@@ -64,50 +64,50 @@
                         android:layout_height="25dp"
                         android:layout_marginLeft="2dp"
                             android:id="@+id/basketballRankIB"
-                        android:background="@drawable/basketball_small"/>
+                        android:background="@drawable/basketball"/>
 
                         <ImageButton
                             android:layout_width="25dp"
                             android:layout_height="25dp"
                             android:layout_marginLeft="2dp"
                             android:id="@+id/squashRankIB"
-                            android:background="@drawable/squash_small"/>
+                            android:background="@drawable/squash"/>
                         <ImageButton
                             android:layout_width="25dp"
                             android:layout_height="25dp"
                             android:layout_marginLeft="2dp"
                             android:id="@+id/pingpongRankIB"
-                            android:background="@drawable/pingpong_small"/>
+                            android:background="@drawable/pingpong"/>
                         <ImageButton
                             android:layout_width="25dp"
                             android:layout_height="25dp"
                             android:layout_marginLeft="2dp"
                             android:id="@+id/tennisRankIB"
-                            android:background="@drawable/tennis_small"/>
+                            android:background="@drawable/tennis"/>
                         <ImageButton
                             android:layout_width="25dp"
                             android:layout_height="25dp"
                             android:layout_marginLeft="2dp"
                             android:id="@+id/cyclingRankIB"
-                            android:background="@drawable/cycling_small"/>
+                            android:background="@drawable/cycling"/>
                         <ImageButton
                             android:layout_width="25dp"
                             android:layout_height="25dp"
                             android:layout_marginLeft="2dp"
                             android:id="@+id/joggingRankIB"
-                            android:background="@drawable/jogging_small"/>
+                            android:background="@drawable/jogging"/>
                         <ImageButton
                             android:layout_width="25dp"
                             android:layout_height="25dp"
                             android:layout_marginLeft="2dp"
                             android:id="@+id/gymRankIB"
-                            android:background="@drawable/gym_small"/>
+                            android:background="@drawable/gym"/>
                         <ImageButton
                             android:layout_width="25dp"
                             android:layout_height="25dp"
                             android:layout_marginLeft="2dp"
                             android:id="@+id/otherRankIB"
-                            android:background="@drawable/other_small"/>
+                            android:background="@drawable/other"/>
 
                     </LinearLayout>
 
