@@ -7,7 +7,7 @@ buildscript {
     dependencies {
         //classpath 'com.android.tools.build:gradle:2.2.0-alpha5'
         classpath 'com.google.gms:google-services:3.0.0'
-        classpath 'com.android.tools.build:gradle:+'
+        classpath 'com.android.tools.build:gradle:2.0.0'
         //compile 'com.google.android.gms:play-services-ads:9.0.1'
     }
 }
@@ -51,6 +51,7 @@ android {
 //    }
 //}
 
+
 //dependencies {
 //    compile 'com.batch.android:batch-sdk:1.5+'
 //}
@@ -87,41 +88,21 @@ dependencies {
     compile 'com.google.firebase:firebase-auth:9.2.0'
     compile 'com.google.firebase:firebase-core:9.2.0'
 }
-//dependencies {
-//    compile 'com.android.support:support-v4:23.+'
-//}
-//dependencies {
-//    compile 'com.android.support:support-v4:23.+'
-//}
-//dependencies {
-//    compile 'com.android.support:support-v4:23.+'
-//}
-//dependencies {
-//    compile 'com.android.support:support-v4:23.+'
-//}
+
 dependencies {
     compile 'com.android.support:support-v4:23.0.0'
     compile 'com.android.support:appcompat-v7:23.0.0'
     compile 'com.android.support:recyclerview-v7:23.0.0'
     compile 'com.android.support:cardview-v7:23.0.0'
-//    compile 'com.google.android.gms:play-services:6.5.87'
-    compile 'com.squareup.picasso:picasso:2.5.2'
+   compile 'com.squareup.picasso:picasso:2.5.2'
 
-    compile 'com.google.maps.android:android-maps-utils:0.4+'
+    compile 'com.google.maps.android:android-maps-utils:0.4.3'
 
 }
 dependencies {
     compile 'com.android.support:support-v4:23.+'
 }
-//dependencies {
-//    compile 'com.android.support:support-v4:23.+'
-//}
-//dependencies {
-//    compile 'com.android.support:design:23.+'
-//}
-//dependencies {
-//    compile 'com.android.support:design:23.+'
-//}
+
 dependencies {
     compile 'com.android.support:design:23.+'
 }

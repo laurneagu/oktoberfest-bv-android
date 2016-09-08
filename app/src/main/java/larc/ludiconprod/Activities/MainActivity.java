@@ -250,6 +250,7 @@ public class MainActivity extends AppCompatActivity {
 
         //saveUnsavedPointstoDatabaseReference();
 
+
         // Creating The ViewPagerAdapter and Passing Fragment Manager, Titles fot the Tabs and Number Of Tabs.
         adapter = new ViewPagerAdapter(getSupportFragmentManager(), Titles, Numboftabs);
 
@@ -272,22 +273,6 @@ public class MainActivity extends AppCompatActivity {
         // Setting the ViewPager For the SlidingTabsLayout
         tabs.setViewPager(pager);
         /**************/
-
-
-
-
-
-
-
-        /*
-        flipper = (ViewFlipper)findViewById(R.id.viewFlipper);
-        flipper.setInAnimation(this, R.anim.right_enter);
-        flipper.setOutAnimation(this, R.anim.left_out);
-         frButton = (Button)findViewById(R.id.fractbutton);
-         myButton = (Button)findViewById(R.id.myactbutton);
-        addFriendsActivityButtonEventListener();
-        addMyActivityButtonEventListener();
-        */
 
         final Locale locale = Locale.getDefault();
 
@@ -1278,7 +1263,12 @@ public class MainActivity extends AppCompatActivity {
     public void updateList()
     {
 
-        // Envent lists:
+        // stop swiping on my events
+        final SwipeRefreshLayout mSwipeRefreshLayout2 = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh2);
+        mSwipeRefreshLayout2.setEnabled(false);
+        mSwipeRefreshLayout2.setFocusable(false);
+
+        // Event lists:
         DatabaseReference userRef = User.firebaseRef.child("events"); // check events
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -1486,7 +1476,6 @@ public class MainActivity extends AppCompatActivity {
                     });
                     addedSwipe = true;
                 }
-
 
                 // Dismiss loading dialog after  2 * TIMEOUT * eventList.size() ms
                 Timer timer = new Timer();

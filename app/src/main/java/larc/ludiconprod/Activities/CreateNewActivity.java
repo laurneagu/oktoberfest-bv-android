@@ -228,7 +228,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         });
 
         TextView hello_message = (TextView) findViewById(R.id.hello_message_activity);
-        hello_message.setText("Create activity");
+        hello_message.setText("");
 
         // Events on buttons of Max players capacity
 
@@ -245,6 +245,19 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
             }
         });
 
+        //// Create event in header menu
+        createEvent = (ImageButton)findViewById(R.id.header_button);
+        createEvent.setVisibility(View.VISIBLE);
+        createEvent.setBackgroundResource(R.drawable.create_button2);
+        createEvent.getLayoutParams().height =200;
+        createEvent.getLayoutParams().width = 200 ;
+
+        createEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OnCreateEvent();
+            }
+        });
 
         Button addPeople = (Button) findViewById(R.id.addPeople);
         addPeople.setOnClickListener(new View.OnClickListener() {
@@ -329,6 +342,8 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
             }
         });
     }
+
+    private ImageButton createEvent;
 
     private Button selectedSportButton;
     private ArrayList<Sport> sportsList = new ArrayList<Sport>();
@@ -418,7 +433,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         return false;
     }
 
-    public void OnCreateEvent(View view) {
+    public void OnCreateEvent() {
         try {
 
 
@@ -449,13 +464,12 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
             if (checkEventDateIsNotInPast(creationDate))
                 return;
 
-            // Stop button to be called more than once
-            Button createEvent = (Button) findViewById(R.id.createEvent);
+
             createEvent.setEnabled(false);
             createEvent.setClickable(false);
-            createEvent.setText("Creating ..");
-            createEvent.setBackgroundColor(Color.TRANSPARENT);
-            createEvent.setTextColor(Color.BLUE);
+            //createEvent.setText("Creating ..");
+            Toast.makeText(getApplicationContext(),"Creating..",Toast.LENGTH_LONG).show();
+
             ProgressBar pb = (ProgressBar) findViewById(R.id.marker_progress);
             pb.setVisibility(View.VISIBLE);
 
