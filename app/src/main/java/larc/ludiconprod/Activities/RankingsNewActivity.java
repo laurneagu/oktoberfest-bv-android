@@ -210,7 +210,7 @@ public class RankingsNewActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     selectedSport = "pingpong";
                     usersLocalList.clear();
-                    headerMessage.setText("PING-PONG");
+                    headerMessage.setText("PING PONG");
                     updateList();
                 }
             });

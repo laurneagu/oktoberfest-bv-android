@@ -33,6 +33,7 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -65,6 +66,8 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
 
     private ActivitiesLocationListener locationListener;
     private LocationManager lm;
+
+    private final GMapsFullActivity currAct = this;
 
     @Override
     public void onMapReady(GoogleMap map) {
@@ -136,6 +139,13 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
                         intent.putExtra("isOfficial", 0);
                         intent.putExtra("comment", "Please note this is not an official event! You will get no points !");
 
+                        // Save also this values
+                        SharedPreferences sharedPref = currAct.getSharedPreferences("LocationPrefs", 0);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putString("sel_latitude", String.valueOf(latLng.latitude));
+                        editor.putString("sel_longitude", String.valueOf(latLng.longitude));
+                        editor.commit();
+
                         setResult(CreateNewActivity.ASK_COORDS_DONE, intent);
 
                         // Sanity checks
@@ -150,18 +160,6 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
         ////////////////////////////
         TextView hello_message = (TextView) findViewById(R.id.hello_message_activity);
         hello_message.setText("Pick location");
-
-        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
-                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
-
-
-            AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
-                    .setTypeFilter(AutocompleteFilter.TYPE_FILTER_ADDRESS)
-                    .build();
-            autocompleteFragment.setFilter(typeFilter);
-
-        autocompleteFragment.setOnPlaceSelectedListener(this);
-        autocompleteFragment.setHint("Search for a location");
 
         // this is it
         startDemo();
@@ -409,6 +407,14 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
         intent.putExtra("address",item.name);
         intent.putExtra("comment", "This is an official event you create in " + item.name + " ! You will get points if you attend it!");
 
+        // Save also this values
+        SharedPreferences sharedPref = currAct.getSharedPreferences("LocationPrefs", 0);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("sel_latitude", String.valueOf(item.getPosition().latitude));
+        editor.putString("sel_longitude", String.valueOf(item.getPosition().longitude));
+        editor.commit();
+
+
         setResult(CreateNewActivity.ASK_COORDS_DONE, intent);
 
         // Sanity checks
@@ -426,7 +432,7 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
     }
 
     private GMapsFullActivity curr_context = this;
-    private  double latitude, longitude;
+    private  double latitude=44.4333, longitude=26.1000;
 
     protected void startDemo() {
         mapFragment.getMapAsync(new OnMapReadyCallback() {
@@ -439,8 +445,13 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
                     SharedPreferences sharedPref = getApplication().getSharedPreferences("LocationPrefs", 0);
                     String latString, longString;
 
-                    latString = sharedPref.getString("curr_latitude", null);
-                    longString= sharedPref.getString("curr_longitude", null);
+                    latString = sharedPref.getString("sel_latitude", null);
+                    longString= sharedPref.getString("sel_longitude", null);
+
+                    if(latString==null || longString==null){
+                        latString = sharedPref.getString("curr_latitude", null);
+                        longString= sharedPref.getString("curr_longitude", null);
+                    }
 
                     latitude = Double.parseDouble(latString);
                     longitude = Double.parseDouble(longString);
@@ -476,6 +487,23 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
 
                 addItems();
                 mClusterManager.cluster();
+
+
+                // Initialize autocomplete fragment
+
+                PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+                        getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
+
+                AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
+                        .setTypeFilter(AutocompleteFilter.TYPE_FILTER_ADDRESS)
+                        .build();
+                autocompleteFragment.setFilter(typeFilter);
+
+                autocompleteFragment.setOnPlaceSelectedListener(currAct);
+                autocompleteFragment.setHint("Search for a location");
+                autocompleteFragment.setBoundsBias(new LatLngBounds(new LatLng(latitude - (0.01), longitude - (0.01)), new LatLng(latitude + (0.01), longitude + (0.01))));
+
             }
         });
     }

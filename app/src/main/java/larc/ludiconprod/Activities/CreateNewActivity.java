@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -156,6 +157,8 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
     }
 
+    private final CreateNewActivity myAct = this;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -248,14 +251,20 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         //// Create event in header menu
         createEvent = (ImageButton)findViewById(R.id.header_button);
         createEvent.setVisibility(View.VISIBLE);
-        createEvent.setBackgroundResource(R.drawable.create_button2);
-        createEvent.getLayoutParams().height =200;
-        createEvent.getLayoutParams().width = 200 ;
+        createEvent.setBackgroundResource(R.drawable.save_button_2);
+        createEvent.getLayoutParams().height =100;
+        createEvent.getLayoutParams().width = 150 ;
 
         createEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 OnCreateEvent();
+
+                SharedPreferences sharedPref = myAct.getSharedPreferences("LocationPrefs", 0);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString("sel_latitude", null);
+                editor.putString("sel_longitude", null);
+                editor.commit();
             }
         });
 
@@ -698,13 +707,19 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         // Sanity activities
         lm = null;
         locationListener = null;
+
+        SharedPreferences sharedPref = myAct.getSharedPreferences("LocationPrefs", 0);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("sel_latitude", null);
+        editor.putString("sel_longitude", null);
+        editor.commit();
+
         finish();
 
         Intent toMain = new Intent(this, MainActivity.class);
         toMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(toMain);
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -718,6 +733,25 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
             if (comment != null && !comment.equalsIgnoreCase("")) {
                 Toast.makeText(getApplication(), comment, Toast.LENGTH_LONG).show();
             }
+
+            // Set also the location name selected
+
+            Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.ENGLISH);
+
+            try {
+                List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                if (addresses.size() > 0) {
+                    if (addressName == null || addressName.equals("")) {
+                        addressName = addresses.get(0).getAddressLine(0);
+                    }
+                }
+            } catch (Exception exc) {
+                addressName = "Unknown";
+            }
+
+            TextView locationHint = (TextView) findViewById(R.id.locationHint);
+            locationHint.setText("Will play at : " + addressName);
+            locationHint.setTextColor(Color.parseColor("#4f2f4f"));
         }
 
         try {

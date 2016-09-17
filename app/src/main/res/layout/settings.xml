@@ -12,17 +12,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/relLayout">
 
-        <Button
-            android:layout_width="75dp"
-            android:layout_height="30dp"
-            android:background="@drawable/save_button"
-            android:layout_marginBottom="10dp"
-            android:id="@+id/save"
-            android:layout_alignParentBottom="true"
-            android:textColor="#ffffff"
-            android:layout_centerHorizontal="true"
-            />
-
 
         <TextView
             android:layout_width="wrap_content"
@@ -111,9 +100,9 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:id="@+id/progressText"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="30dp"
             android:textColor="#1971b4"
-            android:layout_above="@+id/save" />
+            android:layout_alignParentBottom="true" />
 
     </RelativeLayout>
 

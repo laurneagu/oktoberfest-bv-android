@@ -12,16 +12,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/relLayout">
 
-        <Button
-            android:layout_width="75dp"
-            android:layout_height="30dp"
-            android:background="@drawable/save_button"
-            android:layout_marginBottom="10dp"
-            android:id="@+id/save"
-            android:layout_alignParentBottom="true"
-            android:textColor="#ffffff"
-            android:layout_centerHorizontal="true"
-            />
 
         <TextView
             android:layout_width="wrap_content"
@@ -45,11 +35,11 @@
             android:textColor="#2275b5" />
 
         <GridView
-            android:paddingTop="40dp"
+            android:paddingTop="50dp"
             android:paddingLeft="50dp"
             android:paddingRight="50dp"
             android:layout_width="wrap_content"
-            android:layout_height="200dp"
+            android:layout_height="match_parent"
             android:id="@+id/gridView"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
@@ -61,6 +51,15 @@
             android:layout_above="@+id/textView8" />
 
 
+        <SeekBar
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/seekBar2"
+            android:layout_above="@+id/progressText"
+            android:minHeight="3dip"
+            android:maxHeight="3dip"
+            android:layout_margin="5dip"
+            android:layout_centerHorizontal="true" />
 
 
         <ImageView
@@ -73,7 +72,7 @@
 
 
         <TextView
-            android:paddingTop="5dp"
+            android:paddingTop="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
@@ -95,26 +94,15 @@
             android:layout_alignEnd="@+id/textView7"
             android:textColor="#176fb2" />
 
-
-        <SeekBar
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/seekBar2"
-            android:layout_above="@+id/progressText"
-            android:minHeight="3dip"
-            android:maxHeight="3dip"
-            android:layout_margin="5dip"
-            android:layout_centerHorizontal="true" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:id="@+id/progressText"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="30dp"
             android:textColor="#1971b4"
-            android:layout_above="@+id/save" />
+            android:layout_alignParentBottom="true" />
 
     </RelativeLayout>
 

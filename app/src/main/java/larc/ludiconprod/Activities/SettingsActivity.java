@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -94,6 +95,13 @@ public class SettingsActivity extends Activity {
                 }
             });
 
+            // Set as italic the explanations for fields
+            TextView pickSports = (TextView)findViewById(R.id.textView7);
+            pickSports.setTypeface(pickSports.getTypeface(), Typeface.ITALIC);
+
+            TextView pickArea = (TextView)findViewById(R.id.textView9);
+            pickArea.setTypeface(pickArea.getTypeface(), Typeface.ITALIC);
+
             initializeSportIcons();
 
             rangeRef.addListenerForSingleValueEvent(new ValueEventListener() { // get all sports
@@ -139,27 +147,31 @@ public class SettingsActivity extends Activity {
             displayListView();
 
             TextView hello_message = (TextView) findViewById(R.id.hello_message_activity);
-            hello_message.setText("Settings");
+            hello_message.setText("");
 
-        // Save button
-        saveButton = (Button) findViewById(R.id.save);
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO Save Range + Sports in FireBase
-                rangeRef.setValue((progress == 0 ? savedProgress : progress));
-                Map<String, Object> map = new HashMap<String, Object>();
-                for (Sport s : sportsList) {
-                    if (s.isChecked) {
-                        map.put(s.name, s.id);
+            //// Create event in header menu
+            ImageButton saveButton = (ImageButton)findViewById(R.id.header_button);
+            saveButton.setVisibility(View.VISIBLE);
+            saveButton.setBackgroundResource(R.drawable.save_button_2);
+            saveButton.getLayoutParams().height =100;
+            saveButton.getLayoutParams().width = 150 ;
+
+            saveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //TODO Save Range + Sports in FireBase
+                    rangeRef.setValue((progress == 0 ? savedProgress : progress));
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    for (Sport s : sportsList) {
+                        if (s.isChecked) {
+                            map.put(s.name, s.id);
+                        }
                     }
+                    userSports.setValue(map);
+                    Toast.makeText(getApplicationContext(), "Saved!", Toast.LENGTH_SHORT).show();
                 }
-                userSports.setValue(map);
-                Toast.makeText(getApplicationContext(), "Saved!", Toast.LENGTH_SHORT).show();
+            });
 
-
-            }
-        });
 
         }
         catch(Exception exc) {
@@ -309,7 +321,13 @@ public class SettingsActivity extends Activity {
             }
 
             Sport sport = sportsList.get(position);
-            holder.text.setText(sport.name);
+
+            if(sport.name.equalsIgnoreCase("pingpong")){
+                holder.text.setText("ping pong");
+            }
+            else {
+                holder.text.setText(sport.name);
+            }
             holder.box.setText("");
             holder.box.setChecked(sport.isChecked);
             holder.box.setTag(sport);

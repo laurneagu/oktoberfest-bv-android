@@ -112,7 +112,7 @@ public class ChatListActivity extends Activity {
         userName.setText(User.getFirstName(getApplicationContext()) + " " + User.getLastName(getApplicationContext()));
 
         TextView hello_message = (TextView) findViewById(R.id.hello_message_activity);
-        hello_message.setText("Chats");
+        hello_message.setText("");
         ImageView userPic = (ImageView) findViewById(R.id.userPicture);
         Drawable d = new BitmapDrawable(getResources(), User.image);
         userPic.setImageDrawable(d);
@@ -355,6 +355,15 @@ public class ChatListActivity extends Activity {
             if (list.get(position).friendPhoto != "") {
                 //new DownloadImageTask(imageView).execute(data.getValue().toString());
                 Picasso.with(context).load(list.get(position).friendPhoto).into(holder.imageView);
+                holder.imageView.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                        intent.putExtra("uid", list.get(position).userUID);
+                        startActivity(intent);
+                    }
+                });
             } else {
                 holder.imageView.setImageResource(R.drawable.logo);
             }
@@ -362,31 +371,7 @@ public class ChatListActivity extends Activity {
             return view;
         }
     }
-    // Method which downloads Image from URL
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
 
-        public DownloadImageTask(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
-        }
-    }
 
     // Left side menu
 
