@@ -242,7 +242,7 @@ public class ChatTemplateActivity extends ListActivity {
         // Tell our list adapter that we only want 50 messages at a time
         // TODO - Don't use ChatListAdapter
 
-        mChatListAdapter = new ChatListAdapter(mDatabaseReferenceRef.limitToFirst(50), this, R.layout.chat_message, mUsername, false);
+        mChatListAdapter = new ChatListAdapter(mDatabaseReferenceRef, this, R.layout.chat_message, mUsername, false);
         listView.setAdapter(mChatListAdapter);
         mChatListAdapter.registerDataSetObserver(new DataSetObserver() {
             @Override
