@@ -38,6 +38,7 @@ import java.util.TimeZone;
 
 import larc.ludiconprod.Activities.ChatListActivity;
 import larc.ludiconprod.Activities.ChatTemplateActivity;
+import larc.ludiconprod.ChatUtils.Chat;
 import larc.ludiconprod.UserInfo.ActivityInfo;
 import larc.ludiconprod.Utils.util.ChatNotifier;
 import larc.ludiconprod.Utils.util.DateManager;
@@ -417,7 +418,7 @@ public class FriendlyService extends Service {
                 final DatabaseReference userRef = ref.child("users").child(refJson);
                 final LinkedList<String> chatRefs = new LinkedList<String>(); // chat uid - last message date
 
-                // Listen new conversation
+                // Listen new 1 to 1 conversations
                 userRef.child("chats").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
@@ -476,12 +477,9 @@ public class FriendlyService extends Service {
                                             Log.v("Name vs Author", myName + " " + author);
                                             if (!isForeground("larc.ludiconprod")) { // if chat is not open
 
-                                                SimpleDateFormat form = new SimpleDateFormat("dd MMMM yyyy HH:mm");
-                                                chatNotifier.sendNotification(FriendlyService.this, getSystemService(NOTIFICATION_SERVICE), getResources(), getNotificationIndex(), author, message, form.format(date), chatUid);
+                                                SimpleDateFormat form = new SimpleDateFormat("dd-mm-yyyy hh:mm:ss");
+                                                chatNotifier.sendNotification(FriendlyService.this, getSystemService(NOTIFICATION_SERVICE), getResources(), getNotificationIndex(), author, message, form.format(date), chatUid, false);
                                             }
-                                            //userRef.child("chatNotif").setValue(author);
-                                            // see it!
-                                            ref.child("chat").child(chatUid).child("Messages").child(snapshot.getKey()).child("seen").setValue(true);
                                         }
 
 
@@ -518,6 +516,106 @@ public class FriendlyService extends Service {
                     public void onCancelled(DatabaseError firebaseError) {
                     }
                 });
+
+                    final LinkedList<String> eventChatRefs = new LinkedList<String>(); // chat uid - last message date
+
+                    // Listen new event conversations
+                    userRef.child("events").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            for (DataSnapshot data : snapshot.getChildren()) {
+                                final String eventUid = (String) data.getKey();
+
+                                    // Listen new messages and notify
+                                    ref.child("events").child(eventUid).child("chat").addChildEventListener(new ChildEventListener() {
+                                        // Retrieve new posts as they are added to the database
+                                        @Override
+                                        public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
+                                            String author = "";
+                                            String message = "";
+                                            long date = 0;
+
+                                            chatRefs.add(eventUid);
+
+                                            for (DataSnapshot msgData : snapshot.getChildren()) {
+                                                if (msgData.getKey().toString().equalsIgnoreCase("author")) {
+                                                    author = msgData.getValue().toString();
+                                                }
+
+                                                if (msgData.getKey().toString().equalsIgnoreCase("date")) {
+                                                    date = Long.parseLong(msgData.getValue().toString());
+                                                   /* try {
+                                                        String d = DateManager.convertFromSecondsToText((long) msgData.getValue());
+                                                        SimpleDateFormat format = new SimpleDateFormat("MMMM dd, HH:mm", Locale.ENGLISH);
+                                                        date = format.parse(d);
+                                                    } catch (ParseException e) {
+                                                        e.printStackTrace();
+                                                    }*/
+                                                }
+
+                                                if (msgData.getKey().toString().equalsIgnoreCase("message")) {
+                                                    message = msgData.getValue().toString();
+                                                }
+                                            }
+
+                                            if (myName.compareToIgnoreCase(author) == 0) {
+                                                return;
+                                            }
+
+                                            // It is not my message
+                                                Log.v("Name vs Author", myName + " " + author);//Creating a shared preference
+
+                                            SharedPreferences  mPrefs = getApplicationContext().getSharedPreferences("serviceData", MODE_PRIVATE);
+                                            Gson gson = new Gson();
+                                            String json = mPrefs.getString(eventUid,"");
+                                            Chat lastChatMsg;
+                                            boolean isNewMsg = false;
+                                            if (!json.equalsIgnoreCase("")) {
+                                                lastChatMsg = gson.fromJson(json, Chat.class);
+                                                if (lastChatMsg.date < date)
+                                                    isNewMsg = true;
+                                            }
+                                            else
+                                                isNewMsg = true;
+
+                                                if (!isForeground("larc.ludiconprod") && isNewMsg) { // if chat is not open
+                                                    SimpleDateFormat form = new SimpleDateFormat("dd-mm-yyyy hh:mm:ss");
+                                                    chatNotifier.sendNotification(FriendlyService.this, getSystemService(NOTIFICATION_SERVICE), getResources(), getNotificationIndex(), author, message, form.format(date), eventUid, true);
+                                                    json = gson.toJson(new Chat(message,author,date));
+                                                    mPrefs.edit().putString(eventUid, json).commit();
+                                                }
+
+
+                                        }
+
+                                        @Override
+                                        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                                        }
+
+                                        @Override
+                                        public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                                        }
+
+                                        @Override
+                                        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError firebaseError) {
+
+                                        }
+
+                                    });
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError firebaseError) {
+                        }
+                    });
 
             }catch(Exception e){
                     try {
