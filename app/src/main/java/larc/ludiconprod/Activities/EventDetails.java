@@ -69,6 +69,9 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
     public static boolean doIparticipate = false;
     private GoogleMap m_gmap;
     public ImageButton header_button;
+    public static boolean creatorIsCurrentUser = false;
+    public static EventDetails instance;
+    public static String eventID;
 
     @Override
     public void onMapReady(GoogleMap map) {
@@ -111,6 +114,7 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
         TextView title = (TextView)findViewById(R.id.hello_message_activity);
         title.setText("Event Details");
         doIparticipate = false;
+            instance = this;
         ((TextView)findViewById(R.id.event_organiser_points)).setText("");
         ((TextView)findViewById(R.id.event_organiser_name)).setText("");
         ((TextView)findViewById(R.id.event_date)).setText("");
@@ -120,6 +124,7 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
 
         Intent intent = getIntent();
         final String eventUid  = intent.getStringExtra("eventUid");
+        eventID = eventUid;
 
         // Left side panel -------------------------------------------------------------------------------------------
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
@@ -302,6 +307,7 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
                 if ( creatorID.equalsIgnoreCase(User.uid) ) {
                     cancelEvent.setVisibility(View.VISIBLE);
                     editEvent.setVisibility(View.VISIBLE);
+                    creatorIsCurrentUser = true;
                 }
 
                 final ImageView profilePicture = (ImageView) findViewById(R.id.profileImageView);
@@ -439,6 +445,38 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
         }
     }
 
+    public void removeUser(String name, final String uid){
+
+        new AlertDialog.Builder(EventDetails.this)
+            .setTitle("Remove user")
+            .setMessage("Are you sure you want to remove " + name + " ?")
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .setNegativeButton("NO", null)
+            .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    DatabaseReference pct = User.firebaseRef.child("events").child(eventID).child("users");
+                    pct.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for (DataSnapshot data : dataSnapshot.getChildren())
+                                    if (data.getKey().equalsIgnoreCase(uid)) {
+                                        User.firebaseRef.child("events").child(eventID).child("users").child(data.getKey()).removeValue();
+                                        User.firebaseRef.child("users").child(uid).child("events").child(eventID).child("participation").setValue(false);
+                                        finish();
+                                        startActivity(getIntent());
+                                        return;
+                                    }
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError firebaseError) {
+
+                        }
+                    });
+                }
+            }).show();
+    }
+
     public void initializeLeaveEventButton (final DataSnapshot details, final String eventUid) {
 
         header_button = (ImageButton) findViewById(R.id.header_button);
@@ -491,8 +529,6 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
         }
 
         public void run() {
-
-
             Iterator it = users.entrySet().iterator();
             int index = 0;
             while (it.hasNext()) {
@@ -579,10 +615,11 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
                 }
             }
 
+
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    FriendsListAdapter adpt = new FriendsListAdapter(usersList, context);
+                    FriendsListAdapter adpt = new FriendsListAdapter(usersList, context, instance);
                     NonScrollListView lv = (NonScrollListView) findViewById(R.id.listViewUsers);
                     if (lv != null)
                         lv.setAdapter(adpt);

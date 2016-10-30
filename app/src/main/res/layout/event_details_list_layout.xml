@@ -41,5 +41,15 @@
         android:layout_toRightOf="@+id/profilePicture"
         android:layout_toEndOf="@+id/profilePicture" />
 
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/removeUserButton"
+        android:visibility="invisible"
+        android:background="@drawable/remove_button"
+        android:layout_alignTop="@+id/nameUser"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
 
 </RelativeLayout>
