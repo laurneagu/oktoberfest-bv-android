@@ -202,7 +202,6 @@ public class MainActivity extends AppCompatActivity {
     {
         // Get and update total number of points for user in sport
         DatabaseReference pointsRef = User.firebaseRef.child("points").child(sport).child(User.uid);
-        //final ArrayList<Integer> points = new ArrayList<>();
         pointsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
@@ -211,6 +210,22 @@ public class MainActivity extends AppCompatActivity {
                     writeToDatabaseReference(sport, Integer.parseInt(snapshot.getValue().toString()), unsavedPoints, eventID);
                 else
                     writeToDatabaseReference(sport, 0, unsavedPoints, eventID);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError firebaseError) {
+            }
+        });
+
+        DatabaseReference generalPointsRef = User.firebaseRef.child("points").child("general").child(User.uid);
+        generalPointsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                if (snapshot.getValue() != null)
+                    writeToDatabaseReference("general", Integer.parseInt(snapshot.getValue().toString()), unsavedPoints, eventID);
+                else
+                    writeToDatabaseReference("general", 0, unsavedPoints, eventID);
             }
 
             @Override
@@ -226,7 +241,10 @@ public class MainActivity extends AppCompatActivity {
         pointsRef.setValue(points + unsavedPoints);
         // Save points also in general
         // Update points for each event in user's details
-        User.firebaseRef.child("users").child(User.uid).child("events").child(eventID).child("points").setValue(unsavedPoints);
+        if(!sport.equalsIgnoreCase("general"))
+        {
+            User.firebaseRef.child("users").child(User.uid).child("events").child(eventID).child("points").setValue(unsavedPoints);
+        }
     }
 
     @Override
@@ -298,7 +316,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        for (Map.Entry<String, Integer> entry : unsavedPointsMap.entrySet()) {
+        for (final Map.Entry<String, Integer> entry : unsavedPointsMap.entrySet()) {
             // Get sport of the current event(entry)
             DatabaseReference sportNameRef = User.firebaseRef.child("events").child(entry.getKey()).child("sport");
             final ArrayList<String> eventSport = new ArrayList<>();
@@ -318,43 +336,30 @@ public class MainActivity extends AppCompatActivity {
             }
 
             // Get and update total number of points for user in sport
-            DatabaseReference pointsRef = User.firebaseRef.child("points").child(eventSport.get(0)).child(User.uid);
-            DatabaseReference generalPointsRef = User.firebaseRef.child("points").child("general").child(User.uid);
-
-            final ArrayList<Integer> sportPoints = new ArrayList<>();
-            final ArrayList<Integer> generalPoints = new ArrayList<>();
+            final DatabaseReference pointsRef = User.firebaseRef.child("points").child(eventSport.get(0)).child(User.uid);
+            final DatabaseReference generalPointsRef = User.firebaseRef.child("points").child("general").child(User.uid);
 
             pointsRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
-                    sportPoints.add(Integer.parseInt(snapshot.getValue().toString()));
+                    pointsRef.setValue(Integer.parseInt(snapshot.getValue().toString()) + entry.getValue());
                 }
 
                 @Override
                 public void onCancelled(DatabaseError firebaseError) {
                 }
             });
-            try {
-                Thread.sleep(100, 1);
-            } catch (Exception exc) {
-            }
 
             generalPointsRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
-                    generalPoints.add(Integer.parseInt(snapshot.getValue().toString()));
+                    generalPointsRef.setValue(Integer.parseInt(snapshot.getValue().toString()) + entry.getValue());
                 }
 
                 @Override
                 public void onCancelled(DatabaseError firebaseError) {
                 }
             });
-            try {
-                Thread.sleep(100, 1);
-            } catch (Exception exc) {
-            }
-            pointsRef.setValue(sportPoints.get(0) + entry.getValue());
-            generalPointsRef.setValue(generalPoints.get(0) + entry.getValue());
 
             // Update points for each event in user's details
             User.firebaseRef.child("users").child("events").child(entry.getKey().toString()).child("points").setValue(entry.getValue());
