@@ -34,7 +34,7 @@ public class ChatNotifier {
     String chat;
     String photoUrl;
 
-    public void sendNotification(Service m_service, Object m_systemService,Resources m_resources, int notificationNumber, String author, String message, String date, String chatUid){
+    public void sendNotification(Service m_service, Object m_systemService,Resources m_resources, int notificationNumber, String author, String message, String date, String chatUid, boolean isChatMsg){
         chat = chatUid;
 
         Runnable getPhoto = GetPhotoThread();
@@ -49,7 +49,11 @@ public class ChatNotifier {
         Notification.Builder builder = new Notification.Builder(m_service);
 
         builder.setAutoCancel(false);
-        builder.setTicker("New Message");
+        if (!isChatMsg)
+            builder.setTicker("New Message from " + author + " in private chat" );
+        else
+            builder.setTicker("New Message from " + author + " in event chat" );
+
 
         builder.setContentTitle(author);
         builder.setContentText(message);
