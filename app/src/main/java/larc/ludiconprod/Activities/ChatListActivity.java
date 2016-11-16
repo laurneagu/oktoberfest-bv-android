@@ -111,6 +111,18 @@ public class ChatListActivity extends Activity {
         TextView userName = (TextView) findViewById(R.id.userName);
         userName.setText(User.getFirstName(getApplicationContext()) + " " + User.getLastName(getApplicationContext()));
 
+        final ImageButton createNewChat = (ImageButton)findViewById(R.id.header_button);
+        createNewChat.setVisibility(View.VISIBLE);
+        createNewChat.setBackgroundResource(R.drawable.admin_add2);
+
+        createNewChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent friendListIntent = new Intent(getApplicationContext(), FriendsActivity.class);
+                ChatListActivity.this.startActivity(friendListIntent);
+            }
+        });
+
         TextView hello_message = (TextView) findViewById(R.id.hello_message_activity);
         hello_message.setText("");
         ImageView userPic = (ImageView) findViewById(R.id.userPicture);
