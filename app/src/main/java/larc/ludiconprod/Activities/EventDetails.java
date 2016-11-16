@@ -445,7 +445,7 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
         }
     }
 
-    public void removeUser(String name, final String uid){
+    public void removeUser(final String name, final String uid){
 
         new AlertDialog.Builder(EventDetails.this)
             .setTitle("Remove user")
@@ -459,7 +459,19 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
                     pct.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            for (DataSnapshot data : dataSnapshot.getChildren())
+                            if(uid.equalsIgnoreCase("friend"))
+                            {
+                                String[] splitted = name.split("'");
+                                for (DataSnapshot data : dataSnapshot.getChildren())
+                                    if (data.getKey().contains(splitted[0])) {
+                                        User.firebaseRef.child("events").child(eventID).child("users").child(data.getKey()).removeValue();
+                                        finish();
+                                        startActivity(getIntent());
+                                        return;
+                                    }
+                            }
+                            else {
+                                for (DataSnapshot data : dataSnapshot.getChildren())
                                     if (data.getKey().equalsIgnoreCase(uid)) {
                                         User.firebaseRef.child("events").child(eventID).child("users").child(data.getKey()).removeValue();
                                         User.firebaseRef.child("users").child(uid).child("events").child(eventID).child("participation").setValue(false);
@@ -467,6 +479,7 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
                                         startActivity(getIntent());
                                         return;
                                     }
+                            }
                         }
                         @Override
                         public void onCancelled(DatabaseError firebaseError) {
