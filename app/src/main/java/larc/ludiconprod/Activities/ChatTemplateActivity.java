@@ -106,15 +106,11 @@ public class ChatTemplateActivity extends ListActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     if (data.getKey().compareToIgnoreCase("firstName") == 0) {
-                        Log.v("HEERE", "OK21");
                         hello_message.setText(data.getValue().toString());
-                        Log.v("HEERE", "OK22");
                     }
 
                     if (data.getKey().compareToIgnoreCase("profileImageURL") == 0) {
-                        Log.v("HEERE", "OK31");
                         Picasso.with(getApplicationContext()).load(data.getValue().toString()).into(profilePicture);
-                        Log.v("HEERE", "OK32");
                     }
 
                 }
@@ -163,7 +159,6 @@ public class ChatTemplateActivity extends ListActivity {
             Chat chat = new Chat("Welcome to our chat! :)", "Ludicon", DateManager.getTimeNowInSeconds());
             newChat.setValue(chat);
 
-            // TODO Create child to "users -> userUID -> chats" for each user
             // For the first User
             DatabaseReference refCurrentUser = FirebaseDatabase.getInstance().getReference().child("users").child(User.uid).child("chats");
             refCurrentUser.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -240,15 +235,39 @@ public class ChatTemplateActivity extends ListActivity {
         // Setup our view and list adapter. Ensure it scrolls to the bottom as data changes
         final ListView listView = getListView();
         // Tell our list adapter that we only want 50 messages at a time
-        // TODO - Don't use ChatListAdapter
 
-        mChatListAdapter = new ChatListAdapter(mDatabaseReferenceRef, this, R.layout.chat_message, mUsername, false);
-        listView.setAdapter(mChatListAdapter);
-        mChatListAdapter.registerDataSetObserver(new DataSetObserver() {
+        final ChatTemplateActivity self = this;
+        final DatabaseReference dRef = mDatabaseReferenceRef;
+        dRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onChanged() {
-                super.onChanged();
-                listView.setSelection(mChatListAdapter.getCount() - 1);
+            public void onDataChange(DataSnapshot snapshot) {
+                for(DataSnapshot data : snapshot.getChildren())
+                {
+                    for(DataSnapshot msgData : data.getChildren())
+                    {
+                        if(msgData.getKey().equalsIgnoreCase("author"))
+                        {
+                            String authorName = msgData.getValue().toString();
+                            if(!authorName.equalsIgnoreCase(mUsername))
+                            {
+                                dRef.child(data.getKey()).child("seen").setValue(true);
+                            }
+                        }
+                    }
+                }
+
+                mChatListAdapter = new ChatListAdapter(dRef, self, R.layout.chat_message, mUsername, false);
+                listView.setAdapter(mChatListAdapter);
+                mChatListAdapter.registerDataSetObserver(new DataSetObserver() {
+                    @Override
+                    public void onChanged() {
+                        super.onChanged();
+                        listView.setSelection(mChatListAdapter.getCount() - 1);
+                    }
+                });
+            }
+            @Override
+            public void onCancelled(DatabaseError firebaseError) {
             }
         });
     }
