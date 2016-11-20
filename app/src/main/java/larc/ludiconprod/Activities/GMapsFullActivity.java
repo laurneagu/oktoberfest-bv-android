@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.LocationManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
@@ -16,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -34,6 +37,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -46,6 +50,7 @@ import com.google.maps.android.ui.IconGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 import larc.ludiconprod.Adapters.LeftPanelItemClicker;
@@ -102,8 +107,10 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
         }
         */
     }
-
+    Marker lastAddedMarker;
     MapFragment mapFragment;
+    private double selected_lat, selected_long;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         try{
@@ -129,33 +136,77 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
-            public void onMapReady(GoogleMap googleMap) {
+            public void onMapReady(final GoogleMap googleMap) {
+
                 googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                     @Override
                     public void onMapClick(LatLng latLng) {
-                        Intent intent = new Intent();
-                        intent.putExtra("latitude", latLng.latitude);
-                        intent.putExtra("longitude", latLng.longitude);
-                        intent.putExtra("isOfficial", 0);
-                        intent.putExtra("comment", "Please note this is not an official event! You will get no points !");
+                        // Clear the map before
+                        if (lastAddedMarker != null)
+                            lastAddedMarker.remove();
 
-                        // Save also this values
-                        SharedPreferences sharedPref = currAct.getSharedPreferences("LocationPrefs", 0);
-                        SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putString("sel_latitude", String.valueOf(latLng.latitude));
-                        editor.putString("sel_longitude", String.valueOf(latLng.longitude));
-                        editor.commit();
+                        // Get address name
+                        Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.ENGLISH);
+                        String addressName = "";
+                        try {
+                            List<Address> addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+                            if (addresses.size() > 0) {
+                                if (addressName == null || addressName.equals("")) {
+                                    addressName = addresses.get(0).getAddressLine(0);
+                                }
+                            }
+                        } catch (Exception exc) {
+                            addressName = "Unknown";
+                        }
 
-                        setResult(CreateNewActivity.ASK_COORDS_DONE, intent);
+                        // Add marker to the map
+                        Marker selectedPoint = googleMap.addMarker(new MarkerOptions()
+                                .position(latLng)
+                                .title(addressName)
+                                .snippet("This event is not official! Tap to create!"));
+                        selectedPoint.showInfoWindow();
 
-                        // Sanity checks
-                        lm = null;
-                        locationListener =null;
-                        finish();
+
+                        // Set current marker as the last taped
+                        lastAddedMarker = selectedPoint;
+
+                        // Save values for latitude and longitude
+                        selected_lat = latLng.latitude;
+                        selected_long = latLng.longitude;
+
+                        // Info window click
+                        googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                            @Override
+                            public void onInfoWindowClick(Marker marker) {
+
+                                Intent intent = new Intent();
+                                intent.putExtra("latitude", selected_lat);
+                                intent.putExtra("longitude", selected_long);
+                                intent.putExtra("isOfficial", 0);
+                                intent.putExtra("comment", "Please note this is not an official event! You will get no points !");
+
+                                // Save also this values
+                                SharedPreferences sharedPref = currAct.getSharedPreferences("LocationPrefs", 0);
+                                SharedPreferences.Editor editor = sharedPref.edit();
+                                editor.putString("sel_latitude", String.valueOf(selected_lat));
+                                editor.putString("sel_longitude", String.valueOf(selected_long));
+                                editor.commit();
+
+                                setResult(CreateNewActivity.ASK_COORDS_DONE, intent);
+
+                                // Sanity checks
+                                lm = null;
+                                locationListener =null;
+                                finish();
+                            }
+                        });
+
                     }
                 });
             }
         });
+
+
 
         ////////////////////////////
         TextView hello_message = (TextView) findViewById(R.id.hello_message_activity);
@@ -291,7 +342,6 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
 
         public PersonRenderer(GoogleMap mapparam) {
 
-
             super(getApplicationContext(), mapparam, mClusterManager);
 
             View multiProfile = getLayoutInflater().inflate(R.layout.multi_profile, null);
@@ -400,6 +450,14 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
         // Laur Neagu
         //Toast.makeText(this, "Location :" + item.getPosition().longitude + " -- " + item.getPosition().latitude , Toast.LENGTH_SHORT).show();
 
+        clickedClusterItem = item;
+        return false;
+    }
+
+    @Override
+    public void onClusterItemInfoWindowClick(AuthPlace item) {
+        // Does nothing, but you could go into the user's profile page, for example.
+
         Intent intent = new Intent();
         intent.putExtra("latitude", item.getPosition().latitude);
         intent.putExtra("longitude", item.getPosition().longitude);
@@ -414,21 +472,12 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
         editor.putString("sel_longitude", String.valueOf(item.getPosition().longitude));
         editor.commit();
 
-
         setResult(CreateNewActivity.ASK_COORDS_DONE, intent);
 
         // Sanity checks
         lm = null;
         locationListener =null;
         finish();
-
-
-        return true;
-    }
-
-    @Override
-    public void onClusterItemInfoWindowClick(AuthPlace item) {
-        // Does nothing, but you could go into the user's profile page, for example.
     }
 
     private GMapsFullActivity curr_context = this;
@@ -456,9 +505,11 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
                     latitude = Double.parseDouble(latString);
                     longitude = Double.parseDouble(longString);
 
+                    /*
                     googleMap.addMarker(new MarkerOptions()
                             .position(new LatLng(latitude,longitude))
                             .title("You are here"));
+                    */
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude,longitude), 15));
                 }
 
@@ -477,16 +528,21 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
                 googleMap.setOnCameraChangeListener(mClusterManager);
                 googleMap.setOnMarkerClickListener(mClusterManager);
                 googleMap.setOnInfoWindowClickListener(mClusterManager);
+
+                // TEST
+                googleMap.setInfoWindowAdapter(mClusterManager.getMarkerManager());
+
                 mClusterManager.setRenderer(new PersonRenderer(googleMap));
 
                 // Initialize everything
                 mClusterManager.setOnClusterClickListener(curr_context);
                 mClusterManager.setOnClusterInfoWindowClickListener(curr_context);
-                mClusterManager.setOnClusterItemClickListener(curr_context);
-                mClusterManager.setOnClusterItemInfoWindowClickListener(curr_context);
 
                 addItems();
                 mClusterManager.cluster();
+
+                mClusterManager.setOnClusterItemClickListener(curr_context);
+                mClusterManager.setOnClusterItemInfoWindowClickListener(curr_context);
 
 
                 // Initialize autocomplete fragment
@@ -571,6 +627,10 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
 
                 // Add them to the cluster !! :)
                 mClusterManager.addItems(authorizedPlaces);
+
+                // not here
+                mClusterManager.getMarkerCollection().setOnInfoWindowAdapter(
+                        new MyCustomAdapterForItems());
             }
 
             @Override
@@ -581,5 +641,43 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
 
     private double random(double min, double max) {
         return mRandom.nextDouble() * (max - min) + min;
+    }
+
+    private AuthPlace clickedClusterItem;
+
+    public class MyCustomAdapterForItems implements GoogleMap.InfoWindowAdapter {
+
+        private final View myContentsView;
+
+        MyCustomAdapterForItems() {
+            myContentsView = getLayoutInflater().inflate(
+                    R.layout.info_window_auth, null);
+        }
+        @Override
+        public View getInfoWindow(Marker marker) {
+
+            // Clear the map before
+            if (lastAddedMarker != null)
+                lastAddedMarker.remove();
+
+
+            TextView tvTitle = ((TextView) myContentsView
+                    .findViewById(R.id.txtTitle));
+            TextView tvSnippet = ((TextView) myContentsView
+                    .findViewById(R.id.txtSnippet));
+            TextView tvTapToCr = ((TextView) myContentsView
+                    .findViewById(R.id.txtTapToCreate));
+
+            tvTitle.setText(clickedClusterItem.name);
+            tvSnippet.setText(clickedClusterItem.details);
+            tvTapToCr.setText("Tap to create!");
+
+            return myContentsView;
+        }
+
+        @Override
+        public View getInfoContents(Marker marker) {
+            return null;
+        }
     }
 }

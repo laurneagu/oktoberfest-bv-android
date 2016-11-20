@@ -470,6 +470,10 @@ public class FriendlyService extends Service {
                                             return;
                                         }
 
+                                        if (message.compareToIgnoreCase("Welcome to our chat! :)") == 0){
+                                            return;
+                                        }
+
                                         // It is not my message
                                         // If I haven't seen it
                                         if (seen == "false") {
@@ -561,6 +565,10 @@ public class FriendlyService extends Service {
                                             if (myName.compareToIgnoreCase(author) == 0) {
                                                 return;
                                             }
+                                            if (message.compareToIgnoreCase("Welcome to our chat! :)") == 0){
+                                                return;
+                                            }
+
 
                                             // It is not my message
                                                 Log.v("Name vs Author", myName + " " + author);//Creating a shared preference

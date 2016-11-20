@@ -253,7 +253,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         createEvent.setVisibility(View.VISIBLE);
         createEvent.setBackgroundResource(R.drawable.save_button_2);
         createEvent.getLayoutParams().height =100;
-        createEvent.getLayoutParams().width = 150 ;
+        createEvent.getLayoutParams().width = 200 ;
 
         createEvent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -771,9 +771,22 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
         m_gmap.addMarker(new MarkerOptions()
                 .position(latLng)
-                //.icon(BitmapDescriptorFactory.fromResource(R.drawable.football))
+                        //.icon(BitmapDescriptorFactory.fromResource(R.drawable.football))
                 .title("This is your selected area"));
         m_gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        SharedPreferences sharedPref = getSharedPreferences("LocationPrefs", 0);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("curr_latitude", null);
+        editor.putString("curr_longitude", null);
+        editor.commit();
+
     }
 
     // Left side menu

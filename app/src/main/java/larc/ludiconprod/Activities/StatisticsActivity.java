@@ -36,6 +36,7 @@ import larc.ludiconprod.Adapters.LeftSidePanelAdapter;
 import larc.ludiconprod.R;
 import larc.ludiconprod.UserInfo.User;
 import larc.ludiconprod.Utils.SportOfUserDetails;
+import larc.ludiconprod.Utils.util.DateManager;
 import larc.ludiconprod.Utils.util.Utils;
 
 import com.github.mikephil.charting.charts.BarChart;
@@ -139,7 +140,7 @@ public class StatisticsActivity extends Activity {
                                     }
                                 }
                                 if (data.getKey().compareToIgnoreCase("date") == 0) {
-                                    userEvents.get(j).date = new Date((long)data.getValue());
+                                    userEvents.get(j).date = DateManager.convertFromTextToDate(data.getValue().toString());
                                 }
                             }
                             // event is in the past
@@ -176,7 +177,9 @@ public class StatisticsActivity extends Activity {
                                                             }
                                                         }
                                                         if (dataChild.getKey().compareToIgnoreCase("date") == 0) {
-                                                            userEvents.get(j).date = new Date(dataChild.getValue().toString());
+                                                            userEvents.get(j).date = DateManager.convertFromTextToDate(dataChild.getValue().toString());
+                                                                        //new Date((long)dataChild.getValue());
+                                                                        //new Date(dataChild.getValue().toString());
                                                         }
                                                     }
                                                 }
