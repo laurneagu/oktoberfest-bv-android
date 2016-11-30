@@ -305,11 +305,11 @@ public class SettingsActivity extends Activity {
                         RelativeLayout rl = (RelativeLayout) cb.getParent();
                         sport.setSelected(cb.isChecked());
                         if (cb.isChecked()) {
-                            rl.setBackgroundColor(Color.parseColor("#0C3855"));
+                            rl.setBackground(getResources().getDrawable(R.drawable.settings_icon_selected));
                             //((ImageView) rl.getChildAt(1)).setImageBitmap(sport.icon);
                             cb.setAlpha((float) 0.9);
                         } else {
-                            rl.setBackgroundColor(Color.parseColor("#910c3855"));
+                            rl.setBackground(getResources().getDrawable(R.drawable.settings_icon_notselected));
                             //((ImageView) rl.getChildAt(1)).setImageBitmap(sport.desaturated_icon);
                             cb.setAlpha((float) 0.7);
                         }
@@ -331,15 +331,14 @@ public class SettingsActivity extends Activity {
             holder.box.setText("");
             holder.box.setChecked(sport.isChecked);
             holder.box.setTag(sport);
-            holder.text.setTextColor(getResources().getColor(R.color.white));
+            holder.text.setTextColor(getResources().getColor(R.color.black));
             if (holder.box.isChecked()) {
-                holder.rl.setBackgroundColor(Color.parseColor("#0C3855"));
+                holder.rl.setBackground(getResources().getDrawable(R.drawable.settings_icon_selected));
                 holder.image.setImageBitmap(sport.icon);
                 holder.box.setTextColor(getResources().getColor(R.color.white));
                 holder.box.setAlpha((float) 0.9);
             } else {
-                holder.box.setTextColor(getResources().getColor(R.color.white));
-                holder.rl.setBackgroundColor(Color.parseColor("#910c3855"));
+                holder.rl.setBackground(getResources().getDrawable(R.drawable.settings_icon_notselected));
                 holder.image.setImageBitmap(sport.icon);
                 //holder.image.setImageBitmap(sport.desaturated_icon);
                 holder.box.setAlpha((float) 0.7);

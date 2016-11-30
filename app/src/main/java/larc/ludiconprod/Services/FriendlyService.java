@@ -436,7 +436,7 @@ public class FriendlyService extends Service {
                                     public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
                                         String author = "";
                                         String message = "";
-                                        Date date = new Date();
+                                        Date date = null;
                                         String seen = "false";
 
                                         chatRefs.add(chatUid);
@@ -450,9 +450,12 @@ public class FriendlyService extends Service {
 
                                                 try {
                                                     String d = DateManager.convertFromSecondsToText((long) msgData.getValue());
-                                                    SimpleDateFormat format = new SimpleDateFormat("MMMM dd, HH:mm", Locale.ENGLISH);
-                                                    date = format.parse(d);
+                                                    String res = d.split(",")[1];
+                                                    SimpleDateFormat format = new SimpleDateFormat("dd MMM yyyy HH:mm");
+                                                    date = format.parse(res);
                                                 } catch (ParseException e) {
+                                                    e.printStackTrace();
+                                                }catch (Exception e){
                                                     e.printStackTrace();
                                                 }
                                             }
@@ -480,9 +483,12 @@ public class FriendlyService extends Service {
                                             //Notification !!!
                                             Log.v("Name vs Author", myName + " " + author);
                                             if (!isForeground("larc.ludiconprod")) { // if chat is not open
-
-                                                SimpleDateFormat form = new SimpleDateFormat("dd-mm-yyyy hh:mm:ss");
-                                                chatNotifier.sendNotification(FriendlyService.this, getSystemService(NOTIFICATION_SERVICE), getResources(), getNotificationIndex(), author, message, form.format(date), chatUid, false);
+                                                if(date != null) {
+                                                    SimpleDateFormat form = new SimpleDateFormat("dd MMM, HH:mm");
+                                                    chatNotifier.sendNotification(FriendlyService.this, getSystemService(NOTIFICATION_SERVICE), getResources(), getNotificationIndex(), author, message, form.format(date), chatUid, false);
+                                                }else{
+                                                    chatNotifier.sendNotification(FriendlyService.this, getSystemService(NOTIFICATION_SERVICE), getResources(), getNotificationIndex(), author, message, "", chatUid, false);
+                                                }
                                             }
                                         }
 
@@ -548,13 +554,6 @@ public class FriendlyService extends Service {
 
                                                 if (msgData.getKey().toString().equalsIgnoreCase("date")) {
                                                     date = Long.parseLong(msgData.getValue().toString());
-                                                   /* try {
-                                                        String d = DateManager.convertFromSecondsToText((long) msgData.getValue());
-                                                        SimpleDateFormat format = new SimpleDateFormat("MMMM dd, HH:mm", Locale.ENGLISH);
-                                                        date = format.parse(d);
-                                                    } catch (ParseException e) {
-                                                        e.printStackTrace();
-                                                    }*/
                                                 }
 
                                                 if (msgData.getKey().toString().equalsIgnoreCase("message")) {
@@ -587,13 +586,13 @@ public class FriendlyService extends Service {
                                                 isNewMsg = true;
 
                                                 if (!isForeground("larc.ludiconprod") && isNewMsg) { // if chat is not open
-                                                    SimpleDateFormat form = new SimpleDateFormat("dd-mm-yyyy hh:mm:ss");
-                                                    chatNotifier.sendNotification(FriendlyService.this, getSystemService(NOTIFICATION_SERVICE), getResources(), getNotificationIndex(), author, message, form.format(date), eventUid, true);
+                                                    String dateString = DateManager.convertFromSecondsToText(date);
+                                                    String resultDateString = dateString.split(",")[1].trim();
+
+                                                    chatNotifier.sendNotification(FriendlyService.this, getSystemService(NOTIFICATION_SERVICE), getResources(), getNotificationIndex(), author, message, resultDateString, eventUid, true);
                                                     json = gson.toJson(new Chat(message,author,date));
                                                     mPrefs.edit().putString(eventUid, json).commit();
                                                 }
-
-
                                         }
 
                                         @Override

@@ -14,7 +14,7 @@
         android:layout_width="240dp"
         android:layout_height="45dp"
         android:orientation="vertical"
-        android:background="@drawable/unselected">
+        android:background="@drawable/create_edittext">
         <CheckBox
             android:id="@+id/checkBox1"
             android:layout_marginLeft="7dp"
@@ -25,26 +25,29 @@
             android:focusableInTouchMode="false"
             android:text="CheckBox" />
 
-        <TextView
-            android:id="@+id/code"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="65dp"
-            android:text="TextView"
-            android:background="@color/white"
-            android:textColor="#1971b4" />
-
-
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:maxWidth="36dp"
             android:maxHeight="36dp"
-            android:layout_marginLeft="7dp"
+            android:layout_marginLeft="5dp"
             android:scaleType="fitCenter"
             android:id="@+id/icon"
             android:layout_centerInParent="true"
             android:layout_alignParentLeft="true" />
+
+        <TextView
+            android:id="@+id/code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/icon"
+            android:text="TextView"
+            android:textColor="#1971b4" />
+
+
     </RelativeLayout>
 </RelativeLayout>

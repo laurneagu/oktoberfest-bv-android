@@ -14,7 +14,7 @@
         android:layout_width="240dp"
         android:layout_height="45dp"
         android:orientation="vertical"
-        android:background="@color/white">
+        android:background="@drawable/create_edittext">
         <CheckBox
             android:id="@+id/checkBox1"
             android:layout_marginLeft="7dp"
