@@ -154,7 +154,7 @@ public class SettingsActivity extends Activity {
             saveButton.setVisibility(View.VISIBLE);
             saveButton.setBackgroundResource(R.drawable.save_button_2);
             saveButton.getLayoutParams().height =100;
-            saveButton.getLayoutParams().width = 150 ;
+            saveButton.getLayoutParams().width = 200 ;
 
             saveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
