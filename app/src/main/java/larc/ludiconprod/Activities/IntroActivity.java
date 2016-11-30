@@ -216,6 +216,9 @@ public class IntroActivity extends Activity {
             public void run() {
                 // Actions to do after 5 seconds
                 Intent goToNextActivity = new Intent(getApplicationContext(), MainActivity.class); //AskPreferences.class);
+                String chatUID = getIntent().getStringExtra("chatUID");
+                if(chatUID != null)
+                    goToNextActivity.putExtra("chatUID", chatUID);
                 startActivity(goToNextActivity);
                 finish();
             }
@@ -408,6 +411,7 @@ public class IntroActivity extends Activity {
                                                 mapSports.put("other",9);
                                                 map.put("sports",mapSports);
                                                 map.put("range", 100);
+                                                map.put("previousLastLoginTime", 0);
 
                                                 User.firebaseRef.child("mesg").child(User.uid).child("status").setValue("User Nou");
                                                 User.firebaseRef.child("users").child(uid).setValue(map);
@@ -416,11 +420,24 @@ public class IntroActivity extends Activity {
                                                 jumpToPrefActivity();
 
                                             } else { // old user
-                                                User.firebaseRef.child("mesg").child(User.uid).child("status").setValue("User vechi");
-                                                User.firebaseRef.child("users").child(uid).updateChildren(map);
-                                                User.firebaseRef.child("users").child(uid).child("usageStats").child("openedApp").child("" + System.currentTimeMillis()/1000).setValue("open");
-                                                updateFriends();
-                                                jumpToMainActivity();
+                                                final DatabaseReference ref = User.firebaseRef.child("users").child(uid).child("lastLogInTime"); // check user
+                                                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(DataSnapshot snapshot) {
+                                                        User.firebaseRef.child("users").child(uid).child("previousLastLoginTime").setValue(Double.parseDouble(snapshot.getValue().toString()));
+                                                        User.firebaseRef.child("mesg").child(User.uid).child("status").setValue("User vechi");
+                                                        User.firebaseRef.child("users").child(uid).updateChildren(map);
+                                                        User.firebaseRef.child("users").child(uid).child("usageStats").child("openedApp").child("" + System.currentTimeMillis()/1000).setValue("open");
+                                                        updateFriends();
+                                                        jumpToMainActivity();
+
+                                                    }
+
+                                                @Override
+                                                public void onCancelled(DatabaseError firebaseError) {
+                                                }
+                                            });
+
                                             }
 
                                         }

@@ -252,8 +252,16 @@ public class MainActivity extends AppCompatActivity {
         try{
         super.onCreate(savedInstanceState);
 
+            // Go to chat if chatUID is present
+            String chatUID = getIntent().getStringExtra("chatUID");
+            if(chatUID != null)
+            {
+                Intent goToChatList = new Intent(this, ChatListActivity.class);
+                goToChatList.putExtra("chatUID", chatUID);
+                startActivity(goToChatList);
+            }
+
         /* Batch.onStart(this);
-        Batch.User.getEditor()
                 .setIdentifier(User.uid)
                 .save(); // Don't forget to save the changes!
         */

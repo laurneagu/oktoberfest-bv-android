@@ -92,6 +92,7 @@ public class ChatListActivity extends Activity {
 
     Object waitForFriends = new Object();
 
+    String friendUID = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +105,8 @@ public class ChatListActivity extends Activity {
         initializeLeftSidePanel();
 
         User.setImage();
+
+        final String chatUID = getIntent().getStringExtra("chatUID");
 
         dialog = ProgressDialog.show(ChatListActivity.this, "", "Loading. Please wait", true);
 
@@ -160,6 +163,11 @@ public class ChatListActivity extends Activity {
                     chat.userUID = data.getKey().toString();
                     chat.chatID = data.getValue().toString();
 
+                    if(chatUID != null && chatUID.equalsIgnoreCase(chat.chatID))
+                    {
+                        friendUID =  chat.userUID;
+                    }
+
                     DatabaseReference chatRef = User.firebaseRef.child("chat").child(chat.chatID).child("Messages");
                     chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -183,7 +191,14 @@ public class ChatListActivity extends Activity {
                     });
                 }
 
-
+                if(chatUID != null)
+                {
+                    Intent intent = new Intent(getApplicationContext(), ChatTemplateActivity.class);
+                    intent.putExtra("uid", friendUID);
+                    intent.putExtra("firstConnection", false);
+                    intent.putExtra("chatID", chatUID);
+                    startActivity(intent);
+                }
 
 
                 // Dismiss loading dialog after  2 * TIMEOUT * chatList.size() ms

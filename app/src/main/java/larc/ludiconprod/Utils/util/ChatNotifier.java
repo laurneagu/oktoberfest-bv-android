@@ -18,6 +18,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import larc.ludiconprod.Activities.ChatListActivity;
+import larc.ludiconprod.Activities.ChatTemplateActivity;
 import larc.ludiconprod.Activities.IntroActivity;
 import larc.ludiconprod.R;
 import larc.ludiconprod.UserInfo.User;
@@ -45,7 +47,11 @@ public class ChatNotifier {
         Notification myNotification;
 
         Intent intent = new Intent(m_service, IntroActivity.class);                         // here was "this"
-        PendingIntent pendingIntent = PendingIntent.getActivity(m_service, 1, intent, 0);   // here was "FriendlyService.this"
+        if(!isChatMsg)
+            intent.putExtra("chatUID", chatUid);
+
+        int uniqueInt = (int) (System.currentTimeMillis() & 0xfffffff);
+        PendingIntent pendingIntent = PendingIntent.getActivity(m_service, uniqueInt, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         Notification.Builder builder = new Notification.Builder(m_service);
 
         builder.setAutoCancel(false);
@@ -58,18 +64,6 @@ public class ChatNotifier {
         builder.setContentTitle(author);
         builder.setContentText(message);
         builder.setSmallIcon(R.drawable.logo_notif);
-        //builder.setColor(Color.parseColor("#0e3956"));
-
-        // Asta e Daca vreau sa vad poza celuilalt
-        // asta implica sa adaug url-ul in firebase la event!!!!!!!!!!!
-//        synchronized (waitForPhoto){
-//            try {
-//                waitForPhoto.wait();
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
-
 
         Bitmap largeIcon = BitmapFactory.decodeResource(m_resources, R.drawable.logo);
         builder.setLargeIcon(largeIcon);
@@ -84,7 +78,7 @@ public class ChatNotifier {
         builder.build();
 
        // builder.setVibrate(new long[]{1000, 1000, 1000, 1000, 1000});
-        builder.setLights(Color.RED, 3000, 3000);
+        builder.setLights(Color.BLUE, 3000, 3000);
 
 
         myNotification = builder.getNotification();
