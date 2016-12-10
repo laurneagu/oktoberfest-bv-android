@@ -6,6 +6,8 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,6 +15,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -82,6 +86,19 @@ public class IntroActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+        // Hide App bar
+        // If the Android version is lower than Jellybean, use this call to hide
+        // the status bar.
+        if (Build.VERSION.SDK_INT < 16) {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        }
+        // remove title
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         /* Batch Init - NOW IS IN UseParse*/
        // Batch.Push.setGCMSenderId("458732166636");
@@ -167,6 +184,10 @@ public class IntroActivity extends Activity {
         logo = (ImageView) findViewById(R.id.logo);
         //logo.setImageResource(R.drawable.logo);
 
+        TextView ludiconText = (TextView)findViewById(R.id.ludiconIntroTV);
+        Typeface segoeui = Typeface.createFromAsset(getAssets(), "fonts/segoeuii.ttf");
+        ludiconText.setTypeface(segoeui);
+
         LoginButton login_button = (LoginButton) findViewById(R.id.login_button);
         login_button.setReadPermissions(Arrays.asList("public_profile, email, user_friends"));
 
@@ -175,6 +196,7 @@ public class IntroActivity extends Activity {
 
         greeting = (TextView) findViewById(R.id.greeting);
         greeting.setVisibility(View.INVISIBLE);
+        greeting.setTypeface(segoeui);
 
         profileTracker = new ProfileTracker() {
             @Override

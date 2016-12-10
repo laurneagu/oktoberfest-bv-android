@@ -66,7 +66,7 @@ public class RankingsActivity extends Activity {
 
         // User picture and name for HEADER MENU
         TextView userName = (TextView) findViewById(R.id.userName);
-        userName.setText(User.getFirstName(getApplicationContext()) + " " + User.getLastName(getApplicationContext()));
+        userName.setText(User.getFirstName(getApplicationContext()));
 
 
         TextView hello_message = (TextView) findViewById(R.id.hello_message_activity);

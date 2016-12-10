@@ -6,16 +6,20 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -109,6 +113,19 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
     protected void onCreate(Bundle savedInstanceState) {
         try{
         super.onCreate(savedInstanceState);
+
+            // Hide App bar
+            // If the Android version is lower than Jellybean, use this call to hide
+            // the status bar.
+            if (Build.VERSION.SDK_INT < 16) {
+                getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                        WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            }
+            // remove title
+            requestWindowFeature(Window.FEATURE_NO_TITLE);
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.activity_event_details);
         getActionBar().hide();
         TextView title = (TextView)findViewById(R.id.hello_message_activity);
@@ -137,8 +154,15 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
         mapFragment.getMapAsync(this);
 
         // User picture and name for HEADER MENU
-        final TextView userName = (TextView) findViewById(R.id.userName);
-        userName.setText(User.getFirstName(getApplicationContext()) + " " + User.getLastName(getApplicationContext()));
+            // User picture and name for HEADER MENU
+            Typeface segoeui = Typeface.createFromAsset(getAssets(), "fonts/seguisb.ttf");
+
+            final TextView userName = (TextView) findViewById(R.id.userName);
+            userName.setText(User.getFirstName(getApplicationContext()));
+            userName.setTypeface(segoeui);
+
+            TextView userSportsNumber = (TextView)findViewById(R.id.userSportsNumber);
+            userSportsNumber.setTypeface(segoeui);
 
         ImageView userPic = (ImageView) findViewById(R.id.userPicture);
         Drawable d = new BitmapDrawable(getResources(), User.image);

@@ -19,6 +19,10 @@
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#FFFFFF" />
 
             <larc.ludiconprod.Utils.ui.SlidingTabLayout
                 android:id="@+id/tabs"
@@ -26,13 +30,13 @@
                 android:layout_height="wrap_content"
                 android:elevation="2dp"
                 android:textColor="@color/tab_text_color"
-                android:background="#166eb1"/>
+                android:background="#3393B7"/>
 
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:id="@+id/currEventLayout"
                 android:layout_height="0dp"
-                android:background="#166eb1"
+                android:background="#3393B7"
                 android:elevation="2dp"
                 android:layout_below="@+id/relativeLayout1">
 
@@ -115,8 +119,8 @@
                         android:textStyle="bold"
                         android:textColor="#ffffff"
                         android:textSize="30dp"
-                        android:textAlignment="center"
-                        android:background="#14609a" />
+                        android:textAlignment="gravity"
+                        android:background="#3393B7" />
 
                 </LinearLayout>
 

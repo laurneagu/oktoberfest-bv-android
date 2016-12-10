@@ -36,7 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#FFFFFF"
-        android:textSize="24sp"
+        android:textSize="20dp"
         android:visibility="visible"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="75dp"
@@ -54,10 +54,22 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:id="@+id/logo"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="60dp"
         android:layout_centerHorizontal="true"
         android:elevation="50dp"
         android:background="@drawable/logo_shadow"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:textSize="35dp"
+        android:textColor="#FFFFFF"
+        android:layout_below="@+id/logo"
+        android:id="@+id/ludiconIntroTV"
+        android:text="Ludicon"
         />
 
 </RelativeLayout>

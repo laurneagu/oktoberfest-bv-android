@@ -2,6 +2,7 @@ package larc.ludiconprod.Adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import larc.ludiconprod.R;
+import larc.ludiconprod.UserInfo.User;
 
 /**
  * Created by LaurUser on 12/28/2015.
@@ -51,8 +53,11 @@ public class LeftSidePanelAdapter  extends BaseAdapter implements View.OnClickLi
             convertView = inflater.inflate(R.layout.leftside_elem, null);
         }
 
+        Typeface segoeui = Typeface.createFromAsset(m_activity.getAssets(), "fonts/seguisb.ttf");
+
         TextView entry_name = (TextView) convertView.findViewById(R.id.currElemName);
         entry_name.setText(entry.getName());
+        entry_name.setTypeface(segoeui);
 
         ImageView entry_pic = (ImageView)convertView.findViewById(R.id.elemPic);
         entry_pic.setImageResource(entry.getPictureId());
