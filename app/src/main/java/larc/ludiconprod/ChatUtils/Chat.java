@@ -10,6 +10,7 @@ public class Chat {
 
     private String message;
     private String author;
+    private String authorID;
     public long date;
     public boolean seen;
 
@@ -18,11 +19,12 @@ public class Chat {
     private Chat() {
     }
 
-    public Chat(String message, String author,long date) {
+    public Chat(String message, String author, long date, String authorID) {
         this.message = message;
         this.author = author;
         this.date = date;
         this.seen = false;
+        this.authorID = authorID;
     }
 
     public String getMessage() {
@@ -31,5 +33,9 @@ public class Chat {
 
     public String getAuthor() {
         return author;
+    }
+
+    public String getAuthorID() {
+        return authorID;
     }
 }

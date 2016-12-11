@@ -180,7 +180,7 @@ public class ChatTemplateActivity extends ListActivity {
                     String.format(new Locale("English"), "%tR", now);
             // Create our 'model', a Chat object
             DatabaseReference newChat = keyRef.child("Messages").push();
-            Chat chat = new Chat("Welcome to our chat! :)", "Ludicon", DateManager.getTimeNowInSeconds());
+            Chat chat = new Chat("Welcome to our chat! :)", "Ludicon", DateManager.getTimeNowInSeconds(),"ludicon-admin");
             newChat.setValue(chat);
 
             // For the first User
@@ -338,7 +338,7 @@ public class ChatTemplateActivity extends ListActivity {
                     String.format(new Locale("English"), "%td", now) + ", " +
                     String.format(new Locale("English"), "%tR", now);
             // Create our 'model', a Chat object
-            Chat chat = new Chat(input, mUsername,DateManager.getTimeNowInSeconds());
+            Chat chat = new Chat(input, mUsername,DateManager.getTimeNowInSeconds(), User.uid);
 
             // Create a new, auto-generated child of that chat location, and save our chat data there
             mDatabaseReferenceRef.push().setValue(chat);
