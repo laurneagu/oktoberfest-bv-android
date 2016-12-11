@@ -19,6 +19,13 @@ public class Chat {
     private Chat() {
     }
 
+    public Chat(String message, String author, long date){
+        this.message = message;
+        this.author = author;
+        this.date = date;
+        this.seen = false;
+    }
+
     public Chat(String message, String author, long date, String authorID) {
         this.message = message;
         this.author = author;

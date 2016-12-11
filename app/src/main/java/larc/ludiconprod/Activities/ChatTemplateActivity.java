@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -48,7 +49,6 @@ import larc.ludiconprod.UserInfo.User;
 import larc.ludiconprod.Utils.util.DateManager;
 
 public class ChatTemplateActivity extends ListActivity {
-
 
     private static final String FIREBASE_URL = "https://ludicon.firebaseio.com/";
 
@@ -231,7 +231,7 @@ public class ChatTemplateActivity extends ListActivity {
 
 
         // Setup our input methods. Enter key on the keyboard or pushing the send button
-        EditText inputText = (EditText) findViewById(R.id.messageInput);
+        final EditText inputText = (EditText) findViewById(R.id.messageInput);
         inputText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {

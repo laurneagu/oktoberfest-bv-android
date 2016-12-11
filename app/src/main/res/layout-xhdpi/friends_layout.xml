@@ -24,8 +24,8 @@
     </LinearLayout>
 
     <ImageButton
-        android:layout_width="100dp"
-        android:layout_height="30dp"
+        android:layout_width="70dp"
+        android:layout_height="21dp"
         android:id="@+id/chat_btn"
         android:background="@drawable/chat"
         android:layout_marginRight="10dp"
@@ -58,12 +58,12 @@
             android:layout_alignLeft="@+id/more_btn" />
 
         <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
             android:layout_marginLeft="7dp"
             android:id="@+id/ballImage"
             android:layout_marginBottom="5dp"
-            android:background="@drawable/lsp1"
+            android:background="@drawable/sports_icon"
             android:layout_toRightOf="@id/numberSports" />
 
     </LinearLayout>

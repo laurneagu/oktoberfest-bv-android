@@ -127,7 +127,7 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
                     WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_event_details);
-        getActionBar().hide();
+        //getActionBar().hide();
         TextView title = (TextView)findViewById(R.id.hello_message_activity);
         title.setText("Event Details");
         doIparticipate = false;

@@ -1,11 +1,18 @@
 package larc.ludiconprod.ChatUtils;
 
 
+import android.Manifest;
 import android.app.Activity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.google.firebase.database.Query;
+
+import java.sql.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.Date;
 
 import larc.ludiconprod.R;
 import larc.ludiconprod.Utils.util.DateManager;
@@ -55,7 +62,11 @@ public class ChatListAdapter extends FirebaseListAdapter<Chat> {
             msgDateRight = (TextView) view.findViewById(R.id.message_date_right);
             msgTextRight = (TextView) view.findViewById(R.id.message_text_right);
 
-            msgDateRight.setText(DateManager.convertFromSecondsToText(chat.date));
+            // Format date to the template Today/Yesterday
+            Date messageDate = DateManager.convertFromSecondsToDate(chat.date);
+            String formattedDate = formatMessageDate(messageDate);
+
+            msgDateRight.setText(formattedDate);
             msgTextRight.setText(chat.getMessage());
             linLayoutLeft = (LinearLayout) view.findViewById(R.id.content_with_background_left);
             linLayoutLeft.setAlpha(0);
@@ -69,7 +80,12 @@ public class ChatListAdapter extends FirebaseListAdapter<Chat> {
             linLayoutLeft.setBackgroundResource(R.drawable.out_message_bg);
             msgDateLeft = (TextView) view.findViewById(R.id.message_date_left);
             msgTextLeft = (TextView) view.findViewById(R.id.message_text_left);
-            msgDateLeft.setText(DateManager.convertFromSecondsToText(chat.date));
+
+            // Format date to the template Today/Yesterday
+            Date messageDate = DateManager.convertFromSecondsToDate(chat.date);
+            String formattedDate = formatMessageDate(messageDate);
+
+            msgDateLeft.setText(formattedDate);
             if( this.isGroupChat )
                 msgTextLeft.setText(author + ": " + chat.getMessage());
             else msgTextLeft.setText(chat.getMessage());
@@ -80,5 +96,49 @@ public class ChatListAdapter extends FirebaseListAdapter<Chat> {
             msgDateRight.setText("");
             msgTextRight.setText("");
         }
+    }
+
+    public static DateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm");
+
+    private String formatMessageDate(Date messageDate) {
+
+        Date currDate = new Date();
+        Calendar calCurrent = Calendar.getInstance();
+        calCurrent.setTime(currDate);
+
+        Calendar calMessage = Calendar.getInstance();
+        calMessage.setTime(messageDate);
+
+        String result ="";
+        if (calCurrent.get(Calendar.DAY_OF_MONTH) == calMessage.get(Calendar.DAY_OF_MONTH) &&
+                calCurrent.get(Calendar.MONTH) == calMessage.get(Calendar.MONTH) &&
+                calCurrent.get(Calendar.YEAR) == calMessage.get(Calendar.YEAR)){
+
+                String minutes="";
+                if(messageDate.getMinutes() < 10){
+                    minutes =  "0" + messageDate.getMinutes();
+                }
+                else{
+                    minutes = messageDate.getMinutes() + "";
+                }
+                result = "Today, " + messageDate.getHours() + ":" + minutes;
+        }
+        else if((calCurrent.get(Calendar.DAY_OF_MONTH) == calMessage.get(Calendar.DAY_OF_MONTH) + 1) &&
+                calCurrent.get(Calendar.MONTH) == calMessage.get(Calendar.MONTH) &&
+                calCurrent.get(Calendar.YEAR) == calMessage.get(Calendar.YEAR)){
+                String minutes="";
+                if(messageDate.getMinutes() < 10){
+                    minutes =  "0" + messageDate.getMinutes();
+                }
+                else{
+                    minutes = messageDate.getMinutes() + "";
+                }
+                result = "Yesterday, " + messageDate.getHours() + ":" + minutes;
+        }
+        else{
+            result = dateFormat.format(messageDate);
+        }
+
+        return result;
     }
 }

@@ -203,7 +203,7 @@ public class GroupChatTemplate extends ListActivity {
                     String.format(new Locale("English"), "%tR", now);
             // Create our 'model', a Chat object
             Log.v("Username", mUsername);
-            Chat chat = new Chat(input, mUsername, DateManager.getTimeNowInSeconds());
+            Chat chat = new Chat(input, mUsername, DateManager.getTimeNowInSeconds(), User.uid);
 
             // Create a new, auto-generated child of that chat location, and save our chat data there
             mDatabaseReferenceRef.push().setValue(chat);

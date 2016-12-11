@@ -58,12 +58,12 @@
             android:layout_alignLeft="@+id/more_btn" />
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
             android:layout_marginLeft="7dp"
             android:id="@+id/ballImage"
             android:layout_marginBottom="5dp"
-            android:background="@drawable/lsp1"
+            android:background="@drawable/sports_icon"
             android:layout_toRightOf="@id/numberSports" />
 
     </LinearLayout>

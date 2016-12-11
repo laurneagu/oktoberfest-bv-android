@@ -124,6 +124,8 @@
         <activity
             android:name=".Activities.GeneralChatActivity"
             android:label="@string/title_activity_chat"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"
             android:parentActivityName=".Activities.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -132,6 +134,8 @@
         <activity
             android:name=".Activities.ChatTemplateActivity"
             android:label="@string/title_activity_chat_template"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"
             android:parentActivityName=".Activities.GeneralChatActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

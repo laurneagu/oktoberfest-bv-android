@@ -41,6 +41,8 @@ import com.squareup.picasso.Picasso;
 import org.w3c.dom.Text;
 
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,8 +53,10 @@ import larc.ludiconprod.Adapters.LeftPanelItemClicker;
 import larc.ludiconprod.Adapters.LeftSidePanelAdapter;
 import larc.ludiconprod.R;
 import larc.ludiconprod.UserInfo.User;
+import larc.ludiconprod.Utils.ChatUtils.Chat1to1;
 import larc.ludiconprod.Utils.util.ChatNotifier;
 import larc.ludiconprod.Utils.util.DateManager;
+import java.util.*;
 
 public class ChatListActivity extends Activity {
 
@@ -66,15 +70,6 @@ public class ChatListActivity extends Activity {
 
     private static final String FIREBASE_URL = "https://ludicon.firebaseio.com/";
 
-    public class Chat1to1{
-        String userUID;
-        String chatID;
-        String userName;
-        String friendPhoto;
-        String lastTimeOnline;
-        String lastMessageText;
-        String lastMessageAuthor;
-    }
     @Override
     public void onStart() {
         super.onStart();
@@ -126,7 +121,6 @@ public class ChatListActivity extends Activity {
 
         dialog = ProgressDialog.show(ChatListActivity.this, "", "Loading. Please wait", true);
 
-        // User picture and name for HEADER MENU
         // User picture and name for HEADER MENU
         Typeface segoeui = Typeface.createFromAsset(getAssets(), "fonts/seguisb.ttf");
 
@@ -203,6 +197,8 @@ public class ChatListActivity extends Activity {
                                         chat.lastMessageAuthor = snap.getValue().toString().split(" ")[0];
                                     if (snap.getKey().toString().equalsIgnoreCase("message"))
                                         chat.lastMessageText = snap.getValue().toString();
+                                    if (snap.getKey().toString().equalsIgnoreCase("date"))
+                                        chat.lastMessageDateString = snap.getValue().toString();
                                 }
                             }
                             getChatInfo(chatList,chat,size);
@@ -222,7 +218,6 @@ public class ChatListActivity extends Activity {
                     intent.putExtra("chatID", chatUID);
                     startActivity(intent);
                 }
-
 
                 // Dismiss loading dialog after  2 * TIMEOUT * chatList.size() ms
                 Timer timer = new Timer();
@@ -248,9 +243,6 @@ public class ChatListActivity extends Activity {
             }
 
         });
-
-
-
     }
 
     public void getChatInfo(final List<Chat1to1> chatList, final Chat1to1 chat, final long size)
@@ -275,7 +267,8 @@ public class ChatListActivity extends Activity {
 
                     if  ((data.getKey()).compareTo("lastLogInTime") == 0)
                         if (data.getValue() != null) {
-                            chat.lastTimeOnline= DateManager.convertFromSecondsToText((long)data.getValue());
+                            Date lastOnlineDate = DateManager.convertFromSecondsToDate((long)data.getValue());
+                            chat.lastTimeOnline= formatMessageDate(lastOnlineDate);
                         }
                         else{
                             chat.lastTimeOnline="";
@@ -283,7 +276,11 @@ public class ChatListActivity extends Activity {
                 }
 
                 chatList.add(chat);
+
+                // Reach chat end of the list
                 if(chatList.size()==size){
+                    Collections.sort(chatList);
+
                     MyCustomAdapter adapter = new MyCustomAdapter(chatList, getApplicationContext());
                     ListView listView = (ListView) findViewById(R.id.chat_list);
                     listView.setAdapter(adapter);
@@ -382,7 +379,11 @@ public class ChatListActivity extends Activity {
                 if (!list.get(position).userName.split(" ")[0].equalsIgnoreCase(list.get(position).lastMessageAuthor))
                     lastMessageAuthor = "You";
                 else lastMessageAuthor = list.get(position).lastMessageAuthor;
-                holder.lastMessage.setText(lastMessageAuthor + ": " + list.get(position).lastMessageText);
+
+                String lastMessageTrimmed = list.get(position).lastMessageText;
+                if(lastMessageTrimmed.length() > 35)
+                    lastMessageTrimmed = lastMessageTrimmed.substring(0,35) + "[...]";
+                holder.lastMessage.setText(lastMessageAuthor + ": " + lastMessageTrimmed);
             }
             else
             {
@@ -455,6 +456,50 @@ public class ChatListActivity extends Activity {
             }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
+    }
+
+    public static DateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm");
+
+    private String formatMessageDate(Date messageDate) {
+
+        Date currDate = new Date();
+        Calendar calCurrent = Calendar.getInstance();
+        calCurrent.setTime(currDate);
+
+        Calendar calMessage = Calendar.getInstance();
+        calMessage.setTime(messageDate);
+
+        String result ="";
+        if (calCurrent.get(Calendar.DAY_OF_MONTH) == calMessage.get(Calendar.DAY_OF_MONTH) &&
+                calCurrent.get(Calendar.MONTH) == calMessage.get(Calendar.MONTH) &&
+                calCurrent.get(Calendar.YEAR) == calMessage.get(Calendar.YEAR)){
+
+            String minutes="";
+            if(messageDate.getMinutes() < 10){
+                minutes =  "0" + messageDate.getMinutes();
+            }
+            else{
+                minutes = messageDate.getMinutes() + "";
+            }
+            result = "Today, " + messageDate.getHours() + ":" + minutes;
+        }
+        else if((calCurrent.get(Calendar.DAY_OF_MONTH) == calMessage.get(Calendar.DAY_OF_MONTH) + 1) &&
+                calCurrent.get(Calendar.MONTH) == calMessage.get(Calendar.MONTH) &&
+                calCurrent.get(Calendar.YEAR) == calMessage.get(Calendar.YEAR)){
+            String minutes="";
+            if(messageDate.getMinutes() < 10){
+                minutes =  "0" + messageDate.getMinutes();
+            }
+            else{
+                minutes = messageDate.getMinutes() + "";
+            }
+            result = "Yesterday, " + messageDate.getHours() + ":" + minutes;
+        }
+        else{
+            result = dateFormat.format(messageDate);
+        }
+
+        return result;
     }
 
 

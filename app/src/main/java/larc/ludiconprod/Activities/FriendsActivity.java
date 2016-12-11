@@ -1,6 +1,7 @@
 package larc.ludiconprod.Activities;
 
 import android.app.Activity;
+import java.util.*;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -50,6 +51,7 @@ import larc.ludiconprod.Adapters.LeftPanelItemClicker;
 import larc.ludiconprod.Adapters.LeftSidePanelAdapter;
 import larc.ludiconprod.R;
 import larc.ludiconprod.UserInfo.User;
+import larc.ludiconprod.Utils.FriendUtils.FriendItem;
 import larc.ludiconprod.Utils.util.Utils;
 
 public class FriendsActivity extends Activity {
@@ -80,16 +82,12 @@ public class FriendsActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_friends);
-        TextView header = (TextView) findViewById(R.id.hello_message_activity);
-        header.setText("Friends");
-
 
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
         initializeLeftSidePanel();
 
         User.setImage();
 
-        // User picture and name for HEADER MENU
         // User picture and name for HEADER MENU
         Typeface segoeui = Typeface.createFromAsset(getAssets(), "fonts/seguisb.ttf");
 
@@ -187,6 +185,9 @@ public class FriendsActivity extends Activity {
                                     iRemovedCount++;
                                 }
 
+                                // Sort friends alphabetically
+                                Collections.sort(friends);
+
                                 MyCustomAdapter adapter = new MyCustomAdapter(friends,getApplicationContext());
                                 ListView listView = (ListView) findViewById(R.id.friends_listView);
                                 Log.v("TAG",friends.size()+"");
@@ -202,24 +203,11 @@ public class FriendsActivity extends Activity {
 
 
                 }
-
-
-
-
-            }
+        }
 
         };
     }
 
-
-
-    class FriendItem
-    {
-        public String name;
-        public String uid;
-        public String ImageUrl;
-        public String numberOfSports;
-    }
     public class MyCustomAdapter extends BaseAdapter implements ListAdapter {
 
         private ArrayList<FriendItem> list = new ArrayList<>();
