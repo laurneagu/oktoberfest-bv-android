@@ -27,6 +27,7 @@ import com.google.firebase.database.ValueEventListener;
 import larc.ludiconprod.R;
 import larc.ludiconprod.ChatUtils.Chat;
 import larc.ludiconprod.ChatUtils.ChatListAdapter;
+import larc.ludiconprod.UserInfo.User;
 import larc.ludiconprod.Utils.util.DateManager;
 
 public class GeneralChatActivity extends ListActivity {
@@ -151,7 +152,7 @@ public class GeneralChatActivity extends ListActivity {
         String input = inputText.getText().toString();
         if (!input.equals("")) {
             // Create our 'model', a Chat object
-            Chat chat = new Chat(input, mUsername, DateManager.getTimeNowInSeconds());
+            Chat chat = new Chat(input, mUsername, DateManager.getTimeNowInSeconds(), User.uid);
             // Create a new, auto-generated child of that chat location, and save our chat data there
             mDatabaseReferenceRef.push().setValue(chat);
             inputText.setText("");
