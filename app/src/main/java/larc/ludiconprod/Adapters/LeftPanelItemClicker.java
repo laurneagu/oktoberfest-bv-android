@@ -37,15 +37,18 @@ public class LeftPanelItemClicker {
                                 i_currActivity.startActivity(friendIntent);
                                 break;
                             case 3:
+                                Toast.makeText(i_context,"Will be available soon..",Toast.LENGTH_LONG).show();
+                                break;
+                            case 4:
                                 Intent chatIntent = new Intent(i_currActivity, ChatListActivity.class);
                                 i_currActivity.startActivity(chatIntent);
                                 break;
-                            case 4:
+                            case 5:
                                 Intent rankingIntent = new Intent(i_currActivity, RankingsNewActivity.class);
                                 i_currActivity.startActivity(rankingIntent);
                                 //Toast.makeText(i_context,"Will be available soon..",Toast.LENGTH_LONG).show();
                                 break;
-                            case 5:
+                            case 6:
                                 Intent helpIntent = new Intent(i_currActivity, SettingsActivity.class);
                                 //helpIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 i_currActivity.startActivity(helpIntent);
