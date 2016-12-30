@@ -264,7 +264,6 @@ public class MainActivity extends AppCompatActivity {
         // If the Android version is lower than Jellybean, use this call to hide
         // the status bar.
 
-            /*
         if (Build.VERSION.SDK_INT < 16) {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                     WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -273,7 +272,6 @@ public class MainActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-*/
             // Go to chat if chatUID is present
             String chatUID = getIntent().getStringExtra("chatUID");
             if(chatUID != null)
@@ -665,14 +663,14 @@ public class MainActivity extends AppCompatActivity {
             User.setImage();
 
             // User picture and name for HEADER MENU
-           // Typeface segoeui = Typeface.createFromAsset(getAssets(), "fonts/seguoeui.ttf");
+           Typeface segoeui = Typeface.createFromAsset(getAssets(), "fonts/seguoeui.ttf");
 
             TextView userName = (TextView) findViewById(R.id.userName);
             userName.setText(User.getFirstName(getApplicationContext()));
-          //  userName.setTypeface(segoeui);
+            userName.setTypeface(segoeui);
 
             TextView userSportsNumber = (TextView)findViewById(R.id.userSportsNumber);
-            // userSportsNumber.setTypeface(segoeui);
+            userSportsNumber.setTypeface(segoeui);
 
             ImageView userPic = (ImageView) findViewById(R.id.userPicture);
             Drawable d = new BitmapDrawable(getResources(), User.image);
