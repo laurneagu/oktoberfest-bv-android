@@ -1,6 +1,7 @@
 package larc.ludiconprod.Activities;
 
 import android.app.ActivityManager;
+import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -22,12 +23,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -92,6 +95,7 @@ import larc.ludiconprod.Services.FriendlyService;
 import larc.ludiconprod.Utils.Event;
 import larc.ludiconprod.Utils.Location.GPSTracker;
 import larc.ludiconprod.Utils.MainPageUtils.ViewPagerAdapter;
+import larc.ludiconprod.Utils.MessageDialog;
 import larc.ludiconprod.Utils.ui.SlidingTabLayout;
 import larc.ludiconprod.Utils.util.DateManager;
 import larc.ludiconprod.Utils.util.Utils;
@@ -259,6 +263,8 @@ public class MainActivity extends AppCompatActivity {
         // Hide App bar
         // If the Android version is lower than Jellybean, use this call to hide
         // the status bar.
+
+            /*
         if (Build.VERSION.SDK_INT < 16) {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                     WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -267,7 +273,7 @@ public class MainActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
+*/
             // Go to chat if chatUID is present
             String chatUID = getIntent().getStringExtra("chatUID");
             if(chatUID != null)
@@ -321,7 +327,6 @@ public class MainActivity extends AppCompatActivity {
 
         // test
         //dialog.dismiss();
-
         // Check if there are any unsaved points in SharedPref and put them on DatabaseReference
         Map<String, Integer> unsavedPointsMap = new HashMap<>();
         SharedPreferences pSharedPref = getSharedPreferences("Points", Context.MODE_PRIVATE);
@@ -425,6 +430,7 @@ public class MainActivity extends AppCompatActivity {
                         userRange = Integer.parseInt(dataSN.getValue().toString());
                     }
                 }
+                dialog.dismiss();
                 continueUpdatingTimeline();
             }
 
@@ -476,6 +482,8 @@ public class MainActivity extends AppCompatActivity {
     double userLatitude = 0;
     double userLongitude = 0;
     public void continueUpdatingTimeline() {
+        // Test if location services are activated
+        testGPSConnection();
         try {
             // Get user's last known location from SharedPref
             SharedPreferences sharedPref = this.getApplicationContext().getSharedPreferences("LocationPrefs", 0);
@@ -657,14 +665,14 @@ public class MainActivity extends AppCompatActivity {
             User.setImage();
 
             // User picture and name for HEADER MENU
-            Typeface segoeui = Typeface.createFromAsset(getAssets(), "fonts/seguisb.ttf");
+           // Typeface segoeui = Typeface.createFromAsset(getAssets(), "fonts/seguoeui.ttf");
 
             TextView userName = (TextView) findViewById(R.id.userName);
             userName.setText(User.getFirstName(getApplicationContext()));
-            userName.setTypeface(segoeui);
+          //  userName.setTypeface(segoeui);
 
             TextView userSportsNumber = (TextView)findViewById(R.id.userSportsNumber);
-            userSportsNumber.setTypeface(segoeui);
+            // userSportsNumber.setTypeface(segoeui);
 
             ImageView userPic = (ImageView) findViewById(R.id.userPicture);
             Drawable d = new BitmapDrawable(getResources(), User.image);
@@ -696,7 +704,6 @@ public class MainActivity extends AppCompatActivity {
             updateList();
 
         } catch (Exception exc) {
-            Utils.quit();
         }
 
 
@@ -2124,6 +2131,36 @@ public class MainActivity extends AppCompatActivity {
             */
 
             return view;
+        }
+    }
+
+    void testGPSConnection()
+    {
+        final Context context = getApplicationContext();
+        LocationManager lm = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
+        boolean gps_enabled = false;
+
+        try {
+            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch(Exception ex) {}
+
+        if(!gps_enabled) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(MainActivity.this, R.style.MyAlertDialogStyle));
+            builder.setMessage("Location services are not enabled")
+                    .setPositiveButton("Activate location services", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(myIntent);
+                        }
+                    })
+                    .setNegativeButton("Close", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.dismiss();
+                        }
+                    });
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
         }
     }
 }
