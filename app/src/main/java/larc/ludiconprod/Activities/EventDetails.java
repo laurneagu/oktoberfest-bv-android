@@ -20,6 +20,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -656,8 +657,22 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    FriendsListAdapter adpt = new FriendsListAdapter(usersList, context, instance);
+                    final FriendsListAdapter adpt = new FriendsListAdapter(usersList, context, instance);
                     NonScrollListView lv = (NonScrollListView) findViewById(R.id.listViewUsers);
+                    lv.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+                        @Override
+                        public void onItemClick(AdapterView<?>adapter,View v, int position, long id){
+                            UserInfo userInfo = (UserInfo)adpt.getItem(position);
+                            if(userInfo.uid.equalsIgnoreCase("friend"))
+                                Toast.makeText(getApplicationContext(),"This user does not have an account in Ludicon. Yet!",Toast.LENGTH_SHORT).show();
+                            else
+                            {
+                                Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                                intent.putExtra("uid", userInfo.uid);
+                                startActivity(intent);
+                            }
+                        }
+                    });
                     if (lv != null)
                         lv.setAdapter(adpt);
                 }
