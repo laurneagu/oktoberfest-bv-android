@@ -1,5 +1,5 @@
 package larc.ludiconprod.Utils.FriendUtils;
-
+import java.util.*;
 import java.util.Comparator;
 
 /**
@@ -10,6 +10,7 @@ public class FriendItem implements Comparator, Comparable<FriendItem>{
         public String uid;
         public String ImageUrl;
         public String numberOfSports;
+        public String friendsString;
 
 
     @Override

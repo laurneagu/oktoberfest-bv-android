@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -24,6 +25,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
@@ -40,8 +42,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -64,6 +64,7 @@ public class FriendsActivity extends Activity {
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     final ArrayList<FriendItem> friends = new ArrayList<>();
+    final ArrayList<String> friendsUIDs = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +124,7 @@ public class FriendsActivity extends Activity {
                         if (Boolean.parseBoolean(data.getValue().toString()) == true) {
                             friend.uid = data.getKey();
                             friends.add(friend);
+                            friendsUIDs.add(friend.uid);
                         }
                     }
 
@@ -165,10 +167,23 @@ public class FriendsActivity extends Activity {
                                 for (DataSnapshot data : snapshot.getChildren()) {
                                     if (data.getKey().toString().equalsIgnoreCase("profileImageURL"))
                                         friends.get(index).ImageUrl = data.getValue().toString();
-                                    if (data.getKey().toString().equalsIgnoreCase("sports"))
-                                        friends.get(index).numberOfSports = data.getChildrenCount() + " sports";
+
+                                    if (data.getKey().toString().equalsIgnoreCase("sports")) {
+                                        int numOfSports =(int)data.getChildrenCount();
+                                        if(numOfSports == 1){
+                                            friends.get(index).numberOfSports = numOfSports  + " sport";
+                                        }
+                                        else {
+                                            friends.get(index).numberOfSports = numOfSports + " sports";
+                                        }
+                                    }
+
                                     if (data.getKey().toString().equalsIgnoreCase("name"))
                                         friends.get(index).name = data.getValue().toString();
+
+                                    if(data.getKey().toString().equalsIgnoreCase("friends")) {
+                                        friends.get(index).friendsString = data.getValue().toString();
+                                    }
                                 }
 
                                 if(friends.get(index).ImageUrl ==null){
@@ -188,7 +203,7 @@ public class FriendsActivity extends Activity {
                                 // Sort friends alphabetically
                                 Collections.sort(friends);
 
-                                MyCustomAdapter adapter = new MyCustomAdapter(friends,getApplicationContext());
+                                adapter = new MyCustomAdapter(friends,getApplicationContext());
                                 ListView listView = (ListView) findViewById(R.id.friends_listView);
                                 Log.v("TAG",friends.size()+"");
                                 listView.setAdapter(adapter);
@@ -199,13 +214,20 @@ public class FriendsActivity extends Activity {
                         public void onCancelled(DatabaseError firebaseError) {
                         }
                     });
-
-
-
                 }
         }
 
         };
+    }
+
+    private MyCustomAdapter adapter;
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        if (adapter != null)
+            adapter.notifyDataSetChanged();
+
     }
 
     public class MyCustomAdapter extends BaseAdapter implements ListAdapter {
@@ -222,8 +244,9 @@ public class FriendsActivity extends Activity {
             TextView textName;
             ImageView imageView;
             ImageButton moreButton;
-            ImageButton chatButton;
+            Button chatButton;
             TextView numberSports;
+            TextView numberMutuals;
         };
 
         @Override
@@ -249,9 +272,11 @@ public class FriendsActivity extends Activity {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.friends_layout, null);
 
+                final View currentView = view;
                 view.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View v) {
+                        currentView.setBackgroundColor(Color.parseColor("#D3D3D3"));
                         Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
                         intent.putExtra("uid", list.get(position).uid);
                         startActivity(intent);
@@ -261,8 +286,9 @@ public class FriendsActivity extends Activity {
                 holder = new ViewHolder();
                 holder.textName = (TextView) view.findViewById(R.id.list_item_string);
                 holder.imageView = (ImageView) view.findViewById(R.id.profileImageView);
-                holder.chatButton = (ImageButton) view.findViewById(R.id.chat_btn);
+                holder.chatButton = (Button) view.findViewById(R.id.chat_btn);
                 holder.numberSports = (TextView) view.findViewById(R.id.numberSports);
+                holder.numberMutuals = (TextView) view.findViewById(R.id.numberoOfMutuals);
 
                 view.setTag(holder);
             }
@@ -270,6 +296,7 @@ public class FriendsActivity extends Activity {
                 holder = (ViewHolder)view.getTag();
             }
 
+            view.setBackgroundColor(Color.parseColor("#FFFFFF"));
 
             // Set name in TextView
             holder.textName.setText(list.get(position).name);
@@ -277,16 +304,47 @@ public class FriendsActivity extends Activity {
             // Set Image in ImageView
             DatabaseReference userRef = User.firebaseRef.child("users").child(list.get(position).uid).child("profileImageURL");
             Log.v("Position", position + "");
-//
 
             Picasso.with(context).load(list.get(position).ImageUrl).into(holder.imageView);
+            holder.imageView.setBackgroundResource(R.drawable.defaultpicture);
 
-            holder.numberSports.setText("plays " + list.get(position).numberOfSports);
+            // Number of sports
+            holder.numberSports.setText(list.get(position).numberOfSports);
 
+            // Calculate number of mutuals
+            if (list.get(position).friendsString != null) {
+                String[] friends = list.get(position).friendsString.split(",");
+                int numOfMutuals=0;
+                for(int i = 0 ; i < friends.length ; i ++){
+                    // current friend is still a friend of the friend :)
+                    if (friends[i].contains("true")){
+                        String friendsUid = friends[i].replace("true","").trim();
+                        friendsUid = friendsUid.replace("=","");
+
+                        // is also my friend
+                        if(friendsUIDs.contains(friendsUid)) numOfMutuals ++;
+                    }
+                }
+                if (numOfMutuals == 0){
+                    holder.numberMutuals.setText("no mutual friends");
+                }
+                else if (numOfMutuals == 1){
+                    holder.numberMutuals.setText("1 mutual friend");
+                }
+                else {
+                    holder.numberMutuals.setText(numOfMutuals + " mutual friends");
+                }
+            }
+            else {
+                holder.numberMutuals.setText("no mutual friends");
+            }
+
+            final Button chatButton = holder.chatButton;
             // Buttons behaviour
             holder.chatButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    chatButton.setBackground(getResources().getDrawable(R.drawable.settings_icon_notselected));
                     DatabaseReference userRef = User.firebaseRef.child("users").child(list.get(position).uid).child("chats");
                     userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -305,6 +363,9 @@ public class FriendsActivity extends Activity {
                             intent.putExtra("firstConnection", firstConnection);
                             intent.putExtra("otherName", list.get(position).name);
                             intent.putExtra("chatID", chatID);
+
+                            chatButton.setBackground(getResources().getDrawable(R.drawable.settings_icon_selected));
+
                             startActivity(intent);
                         }
 

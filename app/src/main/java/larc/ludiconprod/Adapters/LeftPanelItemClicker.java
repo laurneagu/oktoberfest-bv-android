@@ -3,6 +3,7 @@ package larc.ludiconprod.Adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -25,30 +26,38 @@ public class LeftPanelItemClicker {
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id)  {
                         switch(position) {
                             case 0:
+                                view.setBackgroundColor(Color.parseColor("#D3D3D3"));
                                 Intent createNewIntent = new Intent(i_currActivity, CreateNewActivity.class);
                                 i_currActivity.startActivity(createNewIntent);
                                 break;
                             case 1:
+                                view.setBackgroundColor(Color.parseColor("#D3D3D3"));
                                 Intent statisticsNewIntent = new Intent(i_currActivity, StatisticsActivity.class);
                                 i_currActivity.startActivity(statisticsNewIntent);
                                 break;
                             case 2:
+                                view.setBackgroundColor(Color.parseColor("#D3D3D3"));
                                 Intent friendIntent = new Intent(i_currActivity, FriendsActivity.class);
                                 i_currActivity.startActivity(friendIntent);
                                 break;
                             case 3:
+                                view.setBackgroundColor(Color.parseColor("#D3D3D3"));
                                 Toast.makeText(i_context,"Will be available soon..",Toast.LENGTH_LONG).show();
+                                view.setBackgroundColor(Color.parseColor("#FFFFFF"));
                                 break;
                             case 4:
+                                view.setBackgroundColor(Color.parseColor("#D3D3D3"));
                                 Intent chatIntent = new Intent(i_currActivity, ChatListActivity.class);
                                 i_currActivity.startActivity(chatIntent);
                                 break;
                             case 5:
+                                view.setBackgroundColor(Color.parseColor("#D3D3D3"));
                                 Intent rankingIntent = new Intent(i_currActivity, RankingsNewActivity.class);
                                 i_currActivity.startActivity(rankingIntent);
                                 //Toast.makeText(i_context,"Will be available soon..",Toast.LENGTH_LONG).show();
                                 break;
                             case 6:
+                                view.setBackgroundColor(Color.parseColor("#D3D3D3"));
                                 Intent helpIntent = new Intent(i_currActivity, SettingsActivity.class);
                                 //helpIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 i_currActivity.startActivity(helpIntent);

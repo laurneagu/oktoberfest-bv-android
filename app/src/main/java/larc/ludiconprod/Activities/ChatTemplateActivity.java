@@ -134,6 +134,7 @@ public class ChatTemplateActivity extends ListActivity {
                     }
 
                     if (data.getKey().compareToIgnoreCase("profileImageURL") == 0) {
+                        profilePicture.setBackgroundResource(R.drawable.defaultpicture);
                         Picasso.with(getApplicationContext()).load(data.getValue().toString()).into(profilePicture);
                     }
 

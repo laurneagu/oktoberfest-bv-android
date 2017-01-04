@@ -405,6 +405,7 @@ public class ChatListActivity extends Activity {
 
             if (list.get(position).friendPhoto != "") {
                 //new DownloadImageTask(imageView).execute(data.getValue().toString());
+                holder.imageView.setBackgroundResource(R.drawable.defaultpicture);
                 Picasso.with(context).load(list.get(position).friendPhoto).into(holder.imageView);
                 holder.imageView.setOnClickListener(new View.OnClickListener() {
 

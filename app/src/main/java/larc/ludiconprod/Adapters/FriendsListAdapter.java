@@ -63,6 +63,7 @@ public class FriendsListAdapter extends BaseAdapter implements ListAdapter {
         final TextView points = (TextView) view.findViewById(R.id.pointsUser);
 
         name.setText(list.get(position).name);
+        profilePicture.setBackgroundResource(R.drawable.defaultpicture);
         Picasso.with(context).load(list.get(position).photo).into(profilePicture);
         points.setText(list.get(position).points);
 

@@ -14,6 +14,7 @@ import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.LocationManager;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -261,14 +262,22 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
         final EditText maxCapacityET = (EditText) findViewById(R.id.maxPlayersET);
 
-        Button removePeople = (Button) findViewById(R.id.removePeople);
-        removePeople.setOnClickListener(new View.OnClickListener() {
+        final Button removePeople = (Button) findViewById(R.id.removePeople);
+
+        removePeople.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                int currValue = Integer.parseInt(maxCapacityET.getText().toString());
-                if (currValue >= 3)
-                    currValue--;
-                maxCapacityET.setText(currValue + "");
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    removePeople.setAlpha((float) 0.3);
+
+                    int currValue = Integer.parseInt(maxCapacityET.getText().toString());
+                    if (currValue >= 3)
+                        currValue--;
+                    maxCapacityET.setText(currValue + "");
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    removePeople.setAlpha((float) 1);
+                }
+                return true;
             }
         });
 
@@ -282,6 +291,9 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         createEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                createEvent.setAlpha((float)0.3);
+                createEvent.setClickable(false);
+
                 OnCreateEvent();
 
                 SharedPreferences sharedPref = myAct.getSharedPreferences("LocationPrefs", 0);
@@ -289,17 +301,27 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
                 editor.putString("sel_latitude", null);
                 editor.putString("sel_longitude", null);
                 editor.commit();
+
+                createEvent.setAlpha((float)1);
             }
         });
 
-        Button addPeople = (Button) findViewById(R.id.addPeople);
-        addPeople.setOnClickListener(new View.OnClickListener() {
+        final Button addPeople = (Button) findViewById(R.id.addPeople);
+
+        addPeople.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                int currValue = Integer.parseInt(maxCapacityET.getText().toString());
-                if (currValue <= 50)
-                    currValue++;
-                maxCapacityET.setText(currValue + "");
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    addPeople.setAlpha((float) 0.3);
+
+                    int currValue = Integer.parseInt(maxCapacityET.getText().toString());
+                    if (currValue <= 50)
+                        currValue++;
+                    maxCapacityET.setText(currValue + "");
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    addPeople.setAlpha((float) 1);
+                }
+                return true;
             }
         });
 
@@ -468,8 +490,6 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
     public void OnCreateEvent() {
         try {
-
-
             Calendar calendar = myCalendar;
 
                 /*new GregorianCalendar(myCalendar.get(Calendar.YEAR),
@@ -484,7 +504,6 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
             final Map<String, Object> map = new HashMap<String, Object>();
 
-
             // Set date it will be played
             // TODO GMT format
             DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, new Locale("English"));
@@ -493,10 +512,8 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
             String gmtTime = df.format(calendar.getTime());
             final Date creationDate = calendar.getTime();
 
-
             if (checkEventDateIsNotInPast(creationDate))
                 return;
-
 
             createEvent.setEnabled(false);
             createEvent.setClickable(false);
@@ -548,7 +565,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         } else {
             map.put("privacy", "private");
         }
-*/
+        */
             map.put("privacy", "public");
 
             // Set location

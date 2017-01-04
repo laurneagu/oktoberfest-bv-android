@@ -2,6 +2,7 @@ package larc.ludiconprod.Adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,6 +68,5 @@ public class LeftSidePanelAdapter  extends BaseAdapter implements View.OnClickLi
 
     @Override
     public void onClick(View view) {
-
     }
 }

@@ -335,6 +335,7 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
                 }
 
                 final ImageView profilePicture = (ImageView) findViewById(R.id.profileImageView);
+                profilePicture.setBackgroundResource(R.drawable.defaultpicture);
                 Picasso.with(getApplicationContext()).load(creatorImage).into(profilePicture);
 
                 final ImageView icon = (ImageView) findViewById(R.id.sportImage);

@@ -233,7 +233,7 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
 
         ////////////////////////////
         TextView hello_message = (TextView) findViewById(R.id.hello_message_activity);
-        hello_message.setText("Pick location");
+        hello_message.setText("");
 
         // this is it
         startDemo();
@@ -301,6 +301,7 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -458,7 +459,7 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
     @Override
     public boolean onClusterClick(Cluster<AuthPlace> cluster) {
         // Show a toast with some info when the cluster is clicked.
-        Toast.makeText(this, "Here are " + cluster.getSize() + " locations ! Pick just one for the event !" , Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Here are " + cluster.getSize() + " locations ! Zoom in and select just one for the event !" , Toast.LENGTH_SHORT).show();
         return true;
     }
 

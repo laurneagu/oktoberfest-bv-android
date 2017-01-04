@@ -703,6 +703,7 @@ public class RankingsNewActivity extends AppCompatActivity {
             }
 
             holder.name.setText(list.get(position).name);
+            holder.profilePicture.setBackgroundResource(R.drawable.defaultpicture);
             Picasso.with(context).load(list.get(position).profileImageURL).into(holder.profilePicture);
 
             holder.points.setText(list.get(position).points + " points");

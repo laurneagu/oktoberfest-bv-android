@@ -1710,7 +1710,7 @@ public class MainActivity extends AppCompatActivity {
              TextView place;
              ImageView icon;
              ImageButton details;
-             ImageButton join;
+             Button join;
              TextView players;
              TextView description;
         };
@@ -1766,7 +1766,7 @@ public class MainActivity extends AppCompatActivity {
                 holder.place = (TextView) view.findViewById(R.id.placeText);
                 holder.icon = (ImageView) view.findViewById(R.id.sportIcon);
                 //holder.details = (ImageButton) view.findViewById(R.id.details_btn);
-                holder.join = (ImageButton) view.findViewById(R.id.join_btn);
+                holder.join = (Button) view.findViewById(R.id.join_btn);
                 holder.description = (TextView) view.findViewById(R.id.descriptionID);
                 holder.players = (TextView) view.findViewById(R.id.playersID);
 
@@ -1792,6 +1792,7 @@ public class MainActivity extends AppCompatActivity {
             //final String userUID = list.get(position).getFirstUser();
 
             holder.name.setText(list.get(position).creatorName.split(" ")[0]);
+            holder.profilePicture.setBackgroundResource(R.drawable.defaultpicture);
             Picasso.with(context).load(list.get(position).profileImageURL).into( holder.profilePicture);
 
 
@@ -2018,6 +2019,7 @@ public class MainActivity extends AppCompatActivity {
             //final String userUID = list.get(position).getFirstUser();
             String firstName = list.get(position).creatorName.split(" ")[0];
             holder.name.setText(firstName);
+            holder.profilePicture.setBackgroundResource(R.drawable.defaultpicture);
             Picasso.with(context).load(list.get(position).profileImageURL).into(holder.profilePicture);
 
             // Redirect to user profile on picture click
