@@ -41,6 +41,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -199,7 +200,11 @@ public class ProfileActivity extends Activity {
                             public void onDataChange(DataSnapshot snapshot) {
                                 if (snapshot.getValue() != null) {
                                     ImageView imageView = (ImageView) findViewById(R.id.profileImageView);
-                                    new DownloadImageTask(imageView).execute(snapshot.getValue().toString());
+
+                                    //new DownloadImageTask(imageView).execute(snapshot.getValue().toString());
+                                    Picasso.with(getApplicationContext()).load(snapshot.getValue().toString()).into(imageView);
+                                    imageView.setBackgroundResource(R.drawable.defaultpicture);
+
                                 } else {
                                 }
                             }

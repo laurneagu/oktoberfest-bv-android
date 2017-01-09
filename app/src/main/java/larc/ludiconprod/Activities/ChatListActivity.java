@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -82,10 +83,15 @@ public class ChatListActivity extends Activity {
         isForeground = false;
     }
 
+    private MyCustomAdapter adapter;
+
     @Override
     public void onResume() {
         super.onResume();
         isForeground = true;
+
+        if (adapter != null)
+            adapter.notifyDataSetChanged();
     }
 
     Object waitForFriends = new Object();
@@ -201,7 +207,8 @@ public class ChatListActivity extends Activity {
                                         chat.lastMessageDateString = snap.getValue().toString();
                                 }
                             }
-                            getChatInfo(chatList,chat,size);
+                              getChatInfo(chatList, chat, size);
+
                         }
 
                         @Override
@@ -279,9 +286,19 @@ public class ChatListActivity extends Activity {
 
                 // Reach chat end of the list
                 if(chatList.size()==size){
-                    Collections.sort(chatList);
+                    List<Chat1to1> newChatList = chatList;
 
-                    MyCustomAdapter adapter = new MyCustomAdapter(chatList, getApplicationContext());
+                    for(int i =0 ; i < newChatList.size() ; i++) {
+                        // this is for the bug of creating conversation when tapping a friend
+                        if (newChatList.get(i).lastMessageText.equalsIgnoreCase("Welcome to our chat! :)")) {
+                            newChatList.remove(newChatList.get(i));
+                            i--;
+                        }
+                    }
+
+                    Collections.sort(newChatList);
+
+                    adapter = new MyCustomAdapter(newChatList, getApplicationContext());
                     ListView listView = (ListView) findViewById(R.id.chat_list);
                     listView.setAdapter(adapter);
                 }
@@ -334,10 +351,12 @@ public class ChatListActivity extends Activity {
         public View getView(final int position, View convertView, ViewGroup parent) {
 
             View view = convertView;
+
             ViewHolder holder = null;
             if (view == null) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.chat1to1_layout, null);
+                view.setBackgroundColor(Color.parseColor("#FFFFFF"));
                 holder = new ViewHolder();
 
                 holder.textName = (TextView) view.findViewById(R.id.friend_name);
@@ -346,6 +365,7 @@ public class ChatListActivity extends Activity {
                 holder.lastMessage = (TextView) view.findViewById(R.id.lastMessage);
                 //holder.chatButton = (Button) view.findViewById(R.id.gotoChat);
 
+                final View currentView = view;
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -354,6 +374,8 @@ public class ChatListActivity extends Activity {
                         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot snapshot) {
+                                currentView.setBackgroundColor(Color.parseColor("#D3D3D3"));
+
                                 Intent intent = new Intent(getApplicationContext(), ChatTemplateActivity.class);
                                 intent.putExtra("uid", list.get(position).userUID);
                                 intent.putExtra("firstConnection", false);
@@ -373,6 +395,7 @@ public class ChatListActivity extends Activity {
             }
             else {
                 holder = (ViewHolder)view.getTag();
+                view.setBackgroundColor(Color.parseColor("#FFFFFF"));
             }
             String lastMessageAuthor = "";
             if (!list.get(position).lastMessageAuthor.equalsIgnoreCase("Ludicon")) {

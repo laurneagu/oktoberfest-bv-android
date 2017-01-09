@@ -480,9 +480,10 @@ public class MainActivity extends AppCompatActivity {
     double userLatitude = 0;
     double userLongitude = 0;
     public void continueUpdatingTimeline() {
-        // Test if location services are activated
-        testGPSConnection();
         try {
+            // Test if location services are activated
+            testGPSConnection();
+
             // Get user's last known location from SharedPref
             SharedPreferences sharedPref = this.getApplicationContext().getSharedPreferences("LocationPrefs", 0);
 
@@ -663,7 +664,7 @@ public class MainActivity extends AppCompatActivity {
             User.setImage();
 
             // User picture and name for HEADER MENU
-           Typeface segoeui = Typeface.createFromAsset(getAssets(), "fonts/seguoeui.ttf");
+           Typeface segoeui = Typeface.createFromAsset(getAssets(), "fonts/seguisb.ttf");
 
             TextView userName = (TextView) findViewById(R.id.userName);
             userName.setText(User.getFirstName(getApplicationContext()));

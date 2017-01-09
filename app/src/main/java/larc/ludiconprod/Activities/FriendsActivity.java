@@ -272,17 +272,6 @@ public class FriendsActivity extends Activity {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.friends_layout, null);
 
-                final View currentView = view;
-                view.setOnClickListener(new View.OnClickListener(){
-                    @Override
-                    public void onClick(View v) {
-                        currentView.setBackgroundColor(Color.parseColor("#D3D3D3"));
-                        Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
-                        intent.putExtra("uid", list.get(position).uid);
-                        startActivity(intent);
-                    }
-                });
-
                 holder = new ViewHolder();
                 holder.textName = (TextView) view.findViewById(R.id.list_item_string);
                 holder.imageView = (ImageView) view.findViewById(R.id.profileImageView);
@@ -338,6 +327,17 @@ public class FriendsActivity extends Activity {
             else {
                 holder.numberMutuals.setText("no mutual friends");
             }
+
+            final View currentView = view;
+            view.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    currentView.setBackgroundColor(Color.parseColor("#D3D3D3"));
+                    Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                    intent.putExtra("uid", list.get(position).uid);
+                    startActivity(intent);
+                }
+            });
 
             final Button chatButton = holder.chatButton;
             // Buttons behaviour
