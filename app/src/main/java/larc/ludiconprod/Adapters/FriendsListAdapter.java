@@ -35,7 +35,6 @@ public class FriendsListAdapter extends BaseAdapter implements ListAdapter {
         this.context = context;
         eventInstance = evDetailsInstance;
     }
-
     @Override
     public int getCount() {
         return list.size();

@@ -126,16 +126,16 @@ public class ProfileActivity extends Activity {
             Bundle extras = getIntent().getExtras();
             final String uid = extras.getString("uid");
 
-            // TODO - put if not friends
+            // put if not friends
             final ImageButton addFriend = (ImageButton)findViewById(R.id.header_button);
             addFriend.setVisibility(View.VISIBLE);
-            //TODO - Check if it a friend
+            //Check if it a friend
             DatabaseReference friendRef = User.firebaseRef.child("users").child(User.uid).child("friends").child(uid);
             friendRef.addListenerForSingleValueEvent(new ValueEventListener() {
 
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
-                    if (Boolean.parseBoolean(snapshot.getValue().toString()) == true)
+                    if (snapshot.getValue() != null && Boolean.parseBoolean(snapshot.getValue().toString()) == true)
                         addFriend.setBackgroundResource(R.drawable.admin_minus2);
                 }
 
@@ -203,7 +203,7 @@ public class ProfileActivity extends Activity {
 
                                     //new DownloadImageTask(imageView).execute(snapshot.getValue().toString());
                                     Picasso.with(getApplicationContext()).load(snapshot.getValue().toString()).into(imageView);
-                                    imageView.setBackgroundResource(R.drawable.defaultpicture);
+                                    //imageView.setBackgroundResource(R.drawable.defaultpicture);
 
                                 } else {
                                 }
