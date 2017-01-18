@@ -135,7 +135,7 @@ public class ProfileActivity extends Activity {
 
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
-                    if (snapshot.getValue() != null && Boolean.parseBoolean(snapshot.getValue().toString()) == true)
+                    if ( snapshot.getValue() != null && Boolean.parseBoolean(snapshot.getValue().toString()) == true)
                         addFriend.setBackgroundResource(R.drawable.admin_minus2);
                 }
 

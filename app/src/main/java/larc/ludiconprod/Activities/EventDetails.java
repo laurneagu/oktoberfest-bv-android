@@ -668,7 +668,7 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
                                 Toast.makeText(getApplicationContext(),"This user does not have an account in Ludicon. Yet!",Toast.LENGTH_SHORT).show();
                             else
                             {
-                                if(userInfo.uid.equalsIgnoreCase(User.uid))
+                                if( userInfo.uid.equalsIgnoreCase(User.uid))
                                 {
                                     Toast.makeText(getApplicationContext(),"It's just you! :)",Toast.LENGTH_SHORT).show();
                                 }
