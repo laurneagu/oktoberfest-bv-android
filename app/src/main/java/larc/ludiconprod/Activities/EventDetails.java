@@ -520,7 +520,7 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
 
         header_button = (ImageButton) findViewById(R.id.header_button);
         header_button.setVisibility(View.VISIBLE);
-        header_button.setBackgroundResource(R.drawable.admin_minus2);
+        header_button.setBackgroundResource(R.drawable.remove_event_button);
         header_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
