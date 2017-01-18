@@ -37,10 +37,11 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Large Text"
-            android:textColor="#0C3855"
+            android:textColor="#4295f4"
             android:id="@+id/event_organiser_name"
             android:layout_below="@+id/event_org"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:textStyle="bold|italic" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -60,7 +61,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/event_organiser_points"
-            android:background="#ebebeb"
+            android:background="#C3DC6E"
             android:id="@+id/frameLayout"
             android:useDefaultMargins="true"
             android:elevation="4dp"
@@ -101,7 +102,8 @@
                 android:layout_gravity="center_horizontal|bottom"
                 android:layout_row="4"
                 android:layout_column="2"
-                android:textColor="#45667c" />
+                android:textColor="#4295f4"
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -114,7 +116,8 @@
                 android:layout_gravity="center_horizontal|bottom"
                 android:layout_row="2"
                 android:layout_column="2"
-                android:textColor="#45667c" />
+                android:textColor="#4295f4"
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
