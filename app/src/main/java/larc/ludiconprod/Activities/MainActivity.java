@@ -1512,6 +1512,14 @@ public class MainActivity extends AppCompatActivity {
                 TimelineAroundActAdapter fradapter = new TimelineAroundActAdapter(friendsEventsList, getApplicationContext());
                 ListView frlistView = (ListView) findViewById(R.id.events_listView1);
                 if (frlistView != null) {
+
+                    if(friendsEventsList.size() == 0){
+                        frlistView.setBackgroundResource(R.drawable.noeventsaround_bg);
+                    }
+                    else{
+                        frlistView.setBackgroundColor(Color.parseColor("#FFFFFF"));;
+                    }
+
                     frlistView.setAdapter(fradapter);
                     // frlistView.setScrollingCacheEnabled(true);
                 }
@@ -1727,9 +1735,6 @@ public class MainActivity extends AppCompatActivity {
         public TimelineAroundActAdapter(ArrayList<Event> list, Context context) {
             this.list = list;
             this.context = context;
-
-
-
         }
 
         @Override
