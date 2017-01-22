@@ -1515,9 +1515,26 @@ public class MainActivity extends AppCompatActivity {
 
                     if(friendsEventsList.size() == 0){
                         frlistView.setBackgroundResource(R.drawable.noeventsaround_bg);
+
+                        Typeface segoeui = Typeface.createFromAsset(getApplication().getAssets(), "fonts/seguisb.ttf");
+                        final Button cloudoflistview1 = (Button) findViewById(R.id.cloudoflistview1);
+                        cloudoflistview1.setVisibility(View.VISIBLE);
+                        cloudoflistview1.setTypeface(segoeui);
+                        cloudoflistview1.setOnClickListener(new View.OnClickListener() {
+
+                            @Override
+                            public void onClick(View v) {
+                                cloudoflistview1.setBackgroundResource(R.drawable.cloud_selected);
+
+                                Intent intent = new Intent(getApplicationContext(), CreateNewActivity.class);
+                                startActivity(intent);
+                            }
+                        });
                     }
                     else{
-                        frlistView.setBackgroundColor(Color.parseColor("#FFFFFF"));;
+                        final Button cloudoflistview1 = (Button) findViewById(R.id.cloudoflistview1);
+                        cloudoflistview1.setVisibility(View.INVISIBLE);
+                        frlistView.setBackgroundColor(Color.parseColor("#FFFFFF"));
                     }
 
                     frlistView.setAdapter(fradapter);
@@ -1528,6 +1545,31 @@ public class MainActivity extends AppCompatActivity {
                 TimelineMyActAdapter myadapter = new TimelineMyActAdapter(myEventsList, getApplicationContext());
                 ListView mylistView = (ListView) findViewById(R.id.events_listView2);
                 if (mylistView != null) {
+
+                    if(myEventsList.size() == 0){
+                        mylistView.setBackgroundResource(R.drawable.noeventsaround_bg);
+
+                        Typeface segoeui = Typeface.createFromAsset(getApplication().getAssets(), "fonts/seguisb.ttf");
+                        final Button cloudoflistview2 = (Button) findViewById(R.id.cloudoflistview2);
+                        cloudoflistview2.setVisibility(View.VISIBLE);
+                        cloudoflistview2.setTypeface(segoeui);
+                        cloudoflistview2.setOnClickListener(new View.OnClickListener() {
+
+                            @Override
+                            public void onClick(View v) {
+                                cloudoflistview2.setBackgroundResource(R.drawable.cloud_selected);
+
+                                Intent intent = new Intent(getApplicationContext(), CreateNewActivity.class);
+                                startActivity(intent);
+                            }
+                        });
+                    }
+                    else{
+                        final Button cloudoflistview2 = (Button) findViewById(R.id.cloudoflistview2);
+                        cloudoflistview2.setVisibility(View.INVISIBLE);
+                        mylistView.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    }
+
                     mylistView.setAdapter(myadapter);
                     // mylistView.setScrollingCacheEnabled(true);
                 }
