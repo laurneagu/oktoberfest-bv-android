@@ -128,6 +128,21 @@ public class MainActivity extends AppCompatActivity {
     int userRange = 100;
     private final ArrayList<Event> myEventsList = new ArrayList<>();
 
+    private TimelineAroundActAdapter fradapter;
+    private TimelineMyActAdapter myadapter;
+
+    private ServiceConnection mServiceConn = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+    };
+
     public MainActivity(){
         try{
             broadcastManager = LocalBroadcastManager.getInstance(this);
@@ -140,6 +155,17 @@ public class MainActivity extends AppCompatActivity {
             broadcastManager=null;
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        if (fradapter != null)
+            fradapter.notifyDataSetChanged();
+
+        if (myadapter != null)
+            myadapter.notifyDataSetChanged();
     }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
@@ -399,17 +425,7 @@ public class MainActivity extends AppCompatActivity {
 
             Intent mServiceIntent = new Intent(this, FriendlyService.class);
             //startService(mServiceIntent);
-            bindService(mServiceIntent, new ServiceConnection() {
-                @Override
-                public void onServiceConnected(ComponentName name, IBinder service) {
-
-                }
-
-                @Override
-                public void onServiceDisconnected(ComponentName name) {
-
-                }
-            }, Context.BIND_AUTO_CREATE | Context.BIND_ABOVE_CLIENT);
+            bindService(mServiceIntent, mServiceConn, Context.BIND_AUTO_CREATE | Context.BIND_ABOVE_CLIENT);
             startService(mServiceIntent);
         }
 
@@ -429,6 +445,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 dialog.dismiss();
+                User.favouriteSports = favoriteSports;
                 continueUpdatingTimeline();
             }
 
@@ -671,6 +688,7 @@ public class MainActivity extends AppCompatActivity {
             userName.setTypeface(segoeui);
 
             TextView userSportsNumber = (TextView)findViewById(R.id.userSportsNumber);
+            userSportsNumber.setText(User.getNumberOfSports(getApplicationContext()));
             userSportsNumber.setTypeface(segoeui);
 
             ImageView userPic = (ImageView) findViewById(R.id.userPicture);
@@ -1509,7 +1527,7 @@ public class MainActivity extends AppCompatActivity {
                 editor.commit();
 
                 /* Friends */
-                TimelineAroundActAdapter fradapter = new TimelineAroundActAdapter(friendsEventsList, getApplicationContext());
+                fradapter = new TimelineAroundActAdapter(friendsEventsList, getApplicationContext());
                 ListView frlistView = (ListView) findViewById(R.id.events_listView1);
                 if (frlistView != null) {
 
@@ -1542,7 +1560,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 /* My */
-                TimelineMyActAdapter myadapter = new TimelineMyActAdapter(myEventsList, getApplicationContext());
+                myadapter = new TimelineMyActAdapter(myEventsList, getApplicationContext());
                 ListView mylistView = (ListView) findViewById(R.id.events_listView2);
                 if (mylistView != null) {
 
@@ -1671,9 +1689,10 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-//    @Override
-//    public void onPause(){
-//        super.onPause();
+    @Override
+    public void onPause(){
+        super.onPause();
+
 //        String state = getSharedPreferences("UserDetails", 0).getString("currentEventStateCheck", "3");
 //        if (state.equalsIgnoreCase("1")) { // if it is started
 //            getSharedPreferences("UserDetails", 0).edit().putString("eventStartedButExitAt",new Date().toString()).commit();
@@ -1681,8 +1700,16 @@ public class MainActivity extends AppCompatActivity {
 //            ref.child("mesg").child("service").child("stateEvent").setValue("pause + " + new Date().toString());
 //
 //        }
-//    }
-//
+
+        if (mServiceConn != null ) {
+            try{
+                unbindService(mServiceConn);
+            } catch (IllegalArgumentException e){
+                System.out.println("Already unbounded! :)");
+            }
+        }
+    }
+
     @Override
     public void onStop(){
         super.onStop();
@@ -1713,10 +1740,13 @@ public class MainActivity extends AppCompatActivity {
             putPointsFromSPInFirebase();// updateFirebase
         }
 
-
-
-
-
+        if (mServiceConn != null) {
+            try{
+                unbindService(mServiceConn);
+            } catch (IllegalArgumentException e){
+                System.out.println("Already unbounded! :)");
+            }
+        }
     }
 
 
@@ -1800,10 +1830,13 @@ public class MainActivity extends AppCompatActivity {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.timeline_list_layout, null);
 
+                final View currView = view;
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         //Toast.makeText(getApplicationContext(), "Hei, wait for it..", Toast.LENGTH_SHORT).show();
+                        currView.setBackgroundColor(Color.parseColor("#D3D3D3"));
+
                         Intent intent = new Intent(getApplicationContext(), EventDetails.class);
                         intent.putExtra("eventUid", list.get(position).id);
                         startActivity(intent);
@@ -1829,20 +1862,10 @@ public class MainActivity extends AppCompatActivity {
                 holder = (ViewHolder)view.getTag();
             }
 
-            /*
-            final TextView name = (TextView) view.findViewById(R.id.nameLabel);
-            final ImageView profilePicture = (ImageView) view.findViewById(R.id.profilePicture);
-            final TextView firstPart = (TextView) view.findViewById(R.id.firstPartofText);
-            final TextView secondPart = (TextView) view.findViewById(R.id.secondPartofText);
-            final TextView time = (TextView) view.findViewById(R.id.timeText);
-            final TextView place = (TextView) view.findViewById(R.id.placeText);
-            final ImageView icon = (ImageView) view.findViewById(R.id.sportIcon);
-            final ImageButton details = (ImageButton) view.findViewById(R.id.details_btn);
-            final ImageButton join = (ImageButton) view.findViewById(R.id.join_btn);
-            */
-
             // Set name and picture for the first user of the event
             //final String userUID = list.get(position).getFirstUser();
+            view.setBackgroundColor(Color.parseColor("#FFFFFF"));
+
 
             holder.name.setText(list.get(position).creatorName.split(" ")[0]);
             holder.profilePicture.setBackgroundResource(R.drawable.defaultpicture);
@@ -1983,6 +2006,8 @@ public class MainActivity extends AppCompatActivity {
         return cal.get(Calendar.DAY_OF_MONTH);
     }
 
+
+
     // Adapter for the My pending activities tab
     public class TimelineMyActAdapter extends BaseAdapter implements ListAdapter {
 
@@ -2029,11 +2054,14 @@ public class MainActivity extends AppCompatActivity {
             if (view == null) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.timeline_list_myactivities_layout, null);
+                final View currView = view;
 
                 view.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
                                                 //Toast.makeText(getApplicationContext(), "Hei, wait for it..", Toast.LENGTH_SHORT).show();
+                                                currView.setBackgroundColor(Color.parseColor("#D3D3D3"));
+
                                                 Intent intent = new Intent(getApplicationContext(), EventDetails.class);
                                                 intent.putExtra("eventUid", list.get(position).id);
                                                 startActivity(intent);
@@ -2057,19 +2085,11 @@ public class MainActivity extends AppCompatActivity {
             else {
                 holder = (ViewHolder)view.getTag();
             }
-            /*
-            final TextView name = (TextView) view.findViewById(R.id.nameLabel);
-            final ImageView profilePicture = (ImageView) view.findViewById(R.id.profilePicture);
-            final TextView firstPart = (TextView) view.findViewById(R.id.firstPartofText);
-            final TextView secondPart = (TextView) view.findViewById(R.id.secondPartofText);
-            final TextView time = (TextView) view.findViewById(R.id.timeText);
-            final TextView place = (TextView) view.findViewById(R.id.placeText);
-            final ImageView icon = (ImageView) view.findViewById(R.id.sportIcon);
-            final ImageButton details = (ImageButton) view.findViewById(R.id.details_btn);
-            */
 
             // Set name and picture for the first user of the event
             //final String userUID = list.get(position).getFirstUser();
+            view.setBackgroundColor(Color.parseColor("#FFFFFF"));
+
             String firstName = list.get(position).creatorName.split(" ")[0];
             holder.name.setText(firstName);
             holder.profilePicture.setBackgroundResource(R.drawable.defaultpicture);

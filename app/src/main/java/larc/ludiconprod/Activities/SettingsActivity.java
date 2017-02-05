@@ -40,6 +40,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.*;
 
 import larc.ludiconprod.Adapters.LeftPanelItemClicker;
 import larc.ludiconprod.Adapters.LeftSidePanelAdapter;
@@ -59,12 +60,11 @@ public class SettingsActivity extends Activity {
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
-
+    private ImageButton saveButton;
 
     private TextView progressText;
     private SeekBar seekBar;
-    private Button saveButton;
-    private ArrayList<Sport> sportsList = new ArrayList<Sport>();
+     private ArrayList<Sport> sportsList = new ArrayList<Sport>();
     private HashMap<String, Drawable> regularSportIcons = new HashMap<String, Drawable>();
     //private HashMap<String, Drawable> desaturatedSportIcons = new HashMap<String, Drawable>();
     DatabaseReference rangeRef = User.firebaseRef.child("users").child(User.uid).child("range");
@@ -72,6 +72,8 @@ public class SettingsActivity extends Activity {
     final DatabaseReference sportRed = User.firebaseRef.child("sports"); // check user
     private int savedProgress = 0;
     int progress = 0;
+
+    final private List<String> changeInSports = new ArrayList<String>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -104,6 +106,7 @@ public class SettingsActivity extends Activity {
             userName.setTypeface(segoeui);
 
             TextView userSportsNumber = (TextView)findViewById(R.id.userSportsNumber);
+            userSportsNumber.setText(User.getNumberOfSports(getApplicationContext()));
             userSportsNumber.setTypeface(segoeui);
 
             ImageView userPic = (ImageView) findViewById(R.id.userPicture);
@@ -172,11 +175,15 @@ public class SettingsActivity extends Activity {
             hello_message.setText("");
 
             //// Create event in header menu
-            ImageButton saveButton = (ImageButton)findViewById(R.id.header_button);
+            saveButton= (ImageButton)findViewById(R.id.header_button);
             saveButton.setVisibility(View.VISIBLE);
-            saveButton.setBackgroundResource(R.drawable.save_button_2);
+            saveButton.setBackgroundResource(R.drawable.save);
             saveButton.getLayoutParams().height =100;
-            saveButton.getLayoutParams().width = 200 ;
+            saveButton.getLayoutParams().width = 100 ;
+
+            // Initial state - nothing to save yet.
+            saveButton.setAlpha((float)0.3);
+            saveButton.setEnabled(false);
 
             saveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -190,7 +197,14 @@ public class SettingsActivity extends Activity {
                         }
                     }
                     userSports.setValue(map);
-                    Toast.makeText(getApplicationContext(), "Saved!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Updates on sports saved!", Toast.LENGTH_SHORT).show();
+
+                    saveButton.setAlpha((float)0.3);
+                    saveButton.setEnabled(false);
+                    changeInSports.clear();
+
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(intent);
                 }
             });
 
@@ -335,6 +349,25 @@ public class SettingsActivity extends Activity {
                             //((ImageView) rl.getChildAt(1)).setImageBitmap(sport.desaturated_icon);
                             cb.setAlpha((float) 0.7);
                         }
+
+                        // Save button changes
+                        if(changeInSports.contains(sport.id)){
+                            changeInSports.remove(sport.id);
+
+                            if(changeInSports.size()== 0){
+                                saveButton.setAlpha((float)0.3);
+                                saveButton.setEnabled(false);
+                            }
+                        }
+                        else {
+                            changeInSports.add(sport.id);
+
+                            if(changeInSports.size()== 1){
+                                    saveButton.setAlpha((float)1);
+                                    saveButton.setEnabled(true);
+                            }
+                        }
+
 
                     }
                 });

@@ -218,7 +218,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="5dp"/>
 
-        <!--Button
+        <Button
             android:id="@+id/createEvent"
             android:layout_width="100dp"
             android:layout_height="50dp"
@@ -229,7 +229,7 @@
             android:layout_below="@+id/map"
             android:onClick="OnCreateEvent"
             android:textStyle="bold"
-            android:textSize="20dp" /-->
+            android:textSize="20dp" />
 
 
             <ProgressBar android:indeterminate="true"

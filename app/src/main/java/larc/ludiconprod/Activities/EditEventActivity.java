@@ -191,6 +191,7 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
         userName.setTypeface(segoeui);
 
         TextView userSportsNumber = (TextView)findViewById(R.id.userSportsNumber);
+        userSportsNumber.setText(User.getNumberOfSports(getApplicationContext()));
         userSportsNumber.setTypeface(segoeui);
 
         ImageView userPic = (ImageView) findViewById(R.id.userPicture);

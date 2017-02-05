@@ -55,7 +55,6 @@
         android:layout_toRightOf="@+id/lastOnlineText"
         android:layout_marginLeft="3dp"
         android:layout_marginTop="5dp"
-        android:layout_toEndOf="@+id/friend_photo"
         android:layout_below="@+id/friend_name"/>
     <TextView
         android:layout_width="wrap_content"

@@ -148,6 +148,7 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
         userName.setTypeface(segoeui);
 
         TextView userSportsNumber = (TextView)findViewById(R.id.userSportsNumber);
+        userSportsNumber.setText(User.getNumberOfSports(getApplicationContext()));
         userSportsNumber.setTypeface(segoeui);
 
         ImageView userPic = (ImageView) findViewById(R.id.userPicture);

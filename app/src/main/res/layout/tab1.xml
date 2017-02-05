@@ -16,7 +16,7 @@
         android:textColor="#FFFFFF"
         android:textSize="10dp"
         android:textAllCaps="false"
-        android:layout_marginBottom="165dp"
+        android:layout_marginBottom="115dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
 

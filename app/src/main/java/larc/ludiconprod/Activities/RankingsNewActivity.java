@@ -295,6 +295,17 @@ public class RankingsNewActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (localAdapter != null)
+            localAdapter.notifyDataSetChanged();
+
+        if (friendsAdapter != null)
+            friendsAdapter.notifyDataSetChanged();
+    }
+
     public void continueUpdatingTimeline() {
         try {
 
@@ -312,6 +323,7 @@ public class RankingsNewActivity extends AppCompatActivity {
             userName.setTypeface(segoeui);
 
             TextView userSportsNumber = (TextView)findViewById(R.id.userSportsNumber);
+            userSportsNumber.setText(User.getNumberOfSports(getApplicationContext()));
             userSportsNumber.setTypeface(segoeui);
 
             ImageView userPic = (ImageView) findViewById(R.id.userPicture);
@@ -652,10 +664,16 @@ public class RankingsNewActivity extends AppCompatActivity {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.user_ranks, null);
 
+                final View currView = view;
+
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(getApplicationContext(), "View profile ?!", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(), "View profile ?!", Toast.LENGTH_SHORT).show();
+                        currView.setBackgroundColor(Color.parseColor("#C3DC6E"));
+                        Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                        intent.putExtra("uid", list.get(position).id);
+                        startActivity(intent);
                     }
                 });
 
@@ -672,6 +690,8 @@ public class RankingsNewActivity extends AppCompatActivity {
                 holder = (ViewHolder) view.getTag();
             }
 
+            view.setBackgroundColor(Color.parseColor("#FFFFFF"));
+
             if (list.get(position).id.equalsIgnoreCase(User.uid)){
                 holder.rl_ranks.setBackgroundColor(Color.LTGRAY);
             }
@@ -681,32 +701,35 @@ public class RankingsNewActivity extends AppCompatActivity {
 
             // Gold medal
             if (position == 0) {
-                holder.placeText.setVisibility(View.INVISIBLE);
                 holder.place.setImageResource(R.drawable.medal1);
             }
             // Silver
             else if (position == 1) {
-                holder.placeText.setVisibility(View.INVISIBLE);
                 holder.place.setImageResource(R.drawable.medal2);
             }
             // Bronze
             else if (position == 2) {
-                holder.placeText.setVisibility(View.INVISIBLE);
-                holder.place.setImageResource(R.drawable.medal3);
+               holder.place.setImageResource(R.drawable.medal3);
             }
             // Other places
             else {
                 holder.place.setImageResource(R.drawable.medal4);
-                //holder.place.setVisibility(View.INVISIBLE);
-                holder.placeText.setVisibility(View.VISIBLE);
-                holder.placeText.setText("" + (position + 1 ));
             }
+
+            if (position >= 9){
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)holder.placeText.getLayoutParams();
+                layoutParams.leftMargin = 59;
+                holder.placeText.setLayoutParams(layoutParams);
+            }
+
+            holder.placeText.setText("" + (position + 1 ));
+            holder.placeText.setVisibility(View.VISIBLE);
 
             holder.name.setText(list.get(position).name);
             holder.profilePicture.setBackgroundResource(R.drawable.defaultpicture);
             Picasso.with(context).load(list.get(position).profileImageURL).into(holder.profilePicture);
 
-            holder.points.setText(list.get(position).points + " points");
+            holder.points.setText(list.get(position).points + "");
 
             return view;
         }

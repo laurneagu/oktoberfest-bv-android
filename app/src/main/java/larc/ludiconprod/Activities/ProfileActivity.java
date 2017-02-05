@@ -110,6 +110,7 @@ public class ProfileActivity extends Activity {
             userName.setTypeface(segoeui);
 
             TextView userSportsNumber = (TextView)findViewById(R.id.userSportsNumber);
+            userSportsNumber.setText(User.getNumberOfSports(getApplicationContext()));
             userSportsNumber.setTypeface(segoeui);
 
             ImageView userPic = (ImageView) findViewById(R.id.userPicture);
@@ -151,17 +152,15 @@ public class ProfileActivity extends Activity {
 
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
-                            if (Boolean.parseBoolean(snapshot.getValue().toString()) == true) {
-                                friendRef.setValue(false);
-                                Toast.makeText(ProfileActivity.this, "Removed from friends", Toast.LENGTH_SHORT).show();
-                                addFriend.setBackgroundResource(R.drawable.admin_add2);
-
-                            }
-                            else {
-                                friendRef.setValue(true);
-                                Toast.makeText(ProfileActivity.this, "Friend added", Toast.LENGTH_SHORT).show();
-                                addFriend.setBackgroundResource(R.drawable.admin_minus2);
-                             }
+                                if (snapshot.getValue() != null && Boolean.parseBoolean(snapshot.getValue().toString()) == true) {
+                                    friendRef.setValue(false);
+                                    Toast.makeText(ProfileActivity.this, "Removed from friends", Toast.LENGTH_SHORT).show();
+                                    addFriend.setBackgroundResource(R.drawable.admin_add2);
+                                } else {
+                                    friendRef.setValue(true);
+                                    Toast.makeText(ProfileActivity.this, "Friend added", Toast.LENGTH_SHORT).show();
+                                    addFriend.setBackgroundResource(R.drawable.admin_minus2);
+                                }
                         }
 
                         @Override
@@ -202,8 +201,9 @@ public class ProfileActivity extends Activity {
                                     ImageView imageView = (ImageView) findViewById(R.id.profileImageView);
 
                                     //new DownloadImageTask(imageView).execute(snapshot.getValue().toString());
+                                    imageView.setBackgroundResource(R.drawable.defaultpicture);
                                     Picasso.with(getApplicationContext()).load(snapshot.getValue().toString()).into(imageView);
-                                    //imageView.setBackgroundResource(R.drawable.defaultpicture);
+
 
                                 } else {
                                 }

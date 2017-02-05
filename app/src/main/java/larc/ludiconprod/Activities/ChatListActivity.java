@@ -135,6 +135,7 @@ public class ChatListActivity extends Activity {
         userName.setTypeface(segoeui);
 
         TextView userSportsNumber = (TextView)findViewById(R.id.userSportsNumber);
+        userSportsNumber.setText(User.getNumberOfSports(getApplicationContext()));
         userSportsNumber.setTypeface(segoeui);
 
         final ImageButton createNewChat = (ImageButton)findViewById(R.id.header_button);

@@ -512,6 +512,7 @@ public class StatisticsActivity extends Activity {
         userName.setTypeface(segoeui);
 
         TextView userSportsNumber = (TextView)findViewById(R.id.userSportsNumber);
+        userSportsNumber.setText(User.getNumberOfSports(getApplicationContext()));
         userSportsNumber.setTypeface(segoeui);
 
         TextView hello_message = (TextView) findViewById(R.id.hello_message_activity);

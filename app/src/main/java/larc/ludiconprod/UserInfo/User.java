@@ -10,6 +10,7 @@ import com.facebook.login.widget.ProfilePictureView;
 import com.google.firebase.database.DatabaseReference;
 
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -25,6 +26,7 @@ public class User {
     public static  String gender = "unknown";
     public static  Date birthDate = new Date();
     public static String uid = "";
+    public static ArrayList<String> favouriteSports;
 
     // DatabaseReferenceRef
     public static DatabaseReference firebaseRef;
@@ -93,6 +95,13 @@ public class User {
     public static String getEmail(Context context){
         SharedPreferences sharedPref = context.getSharedPreferences(mfilename, 0);
         return sharedPref.getString(email, "");
+    }
+    public static String getNumberOfSports(Context context){
+        if(User.favouriteSports != null){
+            if(User.favouriteSports.size() == 1) return User.favouriteSports.size()+ " sport";
+            return User.favouriteSports.size()+ " sports";
+        }
+        return  "no sports";
     }
 
     public static void setInfo(String fName, String lName, String id ,String mail, Context context)

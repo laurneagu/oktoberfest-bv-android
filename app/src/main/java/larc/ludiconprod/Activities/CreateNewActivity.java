@@ -197,6 +197,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         userName.setTypeface(segoeui);
 
         TextView userSportsNumber = (TextView)findViewById(R.id.userSportsNumber);
+        userSportsNumber.setText(User.getNumberOfSports(getApplicationContext()));
         userSportsNumber.setTypeface(segoeui);
 
         ImageView userPic = (ImageView) findViewById(R.id.userPicture);
@@ -284,9 +285,9 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         //// Create event in header menu
         createEvent = (ImageButton)findViewById(R.id.header_button);
         createEvent.setVisibility(View.VISIBLE);
-        createEvent.setBackgroundResource(R.drawable.save_button_2);
+        createEvent.setBackgroundResource(R.drawable.save);
         createEvent.getLayoutParams().height =100;
-        createEvent.getLayoutParams().width = 200 ;
+        createEvent.getLayoutParams().width = 100 ;
 
         createEvent.setOnClickListener(new View.OnClickListener() {
             @Override
