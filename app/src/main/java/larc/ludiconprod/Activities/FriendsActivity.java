@@ -1,6 +1,8 @@
 package larc.ludiconprod.Activities;
 
 import android.app.Activity;
+
+import java.io.Console;
 import java.util.*;
 import android.content.Context;
 import android.content.Intent;
@@ -36,6 +38,7 @@ import com.facebook.GraphRequest;
 import com.facebook.AccessToken;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
+import com.facebook.internal.Logger;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.DatabaseError;
@@ -87,8 +90,12 @@ public class FriendsActivity extends Activity {
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
         initializeLeftSidePanel();
 
-        User.setImage();
-
+        try {
+            User.setImage();
+        }
+        catch(Exception e){
+            Log.d("friends", e.getMessage());
+        }
         // User picture and name for HEADER MENU
         Typeface segoeui = Typeface.createFromAsset(getAssets(), "fonts/seguisb.ttf");
 

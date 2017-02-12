@@ -713,13 +713,17 @@ public class RankingsNewActivity extends AppCompatActivity {
             }
             // Other places
             else {
-                holder.place.setImageResource(R.drawable.medal4);
-            }
+                    holder.place.setImageResource(R.drawable.medal4);
+                }
 
-            if (position >= 9){
-                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)holder.placeText.getLayoutParams();
-                layoutParams.leftMargin = 59;
-                holder.placeText.setLayoutParams(layoutParams);
+                if (position >= 9){
+
+                    int dpValue = 20; // margin in dips
+                    float d = context.getResources().getDisplayMetrics().density;
+
+                    RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)holder.placeText.getLayoutParams();
+                    layoutParams.leftMargin = (int)(dpValue * d);
+                    holder.placeText.setLayoutParams(layoutParams);
             }
 
             holder.placeText.setText("" + (position + 1 ));
