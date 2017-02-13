@@ -4,14 +4,18 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,7 +32,6 @@ import larc.ludiconprod.R;
 import larc.ludiconprod.UserInfo.User;
 import larc.ludiconprod.Utils.ConnectionChecker.IConnectionChecker;
 import larc.ludiconprod.Utils.ConnectionChecker.ConnectionChecker;
-import larc.ludiconprod.Utils.MessageDialog;
 import larc.ludiconprod.Utils.util.DateManager;
 
 
@@ -185,7 +188,7 @@ public class IntroActivity extends Activity {
         //logo.setImageResource(R.drawable.logo);
 
         TextView ludiconText = (TextView)findViewById(R.id.ludiconIntroTV);
-        Typeface segoeui = Typeface.createFromAsset(getAssets(), "fonts/segoeuii.ttf");
+        Typeface segoeui = Typeface.createFromAsset(getAssets(), "fonts/segoeui.ttf");
         ludiconText.setTypeface(segoeui);
 
         LoginButton login_button = (LoginButton) findViewById(R.id.login_button);
@@ -531,8 +534,20 @@ public class IntroActivity extends Activity {
     }
 
     public void openNoInternetConnectionDialog() {
-        DialogFragment newFragment = new MessageDialog();
-        newFragment.show(getFragmentManager(), "message");
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(IntroActivity.this, R.style.MyAlertDialogStyle));
+        builder.setMessage(R.string.dialogmessage)
+                .setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+                    }
+                })
+                .setNegativeButton("Close", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
 

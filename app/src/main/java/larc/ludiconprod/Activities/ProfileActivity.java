@@ -245,14 +245,23 @@ public class ProfileActivity extends Activity {
                                 intent.putExtra("firstConnection", true);
                                 startActivity(intent);
                             } else {
+                                boolean firstConnection = true;
                                 for (DataSnapshot data : snapshot.getChildren()) {
                                     if (data.getKey().equalsIgnoreCase(User.uid)) {
                                         Intent intent = new Intent(getApplicationContext(), ChatTemplateActivity.class);
                                         intent.putExtra("uid", uid);
                                         intent.putExtra("firstConnection", false);
                                         intent.putExtra("chatID", data.getValue().toString());
+                                        firstConnection = false;
                                         startActivity(intent);
                                     }
+                                }
+                                if(firstConnection)
+                                {
+                                    Intent intent = new Intent(getApplicationContext(), ChatTemplateActivity.class);
+                                    intent.putExtra("uid", uid);
+                                    intent.putExtra("firstConnection", true);
+                                    startActivity(intent);
                                 }
                             }
 

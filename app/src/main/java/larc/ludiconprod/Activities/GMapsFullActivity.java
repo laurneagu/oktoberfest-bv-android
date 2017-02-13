@@ -134,7 +134,7 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
 
         setContentView(R.layout.activity_gmaps_full);
 
-        // Left side panel initializing
+        // Left side panel initializing -- DISABLED TEMPORARILYf
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
         initializeLeftSidePanel();
 
@@ -154,7 +154,6 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
         ImageView userPic = (ImageView) findViewById(R.id.userPicture);
         Drawable d = new BitmapDrawable(getResources(), User.image);
         userPic.setImageDrawable(d);
-
 
         mapFragment= (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
@@ -272,6 +271,7 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
 
     public void initializeLeftSidePanel() {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_gmapsfull);
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
 
         // Set the adapter for the list view
@@ -283,7 +283,7 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
         showPanel.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click
-                mDrawerLayout.openDrawer(Gravity.LEFT);
+               // mDrawerLayout.openDrawer(Gravity.LEFT);
             }
         });
 

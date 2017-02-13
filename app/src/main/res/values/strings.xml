@@ -14,9 +14,9 @@
     <string name="dummy_content">LUDICON</string>
     <string name="hello_user">Hi, %1$s!</string>
 
-    <string name="dialogmessage">\tNu exista conexiune la Internet!\n\tIntrati in Setari pentru a activa \n\tWi-Fi/Retele Mobile</string>
-    <string name="dialogbutton1">Setari</string>
-    <string name="dialogbutton2">Inchide</string>
+    <string name="dialogmessage">\tThere is no Internet connection!\n\tPlease go to Settings and activate\n\tWi-Fi or Mobile Data</string>
+    <string name="dialogbutton1">Settings</string>
+    <string name="dialogbutton2">Close</string>
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
