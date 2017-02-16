@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rLayout"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp"
+    android:paddingLeft="4dp"
+    android:paddingRight="4dp">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/irLayout"
+        android:layout_width="240dp"
+        android:layout_height="45dp"
+        android:orientation="vertical"
+        android:background="#FFFFFF">
+
+
+        <RelativeLayout
+            android:layout_width="40dp"
+            android:layout_height="45dp"
+            android:adjustViewBounds="true"
+            android:background="#696969"
+            android:scaleType="fitCenter"
+            android:layout_alignParentRight="true" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:maxWidth="36dp"
+                android:maxHeight="36dp"
+                android:scaleType="fitCenter"
+                android:id="@+id/icon"
+                android:layout_centerInParent="true"
+                android:layout_alignParentRight="true" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_centerVertical="true"
+            android:text="TextView"
+            android:textColor="#1971b4" />
+
+
+    </RelativeLayout>
+</RelativeLayout>

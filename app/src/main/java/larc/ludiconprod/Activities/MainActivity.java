@@ -436,6 +436,7 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot dataSN : snapshot.getChildren()) {
                     if (dataSN.getKey().equalsIgnoreCase("sports"))
+                        favoriteSports.clear();
                         for (DataSnapshot data : dataSN.getChildren()) {
                             if (data.getKey() != null && data.getKey() != " ")
                                 favoriteSports.add(data.getKey().toString());

@@ -3,6 +3,7 @@ package larc.ludiconprod.Activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -50,6 +51,12 @@ public class AskPreferences extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // remove title
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.activity_ask_preferences);
 
         // Hide App bar
@@ -59,10 +66,6 @@ public class AskPreferences extends Activity {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                     WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
-        // remove title
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         logo = (ImageView) findViewById(R.id.logo);
         logo.setImageResource(R.drawable.logo);
@@ -122,23 +125,10 @@ public class AskPreferences extends Activity {
                 }
 
 
-
-
-                dataAdapter = new MyCustomAdapter(getApplicationContext(), R.layout.sport_info, sports);
+                dataAdapter = new MyCustomAdapter(getApplicationContext(), R.layout.sport_info_intro, sports);
                 GridView gridView = (GridView) findViewById(R.id.gridView1);
                 // Assign adapter to ListView
                 gridView.setAdapter(dataAdapter);
-/*
-                gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    public void onItemClick(AdapterView<?> parent, View view,
-                                            int position, long id) {
-                        // When clicked, show a toast with the TextView text
-                        Sport sport = (Sport) parent.getItemAtPosition(position);
-                        Toast.makeText(getApplicationContext(),
-                                "Clicked on Row: " + sport.name,
-                                Toast.LENGTH_LONG).show();
-                    }
-                });*/
             }
 
             @Override
@@ -202,6 +192,8 @@ public class AskPreferences extends Activity {
             CheckBox box;
         }
 
+        private final Typeface segoeui = Typeface.createFromAsset(getAssets(), "fonts/segoeui.ttf");
+
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -211,31 +203,30 @@ public class AskPreferences extends Activity {
             if (convertView == null) {
                 LayoutInflater vi = (LayoutInflater) getSystemService(
                         Context.LAYOUT_INFLATER_SERVICE);
-                convertView = vi.inflate(R.layout.sport_info, null);
+                convertView = vi.inflate(R.layout.sport_info_intro, null);
 
                 holder = new ViewHolder();
                 holder.rl = (RelativeLayout) convertView.findViewById(R.id.irLayout);
                 holder.text = (TextView) convertView.findViewById(R.id.code);
-                holder.box = (CheckBox) convertView.findViewById(R.id.checkBox1);
+                holder.text.setTypeface(segoeui);
                 holder.image = (ImageView) convertView.findViewById(R.id.icon);
                 convertView.setTag(holder);
 
-                holder.box.setOnClickListener(new View.OnClickListener() {
+                holder.rl.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
-                        CheckBox cb = (CheckBox) v;
-                        Sport sport = (Sport) cb.getTag();
-                        sport.setSelected(cb.isChecked());
-                        RelativeLayout rl = (RelativeLayout)cb.getParent();
-                        sport.setSelected(cb.isChecked());
-                        if(cb.isChecked()) {
-                            rl.setBackgroundColor(Color.parseColor("#777777"));
-                            //((ImageView)rl.getChildAt(1)).setImageBitmap(sport.icon);
-                            cb.setAlpha(1);
+                        //CheckBox cb = (CheckBox) v;
+                        RelativeLayout rl = (RelativeLayout)v;
+                        Sport sport = (Sport) rl.getTag();
+
+                        if(rl.isSelected()) {
+                            rl.setAlpha((float) 0.5);
+                            rl.setSelected(false);
                         } else {
-                            rl.setBackgroundColor(Color.parseColor("#bbbbbb"));
-                            //((ImageView)rl.getChildAt(1)).setImageBitmap(sport.desaturated_icon);
-                            cb.setAlpha((float) 0.5);
+                            rl.setAlpha(1);
+                            rl.setSelected(true);
                         }
+
+                        sport.setSelected(rl.isSelected());
                     }
                 });
             } else {
@@ -244,24 +235,16 @@ public class AskPreferences extends Activity {
 
             Sport sport = sportsList.get(position);
             holder.text.setText(sport.name);
-            holder.text.setTextColor(getResources().getColor(R.color.white));
-            holder.box.setText("");
-            holder.box.setChecked(sport.isChecked);
-            holder.box.setTag(sport);
-            if(holder.box.isChecked()) {
-                holder.rl.setBackgroundColor(Color.parseColor("#777777"));
-                holder.image.setImageBitmap(sport.icon);
-                holder.box.setAlpha(1);
-            } else {
+            holder.image.setImageBitmap(sport.icon);
+            holder.rl.setTag(sport);
 
-                holder.rl.setBackgroundColor(Color.parseColor("#bbbbbb"));
-                holder.image.setImageBitmap(sport.icon);
-                //holder.image.setImageBitmap(sport.desaturated_icon);
-                holder.box.setAlpha((float)0.5);
-            }
+            holder.rl.setAlpha(1);
+            holder.rl.setBackgroundColor(Color.parseColor("#FFFFFF"));
+            holder.rl.setSelected(true);
+
+            sport.setSelected(true);
 
             return convertView;
-
         }
 
     }

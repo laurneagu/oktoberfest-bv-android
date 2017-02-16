@@ -12,8 +12,7 @@
         android:layout_height="100dp"
         android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="100dp"
-        android:adjustViewBounds="true"
+        android:layout_marginTop="70dp"
         android:scaleType="centerCrop"
         android:layout_gravity="center_horizontal" />
 
@@ -40,7 +39,7 @@
         android:layout_marginLeft="50dp"
         android:layout_marginRight="50dp"
         android:layout_width="wrap_content"
-        android:layout_height="250dp"
+        android:layout_height="260dp"
         android:id="@+id/gridView1"
         android:numColumns="2"
         android:layout_gravity="center_horizontal" />
@@ -48,7 +47,10 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="OK"
+        android:layout_marginTop="10dp"
+        android:text="Next"
+        android:textAllCaps="false"
+        android:textColor="#1971b4"
         android:id="@+id/button2"
         android:layout_gravity="center_horizontal" />
 
