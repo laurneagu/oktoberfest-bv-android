@@ -37,7 +37,7 @@
         android:layout_below="@+id/linearLayout4"
         android:layout_alignLeft="@+id/linearLayout4"
         android:layout_alignStart="@+id/linearLayout4"
-        android:layout_marginBottom="10dp">
+        >
 
         <ImageView
             android:layout_width="18dp"
@@ -107,17 +107,6 @@
         android:layout_alignStart="@+id/nameLabel"
         android:layout_marginBottom="15dp" />
 
-    <ImageButton
-        android:layout_width="63dp"
-        android:layout_height="18dp"
-        android:background="@drawable/details"
-        android:id="@+id/details_btn"
-        android:layout_alignTop="@+id/nameLabel"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="2dp" />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -135,22 +124,24 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Small Text"
         android:id="@+id/playersID"
-        android:textColor="#0e3956"
-        android:layout_alignBottom="@+id/linearLayout6"
-        android:layout_alignRight="@+id/details_btn"
-        android:layout_alignEnd="@+id/details_btn"
-        android:textStyle="bold" />
+        android:textColor="#2d4b2d"
+        android:textStyle="bold"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="17dp"
+        android:layout_marginRight="15dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="No description"
-        android:textColor="#0e3956"
+        android:textColor="#4f2f4f"
+        android:textStyle="italic"
         android:textSize="14sp"
         android:id="@+id/descriptionID"
-        android:layout_below="@+id/playersID"
+        android:layout_below="@+id/linearLayout6"
         android:layout_toRightOf="@+id/placeImage1"
         android:layout_toEndOf="@+id/placeImage1"
+        android:layout_marginBottom="3dp"
         android:paddingLeft="1dp" />
 
     <ImageView
@@ -158,7 +149,7 @@
         android:layout_height="17dp"
         android:background="@drawable/desc_photo"
         android:id="@+id/placeImage1"
-        android:layout_below="@+id/playersID"
+        android:layout_below="@+id/linearLayout6"
         android:layout_alignLeft="@+id/linearLayout6"
         android:layout_alignStart="@+id/linearLayout6" />
 

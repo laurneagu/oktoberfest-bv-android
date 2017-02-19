@@ -656,6 +656,7 @@ public class MainActivity extends AppCompatActivity {
                                             checkHappeningNow();
                                         }
 
+
                                     }
 
                                     @Override
@@ -695,31 +696,8 @@ public class MainActivity extends AppCompatActivity {
             ImageView userPic = (ImageView) findViewById(R.id.userPicture);
             Drawable d = new BitmapDrawable(getResources(), User.image);
             userPic.setImageDrawable(d);
-            // -------------------------------------------------------------------------------------------------------------
 
-    /*
-        final SwipeRefreshLayout mSwipeRefreshLayout1 = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh1);
-        mSwipeRefreshLayout1.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                updateList();
-                mSwipeRefreshLayout1.setRefreshing(false);
-            }
-        });
-*/
-        /*
-        final SwipeRefreshLayout mSwipeRefreshLayout2 = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh2);
-        mSwipeRefreshLayout2.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                updateList();
-                mSwipeRefreshLayout2.setRefreshing(false);
-            }
-        });
-        */
-
-
-            updateList();
+            updateList(false);
 
         } catch (Exception exc) {
         }
@@ -752,7 +730,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 showHappeningNow(ev, false);
-                updateList();
+                updateList(false);
                 getSharedPreferences("UserDetails", 0).edit().putString("currentEventStateCheck","0").commit();
 //                final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 //                ref.child("mesg").child("service").child("stateEvent").setValue("RUN");
@@ -914,14 +892,14 @@ public class MainActivity extends AppCompatActivity {
 
                         putEventInSP(lastEvent);
                         showHappeningNow(lastEvent, false);
-                        updateList();
+                        updateList(true);
                         getSharedPreferences("UserDetails", 0).edit().putString("currentEventStateCheck","0").commit();
 
                     } else {
 
                         if(state.equalsIgnoreCase("1")){ // it is already started
                             showHappeningNow(lastEvent, true);
-                            updateList();
+                            updateList(true);
                         }
                         else {
                             if (upcomingEvent != null && state.equalsIgnoreCase("2")) {
@@ -958,10 +936,9 @@ public class MainActivity extends AppCompatActivity {
 
         final ActivityInfo currentEvent = ce;
 
-//        getSharedPreferences("UserDetails", 0).edit().putString("currentEventState","0").commit(); // pending
+        //        getSharedPreferences("UserDetails", 0).edit().putString("currentEventState","0").commit(); // pending
 
         RelativeLayout rlCurrEvent = (RelativeLayout)findViewById(R.id.currEventLayout);
-
 
         ViewGroup.LayoutParams params = rlCurrEvent.getLayoutParams();
         params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -1006,8 +983,6 @@ public class MainActivity extends AppCompatActivity {
             place.setText("Unknown");
 
         time.setText("Now");
-
-
 
         changeStateButton.setTag(0);
         // Start/Stop Button
@@ -1080,7 +1055,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         if(alreadyStarted){
             changeStateButton.performClick();
 
@@ -1110,7 +1084,6 @@ public class MainActivity extends AppCompatActivity {
                     hideHappeningRightNow();
                 }
                 */
-
 
                 String audience = "";
                 if (currentEvent.others > 1)
@@ -1184,12 +1157,12 @@ public class MainActivity extends AppCompatActivity {
 
                 if ( currentEvent != null ) {
                     //showHappeningNow(currentEvent);
-                    updateList();
+                    updateList(false);
                 }
             }
             else{ // Event ended
                 //hideHappeningRightNow();
-                updateList();
+                updateList(false);
             }
 
 
@@ -1339,7 +1312,7 @@ public class MainActivity extends AppCompatActivity {
     // ********************************************* End Location:
 
 
-    public void updateList()
+    public void updateList(final boolean eventHappeningNow)
     {
 
         // stop swiping on my events
@@ -1453,8 +1426,8 @@ public class MainActivity extends AppCompatActivity {
 
                                 distance = ml.distanceTo(el);
 
-//                                Toast.makeText(getApplicationContext(), "Distance: "+ distance, Toast.LENGTH_SHORT).show();
-//                                Toast.makeText(getApplicationContext(), "Range: "+ userRange, Toast.LENGTH_SHORT).show();
+                                //  Toast.makeText(getApplicationContext(), "Distance: "+ distance, Toast.LENGTH_SHORT).show();
+                                //  Toast.makeText(getApplicationContext(), "Range: "+ userRange, Toast.LENGTH_SHORT).show();
 
                             }
 
@@ -1481,19 +1454,12 @@ public class MainActivity extends AppCompatActivity {
                     if (!favoriteSports.contains(event.sport))
                         mustAddEventToList = false;
 
-                    if ( event.noUsers == event.roomCapacity )
+                    if ( event.noUsers == event.roomCapacity)
                         mustAddEventToList = false;
 
                     // Get distance between last known location and event location
                     // float[] distance = new float[10];
                     //Location.distanceBetween(userLatitude, userLongitude, event.latitude, event.longitude, distance);
-
-                    // If distance from user to event is greater than the selected range do not include it
-                    //  if ( distance[0] > userRange * 1000 )
-                    //     mustAddEventToList = false;
-
-                    // Insert event in the correct list
-                    //if (new Date().before(event.date) && isPublic) {
 
                     if (event.active && doIParticipate && (new Date().getTime() < event.date.getTime())) {
                         if(currentEventUID != event.id)
@@ -1532,7 +1498,7 @@ public class MainActivity extends AppCompatActivity {
                 ListView frlistView = (ListView) findViewById(R.id.events_listView1);
                 if (frlistView != null) {
 
-                    if(friendsEventsList.size() == 0){
+                    if(friendsEventsList.size() == 0 && !eventHappeningNow){
                         frlistView.setBackgroundResource(R.drawable.noeventsaround_bg);
 
                         Typeface segoeui = Typeface.createFromAsset(getApplication().getAssets(), "fonts/seguisb.ttf");
@@ -1565,7 +1531,7 @@ public class MainActivity extends AppCompatActivity {
                 ListView mylistView = (ListView) findViewById(R.id.events_listView2);
                 if (mylistView != null) {
 
-                    if(myEventsList.size() == 0){
+                    if(myEventsList.size() == 0 && !eventHappeningNow){
                         mylistView.setBackgroundResource(R.drawable.noeventsaround_bg);
 
                         Typeface segoeui = Typeface.createFromAsset(getApplication().getAssets(), "fonts/seguisb.ttf");
@@ -1599,7 +1565,7 @@ public class MainActivity extends AppCompatActivity {
                     mSwipeRefreshLayout1.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                         @Override
                         public void onRefresh() {
-                            updateList();
+                            updateList(false);
                             mSwipeRefreshLayout1.setRefreshing(false);
                         }
                     });
@@ -1979,7 +1945,7 @@ public class MainActivity extends AppCompatActivity {
                             ev.put(list.get(position).id, inEv);
                             list.remove(position);
                             User.firebaseRef.child("users").child(User.uid).child("events").updateChildren(ev);
-                            updateList();
+                            updateList(false);
                         }
 
                         @Override

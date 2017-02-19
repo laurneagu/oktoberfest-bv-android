@@ -3,6 +3,7 @@ package larc.ludiconprod.ChatUtils;
 
 import android.Manifest;
 import android.app.Activity;
+import android.graphics.Typeface;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -67,18 +68,21 @@ public class ChatListAdapter extends FirebaseListAdapter<Chat> {
             String formattedDate = formatMessageDate(messageDate);
 
             msgDateRight.setText(formattedDate);
+            msgDateRight.setTypeface(null, Typeface.ITALIC);
             msgTextRight.setText(chat.getMessage());
             linLayoutLeft = (LinearLayout) view.findViewById(R.id.content_with_background_left);
             linLayoutLeft.setAlpha(0);
             msgDateLeft = (TextView) view.findViewById(R.id.message_date_left);
             msgTextLeft = (TextView) view.findViewById(R.id.message_text_left);
             msgDateLeft.setText("");
+            msgDateLeft.setTypeface(null, Typeface.ITALIC);
             msgTextLeft.setText("");
         } else {
             linLayoutLeft = (LinearLayout) view.findViewById(R.id.content_with_background_left);
             linLayoutLeft.setAlpha(1);
             linLayoutLeft.setBackgroundResource(R.drawable.out_message_bg);
             msgDateLeft = (TextView) view.findViewById(R.id.message_date_left);
+            msgDateLeft.setTypeface(null, Typeface.ITALIC);
             msgTextLeft = (TextView) view.findViewById(R.id.message_text_left);
 
             // Format date to the template Today/Yesterday
@@ -94,6 +98,7 @@ public class ChatListAdapter extends FirebaseListAdapter<Chat> {
             msgDateRight = (TextView) view.findViewById(R.id.message_date_right);
             msgTextRight = (TextView) view.findViewById(R.id.message_text_right);
             msgDateRight.setText("");
+            msgDateRight.setTypeface(null, Typeface.ITALIC);
             msgTextRight.setText("");
         }
     }

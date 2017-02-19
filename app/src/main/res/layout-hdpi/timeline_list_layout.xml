@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:text="Parc Crangasi"
-            android:textColor="#0e3956"
+            android:textColor="#5c5a5a"
             android:textSize="14sp"
             android:id="@+id/placeText" />
 
@@ -72,7 +72,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#0e3956"
+            android:textColor="#5c5a5a"
             android:text="Today at 19:00"
             android:textStyle="bold"
             android:textSize="14sp"
@@ -93,11 +93,15 @@
     </LinearLayout>
 
 
-    <ImageButton
-        android:layout_width="66dp"
-        android:layout_height="24dp"
-        android:background="@drawable/join"
+    <Button
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:background="@drawable/settings_icon_selected"
+        android:text="Join"
+        android:textSize="15dp"
+        android:textColor="#5c5c5c"
         android:id="@+id/join_btn"
+        android:textAllCaps="false"
         android:layout_alignTop="@+id/linearLayout4"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
@@ -118,7 +122,7 @@
         android:layout_alignStart="@+id/nameLabel"
         android:layout_marginBottom="15dp" />
 
-    <ImageButton
+    <!--ImageButton
         android:layout_width="63dp"
         android:layout_height="18dp"
         android:background="@drawable/details"
@@ -127,14 +131,14 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="2dp" />
+        android:layout_marginTop="2dp" /-->
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/secondPartofText"
         android:text=" with x others"
-        android:textColor="#1a425e"
+        android:textColor="#0e3956"
         android:textSize="16sp"
         android:layout_alignTop="@+id/firstPartofText"
         android:layout_toRightOf="@+id/firstPartofText"
@@ -146,13 +150,12 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Small Text"
         android:id="@+id/playersID"
-        android:textColor="#0e3956"
+        android:textColor="#5c5a5a"
         android:textStyle="bold"
-        android:layout_marginRight="9dp"
-        android:layout_marginEnd="9dp"
-        android:layout_alignBottom="@+id/join_btn"
-        android:layout_toLeftOf="@+id/join_btn"
-        android:layout_toStartOf="@+id/join_btn" />
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="17dp"
+        android:layout_marginRight="15dp"
+        />
 
 
 
@@ -160,12 +163,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="No description"
-        android:textColor="#0e3956"
+        android:textColor="#5c5a5a"
         android:textSize="14sp"
         android:id="@+id/descriptionID"
+        android:textStyle="italic"
         android:layout_below="@+id/linearLayout6"
         android:layout_toRightOf="@+id/placeImage1"
         android:layout_toEndOf="@+id/placeImage1"
+        android:layout_marginBottom="3dp"
         android:paddingLeft="1dp" />
 
     <ImageView
