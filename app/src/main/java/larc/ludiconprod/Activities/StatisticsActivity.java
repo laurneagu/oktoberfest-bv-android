@@ -51,6 +51,7 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -190,7 +191,7 @@ public class StatisticsActivity extends Activity {
                                         }
                                         Log.v(userEvents.get(j).date.getMonth() + "", userEvents.get(j).points + "");
                                         // Add event points to respective month
-                                        pointsPerMonth[userEvents.get(j).date.getMonth()] += userEvents.get(j).points;
+                                            pointsPerMonth[userEvents.get(j).date.getMonth()] += userEvents.get(j).points;
                                         // Something to signal the finish of work
                                         dummy.add(1);
                                         if (dummy.size() == userEvents.size()) {
@@ -206,7 +207,11 @@ public class StatisticsActivity extends Activity {
                             else{
                                 Log.v(userEvents.get(j).date.getMonth() + "", userEvents.get(j).points + "");
                                 // Add event points to respective month
-                                pointsPerMonth[userEvents.get(j).date.getMonth()] += userEvents.get(j).points;
+                                Calendar calendar = Calendar.getInstance();
+                                int year = calendar.get(Calendar.YEAR);
+                                int eventYear = userEvents.get(j).date.getYear() + 1900;
+                                if(eventYear == year)
+                                    pointsPerMonth[userEvents.get(j).date.getMonth()] += userEvents.get(j).points;
                                 // Something to signal the finish of work
                                 dummy.add(1);
                                 if (dummy.size() == userEvents.size()) {
@@ -230,7 +235,6 @@ public class StatisticsActivity extends Activity {
 
     private void displayChart()
     {
-        try {
             Log.v("Display", "chart");
             BarChart chart = (BarChart) findViewById(R.id.chart);
             BarData data = new BarData(getXAxisValues(), getDataSet());
@@ -241,17 +245,12 @@ public class StatisticsActivity extends Activity {
             chart.getXAxis().setDrawGridLines(false);
             chart.getAxisLeft().setDrawGridLines(false);
             chart.getAxisRight().setDrawGridLines(false);
-            Log.v("Set data on chart", "Dap");
             chart.setData(data);
             chart.setDescription("Months");
             chart.setDrawValueAboveBar(false);
             chart.setDrawingCacheEnabled(false);
             chart.animateXY(2000, 2000);
             chart.invalidate();
-        }
-        catch(Exception exc) {
-            Utils.quit();
-        }
     }
 
     private ArrayList<Integer> currUserSportIds = new ArrayList<>();

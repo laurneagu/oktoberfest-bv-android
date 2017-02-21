@@ -16,8 +16,7 @@
         android:text="Total points: "
         android:layout_centerHorizontal="true"
         android:id="@+id/totalPointsPerSport"
-        android:textColor="#0C3855"
-        android:textStyle="bold"
+        android:textColor="#575757"
         android:layout_centerInParent="true"
         android:layout_below="@id/sport_logo"/>
 
@@ -28,8 +27,7 @@
         android:layout_centerHorizontal="true"
         android:id="@+id/totalEventsAttendedPerSport"
         android:layout_below="@+id/totalPointsPerSport"
-        android:textColor="#0C3855"
-        android:textStyle="bold"
+        android:textColor="#575757"
         android:paddingBottom="10dp"/>
 
 </RelativeLayout>
