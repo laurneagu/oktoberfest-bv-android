@@ -79,6 +79,7 @@ import larc.ludiconprod.Adapters.LeftSidePanelAdapter;
 import larc.ludiconprod.R;
 import larc.ludiconprod.UserInfo.User;
 import larc.ludiconprod.Utils.Event;
+import larc.ludiconprod.Utils.Location.GPSTracker;
 import larc.ludiconprod.Utils.Location.GPS_Positioning;
 import larc.ludiconprod.Utils.Location.ActivitiesLocationListener;
 import larc.ludiconprod.Utils.Sport;
@@ -126,26 +127,53 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
     public void onMapReady(GoogleMap map) {
         m_gmap = map;
 
-        locationListener = new ActivitiesLocationListener(getApplication());
-        locationListener.BindMap(map);
-        lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        try {
-            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 1, locationListener);
-            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 100, 1, locationListener);
-
-            // Creating a criteria object to retrieve provider
-            Criteria criteria = new Criteria();
-
-            // Getting the name of the best provider
-            String provider = lm.getBestProvider(criteria, true);
-
-        } catch (SecurityException exc) {
-            exc.printStackTrace();
-        }
+//        locationListener = new ActivitiesLocationListener(getApplication());
+//        locationListener.BindMap(map);
+//        lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+//
+//        try {
+//            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 1, locationListener);
+//            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 100, 1, locationListener);
+//
+//            // Creating a criteria object to retrieve provider
+//            Criteria criteria = new Criteria();
+//
+//            // Getting the name of the best provider
+//            String provider = lm.getBestProvider(criteria, true);
+//
+//        } catch (SecurityException exc) {
+//            exc.printStackTrace();
+//        }
 
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
+
+        SharedPreferences sharedPref = getApplication().getSharedPreferences("UserDetails", 0);
+        String latString, longString;
+
+        latString = sharedPref.getString("current_latitude", null);
+        longString= sharedPref.getString("current_longitude", null);
+
+        sharedPref = getApplication().getSharedPreferences("LocationPrefs", 0);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("sel_latitude", null);
+        editor.putString("sel_longitude", null);
+        editor.commit();
+
+        double lati = 0;
+        double longi = 0;
+        try{
+            lati = Double.parseDouble(latString);
+            longi = Double.parseDouble(longString);
+        }catch(NullPointerException e) {
+//            Context context = getApplicationContext();
+//            int duration = Toast.LENGTH_LONG;
+//
+//            Toast toast = Toast.makeText(context, latString + longString + "  Error", duration);
+//            toast.show();
+        }
+
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lati, longi), 15));
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {

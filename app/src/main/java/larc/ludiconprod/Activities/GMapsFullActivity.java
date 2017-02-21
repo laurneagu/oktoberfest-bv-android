@@ -522,13 +522,24 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
                     latString = sharedPref.getString("sel_latitude", null);
                     longString= sharedPref.getString("sel_longitude", null);
 
-                    if(latString==null || longString==null){
-                        latString = sharedPref.getString("curr_latitude", null);
-                        longString= sharedPref.getString("curr_longitude", null);
+                    if(latString==null || longString==null) {
+                        sharedPref = getApplication().getSharedPreferences("UserDetails", 0);
+
+                        latString = sharedPref.getString("current_latitude", null);
+                        longString= sharedPref.getString("current_longitude", null);
+
                     }
 
-                    latitude = Double.parseDouble(latString);
-                    longitude = Double.parseDouble(longString);
+                    try{
+                         latitude = Double.parseDouble(latString);
+                         longitude = Double.parseDouble(longString);
+                    }catch(NullPointerException e) {
+                        Context context = getApplicationContext();
+                        int duration = Toast.LENGTH_LONG;
+
+                        Toast toast = Toast.makeText(context, latString + longString + "  Error", duration);
+                        toast.show();
+                    }
 
                     /*
                     googleMap.addMarker(new MarkerOptions()
