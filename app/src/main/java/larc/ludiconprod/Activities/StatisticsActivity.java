@@ -9,6 +9,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -65,6 +66,8 @@ public class StatisticsActivity extends Activity {
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     final int[] pointsPerMonth = new int[12];
+    final int monthsBefore = 7, monthsAfter = 4;
+    ArrayList<Integer> monthsList = new ArrayList<>();
 
     final ArrayList<EventStats> userEvents = new ArrayList<>();
 
@@ -207,10 +210,9 @@ public class StatisticsActivity extends Activity {
                             else{
                                 Log.v(userEvents.get(j).date.getMonth() + "", userEvents.get(j).points + "");
                                 // Add event points to respective month
-                                Calendar calendar = Calendar.getInstance();
-                                int year = calendar.get(Calendar.YEAR);
                                 int eventYear = userEvents.get(j).date.getYear() + 1900;
-                                if(eventYear == year)
+                                int eventMonth = userEvents.get(j).date.getMonth();
+                                if(isValidDateForGraph(eventYear, eventMonth))
                                     pointsPerMonth[userEvents.get(j).date.getMonth()] += userEvents.get(j).points;
                                 // Something to signal the finish of work
                                 dummy.add(1);
@@ -233,11 +235,55 @@ public class StatisticsActivity extends Activity {
         }
     }
 
+    boolean isValidDateForGraph(int eventYear, int eventMonth)
+    {
+        Calendar calendar = Calendar.getInstance();
+        int currentYear = calendar.get(Calendar.YEAR);
+        int currentMonth = calendar.get(Calendar.MONTH);
+        if(currentYear == eventYear && (currentMonth - monthsBefore <= eventMonth && eventMonth <= currentMonth + monthsAfter))
+            return true;
+        else
+            if(currentYear == (eventYear + 1) && (eventMonth >= (12 + currentMonth - monthsBefore)))
+                return true;
+        return false;
+    }
+
+    ArrayList<Integer> setMonthsForGraph(int currentMonth)
+    {
+        if(currentMonth < monthsBefore)
+            currentMonth += 12;
+        int aux = currentMonth - monthsBefore;
+        while(aux <= currentMonth + monthsAfter)
+        {
+            monthsList.add(aux%12);
+            aux++;
+        }
+        return monthsList;
+    }
+
+    String getGraphTitle()
+    {
+        Calendar calendar = Calendar.getInstance();
+        int currentMonth = calendar.get(Calendar.MONTH);
+        int currentYear = calendar.get(Calendar.YEAR);
+        if(currentMonth < monthsBefore)
+            return "Current year " + (currentYear-1) + "/" + currentYear;
+        else
+            if(currentMonth > 12 - monthsAfter)
+                return "Current year " + currentYear + "/" + (currentYear+1);
+            else
+                return "Current year " + currentYear;
+    }
+
     private void displayChart()
     {
             Log.v("Display", "chart");
             BarChart chart = (BarChart) findViewById(R.id.chart);
             BarData data = new BarData(getXAxisValues(), getDataSet());
+            // Set good year(s) to title
+            TextView title = (TextView)findViewById(R.id.currentYear);
+            title.setText(getGraphTitle());
+
             chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
             chart.getAxisLeft().setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
             chart.getAxisRight().setEnabled(false);
@@ -558,6 +604,10 @@ public class StatisticsActivity extends Activity {
                             }
                     }
                 }
+                //Get months depending on current month
+                Calendar calendar = Calendar.getInstance();
+                int currentMonth = calendar.get(Calendar.MONTH);
+                setMonthsForGraph(currentMonth);
                 getDateAndSport();
             }
 
@@ -626,31 +676,30 @@ public class StatisticsActivity extends Activity {
     private BarDataSet getDataSet() {
 
         ArrayList<BarEntry> valueSet1 = new ArrayList<>();
-        Log.v(pointsPerMonth[4] + "", "BGPL");
 
-        BarEntry v1e1 = new BarEntry(pointsPerMonth[0], 0); // Jan
+        BarEntry v1e1 = new BarEntry(pointsPerMonth[monthsList.get(0)], 0); // Jan
         valueSet1.add(v1e1);
-        BarEntry v1e2 = new BarEntry(pointsPerMonth[1], 1); // Feb
+        BarEntry v1e2 = new BarEntry(pointsPerMonth[monthsList.get(1)], 1); // Feb
         valueSet1.add(v1e2);
-        BarEntry v1e3 = new BarEntry(pointsPerMonth[2], 2); // Mar
+        BarEntry v1e3 = new BarEntry(pointsPerMonth[monthsList.get(2)], 2); // Mar
         valueSet1.add(v1e3);
-        BarEntry v1e4 = new BarEntry(pointsPerMonth[3], 3); // Apr
+        BarEntry v1e4 = new BarEntry(pointsPerMonth[monthsList.get(3)], 3); // Apr
         valueSet1.add(v1e4);
-        BarEntry v1e5 = new BarEntry(pointsPerMonth[4], 4); // May
+        BarEntry v1e5 = new BarEntry(pointsPerMonth[monthsList.get(4)], 4); // May
         valueSet1.add(v1e5);
-        BarEntry v1e6 = new BarEntry(pointsPerMonth[5], 5); // Jun
+        BarEntry v1e6 = new BarEntry(pointsPerMonth[monthsList.get(5)], 5); // Jun
         valueSet1.add(v1e6);
-        BarEntry v1e7 = new BarEntry(pointsPerMonth[6], 6); // Jul
+        BarEntry v1e7 = new BarEntry(pointsPerMonth[monthsList.get(6)], 6); // Jul
         valueSet1.add(v1e7);
-        BarEntry v1e8 = new BarEntry(pointsPerMonth[7], 7); // Aug
+        BarEntry v1e8 = new BarEntry(pointsPerMonth[monthsList.get(7)], 7); // Aug
         valueSet1.add(v1e8);
-        BarEntry v1e9 = new BarEntry(pointsPerMonth[8], 8); // Sep
+        BarEntry v1e9 = new BarEntry(pointsPerMonth[monthsList.get(8)], 8); // Sep
         valueSet1.add(v1e9);
-        BarEntry v1e10 = new BarEntry(pointsPerMonth[9], 9); // Oct
+        BarEntry v1e10 = new BarEntry(pointsPerMonth[monthsList.get(9)], 9); // Oct
         valueSet1.add(v1e10);
-        BarEntry v1e11 = new BarEntry(pointsPerMonth[10], 10); // Nov
+        BarEntry v1e11 = new BarEntry(pointsPerMonth[monthsList.get(10)], 10); // Nov
         valueSet1.add(v1e11);
-        BarEntry v1e12 = new BarEntry(pointsPerMonth[11], 11); // Dec
+        BarEntry v1e12 = new BarEntry(pointsPerMonth[monthsList.get(11)], 11); // Dec
         valueSet1.add(v1e12);
 
         BarDataSet barDataSet1 = new BarDataSet(valueSet1, "Points per month");
@@ -659,19 +708,22 @@ public class StatisticsActivity extends Activity {
     }
 
     private ArrayList<String> getXAxisValues() {
+        ArrayList<String> monthsOfYear = new ArrayList<>();
+        monthsOfYear.add("JAN");
+        monthsOfYear.add("FEB");
+        monthsOfYear.add("MAR");
+        monthsOfYear.add("APR");
+        monthsOfYear.add("MAY");
+        monthsOfYear.add("JUN");
+        monthsOfYear.add("JUL");
+        monthsOfYear.add("AUG");
+        monthsOfYear.add("SEP");
+        monthsOfYear.add("OCT");
+        monthsOfYear.add("NOV");
+        monthsOfYear.add("DEC");
         ArrayList<String> xAxis = new ArrayList<>();
-        xAxis.add("JAN");
-        xAxis.add("FEB");
-        xAxis.add("MAR");
-        xAxis.add("APR");
-        xAxis.add("MAY");
-        xAxis.add("JUN");
-        xAxis.add("JUL");
-        xAxis.add("AUG");
-        xAxis.add("SEP");
-        xAxis.add("OCT");
-        xAxis.add("NOV");
-        xAxis.add("DEC");
+        for(int i = 0; i < 12; i++)
+            xAxis.add(monthsOfYear.get(monthsList.get(i)));
         return xAxis;
     }
 
