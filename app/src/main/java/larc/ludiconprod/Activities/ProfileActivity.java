@@ -34,6 +34,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -391,13 +392,21 @@ public class ProfileActivity extends Activity {
             View view = convertView;
             if (view == null) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(R.layout.compare_layout, null);
+                view = inflater.inflate(R.layout. new_compare_layout, null);
             }
 
-            final TextView comparePoints = (TextView) view.findViewById(R.id.pointsCompare);
+            final TextView myPoints = (TextView) view.findViewById(R.id.pointsred);
+            final TextView friendPoints = (TextView) view.findViewById(R.id.pointsblue);
             final ImageView sportLogo = (ImageView) view.findViewById(R.id.sport_logo_compare);
+            final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
 
-            comparePoints.setText(this.compareArray.get(position).first_points + " points" + " VS " + this.compareArray.get(position).second_points + " points (YOU)");
+            int totalPoints = this.compareArray.get(position).first_points + this.compareArray.get(position).second_points;
+            if(totalPoints != 0)
+                progressBar.setProgress(this.compareArray.get(position).first_points/totalPoints * 100);
+            else
+                progressBar.setProgress(50);
+            myPoints.setText(this.compareArray.get(position).first_points + "");
+            friendPoints.setText(this.compareArray.get(position).second_points + "");
 
             switch (this.compareArray.get(position).sport)
             {

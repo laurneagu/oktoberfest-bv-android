@@ -21,11 +21,11 @@
             android:layout_marginTop="70dp" />
 
         <ImageButton
-            android:layout_width="70dp"
-            android:layout_height="21dp"
+            android:layout_width="95dp"
+            android:layout_height="35dp"
             android:id="@+id/chatbutton"
             android:layout_marginTop="10dp"
-            android:background="@drawable/chat"
+            android:background="@drawable/chatbutton"
             android:layout_below="@+id/profileImageView"
             android:layout_centerHorizontal="true" />
 
@@ -67,13 +67,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Head to head"
+            android:text="Overall"
             android:textSize="20dp"
             android:paddingTop="10dp"
-            android:textColor="#0C3855"
+            android:textColor="#505050"
             android:id="@+id/overallTag"
             android:layout_below="@+id/view"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:textStyle="normal|bold" />
 
         <ListView
             android:layout_width="wrap_content"

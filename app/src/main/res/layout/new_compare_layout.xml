@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:orientation="vertical" >
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="3dp"
+        android:layout_alignBottom="@+id/progressBar"
+        android:layout_toRightOf="@+id/progressBar"
+        android:layout_toEndOf="@+id/progressBar"
+        android:id="@+id/pointsblue"
+        android:textStyle="normal"
+        android:textSize="24sp"
+        android:textColor="#505050" />
+
+    <ImageView
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:paddingLeft="30dp"
+        android:id="@+id/sport_logo_compare"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="20dp"
+        android:id="@+id/pointsred"
+        android:layout_alignBottom="@+id/sport_logo_compare"
+        android:layout_toRightOf="@+id/sport_logo_compare"
+        android:layout_toEndOf="@+id/sport_logo_compare"
+        android:layout_marginBottom="26dp"
+        android:textSize="24sp"
+        android:textStyle="normal"
+        android:textColor="#505050" />
+
+    <ProgressBar
+        style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Horizontal"
+        android:layout_width="100dp"
+        android:layout_height="@dimen/activity_horizontal_margin"
+        android:paddingLeft="3dp"
+        android:id="@+id/progressBar"
+        android:progressDrawable="@drawable/greenprogress"
+        android:layout_alignBottom="@+id/pointsred"
+        android:layout_toRightOf="@+id/trophyred"
+        android:layout_toEndOf="@+id/trophyred" />
+
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:paddingLeft="3dp"
+        android:id="@+id/trophyblue"
+        android:background="@drawable/bluetrophy"
+        android:layout_alignBottom="@+id/trophyred"
+        android:layout_toRightOf="@+id/pointsblue"
+        android:layout_toEndOf="@+id/pointsblue" />
+
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:paddingLeft="3dp"
+        android:id="@+id/trophyred"
+        android:background="@drawable/redtrophy"
+        android:layout_alignBottom="@+id/pointsred"
+        android:layout_toRightOf="@+id/pointsred"
+        android:layout_toEndOf="@+id/pointsred" />
+
+</RelativeLayout>
