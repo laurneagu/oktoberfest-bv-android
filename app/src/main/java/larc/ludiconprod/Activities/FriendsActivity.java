@@ -4,6 +4,8 @@ import android.app.Activity;
 
 import java.io.Console;
 import java.util.*;
+
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -68,6 +70,7 @@ public class FriendsActivity extends Activity {
     private DrawerLayout mDrawerLayout;
     final ArrayList<FriendItem> friends = new ArrayList<>();
     final ArrayList<String> friendsUIDs = new ArrayList<>();
+    ProgressDialog progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +83,11 @@ public class FriendsActivity extends Activity {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                     WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
+
+        if (android.os.Build.VERSION.SDK_INT >= 11) {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED, WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
+        }
+
         // remove title
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -98,6 +106,13 @@ public class FriendsActivity extends Activity {
         }
         // User picture and name for HEADER MENU
         Typeface segoeui = Typeface.createFromAsset(getAssets(), "fonts/seguisb.ttf");
+
+        /* Progress dialog */
+        progress = new ProgressDialog(this);
+        progress.setTitle("Loading");
+        progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+        progress.show();
+
 
         TextView userName = (TextView) findViewById(R.id.userName);
         userName.setText(User.getFirstName(getApplicationContext()));
@@ -200,7 +215,7 @@ public class FriendsActivity extends Activity {
                             }
 
                             if (index == friends.size()-1){ // if it is the last one, you can start the ui
-
+                                progress.dismiss();
                                 int iRemovedCount=0;
                                 // Remove empty indexes
                                 for(Integer indexToRemove : toRemoveNoMoreFriends){
@@ -216,6 +231,8 @@ public class FriendsActivity extends Activity {
                                 Log.v("TAG",friends.size()+"");
                                 listView.setAdapter(adapter);
                             }
+
+
                         }
 
                         @Override

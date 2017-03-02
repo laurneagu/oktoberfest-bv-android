@@ -152,7 +152,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         String latString, longString;
 
         latString = sharedPref.getString("current_latitude", null);
-        longString= sharedPref.getString("current_longitude", null);
+        longString = sharedPref.getString("current_longitude", null);
 
         sharedPref = getApplication().getSharedPreferences("LocationPrefs", 0);
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -162,10 +162,10 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
         double lati = 0;
         double longi = 0;
-        try{
+        try {
             lati = Double.parseDouble(latString);
             longi = Double.parseDouble(longString);
-        }catch(NullPointerException e) {
+        } catch (NullPointerException e) {
 //            Context context = getApplicationContext();
 //            int duration = Toast.LENGTH_LONG;
 //
@@ -224,7 +224,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         userName.setText(User.getFirstName(getApplicationContext()));
         userName.setTypeface(segoeui);
 
-        TextView userSportsNumber = (TextView)findViewById(R.id.userSportsNumber);
+        TextView userSportsNumber = (TextView) findViewById(R.id.userSportsNumber);
         userSportsNumber.setText(User.getNumberOfSports(getApplicationContext()));
         userSportsNumber.setTypeface(segoeui);
 
@@ -311,16 +311,16 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         });
 
         //// Create event in header menu
-        createEvent = (ImageButton)findViewById(R.id.header_button);
+        createEvent = (ImageButton) findViewById(R.id.header_button);
         createEvent.setVisibility(View.VISIBLE);
         createEvent.setBackgroundResource(R.drawable.save);
-        createEvent.getLayoutParams().height =100;
-        createEvent.getLayoutParams().width = 100 ;
+        createEvent.getLayoutParams().height = 100;
+        createEvent.getLayoutParams().width = 100;
 
         createEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createEvent.setAlpha((float)0.3);
+                createEvent.setAlpha((float) 0.3);
                 createEvent.setClickable(false);
 
                 OnCreateEvent();
@@ -331,7 +331,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
                 editor.putString("sel_longitude", null);
                 editor.commit();
 
-                createEvent.setAlpha((float)1);
+                createEvent.setAlpha((float) 1);
             }
         });
 
@@ -397,7 +397,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         // Time picker
         int hour = myCalendar.get(Calendar.HOUR_OF_DAY);
         int minute = myCalendar.get(Calendar.MINUTE);
-        editTextTimeHolder.setText(hour + ":" + minute);
+        editTextTimeHolder.setText((hour < 9 ? "0" : "") + hour + ":" + (minute < 9 ? "0" : "") + minute);
         editTextTimeHolder.setFocusable(false);
         editTextTimeHolder.setOnClickListener(new View.OnClickListener() {
 
@@ -414,7 +414,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
                 mTimePicker = new TimePickerDialog(CreateNewActivity.this, R.style.DialogTheme, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                        editTextTimeHolder.setText(selectedHour + ":" + selectedMinute);
+                        editTextTimeHolder.setText((selectedHour < 9 ? "0" : "") + selectedHour + ":" + (selectedMinute < 9 ? "0" : "") + selectedMinute);
                         myCalendar.set(Calendar.HOUR_OF_DAY, selectedHour);
                         myCalendar.set(Calendar.MINUTE, selectedMinute);
 
@@ -547,7 +547,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
             createEvent.setEnabled(false);
             createEvent.setClickable(false);
             //createEvent.setText("Creating ..");
-            Toast.makeText(getApplicationContext(),"Creating..",Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Creating..", Toast.LENGTH_LONG).show();
 
             ProgressBar pb = (ProgressBar) findViewById(R.id.marker_progress);
             pb.setVisibility(View.VISIBLE);

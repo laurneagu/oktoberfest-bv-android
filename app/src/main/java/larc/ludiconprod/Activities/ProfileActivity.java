@@ -392,7 +392,7 @@ public class ProfileActivity extends Activity {
             View view = convertView;
             if (view == null) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(R.layout. new_compare_layout, null);
+                view = inflater.inflate(R.layout.new_compare_layout, null);
             }
 
             final TextView myPoints = (TextView) view.findViewById(R.id.pointsred);

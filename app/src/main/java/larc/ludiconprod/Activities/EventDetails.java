@@ -185,8 +185,8 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
         cancelEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new AlertDialog.Builder(EventDetails.this)
-                    .setTitle("Cancel Event")
+                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(EventDetails.this, R.style.MyAlertDialogStyle);
+                builder.setTitle("Cancel Event")
                     .setMessage("Are you sure you want to cancel the event? This action can't be undone.")
                     .setIcon(android.R.drawable.ic_dialog_alert)
                         .setNegativeButton("NO", null)
@@ -473,9 +473,8 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
     }
 
     public void removeUser(final String name, final String uid){
-
-        new AlertDialog.Builder(EventDetails.this)
-            .setTitle("Remove user")
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(EventDetails.this, R.style.MyAlertDialogStyle);
+        builder.setTitle("Remove user")
             .setMessage("Are you sure you want to remove " + name + " ?")
             .setIcon(android.R.drawable.ic_dialog_alert)
             .setNegativeButton("NO", null)
@@ -525,8 +524,8 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
         header_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new AlertDialog.Builder(EventDetails.this)
-                        .setTitle("Leave Event")
+                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(EventDetails.this, R.style.MyAlertDialogStyle);
+                builder.setTitle("Leave Event")
                         .setMessage("Are you sure you want to leave the event?")
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .setNegativeButton("NO", null)

@@ -290,6 +290,10 @@ public class MainActivity extends AppCompatActivity {
         // If the Android version is lower than Jellybean, use this call to hide
         // the status bar.
 
+        if (android.os.Build.VERSION.SDK_INT >= 11) {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED, WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
+        }
+
         if (Build.VERSION.SDK_INT < 16) {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                     WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -749,7 +753,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 final Chronometer timer = (Chronometer) findViewById( R.id.chronometer );
                 String currentP = getSharedPreferences("UserDetails", 0).getString("currentEventPointsCounter", "0");
-                getSharedPreferences("UserDetails", 0).edit().putString("currentEventStateCheck","0").commit();
+                getSharedPreferences("UserDetails", 0).edit().putString("currentEventStateCheck","2").commit();
                 Toast.makeText(getApplicationContext(), "Yaay! Activity finished in " + timer.getText().toString() + "!\nYou got "+currentP + " points! :-)", Toast.LENGTH_LONG).show();
                 timer.stop();
                 hideHappeningRightNow();
@@ -1027,7 +1031,7 @@ public class MainActivity extends AppCompatActivity {
                             switch (which){
                                 case DialogInterface.BUTTON_POSITIVE:
                                     String currentP = getSharedPreferences("UserDetails", 0).getString("currentEventPointsCounter", "0");
-                                    getSharedPreferences("UserDetails", 0).edit().putString("currentEventStateCheck","0").commit();
+                                    getSharedPreferences("UserDetails", 0).edit().putString("currentEventStateCheck","2").commit();
                                     timer.stop();
                                     changeStateButton.setVisibility(View.GONE);
                                     Toast.makeText(getApplicationContext(), "Yaay! Activity finished in " + timer.getText().toString() + "!\nYou got "+currentP + " points! :-)", Toast.LENGTH_LONG).show();
@@ -1499,7 +1503,7 @@ public class MainActivity extends AppCompatActivity {
                 if (frlistView != null) {
 
                     if(friendsEventsList.size() == 0 && !eventHappeningNow){
-                        frlistView.setBackgroundResource(R.drawable.noeventsaround_bg);
+                        //frlistView.setBackgroundResource(R.drawable.noeventsaround_bg);
 
                         Typeface segoeui = Typeface.createFromAsset(getApplication().getAssets(), "fonts/seguisb.ttf");
                         final Button cloudoflistview1 = (Button) findViewById(R.id.cloudoflistview1);
@@ -1532,7 +1536,7 @@ public class MainActivity extends AppCompatActivity {
                 if (mylistView != null) {
 
                     if(myEventsList.size() == 0 && !eventHappeningNow){
-                        mylistView.setBackgroundResource(R.drawable.noeventsaround_bg);
+                        //mylistView.setBackgroundResource(R.drawable.noeventsaround_bg);
 
                         Typeface segoeui = Typeface.createFromAsset(getApplication().getAssets(), "fonts/seguisb.ttf");
                         final Button cloudoflistview2 = (Button) findViewById(R.id.cloudoflistview2);

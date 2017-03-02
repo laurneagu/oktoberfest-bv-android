@@ -68,6 +68,8 @@ public class ChatListActivity extends Activity {
     private ProgressDialog dialog;
     private int TIMEOUT = 1;
     public static boolean isForeground = false;
+    ProgressDialog progress;
+
 
     private static final String FIREBASE_URL = "https://ludicon.firebaseio.com/";
 
@@ -109,6 +111,11 @@ public class ChatListActivity extends Activity {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                     WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
+
+        if (android.os.Build.VERSION.SDK_INT >= 11) {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED, WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
+        }
+
         // remove title
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -120,6 +127,12 @@ public class ChatListActivity extends Activity {
         // Left side panel initializing
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
         initializeLeftSidePanel();
+
+        /* Progress dialog */
+        progress = new ProgressDialog(this);
+        progress.setTitle("Loading");
+        progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+        progress.show();
 
         User.setImage();
 
@@ -287,6 +300,7 @@ public class ChatListActivity extends Activity {
 
                 // Reach chat end of the list
                 if(chatList.size()==size){
+                    progress.dismiss();
                     List<Chat1to1> newChatList = chatList;
 
                     for(int i =0 ; i < newChatList.size() ; i++) {
