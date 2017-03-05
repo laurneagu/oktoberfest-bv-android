@@ -1503,7 +1503,7 @@ public class MainActivity extends AppCompatActivity {
                 if (frlistView != null) {
 
                     if(friendsEventsList.size() == 0 && !eventHappeningNow){
-                        //frlistView.setBackgroundResource(R.drawable.noeventsaround_bg);
+                        frlistView.setBackgroundResource(R.drawable.noeventsaround_bg);
 
                         Typeface segoeui = Typeface.createFromAsset(getApplication().getAssets(), "fonts/seguisb.ttf");
                         final Button cloudoflistview1 = (Button) findViewById(R.id.cloudoflistview1);
@@ -1536,7 +1536,7 @@ public class MainActivity extends AppCompatActivity {
                 if (mylistView != null) {
 
                     if(myEventsList.size() == 0 && !eventHappeningNow){
-                        //mylistView.setBackgroundResource(R.drawable.noeventsaround_bg);
+                        mylistView.setBackgroundResource(R.drawable.noeventsaround_bg);
 
                         Typeface segoeui = Typeface.createFromAsset(getApplication().getAssets(), "fonts/seguisb.ttf");
                         final Button cloudoflistview2 = (Button) findViewById(R.id.cloudoflistview2);
