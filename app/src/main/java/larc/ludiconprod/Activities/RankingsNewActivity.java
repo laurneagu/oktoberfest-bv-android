@@ -456,7 +456,8 @@ public class RankingsNewActivity extends AppCompatActivity {
                         }).start();
                     }
                 };
-                timer.schedule(delayedThreadStartTask, TIMEOUT * 2 * usersLocalList.size());
+
+                timer.schedule(delayedThreadStartTask, TIMEOUT * 6);
 
             }
 

@@ -442,14 +442,17 @@ public class MainActivity extends AppCompatActivity {
                     if (dataSN.getKey().equalsIgnoreCase("sports"))
                         favoriteSports.clear();
                         for (DataSnapshot data : dataSN.getChildren()) {
-                            if (data.getKey() != null && data.getKey() != " ")
+                            if (data.getKey() != null
+                                    && data.getKey().toString().compareTo(" ") != 0
+                                    && data.getKey().toString().compareTo("") != 0
+                                    && data.getKey().toString().compareTo("openedApp") != 0)
                                 favoriteSports.add(data.getKey().toString());
                         }
                     if (dataSN.getKey().equalsIgnoreCase("range")) {
                         userRange = Integer.parseInt(dataSN.getValue().toString());
                     }
                 }
-                dialog.dismiss();
+                //dialog.dismiss();
                 User.favouriteSports = favoriteSports;
                 continueUpdatingTimeline();
             }
@@ -1590,8 +1593,8 @@ public class MainActivity extends AppCompatActivity {
                         }).start();
                     }
                 };
-                timer.schedule(delayedThreadStartTask, TIMEOUT * 2 * eventList.size());
 
+                timer.schedule(delayedThreadStartTask, TIMEOUT * 6);
             }
 
             @Override

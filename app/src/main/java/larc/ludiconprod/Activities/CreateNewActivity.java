@@ -546,6 +546,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
             createEvent.setEnabled(false);
             createEvent.setClickable(false);
+            createEvent.setAlpha((float)0.2);
             //createEvent.setText("Creating ..");
             Toast.makeText(getApplicationContext(), "Creating..", Toast.LENGTH_LONG).show();
 

@@ -71,6 +71,8 @@ public class FriendsActivity extends Activity {
     final ArrayList<FriendItem> friends = new ArrayList<>();
     final ArrayList<String> friendsUIDs = new ArrayList<>();
     ProgressDialog progress;
+    private ProgressDialog dialog;
+    private int TIMEOUT = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +97,9 @@ public class FriendsActivity extends Activity {
 
         setContentView(R.layout.activity_friends);
 
+        dialog  = ProgressDialog.show(FriendsActivity.this, "", "Loading. Please wait", true);
+
+
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
         initializeLeftSidePanel();
 
@@ -108,11 +113,11 @@ public class FriendsActivity extends Activity {
         Typeface segoeui = Typeface.createFromAsset(getAssets(), "fonts/seguisb.ttf");
 
         /* Progress dialog */
-        progress = new ProgressDialog(this);
+        /*progress = new ProgressDialog(this);
         progress.setTitle("Loading");
         progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
         progress.show();
-
+        */
 
         TextView userName = (TextView) findViewById(R.id.userName);
         userName.setText(User.getFirstName(getApplicationContext()));
@@ -215,7 +220,24 @@ public class FriendsActivity extends Activity {
                             }
 
                             if (index == friends.size()-1){ // if it is the last one, you can start the ui
-                                progress.dismiss();
+                                // Dismiss loading dialog after  2 * TIMEOUT * chatList.size() ms
+                                Timer timer = new Timer();
+                                TimerTask delayedThreadStartTask = new TimerTask() {
+                                    @Override
+                                    public void run() {
+
+                                        new Thread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                dialog.dismiss();
+                                            }
+                                        }).start();
+                                    }
+                                };
+
+                                timer.schedule(delayedThreadStartTask, TIMEOUT * 12);
+
+                                //progress.dismiss();
                                 int iRemovedCount=0;
                                 // Remove empty indexes
                                 for(Integer indexToRemove : toRemoveNoMoreFriends){
@@ -231,14 +253,33 @@ public class FriendsActivity extends Activity {
                                 Log.v("TAG",friends.size()+"");
                                 listView.setAdapter(adapter);
                             }
-
-
                         }
 
                         @Override
                         public void onCancelled(DatabaseError firebaseError) {
                         }
                     });
+                }
+
+                if(friends.size() == 0){
+                    // Dismiss loading dialog after  2 * TIMEOUT * chatList.size() ms
+                    Timer timer = new Timer();
+                    TimerTask delayedThreadStartTask = new TimerTask() {
+                        @Override
+                        public void run() {
+
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    dialog.dismiss();
+                                }
+                            }).start();
+                        }
+                    };
+
+                    timer.schedule(delayedThreadStartTask, TIMEOUT * 12);
+
+                    //progress.dismiss();
                 }
         }
 

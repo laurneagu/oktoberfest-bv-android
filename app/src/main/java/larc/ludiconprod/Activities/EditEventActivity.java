@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
@@ -13,6 +14,7 @@ import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.LocationManager;
+import android.media.Image;
 import android.os.Build;
 import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -158,6 +160,8 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
 
     }
 
+    private final EditEventActivity myAct = this;
+    private ImageButton createEvent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -177,6 +181,30 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
 
         setContentView(R.layout.activity_create_new);
 
+        //// Create event in header menu
+        createEvent = (ImageButton) findViewById(R.id.header_button);
+        createEvent.setVisibility(View.VISIBLE);
+        createEvent.setBackgroundResource(R.drawable.save);
+        createEvent.getLayoutParams().height = 100;
+        createEvent.getLayoutParams().width = 100;
+
+        createEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createEvent.setAlpha((float) 0.3);
+                createEvent.setClickable(false);
+
+                OnCreateEvent();
+
+                SharedPreferences sharedPref = myAct.getSharedPreferences("LocationPrefs", 0);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString("sel_latitude", null);
+                editor.putString("sel_longitude", null);
+                editor.commit();
+
+                createEvent.setAlpha((float) 1);
+            }
+        });
         // Left side panel initializing
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
         initializeLeftSidePanel();
@@ -460,7 +488,7 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
         return false;
     }
 
-    public void OnCreateEvent(View view) {
+    public void OnCreateEvent() {
 
         if(!dateHasChanged){
             Date initialDate = DateManager.convertFromSecondsToDate(Long.parseLong(getIntent().getStringExtra("eventDate")));
@@ -506,19 +534,14 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
             if (checkEventDateIsNotInPast(creationDate))
                 return;
 
-            // Stop button to be called more than once
-            Button createEvent = (Button) findViewById(R.id.createEvent);
             createEvent.setEnabled(false);
             createEvent.setClickable(false);
-            createEvent.setText("Editing ..");
-            createEvent.setBackgroundColor(Color.TRANSPARENT);
-            createEvent.setTextColor(Color.BLUE);
+            createEvent.setAlpha(100);
+
             ProgressBar pb = (ProgressBar) findViewById(R.id.marker_progress);
             pb.setVisibility(View.VISIBLE);
 
-
             map.put("date", DateManager.convertFromTextToSeconds(gmtTime));
-
 
             map.put("createdBy", User.uid);
             map.put("active", true);
