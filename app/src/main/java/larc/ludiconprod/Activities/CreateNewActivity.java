@@ -516,7 +516,16 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         }
         return false;
     }
-
+    public boolean isSameDay(Date a, Date b)
+    {
+        if(a.getYear() != b.getYear())
+            return false;
+        if(a.getMonth() != b.getMonth())
+            return false;
+        if(a.getDay() != b.getDay())
+            return false;
+        return true;
+    }
     public void OnCreateEvent() {
         try {
             Calendar calendar = myCalendar;
@@ -698,14 +707,19 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
                     ArrayList<Event> myCurrentEvents = new Gson().fromJson(connectionsJSONString, type);
 
                     int numberOfEvents = 0;
-                    boolean isSameDate = false;
+                    boolean isSameDate = false;;
+                    Date now = new Date();
                     for (Event event : myCurrentEvents) {
-                        // This is not quite correct!!!:
-                        if (event.date.getDay() == creationDate.getDay() && Math.abs(event.date.getHours() - creationDate.getHours()) <= 2) {
+                        if (event.date.before(now))
+                            continue;
+                        if (isSameDay(creationDate,event.date) && Math.abs(event.date.getHours() - creationDate.getHours()) <= 2) {
                             isSameDate = true;
                             break;
                         }
-                        if (event.date.getDay() == creationDate.getDay()) numberOfEvents++;
+                        if (isSameDay(creationDate,event.date) )
+                            numberOfEvents++;
+                        if (numberOfEvents >=3 || isSameDate)
+                            break;
                     }
 
                     if (isSameDate) {
