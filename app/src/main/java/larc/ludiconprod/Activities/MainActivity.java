@@ -974,7 +974,10 @@ public class MainActivity extends AppCompatActivity {
         Drawable res = getResources().getDrawable(imageResource);
 
         icon.setImageDrawable(res);
-        firstPart.setText("You are playing " + currentEvent.sport);
+        if(currentEvent.sport.equalsIgnoreCase("jogging"))
+            firstPart.setText("You are " + currentEvent.sport);
+        else
+            firstPart.setText("You are playing " + currentEvent.sport);
         String audience = "";
         if (currentEvent.others-1 > 1) {
             audience = " with " + (currentEvent.others-1) + " others";
@@ -1879,7 +1882,10 @@ public class MainActivity extends AppCompatActivity {
             Drawable res = getResources().getDrawable(imageResource);
 
             holder.icon.setImageDrawable(res);
-            holder.firstPart.setText("Will play " + list.get(position).sport);
+            if(list.get(position).sport.equalsIgnoreCase("jogging"))
+                holder.firstPart.setText("Will go " + list.get(position).sport);
+            else
+                holder.firstPart.setText("Will play " + list.get(position).sport);
             if ((list.get(position).noUsers - 1) > 1) {
                 holder.secondPart.setText(" with " + (list.get(position).noUsers - 1) + " others");
             } else if ((list.get(position).noUsers - 1) == 1) {
@@ -2106,7 +2112,10 @@ public class MainActivity extends AppCompatActivity {
             Drawable res = getResources().getDrawable(imageResource);
 
             holder.icon.setImageDrawable(res);
-            holder.firstPart.setText("Will play " + list.get(position).sport);
+            if(list.get(position).sport.equalsIgnoreCase("jogging"))
+                holder.firstPart.setText("Will go " + list.get(position).sport);
+            else
+                holder.firstPart.setText("Will play " + list.get(position).sport);
             if ((list.get(position).noUsers - 1) > 1) {
                 holder.secondPart.setText(" with " + (list.get(position).noUsers - 1) + " others");
             } else if ((list.get(position).noUsers - 1) == 1) {

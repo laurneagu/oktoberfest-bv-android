@@ -315,7 +315,7 @@ public class FriendlyService extends Service {
                             for (ActivityInfo ai : events) {
                                 if (ai.date != null && ai.date.after(now) && ai.date.before(limit) && !checkNotSent30.containsKey(ai.date)) {
                                     checkNotSent30.put(ai.date, i);
-
+                                    // TODO : Add notification sent entry to Shared Pref and check if not already in it
                                     notifier.sendNotification(FriendlyService.this, getSystemService(NOTIFICATION_SERVICE), getResources(), i, 30, ai.sport, ai.others, ai.place, ai.date);
 
                                     i++;
