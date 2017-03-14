@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.LocationManager;
+import android.media.Image;
 import android.os.Build;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
@@ -155,6 +156,9 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
         Drawable d = new BitmapDrawable(getResources(), User.image);
         userPic.setImageDrawable(d);
 
+            ImageView menuButton = (ImageView) findViewById(R.id.showPanel);
+            menuButton.setVisibility(View.INVISIBLE);
+            
         mapFragment= (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(new OnMapReadyCallback() {
