@@ -315,7 +315,7 @@ public class FriendlyService extends Service {
                             for (ActivityInfo ai : events) {
                                 if (ai.date != null && ai.date.after(now) && ai.date.before(limit) && !checkNotSent30.containsKey(ai.date)) {
                                     checkNotSent30.put(ai.date, i);
-                                    // TODO : Add notification sent entry to Shared Pref and check if not already in it
+
                                     notifier.sendNotification(FriendlyService.this, getSystemService(NOTIFICATION_SERVICE), getResources(), i, 30, ai.sport, ai.others, ai.place, ai.date);
 
                                     i++;
@@ -418,6 +418,7 @@ public class FriendlyService extends Service {
                 final DatabaseReference userRef = ref.child("users").child(refJson);
                 final LinkedList<String> chatRefs = new LinkedList<String>(); // chat uid - last message date
 
+                final SharedPreferences sharedPref = getApplication().getSharedPreferences("ChatMessages", 0);
                 // Listen new 1 to 1 conversations
                 userRef.child("chats").addValueEventListener(new ValueEventListener() {
                     @Override
@@ -477,11 +478,17 @@ public class FriendlyService extends Service {
                                             return;
                                         }
 
+                                        boolean notAlreadySent = false;
+                                        Long dateMilis = Long.valueOf(sharedPref.getString(chatUid,"0"));
+                                        Date lastNotifDate = new Date(dateMilis);
+                                        if(lastNotifDate.before(date))
+                                        {
+                                            notAlreadySent = true;
+                                            sharedPref.edit().putString(chatUid, date.getTime() + "").commit();
+                                        }
                                         // It is not my message
                                         // If I haven't seen it
-                                        if (seen == "false") {
-                                            //Notification !!!
-                                            Log.v("Name vs Author", myName + " " + author);
+                                        if (notAlreadySent && seen == "false") {
                                             if (!isForeground("larc.ludiconprod")) { // if chat is not open
                                                 if(date != null) {
                                                     SimpleDateFormat form = new SimpleDateFormat("dd MMM, HH:mm");
