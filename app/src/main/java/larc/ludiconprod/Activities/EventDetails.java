@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -426,10 +427,22 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
                     Toast.makeText(getApplicationContext(),"The event has reached its maximum capacity",Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    FirebaseDatabase.getInstance().getReference().child("events").child(eventUid).child("users").child("+" + 5*participants +userName.getText()).setValue(true);
-                    Toast.makeText(getApplicationContext(),"You have added 1 friend",Toast.LENGTH_SHORT).show();
-                    finish();
-                    startActivity(getIntent());
+                    android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(EventDetails.this, R.style.MyAlertDialogStyle);
+                    builder.setTitle("Add offline friend")
+                            .setMessage("Are you sure you want to add an offline friend?")
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setNegativeButton("NO", null)
+                            .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    FirebaseDatabase.getInstance().getReference().child("events").child(eventUid).child("users").child("+" + 5*participants +userName.getText()).setValue(true);
+                                    Toast.makeText(getApplicationContext(),"You have added 1 friend",Toast.LENGTH_SHORT).show();
+                                    finish();
+                                    Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                                    EventDetails.this.startActivity(mainIntent);
+//                                    startActivity(getIntent());
+                                }
+                            }).show();
                 }
             }
         });
@@ -441,21 +454,40 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
                  DatabaseReference pct = User.firebaseRef.child("events").child(eventUid).child("users");
                  pct.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            for (DataSnapshot data : dataSnapshot.getChildren())
-                                if (data.getKey().charAt(0) == '+') {
-                                    String users = data.getKey().substring(1);
-                                    int i = 0;
-                                    while (Character.isDigit(users.charAt(i))) i++;
-                                    users = users.substring(i);
-                                    if (users.equalsIgnoreCase(userName.getText().toString())) {
-                                        User.firebaseRef.child("events").child(eventUid).child("users").child(data.getKey()).removeValue();
-                                        finish();
-                                        startActivity(getIntent());
-                                        return;
-                                    }
-                                }
-                            Toast.makeText(getApplicationContext(), "You have added no friends", Toast.LENGTH_SHORT).show();
+                        public void onDataChange(DataSnapshot ds) {
+                            final DataSnapshot dataSnapshot = ds;
+                            android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(EventDetails.this, R.style.MyAlertDialogStyle);
+                            builder.setTitle("Remove offline friend")
+                                    .setMessage("Are you sure you want to remove an offline friend?")
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .setNegativeButton("NO", null)
+                                    .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                                        public void onClick(DialogInterface dialog, int whichButton) {
+                                            for (DataSnapshot data : dataSnapshot.getChildren())
+                                                if (data.getKey().charAt(0) == '+') {
+                                                    String users = data.getKey().substring(1);
+                                                    int i = 0;
+                                                    while (Character.isDigit(users.charAt(i))) i++;
+                                                    users = users.substring(i);
+                                                    if (users.equalsIgnoreCase(userName.getText().toString())) {
+                                                        User.firebaseRef.child("events").child(eventUid).child("users").child(data.getKey()).removeValue();
+                                                        finish();
+                                                        Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                                                        EventDetails.this.startActivity(mainIntent);
+//                                                        startActivity(getIntent());
+                                                        return;
+                                                    }
+                                                }
+
+
+
+                                            Toast.makeText(getApplicationContext(), "You have added no friends", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }).show();
+
+
+
                         }
 
                         @Override
@@ -533,17 +565,55 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
 
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 Map<String,Object> users = new HashMap<>();
+                                boolean isAnotherUser = false;
                                 for(DataSnapshot data : details.getChildren())
                                 {
-                                    if (!data.getKey().equalsIgnoreCase(User.uid))
+                                    if (!data.getKey().equalsIgnoreCase(User.uid)) {
                                         users.put(data.getKey().toString(), Boolean.parseBoolean(data.getValue().toString()));
+
+                                        if(!isAnotherUser){
+
+                                            if(data.getKey().toString().startsWith("+")){
+                                                continue;
+                                            }
+
+
+                                            User.firebaseRef.child("events").child(eventUid).child("createdBy").setValue(data.getKey().toString());
+
+                                            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(data.getKey().toString());
+                                            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot snapshot) {
+                                                    for (DataSnapshot data : snapshot.getChildren()) {
+                                                        if (data.getKey().equalsIgnoreCase("name")) {
+                                                            User.firebaseRef.child("events").child(eventUid).child("creatorName").setValue(data.getValue().toString());
+                                                        }
+                                                        if (data.getKey().equalsIgnoreCase("profileImageURL")) {
+                                                            User.firebaseRef.child("events").child(eventUid).child("creatorImage").setValue(data.getValue().toString());                                                        }
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onCancelled(DatabaseError firebaseError) {
+                                                }
+                                            });
+
+
+
+                                            isAnotherUser = true;
+                                        }
+                                    }
                                 }
-                                User.firebaseRef.child("events").child(eventUid).child("users").setValue(users);
+
+                                if(!isAnotherUser){
+                                    // if there is no user left, cancel event
+                                    User.firebaseRef.child("events").child(eventUid).child("active").setValue(false);
+                                }
+                                    User.firebaseRef.child("events").child(eventUid).child("users").setValue(users);
+
                                 header_button.setVisibility(View.INVISIBLE);
                                 finish();
 
-                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                startActivity(intent);
                             }
                         }).show();
             }

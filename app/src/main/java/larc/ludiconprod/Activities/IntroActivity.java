@@ -230,6 +230,8 @@ public class IntroActivity extends Activity {
         };
 
         updateUI();
+
+
     }
 
     /**
@@ -337,6 +339,7 @@ public class IntroActivity extends Activity {
                                         //profileImageURL
                                         if (!url.isEmpty()) {
                                             map.put("profileImageURL",url);
+                                            User.profilePictureURL = url;
                                         }
                                     } catch (JSONException e) {
                                         e.printStackTrace();
@@ -365,6 +368,7 @@ public class IntroActivity extends Activity {
                                     if (!name.isEmpty()) {
                                         map.put("name", name);
                                         SharedPreferences prefs = getApplication().getSharedPreferences("ChatPrefs", 0);
+                                        User.name = name;
                                         prefs.edit().putString("username", name.toString()).commit();
                                     }
 

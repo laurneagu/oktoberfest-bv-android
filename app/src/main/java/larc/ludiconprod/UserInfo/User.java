@@ -24,6 +24,8 @@ public class User {
     public static  String lastName= "lastName";
     public static  String email= "email";
     public static  String gender = "unknown";
+    public static String name = "unknown";
+    public static String profilePictureURL = "";
     public static  Date birthDate = new Date();
     public static String uid = "";
     public static ArrayList<String> favouriteSports;
