@@ -1884,7 +1884,11 @@ public class MainActivity extends AppCompatActivity {
                 holder.secondPart.setText(" with no others");
             }
 
-            holder.description.setText("\"" + list.get(position).description + "\"");
+            if (list.get(position).description.equalsIgnoreCase(""))
+                holder.description.setText("\"" + "I don't have a description for my event :(" + "\"");
+            else
+                holder.description.setText("\"" + list.get(position).description + "\"");
+
             holder.players.setText(list.get(position).noUsers + "/" + list.get(position).roomCapacity);
 
 
@@ -2123,7 +2127,7 @@ public class MainActivity extends AppCompatActivity {
                 secondPart.setText(" with no others");
             }*/
             if (list.get(position).description.equalsIgnoreCase(""))
-                holder.description.setText("no description");
+                holder.description.setText("\"" + "I don't have a description for my event :(" + "\"");
             else
                 holder.description.setText("\"" + list.get(position).description + "\"");
 
