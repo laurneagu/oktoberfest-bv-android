@@ -323,7 +323,12 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
                 createEvent.setAlpha((float) 0.3);
                 createEvent.setClickable(false);
 
-                OnCreateEvent();
+                if (!OnCreateEvent()) {
+                    createEvent.setEnabled(true);
+                    createEvent.setClickable(true);
+                    createEvent.setAlpha((float) 1);
+                    return;
+                }
 
                 SharedPreferences sharedPref = myAct.getSharedPreferences("LocationPrefs", 0);
                 SharedPreferences.Editor editor = sharedPref.edit();
@@ -516,17 +521,18 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         }
         return false;
     }
-    public boolean isSameDay(Date a, Date b)
-    {
-        if(a.getYear() != b.getYear())
+
+    public boolean isSameDay(Date a, Date b) {
+        if (a.getYear() != b.getYear())
             return false;
-        if(a.getMonth() != b.getMonth())
+        if (a.getMonth() != b.getMonth())
             return false;
-        if(a.getDay() != b.getDay())
+        if (a.getDay() != b.getDay())
             return false;
         return true;
     }
-    public void OnCreateEvent() {
+
+    public boolean OnCreateEvent() {
         try {
             Calendar calendar = myCalendar;
 
@@ -551,11 +557,11 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
             final Date creationDate = calendar.getTime();
 
             if (checkEventDateIsNotInPast(creationDate))
-                return;
+                return false;
 
             createEvent.setEnabled(false);
             createEvent.setClickable(false);
-            createEvent.setAlpha((float)0.2);
+            createEvent.setAlpha((float) 0.2);
             //createEvent.setText("Creating ..");
             Toast.makeText(getApplicationContext(), "Creating..", Toast.LENGTH_LONG).show();
 
@@ -565,32 +571,36 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
             map.put("date", DateManager.convertFromTextToSeconds(gmtTime));
             map.put("createdBy", User.uid);
             map.put("active", true);
+            map.put("creatorName", User.name);
+            map.put("creatorImage", User.profilePictureURL);
 
-            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(User.uid);
-            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot snapshot) {
-                    for (DataSnapshot data : snapshot.getChildren()) {
-                        if (data.getKey().equalsIgnoreCase("name")) {
-                            map.put("creatorName", data.getValue().toString());
-                            Log.v("CreatorName", data.getValue().toString());
-                        }
-                        if (data.getKey().equalsIgnoreCase("profileImageURL")) {
-                            map.put("creatorImage", data.getValue().toString());
-                            Log.v("CreatorImage", data.getValue().toString());
-                        }
-                    }
-                }
 
-                @Override
-                public void onCancelled(DatabaseError firebaseError) {
-                }
-            });
-
-            try {
-                Thread.sleep(200, 1);
-            } catch (InterruptedException exc) {
-            }
+//            // TODO OMG WTF ASL PLS, wtf? why do we get the name and the image from firebase?????????????????????????????
+//            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(User.uid);
+//            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(DataSnapshot snapshot) {
+//                    for (DataSnapshot data : snapshot.getChildren()) {
+//                        if (data.getKey().equalsIgnoreCase("name")) {
+//                            map.put("creatorName", data.getValue().toString());
+//                            Log.v("CreatorName", data.getValue().toString());
+//                        }
+//                        if (data.getKey().equalsIgnoreCase("profileImageURL")) {
+//                            map.put("creatorImage", data.getValue().toString());
+//                            Log.v("CreatorImage", data.getValue().toString());
+//                        }
+//                    }
+//                }
+//
+//                @Override
+//                public void onCancelled(DatabaseError firebaseError) {
+//                }
+//            });
+//            // TODO OMG WTF ASL PLS, just why????
+//            try {
+//                Thread.sleep(200, 1);
+//            } catch (InterruptedException exc) {
+//            }
 
             Log.v("Name", User.firstName + User.lastName);
             //map.put("date",  java.text.DateFormat.getDateTimeInstance().format(calendar.getTime()));
@@ -612,26 +622,34 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
             // location not provided
             if (latitude == 0 && longitude == 0) {
-                mapAux.put("latitude", GPS_Positioning.getLatLng().latitude);
-                mapAux.put("longitude", GPS_Positioning.getLatLng().longitude);
 
-                latitude = GPS_Positioning.getLatLng().latitude;
-                longitude = GPS_Positioning.getLatLng().longitude;
+                Toast.makeText(getApplicationContext(), "Please tap on the map and choose a place to play!", Toast.LENGTH_LONG).show();
+                createEvent.setEnabled(true);
+                createEvent.setClickable(true);
+                createEvent.setAlpha((float) 1);
 
-                Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.ENGLISH);
+                return false;
 
-                try {
-                    List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-                    if (addresses.size() > 0) {
-                        if (addressName == null || addressName.equals("")) {
-                            addressName = addresses.get(0).getAddressLine(0);
-                        }
-                    }
-                } catch (Exception exc) {
-                    addressName = "Unknown";
-                }
-
-                mapAux.put("name", addressName);
+//                mapAux.put("latitude", GPS_Positioning.getLatLng().latitude);
+//                mapAux.put("longitude", GPS_Positioning.getLatLng().longitude);
+//
+//                latitude = GPS_Positioning.getLatLng().latitude;
+//                longitude = GPS_Positioning.getLatLng().longitude;
+//
+//                Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.ENGLISH);
+//
+//                try {
+//                    List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+//                    if (addresses.size() > 0) {
+//                        if (addressName == null || addressName.equals("")) {
+//                            addressName = addresses.get(0).getAddressLine(0);
+//                        }
+//                    }
+//                } catch (Exception exc) {
+//                    addressName = "Unknown";
+//                }
+//
+//                mapAux.put("name", addressName);
 
             } else {
                 Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.ENGLISH);
@@ -707,25 +725,32 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
                     ArrayList<Event> myCurrentEvents = new Gson().fromJson(connectionsJSONString, type);
 
                     int numberOfEvents = 0;
-                    boolean isSameDate = false;;
+                    boolean isSameDate = false;
+                    ;
                     Date now = new Date();
                     for (Event event : myCurrentEvents) {
                         if (event.date.before(now))
                             continue;
-                        if (isSameDay(creationDate,event.date) && Math.abs(event.date.getHours() - creationDate.getHours()) <= 2) {
+                        if (isSameDay(creationDate, event.date) && Math.abs(event.date.getHours() - creationDate.getHours()) <= 2) {
                             isSameDate = true;
                             break;
                         }
-                        if (isSameDay(creationDate,event.date) )
+                        if (isSameDay(creationDate, event.date))
                             numberOfEvents++;
-                        if (numberOfEvents >=3 || isSameDate)
+                        if (numberOfEvents >= 3 || isSameDate)
                             break;
                     }
 
                     if (isSameDate) {
                         Toast.makeText(getApplicationContext(), "You have scheduled an event at this date already ! Please check your agenda !", Toast.LENGTH_LONG).show();
+                        createEvent.setEnabled(true);
+                        createEvent.setClickable(true);
+                        createEvent.setAlpha((float) 1);
                     } else if (numberOfEvents >= 3) {
                         Toast.makeText(getApplicationContext(), "You already reached the limit of 3 events on this day. Please pick another day !", Toast.LENGTH_LONG).show();
+                        createEvent.setEnabled(true);
+                        createEvent.setClickable(true);
+                        createEvent.setAlpha((float) 1);
                     } else {
 
                         User.firebaseRef.child("events").child(id).setValue(map);
@@ -760,6 +785,8 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         } catch (Exception exc) {
             Utils.quit();
         }
+
+        return true;
     }
 
     /**
@@ -856,7 +883,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
         m_gmap.addMarker(new MarkerOptions()
                 .position(latLng)
-                        //.icon(BitmapDescriptorFactory.fromResource(R.drawable.football))
+                //.icon(BitmapDescriptorFactory.fromResource(R.drawable.football))
                 .title("This is your selected area"));
         m_gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
     }

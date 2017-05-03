@@ -219,7 +219,7 @@ public class FriendlyService extends Service {
 
     public FriendlyService(){
         try{
-            broadcastManager = LocalBroadcastManager.getInstance(this);
+            broadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
             broadcastManager.registerReceiver(
                     receiveStartRequest, new IntentFilter("MainToService_StartRequest"));
 
