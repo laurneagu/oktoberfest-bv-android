@@ -14,7 +14,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -110,7 +109,6 @@ public class ChatTemplateActivity extends ListActivity {
             }
         });
 
-        //TODO Receive intent with the uid of the other user and if this is the first Connection between those two
         Intent intent = getIntent();
         final String otherUserUid  = intent.getStringExtra("uid");
         final boolean firstConnection = intent.getBooleanExtra("firstConnection", true);
@@ -185,44 +183,8 @@ public class ChatTemplateActivity extends ListActivity {
             Chat chat = new Chat("Welcome to our chat! :)", "Ludicon", DateManager.getTimeNowInSeconds(),"ludicon-admin");
             newChat.setValue(chat);
 
-            // For the first User
-            DatabaseReference refCurrentUser = FirebaseDatabase.getInstance().getReference().child("users").child(User.uid).child("chats");
-            refCurrentUser.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot snapshot) {
-                    Map<String, Object> map = new HashMap<>();
-                    for (DataSnapshot data : snapshot.getChildren()) {
-                        map.put(data.getKey(), data.getValue());
-                    }
-                    map.put(otherUserUid,newChatID);
-                    // NOTE: I need userRef to set the map value
-                    DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(User.uid).child("chats");
-                    userRef.updateChildren(map);
-                }
-                @Override
-                public void onCancelled(DatabaseError firebaseError) {
-                }
-            });
-
-            // For the second User
-            DatabaseReference refOtherUser = FirebaseDatabase.getInstance().getReference().child("users").child(otherUserUid).child("chats");
-            refOtherUser.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot snapshot) {
-                    Map<String, Object> map = new HashMap<>();
-                    for (DataSnapshot data : snapshot.getChildren()) {
-                        map.put(data.getKey(), data.getValue());
-                    }
-                    map.put(User.uid,newChatID);
-                    // NOTE: I need userRef to set the map value
-                    DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(otherUserUid).child("chats");
-                    userRef.updateChildren(map);
-                }
-                @Override
-                public void onCancelled(DatabaseError firebaseError) {
-                }
-            });
-
+            FirebaseDatabase.getInstance().getReference().child("users").child(User.uid).child("chats").child(otherUserUid).setValue(newChatID);
+            FirebaseDatabase.getInstance().getReference().child("users").child(otherUserUid).child("chats").child(User.uid).setValue(newChatID);
 
             // Setup our DatabaseReference mDatabaseReferenceRef
             mDatabaseReferenceRef = FirebaseDatabase.getInstance().getReference().child("chat").child(newChatID).child("Messages");
