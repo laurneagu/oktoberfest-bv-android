@@ -1,7 +1,6 @@
 package larc.ludiconprod.Activities;
 
 import android.app.ActivityManager;
-import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -53,8 +52,6 @@ import android.widget.ViewFlipper;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 
-
-//import com.batch.android.Batch;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.google.firebase.database.DataSnapshot;
@@ -70,7 +67,6 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -79,9 +75,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
@@ -95,7 +89,6 @@ import larc.ludiconprod.Services.FriendlyService;
 import larc.ludiconprod.Utils.Event;
 import larc.ludiconprod.Utils.Location.GPSTracker;
 import larc.ludiconprod.Utils.MainPageUtils.ViewPagerAdapter;
-import larc.ludiconprod.Utils.MessageDialog;
 import larc.ludiconprod.Utils.ui.SlidingTabLayout;
 import larc.ludiconprod.Utils.util.DateManager;
 import larc.ludiconprod.Utils.util.Utils;
@@ -177,57 +170,6 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-    private void saveUnsavedPointstoDatabaseReference() {
-        // Check if there are any unsaved points in SharedPref and put them on DatabaseReference
-        Map<String, Integer> unsavedPointsMap = new HashMap<>();
-        SharedPreferences pSharedPref = getSharedPreferences("Points", Context.MODE_PRIVATE);
-        try {
-            if (pSharedPref != null) {
-                String jsonString = pSharedPref.getString("UnsavedPointsMap", (new JSONObject()).toString());
-                JSONObject jsonObject = new JSONObject(jsonString);
-                Iterator<String> keysItr = jsonObject.keys();
-                while (keysItr.hasNext()) {
-                    String key = keysItr.next();
-                    Integer value = (Integer) jsonObject.get(key);
-                    unsavedPointsMap.put(key, value);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        for (Map.Entry<String, Integer> entry : unsavedPointsMap.entrySet()) {
-            // Get sport of the current event(entry)
-            DatabaseReference sportNameRef = User.firebaseRef.child("events").child(entry.getKey().toString());
-            Log.v("entry:", entry.getKey().toString() + " " + entry.getValue().toString());
-
-            final int unsavedPoints = entry.getValue();
-            final String eventID = entry.getKey();
-
-            final ArrayList<String> eventSport = new ArrayList<>();
-            sportNameRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot snapshot) {
-
-                    for (DataSnapshot data : snapshot.getChildren()) {
-                        Log.v("data", data.getKey().toString());
-                        if (data.getKey().toString().compareToIgnoreCase("sport") == 0) {
-                            eventSport.add(data.getValue().toString());
-                            Log.v("Sport", data.getValue().toString());
-                            getActualPoints(data.getValue().toString(), unsavedPoints, eventID);
-                        }
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError firebaseError) {
-                }
-            });
-
-        }
-        // Clear UnsavedPointsMap from SharedPref
-        pSharedPref.edit().remove("UnsavedPointsMap").commit();
-    }
-
     private void getActualPoints(final String sport, final int unsavedPoints, final String eventID) {
         // Get and update total number of points for user in sport
         DatabaseReference pointsRef = User.firebaseRef.child("points").child(sport).child(User.uid);
@@ -303,20 +245,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(goToChatList);
             }
 
-        /* Batch.onStart(this);
-                .setIdentifier(User.uid)
-                .save(); // Don't forget to save the changes!
-        */
             getSupportActionBar().hide();
             setContentView(R.layout.activity_main);
-
-
-        /* Slide Tab */
-            //toolbar = (Toolbar) findViewById(R.id.tool_bar);
-            //setSupportActionBar(toolbar); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-            //saveUnsavedPointstoDatabaseReference();
-
 
             // Creating The ViewPagerAdapter and Passing Fragment Manager, Titles fot the Tabs and Number Of Tabs.
             adapter = new ViewPagerAdapter(getSupportFragmentManager(), Titles, Numboftabs);
@@ -341,12 +271,8 @@ public class MainActivity extends AppCompatActivity {
             tabs.setViewPager(pager);
             /**************/
 
-            final Locale locale = Locale.getDefault();
-
             dialog = ProgressDialog.show(MainActivity.this, "", "Loading. Please wait", true);
 
-            // test
-            //dialog.dismiss();
             // Check if there are any unsaved points in SharedPref and put them on DatabaseReference
             Map<String, Integer> unsavedPointsMap = new HashMap<>();
             SharedPreferences pSharedPref = getSharedPreferences("Points", Context.MODE_PRIVATE);
@@ -365,52 +291,36 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             for (final Map.Entry<String, Integer> entry : unsavedPointsMap.entrySet()) {
-                // Get sport of the current event(entry)
-                DatabaseReference sportNameRef = User.firebaseRef.child("events").child(entry.getKey()).child("sport");
-                final ArrayList<String> eventSport = new ArrayList<>();
-                sportNameRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+                // Avoid redundant check of event's sport
+                if(entry.getValue() == 0)
+                    continue;
+
+                User.firebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
-                        eventSport.add(snapshot.getValue().toString());
+                        // Get event's sport name
+                        String sportName = snapshot.child("events").child(entry.getKey()).child("sport").getValue(String.class);
+
+                        // Synchronize multi-threaded access
+                        synchronized (User.firebaseRef)
+                        {
+                            // Get current points in pointsRef and generalPoints ref and increase them
+                            int nrPoints = Integer.parseInt(snapshot.child("points").child(sportName).child(User.uid).getValue(String.class));
+                            User.firebaseRef.child("points").child(sportName).child(User.uid).setValue(nrPoints + entry.getValue());
+
+                            nrPoints = Integer.parseInt(snapshot.child("points").child(sportName).child(User.uid).getValue(String.class));
+                            User.firebaseRef.child("points").child("general").child(User.uid).setValue(nrPoints + entry.getValue());
+
+                            // Update points for each event in user's details
+                            User.firebaseRef.child("users").child("events").child(entry.getKey().toString()).child("points").setValue(entry.getValue());
+                        }
                     }
 
                     @Override
                     public void onCancelled(DatabaseError firebaseError) {
                     }
                 });
-                try {
-                    Thread.sleep(100, 1);
-                } catch (Exception exc) {
-                }
-
-                // Get and update total number of points for user in sport
-                final DatabaseReference pointsRef = User.firebaseRef.child("points").child(eventSport.get(0)).child(User.uid);
-                final DatabaseReference generalPointsRef = User.firebaseRef.child("points").child("general").child(User.uid);
-
-                pointsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot snapshot) {
-                        pointsRef.setValue(Integer.parseInt(snapshot.getValue().toString()) + entry.getValue());
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError firebaseError) {
-                    }
-                });
-
-                generalPointsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot snapshot) {
-                        generalPointsRef.setValue(Integer.parseInt(snapshot.getValue().toString()) + entry.getValue());
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError firebaseError) {
-                    }
-                });
-
-                // Update points for each event in user's details
-                User.firebaseRef.child("users").child("events").child(entry.getKey().toString()).child("points").setValue(entry.getValue());
 
             }
             // Clear UnsavedPointsMap from SharedPref
@@ -420,7 +330,6 @@ public class MainActivity extends AppCompatActivity {
             if (!isMyServiceRunning(FriendlyService.class)) {
 
                 Intent mServiceIntent = new Intent(this, FriendlyService.class);
-                //startService(mServiceIntent);
                 bindService(mServiceIntent, mServiceConn, Context.BIND_AUTO_CREATE | Context.BIND_ABOVE_CLIENT);
                 startService(mServiceIntent);
             }
@@ -444,7 +353,6 @@ public class MainActivity extends AppCompatActivity {
                             userRange = Integer.parseInt(dataSN.getValue().toString());
                         }
                     }
-                    //dialog.dismiss();
                     User.favouriteSports = favoriteSports;
                     continueUpdatingTimeline();
                 }
@@ -485,7 +393,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         } catch (Exception exc) {
-            Utils.quit();
         }
 
     }
@@ -502,8 +409,6 @@ public class MainActivity extends AppCompatActivity {
             testGPSConnection();
 
             // Get user's last known location from SharedPref
-            SharedPreferences sharedPref = this.getApplicationContext().getSharedPreferences("LocationPrefs", 0);
-
             String lats = getSharedPreferences("UserDetails", 0).getString("current_latitude", "0");
             String lons = getSharedPreferences("UserDetails", 0).getString("current_longitude", "0");
 
@@ -511,7 +416,7 @@ public class MainActivity extends AppCompatActivity {
             userLongitude = Double.parseDouble(lons);
 
             // it it is first time:
-            if (userLatitude < 0 || userLongitude < 0) {
+            if (userLatitude <= 0 || userLongitude <= 0) {
                 GPSTracker gps = new GPSTracker(getApplicationContext(), this);
                 if (gps.canGetLocation()) {
                     userLatitude = gps.getLatitude();
@@ -526,8 +431,6 @@ public class MainActivity extends AppCompatActivity {
                     gps.stopUsingGPS();
 
                 }
-//            Toast.makeText(getApplicationContext(), "LATTTT:" + userLatitude, Toast.LENGTH_LONG).show();
-//            Toast.makeText(getApplicationContext(), "LONGGGG:" + userLongitude, Toast.LENGTH_LONG).show();
             }
 
 
@@ -544,10 +447,10 @@ public class MainActivity extends AppCompatActivity {
             usersRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(final DataSnapshot snapshot) {
-                    final List<ActivityInfo> activityInfos = new ArrayList<ActivityInfo>();
-
+                    // Safety check
                     if (snapshot == null)
-                        Log.v("NULL", "Snapshot e null");
+                        return;
+
                     final long size = snapshot.getChildrenCount();
                     long index = 0;
                     for (DataSnapshot data : snapshot.getChildren()) {
@@ -600,15 +503,6 @@ public class MainActivity extends AppCompatActivity {
                                         if (!favoriteSports.contains(ai.sport))
                                             mustAddEventToList = false;
 
-                                        // Get distance between last known location and event location
-                                        //float[] distance = new float[10];
-                                        //Location.distanceBetween(userLatitude, userLongitude, ai.latitude, ai.longitude, distance);
-
-                                        // If distance from user to event is greater than the selected range do not include it
-                                        // if ( distance[0] > userRange * 1000 )
-                                        //    mustAddEventToList = false;
-                                        //
-
                                         String connectionsJSONString = getSharedPreferences("UserDetails", 0).getString("events", null);
                                         Type type = new TypeToken<List<ActivityInfo>>() {
                                         }.getType();
@@ -650,12 +544,9 @@ public class MainActivity extends AppCompatActivity {
                                         editor.putString("events", connectionsJSONString);
                                         editor.commit();
 
-
                                         if (size == ii) {
                                             checkHappeningNow();
                                         }
-
-
                                     }
 
                                     @Override
@@ -673,7 +564,6 @@ public class MainActivity extends AppCompatActivity {
                 public void onCancelled(DatabaseError firebaseError) {
                 }
             });
-
 
             // Left side panel
             mDrawerList = (ListView) findViewById(R.id.leftMenu);
@@ -731,8 +621,6 @@ public class MainActivity extends AppCompatActivity {
                 showHappeningNow(ev, false);
                 updateList(false);
                 getSharedPreferences("UserDetails", 0).edit().putString("currentEventStateCheck", "0").commit();
-//                final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-//                ref.child("mesg").child("service").child("stateEvent").setValue("RUN");
             }
         }, milis);
     }
@@ -811,8 +699,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void checkHappeningNow() {
 
-        int MIN = 1000;
-
         // Get the list of events from Shared Prefs
         String connectionsJSONString = getSharedPreferences("UserDetails", 0).getString("events", null);
         Type type = new TypeToken<List<ActivityInfo>>() {
@@ -824,17 +710,8 @@ public class MainActivity extends AppCompatActivity {
 
         if (events != null && events.size() != 0) {
 
-            //getSharedPreferences("UserDetails", 0).edit().putString("currentEventIsActive", "0").commit();
-//          ref.child("mesg").child("service").child("currentEventIsActive").setValue("0___" + new Date().toString());
-
-
             // Get current date
-            Date now = new Date(); //gmtTime);
-//                        ref.child("mesg").child("service").child("whileBIGTimeNOW").setValue(now.toString());
-
-
-            Log.v("Date now", now.toString());
-            // Problem - TimeZone
+            Date now = new Date();
 
             // Get the current pending event
             boolean found = false;
@@ -866,7 +743,7 @@ public class MainActivity extends AppCompatActivity {
                     lastEvent = null;
                 }
             }
-            Date upEventDate = new Date();
+            Date upEventDate = null;
             long diffMilis = 0;
             if (upcomingEvent != null) {
                 upEventDate = upcomingEvent.date;
@@ -935,8 +812,6 @@ public class MainActivity extends AppCompatActivity {
 
         final ActivityInfo currentEvent = ce;
 
-        //        getSharedPreferences("UserDetails", 0).edit().putString("currentEventState","0").commit(); // pending
-
         RelativeLayout rlCurrEvent = (RelativeLayout) findViewById(R.id.currEventLayout);
 
         ViewGroup.LayoutParams params = rlCurrEvent.getLayoutParams();
@@ -945,7 +820,6 @@ public class MainActivity extends AppCompatActivity {
         rlCurrEvent.setLayoutParams(params);
 
         // Fill the current event details
-
         final TextView firstPart = (TextView) findViewById(R.id.firstPartofTextCurrEvent);
         final TextView secondPart = (TextView) findViewById(R.id.secondPartofTextCurrEvent);
         final TextView time = (TextView) findViewById(R.id.timeTextCurrEvent);
@@ -954,12 +828,9 @@ public class MainActivity extends AppCompatActivity {
         final ImageButton share = (ImageButton) findViewById(R.id.sharefb_btnCurrEvent);
         final Button changeStateButton = (Button) findViewById(R.id.stateChangeButton);
         final Chronometer timer = (Chronometer) findViewById(R.id.chronometer);
-        //final TextView descriprionText = (TextView) findViewById(R.id.);
-        //final TextView players = (TextView) findViewById(R.id.players);
 
 
         // Set name and picture for the first user of the event
-
         String uri = "@drawable/" + currentEvent.sport.toLowerCase().replace(" ", "");
 
         int imageResource = getResources().getIdentifier(uri, null, getPackageName());
@@ -1074,16 +945,6 @@ public class MainActivity extends AppCompatActivity {
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String state = getSharedPreferences("UserDetails", 0).getString("currentEventStateCheck", "3"); // 0 - didn't start, 1 - started, 2 - stopped, 3 - nothing
-
-                /* JUST DEBUGGING
-                if (state.equalsIgnoreCase("0")) { // if the event is not started
-                    getSharedPreferences("UserDetails", 0).edit().putString("currentEventStateCheck", "2").commit(); // stop it
-                    handlerChecker.removeCallbacks(rCheck);
-                    hideHappeningRightNow();
-                }
-                */
-
                 String audience = "";
                 if (currentEvent.others > 1)
                     audience = " with " + (currentEvent.others) + " others";
@@ -1154,11 +1015,9 @@ public class MainActivity extends AppCompatActivity {
                 final ActivityInfo currentEvent = gson.fromJson(json, ActivityInfo.class);
 
                 if (currentEvent != null) {
-                    //showHappeningNow(currentEvent);
                     updateList(false);
                 }
             } else { // Event ended
-                //hideHappeningRightNow();
                 updateList(false);
             }
 
@@ -1183,7 +1042,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onLocationChanged(Location location) {
-            int a;
             //mLastLocation.set(location);
         }
 
@@ -1208,55 +1066,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private void initializeLocationManager() {
-        //if (mLocationManager == null) {
         mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-        //}
-    }
-
-    private Location getLocationOnlyOnce() {
-
-        try {
-
-            initializeLocationManager();
-
-            try {
-
-//                Criteria crit = new Criteria();
-//                crit.setAccuracy(Criteria.ACCURACY_FINE);
-//                best = mgr.getBestProvider(crit, false);
-//                mgr.requestLocationUpdates(best, 0, 1, locationListener);
-
-                mLocationManager.requestLocationUpdates(
-                        LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
-                        mLocationListeners[0]);
-                if (mLocationManager != null) {
-
-                    try {
-                        Location location = mLocationManager
-                                .getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-                        if (location != null) {
-
-
-                            mLocationManager.removeUpdates(mLocationListeners[0]);
-                            return location;
-                        }
-                    } catch (java.lang.SecurityException ex) {
-                        Log.i(TAG, "fail to request location update, ignore", ex);
-                    }
-                }
-
-            } catch (java.lang.SecurityException ex) {
-                Log.i(TAG, "fail to request location update, ignore", ex);
-            } catch (IllegalArgumentException ex) {
-                Log.d(TAG, "gps provider does not exist " + ex.getMessage());
-            }
-
-        } catch (Exception e) {
-            // magic
-        }
-
-        return null;
     }
 
     class DistanceValue {
@@ -1275,8 +1085,6 @@ public class MainActivity extends AppCompatActivity {
         Location current = gps.getLocation();
         gps.stopUsingGPS();
         if (current != null) {
-            //final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-            //ref.child("mesg").child("service").child("alive").setValue(current.getLatitude() + " - " + current.getLongitude() + new Date().toString());
 
             String json = getSharedPreferences("UserDetails", 0).getString("currentEvent", "");
             Gson gson = new Gson();
@@ -1419,9 +1227,6 @@ public class MainActivity extends AppCompatActivity {
 
                                 distance = ml.distanceTo(el);
 
-                                //  Toast.makeText(getApplicationContext(), "Distance: "+ distance, Toast.LENGTH_SHORT).show();
-                                //  Toast.makeText(getApplicationContext(), "Range: "+ userRange, Toast.LENGTH_SHORT).show();
-
                             }
 
 
@@ -1433,7 +1238,6 @@ public class MainActivity extends AppCompatActivity {
                                 if (userID.equalsIgnoreCase(User.uid)) {
                                     doIParticipate = true;
                                     participants.put(user.getKey().toString(), (Boolean) user.getValue());
-                                    //break;
                                 } else {
                                     participants.put(user.getKey().toString(), (Boolean) user.getValue());
                                 }
@@ -1521,7 +1325,6 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     frlistView.setAdapter(fradapter);
-                    // frlistView.setScrollingCacheEnabled(true);
                 }
 
                 /* My */
@@ -1553,7 +1356,6 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     mylistView.setAdapter(myadapter);
-                    // mylistView.setScrollingCacheEnabled(true);
                 }
 
                 /*Swipe */
@@ -1593,39 +1395,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void addFriendsActivityButtonEventListener() {
-
-        frButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (currentPage != 0) {
-                    currentPage = 0;
-                    myButton.setBackgroundColor(Color.parseColor("#237bbe"));
-                    frButton.setBackgroundColor(Color.parseColor("#0e64a6"));
-                    flipper.setInAnimation(getApplicationContext(), R.anim.right_enter);
-                    flipper.setOutAnimation(getApplicationContext(), R.anim.left_out);
-                    flipper.showNext();
-                }
-            }
-        });
-    }
-
-    public void addMyActivityButtonEventListener() {
-        myButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (currentPage != 1) {
-                    currentPage = 1;
-                    frButton.setBackgroundColor(Color.parseColor("#237bbe"));
-                    myButton.setBackgroundColor(Color.parseColor("#0e64a6"));
-                    flipper.setInAnimation(getApplicationContext(), R.anim.left_enter);
-                    flipper.setOutAnimation(getApplicationContext(), R.anim.right_out);
-                    flipper.showPrevious();
-                }
-            }
-        });
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -1657,14 +1426,6 @@ public class MainActivity extends AppCompatActivity {
     public void onPause() {
         super.onPause();
 
-//        String state = getSharedPreferences("UserDetails", 0).getString("currentEventStateCheck", "3");
-//        if (state.equalsIgnoreCase("1")) { // if it is started
-//            getSharedPreferences("UserDetails", 0).edit().putString("eventStartedButExitAt",new Date().toString()).commit();
-//            final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-//            ref.child("mesg").child("service").child("stateEvent").setValue("pause + " + new Date().toString());
-//
-//        }
-
         if (mServiceConn != null) {
             try {
                 unbindService(mServiceConn);
@@ -1677,25 +1438,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
-//        String state = getSharedPreferences("UserDetails", 0).getString("currentEventStateCheck", "3");
-//        if (state.equalsIgnoreCase("1")) { // if it is started
-//            getSharedPreferences("UserDetails", 0).edit().putString("eventStartedButExitAt",new Date().toString()).commit();
-//            final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-//            ref.child("mesg").child("service").child("stateEvent").setValue("stop + " + new Date().toString());
-//        }
-
-//        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-//        ref.child("mesg").child("service").child("stateEvent").setValue("stop + " + new Date().toString());
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-//        String state = getSharedPreferences("UserDetails", 0).getString("currentEventStateCheck", "3");
-//        if (state.equalsIgnoreCase("1")) { // if it is started
-//            getSharedPreferences("UserDetails", 0).edit().putString("eventStartedButExitAt",new Date().toString()).commit();
-//
-//        }
+
         String state = getSharedPreferences("UserDetails", 0).getString("currentEventStateCheck", "3"); // 0 - didn't start, 1 - started, 2 - stopped, 3 - nothing
 
         if (state.equalsIgnoreCase("1")) { // if the event is started
@@ -1830,7 +1578,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
             // Set name and picture for the first user of the event
-            //final String userUID = list.get(position).getFirstUser();
             view.setBackgroundColor(Color.parseColor("#FFFFFF"));
 
 
@@ -1847,24 +1594,6 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
             });
-
-            /*
-            DatabaseReference userRef = User.firebaseRef.child("users").child(userUID);
-            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot snapshot) {
-                    for ( DataSnapshot data : snapshot.getChildren() ) {
-                        if( (data.getKey()).compareTo("name") == 0) {
-                            name.setText(data.getValue().toString());
-                        }
-                        if( (data.getKey()).compareTo("profileImageURL") == 0 )
-                            new DownloadImageTask(profilePicture).execute(data.getValue().toString());
-                    }
-                }
-                @Override
-                public void onCancelled(DatabaseError firebaseError) {
-                }
-            });*/
 
             String uri = "@drawable/" + list.get(position).sport.toLowerCase().replace(" ", "");
 
@@ -1890,17 +1619,6 @@ public class MainActivity extends AppCompatActivity {
                 holder.description.setText("\"" + list.get(position).description + "\"");
 
             holder.players.setText(list.get(position).noUsers + "/" + list.get(position).roomCapacity);
-
-
-            /*
-            firstPart.setText("Will play " + list.get(position).sport);
-            if ((list.get(position).usersUID.size() - 1) > 1) {
-                secondPart.setText(" with " + (list.get(position).noUsers) + " others");
-            } else if (list.get(position).noUsers  == 1) {
-                secondPart.setText(" with 1 other");
-            } else {
-                secondPart.setText(" with no others");
-            }*/
 
             if (list.get(position) != null)
                 holder.place.setText(list.get(position).place);
@@ -1962,13 +1680,6 @@ public class MainActivity extends AppCompatActivity {
                     });
                 }
             });
-
-            /*
-            try{
-                Thread.sleep(50,1);
-            }
-            catch(InterruptedException exc ) {}
-            */
 
             return view;
         }
@@ -2061,7 +1772,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
             // Set name and picture for the first user of the event
-            //final String userUID = list.get(position).getFirstUser();
             view.setBackgroundColor(Color.parseColor("#FFFFFF"));
 
             String firstName = list.get(position).creatorName.split(" ")[0];
@@ -2082,24 +1792,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-            /*
-            DatabaseReference userRef = User.firebaseRef.child("users").child(userUID);
-            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot snapshot) {
-                    for ( DataSnapshot data : snapshot.getChildren() ) {
-                        if( (data.getKey()).compareTo("name") == 0) {
-                            name.setText(data.getValue().toString());
-                        }
-                        if( (data.getKey()).compareTo("profileImageURL") == 0 )
-                            new DownloadImageTask(profilePicture).execute(data.getValue().toString());
-                    }
-                }
-                @Override
-                public void onCancelled(DatabaseError firebaseError) {
-                }
-            });*/
-
             String uri = "@drawable/" + list.get(position).sport.toLowerCase().replace(" ", "");
             Log.v("drawable", uri);
             int imageResource = getResources().getIdentifier(uri, null, getPackageName());
@@ -2117,15 +1809,7 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 holder.secondPart.setText(" with no others");
             }
-            /*
-            firstPart.setText("Will play " + list.get(position).sport);
-            if ((list.get(position).usersUID.size() - 1) > 1) {
-                secondPart.setText(" with " + (list.get(position).noUsers) + " others");
-            } else if (list.get(position).noUsers  == 1) {
-                secondPart.setText(" with 1 other");
-            } else {
-                secondPart.setText(" with no others");
-            }*/
+
             if (list.get(position).description.equalsIgnoreCase(""))
                 holder.description.setText("\"" + "I don't have a description for my event :(" + "\"");
             else
@@ -2160,20 +1844,6 @@ public class MainActivity extends AppCompatActivity {
             if (dateMin.equalsIgnoreCase("0")) dateMin += "0";
             String hour = dateHour + ":" + dateMin;
             holder.time.setText(day + " at " + hour);
-            /*details.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(getApplicationContext(), "Hei, wait for it..", Toast.LENGTH_SHORT).show();
-                }
-            });
-            */
-
-            /*
-            try{
-                Thread.sleep(50,1);
-            }
-            catch(InterruptedException exc ) {}
-            */
 
             return view;
         }
