@@ -104,13 +104,7 @@ public class MainActivity extends AppCompatActivity {
     private ProgressDialog dialog;
     private int TIMEOUT = 80;
 
-    private ViewFlipper flipper;
-    private int currentPage = 0; // 0 = friends, 1 = my
-    Button frButton;
-    Button myButton;
-
     /* SlideTab */
-    Toolbar toolbar;
     ViewPager pager;
     ViewPagerAdapter adapter;
     SlidingTabLayout tabs;
