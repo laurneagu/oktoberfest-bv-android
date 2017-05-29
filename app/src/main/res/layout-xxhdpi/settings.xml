@@ -10,8 +10,8 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/relLayout">
-
+        android:id="@+id/relLayout"
+        android:paddingTop="59dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -19,7 +19,6 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Favourite Sports"
             android:id="@+id/textView6"
-            android:layout_alignTop="@+id/gridView"
             android:layout_centerHorizontal="true"
             android:textColor="#166eb1"
             android:textStyle="bold" />
@@ -39,34 +38,37 @@
             android:paddingLeft="50dp"
             android:paddingRight="50dp"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="350dp"
             android:id="@+id/gridView"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="70dp"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:numColumns="2"
-            android:layout_above="@+id/textView8" />
+            android:layout_below="@id/textView7"
+             />
 
 
         <SeekBar
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:id="@+id/seekBar2"
-            android:layout_above="@+id/progressText"
+            android:layout_below="@+id/textView9"
             android:minHeight="3dip"
             android:maxHeight="3dip"
             android:layout_margin="5dip"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            />
 
 
         <ImageView
             android:layout_width="400dp"
             android:layout_height="wrap_content"
             android:id="@+id/visibleSeekBar2"
-            android:layout_above="@+id/progressText"
+            android:layout_below="@+id/seekBar2"
             android:layout_centerHorizontal="true" />
 
 
@@ -78,7 +80,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Range"
             android:id="@+id/textView8"
-            android:layout_above="@+id/textView9"
+            android:layout_below="@+id/gridView"
             android:layout_centerHorizontal="true"
             android:textStyle="bold"
             android:textColor="#1971b4" />
@@ -89,7 +91,7 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Pick the area of discovering sport events"
             android:id="@+id/textView9"
-            android:layout_above="@+id/seekBar2"
+            android:layout_below="@+id/textView8"
             android:layout_alignRight="@+id/textView7"
             android:layout_alignEnd="@+id/textView7"
             android:textColor="#176fb2" />
@@ -100,9 +102,19 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:id="@+id/progressText"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="30dp"
             android:textColor="#1971b4"
-            android:layout_alignParentBottom="true" />
+            android:layout_below="@id/visibleSeekBar2"
+             />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Log Out"
+            android:id="@+id/logOutButton"
+            android:layout_above="@+id/progressText"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"/>
 
     </RelativeLayout>
 

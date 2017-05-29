@@ -90,7 +90,6 @@ public class IntroActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         // Hide App bar
         // If the Android version is lower than Jellybean, use this call to hide
         // the status bar.
@@ -104,12 +103,12 @@ public class IntroActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         /* Batch Init - NOW IS IN UseParse*/
-       // Batch.Push.setGCMSenderId("458732166636");
-       // Batch.setConfig(new Config("DEV56C87CCE0350BE0F6C4A19C18E5"));
+        // Batch.Push.setGCMSenderId("458732166636");
+        // Batch.setConfig(new Config("DEV56C87CCE0350BE0F6C4A19C18E5"));
 
 
         // Clear notification Stack
-        NotificationManager notifManager= (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notifManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
         notifManager.cancelAll();
 
         /* DatabaseReference Context */
@@ -132,8 +131,6 @@ public class IntroActivity extends Activity {
         editor.commit();
 
 
-
-
         // Facebook init
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
@@ -141,6 +138,7 @@ public class IntroActivity extends Activity {
                 new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
+                        ((LoginButton) findViewById(R.id.login_button)).setVisibility(View.INVISIBLE);
 
                         GraphRequest request = GraphRequest.newMeRequest(
                                 loginResult.getAccessToken(),
@@ -187,11 +185,11 @@ public class IntroActivity extends Activity {
         logo = (ImageView) findViewById(R.id.logo);
         //logo.setImageResource(R.drawable.logo);
 
-        TextView ludiconText = (TextView)findViewById(R.id.ludiconIntroTV);
+        TextView ludiconText = (TextView) findViewById(R.id.ludiconIntroTV);
         Typeface segoeui = Typeface.createFromAsset(getAssets(), "fonts/segoeui.ttf");
         ludiconText.setTypeface(segoeui);
 
-        LoginButton login_button = (LoginButton) findViewById(R.id.login_button);
+        final LoginButton login_button = (LoginButton) findViewById(R.id.login_button);
         login_button.setReadPermissions(Arrays.asList("public_profile, email, user_friends"));
 
         profilePictureView = (ProfilePictureView) findViewById(R.id.profilePictureIntro);
@@ -204,6 +202,8 @@ public class IntroActivity extends Activity {
         profileTracker = new ProfileTracker() {
             @Override
             protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
+                login_button.setVisibility(View.INVISIBLE);
+
                 GraphRequest request = GraphRequest.newMeRequest(
                         AccessToken.getCurrentAccessToken(),
                         new GraphRequest.GraphJSONObjectCallback() {
@@ -244,7 +244,7 @@ public class IntroActivity extends Activity {
                 // Actions to do after 5 seconds
                 Intent goToNextActivity = new Intent(getApplicationContext(), MainActivity.class); //AskPreferences.class);
                 String chatUID = getIntent().getStringExtra("chatUID");
-                if(chatUID != null)
+                if (chatUID != null)
                     goToNextActivity.putExtra("chatUID", chatUID);
                 startActivity(goToNextActivity);
                 finish();
@@ -279,13 +279,15 @@ public class IntroActivity extends Activity {
         final Profile profile = Profile.getCurrentProfile();
         if (accessToken != null && profile != null) // If user has successfully logged in
         {
+//            LoginButton login_button = (LoginButton) findViewById(R.id.login_button);
+//            login_button.setVisibility(View.INVISIBLE);
+            ((LoginButton) findViewById(R.id.login_button)).setVisibility(View.INVISIBLE);
+
+
             profilePictureView.setDrawingCacheEnabled(true);
             profilePictureView.setProfileId(profile.getId());
 
             User.profilePictureView = profilePictureView;
-
-            LoginButton login_button = (LoginButton) findViewById(R.id.login_button);
-            login_button.setVisibility(View.INVISIBLE);
 
 
 //            ImageView fbImage = ( ( ImageView)profilePictureView.getChildAt(0));
@@ -314,6 +316,7 @@ public class IntroActivity extends Activity {
                                 return;
                             }
 
+
                             GraphRequest request = GraphRequest.newMeRequest(at, new GraphRequest.GraphJSONObjectCallback() {
                                 @Override
                                 public void onCompleted(JSONObject user, GraphResponse graphResponse) {
@@ -338,7 +341,7 @@ public class IntroActivity extends Activity {
                                         String url = picurljsondata.optString("url");
                                         //profileImageURL
                                         if (!url.isEmpty()) {
-                                            map.put("profileImageURL",url);
+                                            map.put("profileImageURL", url);
                                             User.profilePictureURL = url;
                                         }
                                     } catch (JSONException e) {
@@ -403,12 +406,11 @@ public class IntroActivity extends Activity {
                                     map.put("points", "0");
 
 
-                                    
                                     //lastLogIn - GMT
                                     DateFormat df = DateFormat.getDateTimeInstance();
                                     df.setTimeZone(TimeZone.getTimeZone("gmt"));
                                     String gmtTime = df.format(new Date());
-                                    map.put("lastLogInTime", System.currentTimeMillis()/1000);
+                                    map.put("lastLogInTime", System.currentTimeMillis() / 1000);
                                     Log.v("lastLOginTime", map.get("lastLogInTime").toString());
 
                                     //final String uid = userFirebase.getUid();
@@ -425,7 +427,7 @@ public class IntroActivity extends Activity {
 
 
                                     // Check user exists
-                                    Log.v("UID",uid);
+                                    Log.v("UID", uid);
                                     DatabaseReference userRef = User.firebaseRef.child("users").child(uid); // check user
                                     userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
@@ -437,8 +439,8 @@ public class IntroActivity extends Activity {
                                             if (snapshot.getValue() == null) { // new user
 
                                                 final Map<String, Object> mapSports = new HashMap<String, Object>();
-                                                mapSports.put("other",9);
-                                                map.put("sports",mapSports);
+                                                mapSports.put("other", 9);
+                                                map.put("sports", mapSports);
                                                 map.put("range", 100);
                                                 map.put("previousLastLoginTime", 0);
 
@@ -456,16 +458,16 @@ public class IntroActivity extends Activity {
                                                         User.firebaseRef.child("users").child(uid).child("previousLastLoginTime").setValue(Double.parseDouble(snapshot.getValue().toString()));
                                                         User.firebaseRef.child("mesg").child(User.uid).child("status").setValue("User vechi");
                                                         User.firebaseRef.child("users").child(uid).updateChildren(map);
-                                                        User.firebaseRef.child("users").child(uid).child("usageStats").child("openedApp").child("" + System.currentTimeMillis()/1000).setValue("open");
+                                                        User.firebaseRef.child("users").child(uid).child("usageStats").child("openedApp").child("" + System.currentTimeMillis() / 1000).setValue("open");
                                                         updateFriends();
                                                         jumpToMainActivity();
 
                                                     }
 
-                                                @Override
-                                                public void onCancelled(DatabaseError firebaseError) {
-                                                }
-                                            });
+                                                    @Override
+                                                    public void onCancelled(DatabaseError firebaseError) {
+                                                    }
+                                                });
 
                                             }
 
@@ -491,15 +493,13 @@ public class IntroActivity extends Activity {
                     });
 
 
-
-
         } else { // Login FAILED
             FirebaseAuth.getInstance().signOut();
             greeting.setText("");
         }
     }
-    public void updateFriends()
-    {
+
+    public void updateFriends() {
 
         final DatabaseReference userRef = User.firebaseRef.child("users").child(User.uid); // check user
         new GraphRequest(
@@ -510,18 +510,19 @@ public class IntroActivity extends Activity {
                 new GraphRequest.Callback() {
                     public void onCompleted(GraphResponse response) {
                             /* handle the result */
-                        try{
+                        try {
                             JSONArray friendsList = response.getJSONObject().getJSONArray("data");
 
-                            for (int l=0; l < friendsList.length(); l++) {
+                            for (int l = 0; l < friendsList.length(); l++) {
                                 final String uid = "facebook:" + friendsList.getJSONObject(l).getString("id");
                                 DatabaseReference friendRef = userRef.child("friends").child(uid);
                                 friendRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot snapshot) {
-                                            if(!snapshot.exists())
-                                                userRef.child("friends").child(uid).setValue(true);
+                                        if (!snapshot.exists())
+                                            userRef.child("friends").child(uid).setValue(true);
                                     }
+
                                     @Override
                                     public void onCancelled(DatabaseError firebaseError) {
                                     }

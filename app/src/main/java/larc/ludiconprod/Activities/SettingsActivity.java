@@ -32,6 +32,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.login.LoginManager;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.DatabaseError;
@@ -61,6 +62,7 @@ public class SettingsActivity extends Activity {
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private ImageButton saveButton;
+    private Button logOutButton;
 
     private TextView progressText;
     private SeekBar seekBar;
@@ -158,6 +160,23 @@ public class SettingsActivity extends Activity {
                     progress = progressValue;
                     //rangeRef.setValue(progress);
                     progressText.setText(progress + " km");
+
+                    if(changeInSports.contains("R" + progress)){
+                        changeInSports.remove("R" + progress);
+
+                        if(changeInSports.size()== 0){
+                            saveButton.setAlpha((float)0.3);
+                            saveButton.setEnabled(false);
+                        }
+                    }
+                    else {
+                        changeInSports.add("R" + progress);
+
+                        if(changeInSports.size()== 1){
+                            saveButton.setAlpha((float)1);
+                            saveButton.setEnabled(true);
+                        }
+                    }
                 }
 
                 @Override
@@ -207,6 +226,18 @@ public class SettingsActivity extends Activity {
                     startActivity(intent);
                 }
             });
+
+            logOutButton= (Button)findViewById(R.id.logOutButton);
+            logOutButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    LoginManager.getInstance().logOut();
+                    Intent intent = new Intent(getApplicationContext(), IntroActivity.class);
+                    startActivity(intent);
+                }
+            });
+
+
 
 
         }

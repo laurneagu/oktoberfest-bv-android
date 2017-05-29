@@ -52,6 +52,7 @@ import android.widget.ViewFlipper;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 
+import com.facebook.login.LoginManager;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.google.firebase.database.DataSnapshot;
@@ -1420,6 +1421,7 @@ public class MainActivity extends AppCompatActivity {
     public void onPause() {
         super.onPause();
 
+
         if (mServiceConn != null) {
             try {
                 unbindService(mServiceConn);
@@ -1432,11 +1434,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
+
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+
 
         String state = getSharedPreferences("UserDetails", 0).getString("currentEventStateCheck", "3"); // 0 - didn't start, 1 - started, 2 - stopped, 3 - nothing
 
