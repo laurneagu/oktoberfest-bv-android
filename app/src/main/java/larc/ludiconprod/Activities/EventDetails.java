@@ -315,18 +315,29 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
                 editEvent.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(getApplicationContext(), EditEventActivity.class);
-                        intent.putExtra("eventID", eventUid);
-                        intent.putExtra("eventDate", evDate.getTime() + "");
-                        intent.putExtra("sport", eventSport);
-                        intent.putExtra("eventPrivacy", eventPrivacy);
-                        intent.putExtra("latitude", eventLat);
-                        intent.putExtra("longitude", eventLong);
-                        intent.putExtra("isOfficial", eventisOfficial);
-                        intent.putExtra("place",eventPlace);
-                        intent.putExtra("desc", eventDesc);
-                        intent.putExtra("maxPlayers", roomCapacity+"");
-                        startActivity(intent);
+                        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(EventDetails.this, R.style.MyAlertDialogStyle);
+                        builder.setTitle("Edit an event")
+                                .setMessage("Are you sure you want to edit this event?")
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setNegativeButton("NO", null)
+                                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        Intent intent = new Intent(getApplicationContext(), EditEventActivity.class);
+                                        intent.putExtra("eventID", eventUid);
+                                        intent.putExtra("eventDate", evDate.getTime() + "");
+                                        intent.putExtra("sport", eventSport);
+                                        intent.putExtra("eventPrivacy", eventPrivacy);
+                                        intent.putExtra("latitude", eventLat);
+                                        intent.putExtra("longitude", eventLong);
+                                        intent.putExtra("isOfficial", eventisOfficial);
+                                        intent.putExtra("place", eventPlace);
+                                        intent.putExtra("desc", eventDesc);
+                                        intent.putExtra("maxPlayers", roomCapacity + "");
+                                        startActivity(intent);
+                                    }
+
+                                }).show();
                     }
                 });
 
