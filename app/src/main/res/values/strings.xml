@@ -45,6 +45,13 @@
         <item>Other</item>
     </string-array>
 
+        <string-array name="chooseSex_array">
+            <item>M</item>
+            <item>F</item>
+
+        </string-array>
+
+
     <string-array name="sports_array">
         <item>Football</item>
         <item>Volleyball</item>

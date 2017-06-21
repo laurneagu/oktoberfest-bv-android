@@ -28,7 +28,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.support.v7.app.AlertDialog.Builder;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.maps.CameraUpdate;
@@ -315,7 +315,8 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
                 editEvent.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(EventDetails.this, R.style.MyAlertDialogStyle);
+
+                        Builder builder = new Builder(EventDetails.this, R.style.MyAlertDialogStyle);
                         builder.setTitle("Edit an event")
                                 .setMessage("Are you sure you want to edit this event?")
                                 .setIcon(android.R.drawable.ic_dialog_alert)

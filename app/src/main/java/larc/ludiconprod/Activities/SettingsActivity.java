@@ -16,21 +16,27 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Spinner;
 
 import com.facebook.login.LoginManager;
 import com.google.firebase.database.DataSnapshot;
@@ -53,7 +59,7 @@ import larc.ludiconprod.Utils.util.Utils;
 /**
  * Created by Laur User on 12/29/2015.
  */
-public class SettingsActivity extends Activity {
+public class SettingsActivity extends Activity  {
 
     MyCustomAdapter dataAdapter = null;
 
@@ -68,12 +74,19 @@ public class SettingsActivity extends Activity {
     private SeekBar seekBar;
      private ArrayList<Sport> sportsList = new ArrayList<Sport>();
     private HashMap<String, Drawable> regularSportIcons = new HashMap<String, Drawable>();
-    //private HashMap<String, Drawable> desaturatedSportIcons = new HashMap<String, Drawable>();
+    private HashMap<String, Drawable> desaturatedSportIcons = new HashMap<String, Drawable>();
     DatabaseReference rangeRef = User.firebaseRef.child("users").child(User.uid).child("range");
     DatabaseReference userSports = User.firebaseRef.child("users").child(User.uid).child("sports");
+    DatabaseReference ageRef=User.firebaseRef.child("users").child(User.uid).child("Age");
+    DatabaseReference sexRef=User.firebaseRef.child("users").child(User.uid).child("Sex");
+    DatabaseReference ageRangeRef=User.firebaseRef.child("users").child(User.uid).child("ageRange");
+    DatabaseReference user=User.firebaseRef.child("users").child(User.uid);
     final DatabaseReference sportRed = User.firebaseRef.child("sports"); // check user
     private int savedProgress = 0;
     int progress = 0;
+    EditText ageText;
+    Spinner spinner;
+    String sex;
 
     final private List<String> changeInSports = new ArrayList<String>();
 
@@ -99,6 +112,97 @@ public class SettingsActivity extends Activity {
             initializeLeftSidePanel();
 
             User.setImage();
+
+            //get sex from spinner
+
+            spinner = (Spinner) findViewById(R.id.sexSpinner);
+            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                    R.array.chooseSex_array, android.R.layout.simple_spinner_item);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(adapter);
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                sex= parent.getItemAtPosition(position).toString();
+
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                    // sometimes you need nothing here
+                }
+            });
+            user.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    if (snapshot.hasChild("Sex")) {
+                        String s=snapshot.child("Sex").getValue().toString();
+                        if(s.equals("M")){
+                            spinner.setSelection(0);
+
+                        }
+                        else{
+                            spinner.setSelection(1);
+                        }
+                    }
+                    else if(snapshot.hasChild("gender"))
+                    {
+                        String s=snapshot.child("gender").getValue().toString();
+                        if(s.equals("male")){
+                            spinner.setSelection(0);
+                        }
+                        else{
+                            spinner.setSelection(1);
+                        }
+                    }
+                    else{
+                        spinner.setSelection(0);
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+
+            //set age to AgeTextField
+            ageText=(EditText) findViewById(R.id.Age);
+            user.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    if (snapshot.hasChild("Age")) {
+                        String s=snapshot.child("Age").getValue().toString();
+                        ageText.setText(s);
+                    }
+                    else if(snapshot.hasChild("ageRange"))
+                    {
+                        String s=snapshot.child("ageRange").getValue().toString();
+                        ageText.setText(s.substring(5,s.length()-1));
+                    }
+                    else{
+                        ageText.setText("");
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+               // ageRangeRef.addListenerForSingleValueEvent(new ValueEventListener() { // get all sports
+                 //   @Override
+                 //   public void onDataChange(DataSnapshot snapshot) {
+                 //       String s=snapshot.getValue().toString();
+                   //     ageText.setText(s.substring(5,s.length()-1));
+                 //   }
+
+                 //   @Override
+                 //   public void onCancelled(DatabaseError firebaseError) {
+                  //  }
+              //  });
+
+
+
+
 
             // User picture and name for HEADER MENU
             Typeface segoeui = Typeface.createFromAsset(getAssets(), "fonts/seguisb.ttf");
@@ -208,6 +312,10 @@ public class SettingsActivity extends Activity {
                 @Override
                 public void onClick(View v) {
                     //TODO Save Range + Sports in FireBase
+                    if(ageText.getText().toString().length()>0) {
+                        ageRef.setValue(Integer.parseInt(ageText.getText().toString()));
+                    }
+                    sexRef.setValue(sex);
                     rangeRef.setValue((progress == 0 ? savedProgress : progress));
                     Map<String, Object> map = new HashMap<String, Object>();
                     for (Sport s : sportsList) {
@@ -241,7 +349,7 @@ public class SettingsActivity extends Activity {
 
 
         }
-        catch(Exception exc) {
+        catch(Exception e) {
             Utils.quit();
         }
     }

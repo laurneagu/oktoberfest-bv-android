@@ -48,6 +48,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+import android.support.v7.app.AlertDialog.Builder;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
@@ -321,9 +322,8 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         createEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // createEvent.setAlpha((float) 0.3);
-                //createEvent.setClickable(false);
-                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(CreateNewActivity.this, R.style.MyAlertDialogStyle);
+
+                Builder builder = new Builder(CreateNewActivity.this, R.style.MyAlertDialogStyle);
                 builder.setTitle("Add an event")
                         .setMessage("Are you sure you want to add an event?")
                         .setIcon(android.R.drawable.ic_dialog_alert)
