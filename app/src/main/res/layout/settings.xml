@@ -8,7 +8,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -34,27 +33,26 @@
             android:layout_below="@+id/textView6"
             android:layout_centerHorizontal="true"
             android:textColor="#2275b5" />
-        <LinearLayout android:focusable="true"
-            android:focusableInTouchMode="true" android:layout_width="0px"
-            android:layout_height="0px" />
-
-
         <EditText
             android:id="@+id/Age"
 
             android:layout_width="40dp"
             android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/textView9"
-            android:layout_alignRight="@+id/textView9"
+            android:inputType="number"
             android:layout_below="@+id/visibleSeekBar2"
-            android:inputType="number" />
+            android:layout_alignRight="@+id/seekBar2"
+            android:layout_alignEnd="@+id/seekBar2" />
+
         <Spinner
             android:id="@+id/sexSpinner"
-            android:layout_width="30dp"
+            style="@style/Widget.AppCompat.Light.Spinner.DropDown.ActionBar"
+            android:spinnerMode="dropdown"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/textView6"
+            android:layout_alignBottom="@+id/Age"
             android:layout_below="@+id/progressText"
-            android:layout_alignBottom="@+id/Age" />
+            android:layout_toLeftOf="@+id/logOutButton"
+            android:layout_toStartOf="@+id/logOutButton" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -62,9 +60,9 @@
             android:text="Sex"
 
             android:textColor="#2275b5"
-            android:layout_alignBottom="@+id/planets_spinner"
             android:layout_toLeftOf="@+id/textView9"
-            android:layout_toStartOf="@+id/textView9" />
+            android:layout_toStartOf="@+id/textView9"
+            android:layout_alignBottom="@+id/sexSpinner" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -72,11 +70,11 @@
             android:text="Age:"
 
             android:textColor="#2275b5"
-            android:layout_toLeftOf="@+id/Age"
-            android:layout_toRightOf="@+id/textView8"
-            android:layout_toEndOf="@+id/textView8"
             android:layout_below="@+id/progressText"
-            android:layout_alignBottom="@+id/Age" />
+            android:layout_alignBottom="@+id/Age"
+            android:layout_toRightOf="@+id/textView6"
+            android:layout_toLeftOf="@+id/Age"
+            android:layout_toStartOf="@+id/Age" />
 
         <GridView
             android:paddingTop="50dp"

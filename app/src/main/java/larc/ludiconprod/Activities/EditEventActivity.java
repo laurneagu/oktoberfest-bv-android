@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -191,18 +192,29 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
         createEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createEvent.setAlpha((float) 0.3);
-                createEvent.setClickable(false);
 
-                OnCreateEvent();
+                AlertDialog.Builder builder = new AlertDialog.Builder(EditEventActivity.this, R.style.MyAlertDialogStyle);
+                builder.setTitle("Edit an event")
+                        .setMessage("Are you sure you want to edit this event?")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setNegativeButton("NO", null)
+                        .setPositiveButton("YES", new DialogInterface.OnClickListener() {
 
-                SharedPreferences sharedPref = myAct.getSharedPreferences("LocationPrefs", 0);
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putString("sel_latitude", null);
-                editor.putString("sel_longitude", null);
-                editor.commit();
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                createEvent.setAlpha((float) 0.3);
+                                createEvent.setClickable(false);
 
-                createEvent.setAlpha((float) 1);
+                                OnCreateEvent();
+
+                                SharedPreferences sharedPref = myAct.getSharedPreferences("LocationPrefs", 0);
+                                SharedPreferences.Editor editor = sharedPref.edit();
+                                editor.putString("sel_latitude", null);
+                                editor.putString("sel_longitude", null);
+                                editor.commit();
+                                createEvent.setAlpha((float) 0.3);
+                                createEvent.setClickable(false);
+                            }
+                        }).show();
             }
         });
         // Left side panel initializing

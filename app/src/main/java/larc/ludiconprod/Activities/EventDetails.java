@@ -316,14 +316,7 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
                     @Override
                     public void onClick(View v) {
 
-                        Builder builder = new Builder(EventDetails.this, R.style.MyAlertDialogStyle);
-                        builder.setTitle("Edit an event")
-                                .setMessage("Are you sure you want to edit this event?")
-                                .setIcon(android.R.drawable.ic_dialog_alert)
-                                .setNegativeButton("NO", null)
-                                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
 
-                                    public void onClick(DialogInterface dialog, int whichButton) {
                                         Intent intent = new Intent(getApplicationContext(), EditEventActivity.class);
                                         intent.putExtra("eventID", eventUid);
                                         intent.putExtra("eventDate", evDate.getTime() + "");
@@ -338,8 +331,8 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
                                         startActivity(intent);
                                     }
 
-                                }).show();
-                    }
+
+
                 });
 
                 // Hide Edit and Cancel Buttons if user is not the owner of the event

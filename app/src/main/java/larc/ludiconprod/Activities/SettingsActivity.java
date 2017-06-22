@@ -34,6 +34,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Spinner;
@@ -77,10 +78,7 @@ public class SettingsActivity extends Activity  {
     private HashMap<String, Drawable> desaturatedSportIcons = new HashMap<String, Drawable>();
     DatabaseReference rangeRef = User.firebaseRef.child("users").child(User.uid).child("range");
     DatabaseReference userSports = User.firebaseRef.child("users").child(User.uid).child("sports");
-    DatabaseReference ageRef=User.firebaseRef.child("users").child(User.uid).child("Age");
-    DatabaseReference sexRef=User.firebaseRef.child("users").child(User.uid).child("Sex");
-    DatabaseReference ageRangeRef=User.firebaseRef.child("users").child(User.uid).child("ageRange");
-    DatabaseReference user=User.firebaseRef.child("users").child(User.uid);
+    DatabaseReference user = User.firebaseRef.child("users").child(User.uid);
     final DatabaseReference sportRed = User.firebaseRef.child("sports"); // check user
     private int savedProgress = 0;
     int progress = 0;
@@ -124,7 +122,7 @@ public class SettingsActivity extends Activity  {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                sex= parent.getItemAtPosition(position).toString();
+                sex = parent.getItemAtPosition(position).toString();
 
                 }
 
@@ -137,28 +135,27 @@ public class SettingsActivity extends Activity  {
             user.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
-                    if (snapshot.hasChild("Sex")) {
-                        String s=snapshot.child("Sex").getValue().toString();
-                        if(s.equals("M")){
+                    if(snapshot.child("custom-user-data").hasChild("Sex")) {
+                        String s = snapshot.child("custom-user-data").child("Sex").getValue().toString();
+                        if (s.equals("M")) {
                             spinner.setSelection(0);
+                        } else if ( s.equals("F")) {
+                            spinner.setSelection(1);
+                        }
+                    }else {
+                        if(snapshot.hasChild("gender")){
+                            String s = snapshot.child("gender").getValue().toString();
+                            if(s.equals("male")){
+                                spinner.setSelection(0);
+                            }
+                            else{
+                                spinner.setSelection(1);
+                            }
+                        }
 
-                        }
                         else{
-                            spinner.setSelection(1);
-                        }
-                    }
-                    else if(snapshot.hasChild("gender"))
-                    {
-                        String s=snapshot.child("gender").getValue().toString();
-                        if(s.equals("male")){
                             spinner.setSelection(0);
                         }
-                        else{
-                            spinner.setSelection(1);
-                        }
-                    }
-                    else{
-                        spinner.setSelection(0);
                     }
                 }
                 @Override
@@ -171,39 +168,30 @@ public class SettingsActivity extends Activity  {
             user.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
-                    if (snapshot.hasChild("Age")) {
-                        String s=snapshot.child("Age").getValue().toString();
+                    if(snapshot.child("custom-user-data").hasChild("Age")){
+                        String s = snapshot.child("custom-user-data").child("Age").getValue().toString();
                         ageText.setText(s);
-                    }
-                    else if(snapshot.hasChild("ageRange"))
-                    {
-                        String s=snapshot.child("ageRange").getValue().toString();
-                        ageText.setText(s.substring(5,s.length()-1));
-                    }
-                    else{
-                        ageText.setText("");
+                    }else {
+                        if (snapshot.hasChild("ageRange")) {
+                            String s = snapshot.child("ageRange").getValue().toString();
+                            if (s.length() > 3 && s.length() < 8) {   //verify if ageRange is:"{min:xx}" or {max:xx}
+
+                                ageText.setText(s.substring(5, s.length() - 1));
+                            } else if (s.length() >= 8) {                  //verify if ageRange is:"{min:xx,max:xx}"
+                                ageText.setText(s.substring(5, 7));
+                            } else {
+                                ageText.setText(s);
+                            }
+
+                        } else {
+                            ageText.setText("");
+                        }
                     }
                 }
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
                 }
             });
-               // ageRangeRef.addListenerForSingleValueEvent(new ValueEventListener() { // get all sports
-                 //   @Override
-                 //   public void onDataChange(DataSnapshot snapshot) {
-                 //       String s=snapshot.getValue().toString();
-                   //     ageText.setText(s.substring(5,s.length()-1));
-                 //   }
-
-                 //   @Override
-                 //   public void onCancelled(DatabaseError firebaseError) {
-                  //  }
-              //  });
-
-
-
-
-
             // User picture and name for HEADER MENU
             Typeface segoeui = Typeface.createFromAsset(getAssets(), "fonts/seguisb.ttf");
 
@@ -311,27 +299,39 @@ public class SettingsActivity extends Activity  {
             saveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //TODO Save Range + Sports in FireBase
-                    if(ageText.getText().toString().length()>0) {
-                        ageRef.setValue(Integer.parseInt(ageText.getText().toString()));
-                    }
-                    sexRef.setValue(sex);
-                    rangeRef.setValue((progress == 0 ? savedProgress : progress));
-                    Map<String, Object> map = new HashMap<String, Object>();
-                    for (Sport s : sportsList) {
-                        if (s.isChecked) {
-                            map.put(s.name, s.id);
+                    try {
+                        //TODO Save Range + Sports in FireBase
+                        if ((ageText.getText().toString().length() >0)&&(!ageText.getText().toString().equals("0"))) {
+                            user.child("custom-user-data").child("Age").setValue(Integer.parseInt(ageText.getText().toString()));
+
+
+                            user.child("custom-user-data").child("Sex").setValue(sex);
+                            rangeRef.setValue((progress == 0 ? savedProgress : progress));
+                            Map<String, Object> map = new HashMap<String, Object>();
+                            for (Sport s : sportsList) {
+                                if (s.isChecked) {
+                                    map.put(s.name, s.id);
+                                }
+                            }
+                            userSports.setValue(map);
+                            Toast.makeText(getApplicationContext(), "Updates on sports saved!", Toast.LENGTH_SHORT).show();
+
+                            saveButton.setAlpha((float) 0.3);
+                            saveButton.setEnabled(false);
+                            changeInSports.clear();
+
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(intent);
+                        }
+                        else
+                        {
+                            Toast.makeText(getApplicationContext(),"Introduceti o varsta valida",Toast.LENGTH_LONG).show();
                         }
                     }
-                    userSports.setValue(map);
-                    Toast.makeText(getApplicationContext(), "Updates on sports saved!", Toast.LENGTH_SHORT).show();
+                    catch (Exception exception){
+                        Toast.makeText(getApplicationContext(),"Introduceti o varsta valida",Toast.LENGTH_LONG).show();
 
-                    saveButton.setAlpha((float)0.3);
-                    saveButton.setEnabled(false);
-                    changeInSports.clear();
-
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(intent);
+                    }
                 }
             });
 

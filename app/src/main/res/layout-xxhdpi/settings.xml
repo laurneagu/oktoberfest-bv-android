@@ -45,11 +45,14 @@
 
         <Spinner
             android:id="@+id/sexSpinner"
-            android:layout_width="30dp"
+            style="@style/Widget.AppCompat.Light.Spinner.DropDown.ActionBar"
+            android:spinnerMode="dropdown"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/Age"
             android:layout_below="@+id/progressText"
-            android:layout_toLeftOf="@+id/textView6" />
+            android:layout_toLeftOf="@+id/logOutButton"
+            android:layout_toStartOf="@+id/logOutButton" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

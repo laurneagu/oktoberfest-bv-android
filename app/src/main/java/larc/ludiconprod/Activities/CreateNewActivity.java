@@ -344,8 +344,8 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
                                 editor.putString("sel_latitude", null);
                                 editor.putString("sel_longitude", null);
                                 editor.commit();
-
-                                createEvent.setAlpha((float) 1);
+                                createEvent.setAlpha((float) 0.3);
+                                createEvent.setClickable(false);
                             }
                         }).show();
             }
