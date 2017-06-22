@@ -1,14 +1,17 @@
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
 
 buildscript {
     repositories {
         mavenCentral()
+        maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
         //classpath 'com.android.tools.build:gradle:2.2.0-alpha5'
         classpath 'com.google.gms:google-services:3.0.0'
-        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.android.tools.build:gradle:2.1.2'
         //compile 'com.google.android.gms:play-services-ads:9.0.1'
+        classpath 'io.fabric.tools:gradle:1.+'
     }
 }
 
@@ -49,9 +52,13 @@ dependencies {
     //compile 'com.google.gms:google-services:+'
     //    compile 'com.google.gms:play-services-maps:9.0.0'
     compile 'com.google.android.gms:play-services-maps:9.2.0'
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
+        transitive = true;
+    }
 }
 repositories {
     maven { url "https://jitpack.io" }
+    maven { url 'https://maven.fabric.io/public' }
 }
 
 dependencies {

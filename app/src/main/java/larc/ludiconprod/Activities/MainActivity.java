@@ -48,11 +48,9 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ViewFlipper;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
-
-import com.facebook.login.LoginManager;
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.google.firebase.database.DataSnapshot;
@@ -211,6 +209,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Method used for Crashlytics
+    private void logUser() {
+        // Use the current user's information
+        // You can call any combination of these three methods
+        Crashlytics.setUserIdentifier(User.uid);
+        Crashlytics.setUserEmail(User.email);
+        Crashlytics.setUserName(User.name);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         try {
@@ -265,6 +272,12 @@ public class MainActivity extends AppCompatActivity {
             // Setting the ViewPager For the SlidingTabsLayout
             tabs.setViewPager(pager);
             /**************/
+
+            // Initialize Crashlytics (Fabric)
+            Fabric.with(this, new Crashlytics());
+            logUser();
+
+
 
             dialog = ProgressDialog.show(MainActivity.this, "", "Loading. Please wait", true);
 
