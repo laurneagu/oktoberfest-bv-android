@@ -348,6 +348,8 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
                     editEvent.setVisibility(View.VISIBLE);
                     creatorIsCurrentUser = true;
                 }
+                else
+                    creatorIsCurrentUser = false;
 
                 final ImageView profilePicture = (ImageView) findViewById(R.id.profileImageView);
                 profilePicture.setBackgroundResource(R.drawable.defaultpicture);
