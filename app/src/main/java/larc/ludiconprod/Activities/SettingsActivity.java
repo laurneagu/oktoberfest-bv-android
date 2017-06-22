@@ -85,6 +85,7 @@ public class SettingsActivity extends Activity  {
     EditText ageText;
     Spinner spinner;
     String sex;
+    int counterOfSportsSelected=0;
 
     final private List<String> changeInSports = new ArrayList<String>();
 
@@ -301,31 +302,33 @@ public class SettingsActivity extends Activity  {
                 public void onClick(View v) {
                     try {
                         //TODO Save Range + Sports in FireBase
-                        if ((ageText.getText().toString().length() >0)&&(!ageText.getText().toString().equals("0"))) {
-                            user.child("custom-user-data").child("Age").setValue(Integer.parseInt(ageText.getText().toString()));
+                        if(counterOfSportsSelected>=1) {
+                            if ((ageText.getText().toString().length() > 0) && (!ageText.getText().toString().equals("0"))) {
+                                user.child("custom-user-data").child("Age").setValue(Integer.parseInt(ageText.getText().toString()));
 
 
-                            user.child("custom-user-data").child("Sex").setValue(sex);
-                            rangeRef.setValue((progress == 0 ? savedProgress : progress));
-                            Map<String, Object> map = new HashMap<String, Object>();
-                            for (Sport s : sportsList) {
-                                if (s.isChecked) {
-                                    map.put(s.name, s.id);
+                                user.child("custom-user-data").child("Sex").setValue(sex);
+                                rangeRef.setValue((progress == 0 ? savedProgress : progress));
+                                Map<String, Object> map = new HashMap<String, Object>();
+                                for (Sport s : sportsList) {
+                                    if (s.isChecked) {
+                                        map.put(s.name, s.id);
+                                    }
                                 }
+                                userSports.setValue(map);
+                                Toast.makeText(getApplicationContext(), "Updates on sports saved!", Toast.LENGTH_SHORT).show();
+                                saveButton.setAlpha((float) 0.3);
+                                saveButton.setEnabled(false);
+                                changeInSports.clear();
+
+                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                startActivity(intent);
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Introduceti o varsta valida", Toast.LENGTH_LONG).show();
                             }
-                            userSports.setValue(map);
-                            Toast.makeText(getApplicationContext(), "Updates on sports saved!", Toast.LENGTH_SHORT).show();
-
-                            saveButton.setAlpha((float) 0.3);
-                            saveButton.setEnabled(false);
-                            changeInSports.clear();
-
-                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                            startActivity(intent);
                         }
-                        else
-                        {
-                            Toast.makeText(getApplicationContext(),"Introduceti o varsta valida",Toast.LENGTH_LONG).show();
+                        else{
+                            Toast.makeText(getApplicationContext(),"Alegeti cel putin un sport",Toast.LENGTH_LONG).show();
                         }
                     }
                     catch (Exception exception){
@@ -383,6 +386,7 @@ public class SettingsActivity extends Activity  {
                                 ((BitmapDrawable) regularSportIcons.get(sport.getKey())).getBitmap()
                                ));
                         exist.put(sport.getKey(), true);
+                        counterOfSportsSelected++;
                     }
 
                     int count = 0;
@@ -483,10 +487,12 @@ public class SettingsActivity extends Activity  {
                             rl.setBackground(getResources().getDrawable(R.drawable.settings_icon_selected));
                             //((ImageView) rl.getChildAt(1)).setImageBitmap(sport.icon);
                             cb.setAlpha((float) 0.9);
+                            counterOfSportsSelected++;
                         } else {
                             rl.setBackground(getResources().getDrawable(R.drawable.settings_icon_notselected));
                             //((ImageView) rl.getChildAt(1)).setImageBitmap(sport.desaturated_icon);
                             cb.setAlpha((float) 0.7);
+                            counterOfSportsSelected--;
                         }
 
                         // Save button changes
