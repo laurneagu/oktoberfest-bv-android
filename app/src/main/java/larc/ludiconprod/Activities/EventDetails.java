@@ -316,23 +316,46 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
                     @Override
                     public void onClick(View v) {
 
+                        Builder builder = new Builder(EventDetails.this, R.style.MyAlertDialogStyle);
+                        builder.setTitle("Edit an event")
+                                .setMessage("Are you sure you want to edit this event?")
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setNegativeButton("NO", null)
+                                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
 
-                                        Intent intent = new Intent(getApplicationContext(), EditEventActivity.class);
-                                        intent.putExtra("eventID", eventUid);
-                                        intent.putExtra("eventDate", evDate.getTime() + "");
-                                        intent.putExtra("sport", eventSport);
-                                        intent.putExtra("eventPrivacy", eventPrivacy);
-                                        intent.putExtra("latitude", eventLat);
-                                        intent.putExtra("longitude", eventLong);
-                                        intent.putExtra("isOfficial", eventisOfficial);
-                                        intent.putExtra("place", eventPlace);
-                                        intent.putExtra("desc", eventDesc);
-                                        intent.putExtra("maxPlayers", roomCapacity + "");
-                                        startActivity(intent);
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        DatabaseReference userSports = User.firebaseRef.child("users").child(User.uid).child("sports");
+                                        userSports.addListenerForSingleValueEvent(new ValueEventListener() { // get user sports
+                                            @Override
+                                            public void onDataChange(DataSnapshot snapshot) {
+                                                // Get user's favourite sports
+                                                ArrayList<String> favouriteSports = new ArrayList<>();
+                                                for (DataSnapshot sport : snapshot.getChildren()) {
+                                                    if(!favouriteSports.contains(sport.getKey().toString()))
+                                                        favouriteSports.add(sport.getKey().toString());
+                                                }
+                                                Intent intent = new Intent(getApplicationContext(), EditEventActivity.class);
+                                                intent.putStringArrayListExtra("favourite_sports", favouriteSports);
+                                                intent.putExtra("eventID", eventUid);
+                                                intent.putExtra("eventDate", evDate.getTime() + "");
+                                                intent.putExtra("sport", eventSport);
+                                                intent.putExtra("eventPrivacy", eventPrivacy);
+                                                intent.putExtra("latitude", eventLat);
+                                                intent.putExtra("longitude", eventLong);
+                                                intent.putExtra("isOfficial", eventisOfficial);
+                                                intent.putExtra("place", eventPlace);
+                                                intent.putExtra("desc", eventDesc);
+                                                intent.putExtra("maxPlayers", roomCapacity + "");
+                                                startActivity(intent);
+                                            }
+                                            @Override
+                                            public void onCancelled(DatabaseError firebaseError) {
+                                            }
+                                        });
                                     }
 
-
-
+                                }).show();
+                    }
                 });
 
                 // Hide Edit and Cancel Buttons if user is not the owner of the event

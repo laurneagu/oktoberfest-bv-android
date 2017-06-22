@@ -93,6 +93,7 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
     static public int ASK_COORDS_DONE = 1001;
 
     private static final String FIREBASE_URL = "https://ludicon.firebaseio.com/";
+    static public ArrayList<String> favouriteSports;
 
     // Left side panel
     private ListView mDrawerList;
@@ -244,6 +245,11 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
                 EditEventActivity.this.startActivity(mainIntent);
             }
         });
+
+
+        favouriteSports = getIntent().getStringArrayListExtra("favourite_sports");
+        if(favouriteSports == null)
+            favouriteSports = new ArrayList<>();
 
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
@@ -421,12 +427,16 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
 
             int count = 0;
             for (String sport : sports) {
-                String uri = "@drawable/" + sport;
-                int imageResource = getResources().getIdentifier(uri, null, getPackageName());
-                Drawable res1 = getResources().getDrawable(imageResource);
-                sportsList.add(new Sport(sport, Integer.toString(count),
-                        false, ((BitmapDrawable) res1).getBitmap()));
-                count++;
+                // Check if sport is selected as favourite
+                if(favouriteSports.contains(sport))
+                {
+                    String uri = "@drawable/" + sport;
+                    int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+                    Drawable res1 = getResources().getDrawable(imageResource);
+                    sportsList.add(new Sport(sport, Integer.toString(count),
+                            false, ((BitmapDrawable) res1).getBitmap()));
+                    count++;
+                }
             }
 
             //create an ArrayAdaptor from the Sport Array

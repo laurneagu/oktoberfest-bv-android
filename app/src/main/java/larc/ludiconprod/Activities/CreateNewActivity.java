@@ -93,8 +93,8 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
     static public int ASK_COORDS = 1000;
     static public int ASK_COORDS_DONE = 1001;
-
     private static final String FIREBASE_URL = "https://ludicon.firebaseio.com/";
+    static public ArrayList<String> favouriteSports;
 
     // Left side panel
     private ListView mDrawerList;
@@ -212,6 +212,11 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
         setContentView(R.layout.activity_create_new);
 
+        // Get favourite sports from intent
+        favouriteSports = getIntent().getStringArrayListExtra("favourite_sports");
+        if(favouriteSports == null)
+            favouriteSports = new ArrayList<>();
+
         // Left side panel initializing
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
         initializeLeftSidePanel();
@@ -279,10 +284,22 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         */
 
         selectedSportButton = (Button) findViewById(R.id.selectedSportButton);
+        String uri = "@drawable/" + favouriteSports.get(0);
+        int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+        selectedSportButton.setBackgroundResource(imageResource);
         selectedSportButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showGridSportsDialog();
+                DatabaseReference userSports = User.firebaseRef.child("users").child(User.uid).child("sports");
+                userSports.addListenerForSingleValueEvent(new ValueEventListener() { // get user sports
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        showGridSportsDialog();
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError firebaseError) {
+                    }
+                });
             }
         });
 
@@ -456,12 +473,16 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
             int count = 0;
             for (String sport : sports) {
-                String uri = "@drawable/" + sport;
-                int imageResource = getResources().getIdentifier(uri, null, getPackageName());
-                Drawable res1 = getResources().getDrawable(imageResource);
-                sportsList.add(new Sport(sport, Integer.toString(count),
-                        false, ((BitmapDrawable) res1).getBitmap()));
-                count++;
+                // Check if sport is selected as favourite
+                if(favouriteSports.contains(sport))
+                {
+                    String uri = "@drawable/" + sport;
+                    int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+                    Drawable res1 = getResources().getDrawable(imageResource);
+                    sportsList.add(new Sport(sport, Integer.toString(count),
+                            false, ((BitmapDrawable) res1).getBitmap()));
+                    count++;
+                }
             }
 
             //create an ArrayAdaptor from the Sport Array
