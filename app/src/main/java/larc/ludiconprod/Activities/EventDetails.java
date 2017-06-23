@@ -642,7 +642,9 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
                                     User.firebaseRef.child("events").child(eventUid).child("users").setValue(users);
 
                                 header_button.setVisibility(View.INVISIBLE);
+                                jumpToMainActivity();
                                 finish();
+
 
                             }
                         }).show();

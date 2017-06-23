@@ -88,6 +88,7 @@ public class SettingsActivity extends Activity  {
     Spinner spinner;
     String sex;
     int counterOfSportsSelected=0;
+    boolean spinnerSelected=false;
 
     final private List<String> changeInSports = new ArrayList<String>();
 
@@ -124,20 +125,25 @@ public class SettingsActivity extends Activity  {
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    if(spinnerSelected){
+                        saveButton.setAlpha(0.9f);
+                    }
 
                 sex = parent.getItemAtPosition(position).toString();
+                    spinnerSelected = true;
 
                 }
 
                 @Override
                 public void onNothingSelected(AdapterView<?> parent) {
 
-                    // sometimes you need nothing here
+                    spinnerSelected = false;
                 }
             });
             user.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
+                    spinnerSelected=false;
                     if(snapshot.child("custom-user-data").hasChild("Sex")) {
                         String s = snapshot.child("custom-user-data").child("Sex").getValue().toString();
                         if (s.equals("M")) {
@@ -195,6 +201,7 @@ public class SettingsActivity extends Activity  {
                     if(snapshot.child("custom-user-data").hasChild("Age")){
                         String s = snapshot.child("custom-user-data").child("Age").getValue().toString();
                         ageText.setText(s);
+                        ageText.setSelection(s.length(), s.length());
                     }else {
                         if (snapshot.hasChild("ageRange")) {
                             String s = snapshot.child("ageRange").getValue().toString();
@@ -206,6 +213,7 @@ public class SettingsActivity extends Activity  {
                             } else {
                                 ageText.setText(s);
                             }
+                            ageText.setSelection(s.length(), s.length());
 
                         } else {
                             ageText.setText("");
@@ -279,12 +287,15 @@ public class SettingsActivity extends Activity  {
                     //rangeRef.setValue(progress);
                     progressText.setText(progress + " km");
 
+
                     if(changeInSports.contains("R" + progress)){
 
                         changeInSports.remove("R" + progress);
 
+
                     }
                     else {
+
 
                         changeInSports.add("R" + progress);
 
@@ -297,6 +308,10 @@ public class SettingsActivity extends Activity  {
 
                 @Override
                 public void onStopTrackingTouch(SeekBar seekBar) {
+                    if(savedProgress != progress && verifyAge() && counterOfSportsSelected >= 1){
+                        saveButton.setAlpha(0.9f);
+                        saveButton.setEnabled(true);
+                    }
                 }
             });
 
@@ -525,9 +540,14 @@ public class SettingsActivity extends Activity  {
                             //((ImageView) rl.getChildAt(1)).setImageBitmap(sport.desaturated_icon);
                             cb.setAlpha((float) 0.7);
                             counterOfSportsSelected--;
-                            if(counterOfSportsSelected==0){
+                            if(counterOfSportsSelected == 0){
                                 saveButton.setAlpha((float) 0.3);
                                 saveButton.setEnabled(false);
+                            }
+                            else if(verifyAge())
+                            {
+                                saveButton.setAlpha((float) 0.9);
+                                saveButton.setEnabled(true);
                             }
                         }
 
@@ -535,7 +555,7 @@ public class SettingsActivity extends Activity  {
                         if(changeInSports.contains(sport.id)){
                             changeInSports.remove(sport.id);
 
-                            if(changeInSports.size()== 0){
+                            if(changeInSports.size() == 0){
                                 saveButton.setAlpha((float)0.3);
                                 saveButton.setEnabled(false);
                             }
