@@ -11,6 +11,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -166,6 +168,27 @@ public class SettingsActivity extends Activity  {
 
             //set age to AgeTextField
             ageText=(EditText) findViewById(R.id.Age);
+            ageText.addTextChangedListener(new TextWatcher() {
+
+                public void afterTextChanged(Editable s) {}
+
+                public void beforeTextChanged(CharSequence s, int start,
+                                              int count, int after) {
+                }
+
+                public void onTextChanged(CharSequence s, int start,
+                                          int before, int count) {
+                    if(verifyAge() && counterOfSportsSelected >= 1){
+
+                        saveButton.setAlpha((float) 0.9);
+                        saveButton.setEnabled(true);
+                    }
+                    else{
+                        saveButton.setAlpha((float) 0.3);
+                        saveButton.setEnabled(false);
+                    }
+                }
+            });
             user.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
@@ -193,6 +216,8 @@ public class SettingsActivity extends Activity  {
                 public void onCancelled(DatabaseError databaseError) {
                 }
             });
+
+
             // User picture and name for HEADER MENU
             Typeface segoeui = Typeface.createFromAsset(getAssets(), "fonts/seguisb.ttf");
 
@@ -255,20 +280,14 @@ public class SettingsActivity extends Activity  {
                     progressText.setText(progress + " km");
 
                     if(changeInSports.contains("R" + progress)){
+
                         changeInSports.remove("R" + progress);
 
-                        if(changeInSports.size()== 0){
-                            saveButton.setAlpha((float)0.3);
-                            saveButton.setEnabled(false);
-                        }
                     }
                     else {
+
                         changeInSports.add("R" + progress);
 
-                        if(changeInSports.size()== 1){
-                            saveButton.setAlpha((float)1);
-                            saveButton.setEnabled(true);
-                        }
                     }
                 }
 
@@ -302,11 +321,7 @@ public class SettingsActivity extends Activity  {
                 public void onClick(View v) {
                     try {
                         //TODO Save Range + Sports in FireBase
-                        if(counterOfSportsSelected>=1) {
-                            if ((ageText.getText().toString().length() > 0) && (!ageText.getText().toString().equals("0"))) {
                                 user.child("custom-user-data").child("Age").setValue(Integer.parseInt(ageText.getText().toString()));
-
-
                                 user.child("custom-user-data").child("Sex").setValue(sex);
                                 rangeRef.setValue((progress == 0 ? savedProgress : progress));
                                 Map<String, Object> map = new HashMap<String, Object>();
@@ -320,20 +335,12 @@ public class SettingsActivity extends Activity  {
                                 saveButton.setAlpha((float) 0.3);
                                 saveButton.setEnabled(false);
                                 changeInSports.clear();
-
                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                 startActivity(intent);
-                            } else {
-                                Toast.makeText(getApplicationContext(), "Introduceti o varsta valida", Toast.LENGTH_LONG).show();
-                            }
-                        }
-                        else{
-                            Toast.makeText(getApplicationContext(),"Alegeti cel putin un sport",Toast.LENGTH_LONG).show();
-                        }
+
                     }
                     catch (Exception exception){
                         Toast.makeText(getApplicationContext(),"Introduceti o varsta valida",Toast.LENGTH_LONG).show();
-
                     }
                 }
             });
@@ -439,6 +446,26 @@ public class SettingsActivity extends Activity  {
             Utils.quit();
         }
     }
+    public boolean verifyAge(){
+        try{
+            if(!ageText.getText().toString().isEmpty()) {
+
+                int age = Integer.parseInt(ageText.getText().toString());
+                if (age > 0 && age < 150) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            else{
+                return false;
+            }
+
+        }
+        catch(Exception e){
+            return false;
+        }
+    }
 
     private class MyCustomAdapter extends ArrayAdapter<Sport> {
 
@@ -488,11 +515,20 @@ public class SettingsActivity extends Activity  {
                             //((ImageView) rl.getChildAt(1)).setImageBitmap(sport.icon);
                             cb.setAlpha((float) 0.9);
                             counterOfSportsSelected++;
+                            if(verifyAge()) {                //if already selected a sports remain to verifyAge
+                                saveButton.setAlpha((float) 0.9);
+                                saveButton.setEnabled(true);
+                            }
+
                         } else {
                             rl.setBackground(getResources().getDrawable(R.drawable.settings_icon_notselected));
                             //((ImageView) rl.getChildAt(1)).setImageBitmap(sport.desaturated_icon);
                             cb.setAlpha((float) 0.7);
                             counterOfSportsSelected--;
+                            if(counterOfSportsSelected==0){
+                                saveButton.setAlpha((float) 0.3);
+                                saveButton.setEnabled(false);
+                            }
                         }
 
                         // Save button changes
