@@ -201,19 +201,22 @@ public class SettingsActivity extends Activity  {
                     if(snapshot.child("custom-user-data").hasChild("Age")){
                         String s = snapshot.child("custom-user-data").child("Age").getValue().toString();
                         ageText.setText(s);
-                        ageText.setSelection(s.length(), s.length());
+                        ageText.setSelection(s.length());
                     }else {
                         if (snapshot.hasChild("ageRange")) {
                             String s = snapshot.child("ageRange").getValue().toString();
                             if (s.length() > 3 && s.length() < 8) {   //verify if ageRange is:"{min:xx}" or {max:xx}
 
                                 ageText.setText(s.substring(5, s.length() - 1));
+                                ageText.setSelection(s.substring(5, s.length() - 1).length());
                             } else if (s.length() >= 8) {                  //verify if ageRange is:"{min:xx,max:xx}"
                                 ageText.setText(s.substring(5, 7));
+                                ageText.setSelection(s.substring(5, 7).length());
                             } else {
                                 ageText.setText(s);
+                                ageText.setSelection(s.length());
                             }
-                            ageText.setSelection(s.length(), s.length());
+
 
                         } else {
                             ageText.setText("");
