@@ -10,11 +10,11 @@
         android:id="@+id/logo"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="70dp"
-        android:scaleType="centerCrop"
-        android:layout_gravity="center_horizontal" />
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="0dp"
+        android:scaleType="centerCrop" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -44,15 +44,73 @@
         android:numColumns="2"
         android:layout_gravity="center_horizontal" />
 
-    <Button
+    <TextView
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Range"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#ffffff" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#ffffff"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Pick the area range for your activities"
+        android:id="@+id/textView2"
+        android:layout_below="@+id/textView"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/textView2"
+        android:background="#FFFFFF">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#777777"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Medium Text"
+            android:id="@+id/textView5"
+            android:layout_below="@+id/seekBar"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_centerHorizontal="true" />
+
+        <ImageView
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/visibleSeekBar"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="57dp" />
+
+        <SeekBar
+            android:layout_height="wrap_content"
+            android:id="@+id/seekBar"
+            android:layout_width="300dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dp" />
+
+    </RelativeLayout>
+
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
         android:text="Next"
         android:textAllCaps="false"
         android:textColor="#1971b4"
-        android:id="@+id/button2"
-        android:layout_gravity="center_horizontal" />
+        android:layout_marginBottom="2dp"/>
 
 
 </LinearLayout>
