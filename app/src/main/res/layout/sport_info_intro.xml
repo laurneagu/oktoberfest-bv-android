@@ -12,14 +12,14 @@
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/irLayout"
         android:layout_width="240dp"
-        android:layout_height="45dp"
+        android:layout_height="40dp"
         android:orientation="vertical"
         android:background="#FFFFFF">
 
 
         <RelativeLayout
             android:layout_width="40dp"
-            android:layout_height="45dp"
+            android:layout_height="40dp"
             android:adjustViewBounds="true"
             android:background="#696969"
             android:scaleType="fitCenter"

@@ -5,16 +5,28 @@
     android:orientation="vertical"
     android:id="@+id/askprefs"
     android:background="@drawable/intro_bg">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/logo"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="0dp"
-        android:scaleType="centerCrop" />
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+             android:layout_marginTop="0dp"
+            android:scaleType="centerCrop"
+            android:layout_marginLeft="30dp"/>
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Next"
+            android:layout_toRightOf="@+id/logo"
+            android:textAllCaps="false"
+            android:textColor="#1971b4"
+            android:layout_marginBottom="2dp"/>
+    </RelativeLayout>
 
     <TextView
         android:layout_width="wrap_content"
@@ -101,16 +113,7 @@
     </RelativeLayout>
 
 
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
-        android:text="Next"
-        android:textAllCaps="false"
-        android:textColor="#1971b4"
-        android:layout_marginBottom="2dp"/>
+
 
 
 </LinearLayout>
