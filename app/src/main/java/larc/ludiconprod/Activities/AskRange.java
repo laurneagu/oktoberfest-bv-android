@@ -61,6 +61,7 @@ public class AskRange extends Activity{
                 progress = progressValue;
                 progressText.setText(progress + " km");
                 seekBar.setProgress(progress);
+
             }
 
             @Override

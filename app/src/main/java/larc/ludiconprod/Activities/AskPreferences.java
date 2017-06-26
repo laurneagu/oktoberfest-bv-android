@@ -31,7 +31,9 @@ import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
@@ -47,6 +49,9 @@ public class AskPreferences extends Activity {
     private ImageView logo;
     MyCustomAdapter dataAdapter = null;
     public ArrayList<Sport> sports = new ArrayList<Sport>();
+    private TextView progressText;
+    private SeekBar seekBar;
+    private int counterOfSportSelected=10;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,6 +74,35 @@ public class AskPreferences extends Activity {
 
         logo = (ImageView) findViewById(R.id.logo);
         logo.setImageResource(R.drawable.logo);
+        seekBar = (SeekBar) findViewById(R.id.seekBar);
+        progressText = (TextView) findViewById(R.id.textView5);
+        progressText.setText("1 km");
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+            int progress = 0;
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
+                progress = progressValue;
+                if(seekBar.getProgress() <= 1){
+                    progressText.setText("1" + " km");
+
+                }
+                else {
+                    progressText.setText(progress + " km");
+                }
+                seekBar.setProgress(progress);
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
         //Generate list View from ArrayList
 
         displayListView();
@@ -78,33 +112,56 @@ public class AskPreferences extends Activity {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(counterOfSportSelected >= 1) {
 
-                DatabaseReference sportsRef = User.firebaseRef.child("users").child(User.uid).child("sports");
-                Map<String, Object> map = new HashMap<String, Object>();
-                for(Sport s : sports){
-                    if(s.isChecked){
-                        map.put(s.name,s.id);
+                    DatabaseReference sportsRef = User.firebaseRef.child("users").child(User.uid).child("sports");
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    for (Sport s : sports) {
+                        if (s.isChecked) {
+                            map.put(s.name, s.id);
+                        }
                     }
+                    sportsRef.setValue(map);
+                    DatabaseReference rangeRef = User.firebaseRef.child("users").child(User.uid).child("range");
+                    int progres = seekBar.getProgress();
+                    if (progres >= 1) {
+                        rangeRef.setValue(progres);
+                    } else {
+                        rangeRef.setValue(1);
+                    }
+
+                    jumpToMainActivity();
                 }
-                sportsRef.setValue(map);
-                
-                jumpToRangeActivity();
+                else{
+                    Toast.makeText(getApplicationContext(), "Select at least one sport!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
     }
 
-    public void jumpToRangeActivity() {
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
+   // public void jumpToRangeActivity() {
+     //   Handler handler = new Handler();
+     //   handler.postDelayed(new Runnable() {
+          //  public void run() {
                 // Actions to do after 5 seconds
-                Intent goToNextActivity = new Intent(getApplicationContext(), AskRange.class); //AskPreferences.class);
-                startActivity(goToNextActivity);
-                finish();
-            }
-        }, 0); // Delay time for transition to next activity -> insert any time wanted here instead of 5000
-    }
+             //   Intent goToNextActivity = new Intent(getApplicationContext(), AskRange.class); //AskPreferences.class);
+             //   startActivity(goToNextActivity);
+             //   finish();
+           // }
+       // }, 0); // Delay time for transition to next activity -> insert any time wanted here instead of 5000
+    //}
+   public void jumpToMainActivity() {
+       Handler handler = new Handler();
+       handler.postDelayed(new Runnable() {
+           public void run() {
+               // Actions to do after 5 seconds
+               Intent goToNextActivity = new Intent(getApplicationContext(), MainActivity.class); //AskPreferences.class);
+               startActivity(goToNextActivity);
+               finish();
+           }
+       }, 0); // Delay time for transition to next activity -> insert any time wanted here instead of 5000
+   }
 
     private void displayListView() {
         //Array list of sports : name, id, isChecked, icon
@@ -219,11 +276,14 @@ public class AskPreferences extends Activity {
                         Sport sport = (Sport) rl.getTag();
 
                         if(rl.isSelected()) {
+                            counterOfSportSelected--;
                             rl.setAlpha((float) 0.5);
                             rl.setSelected(false);
                         } else {
+                            counterOfSportSelected++;
                             rl.setAlpha(1);
                             rl.setSelected(true);
+
                         }
 
                         sport.setSelected(rl.isSelected());

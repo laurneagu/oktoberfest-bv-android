@@ -484,7 +484,9 @@ public class MainActivity extends AppCompatActivity {
                                                 mustAddEventToList = Boolean.parseBoolean(details.getValue().toString());
                                             }
                                             if (details.getKey().toString().equalsIgnoreCase("date")) {
+
                                                 ai.date = DateManager.convertFromSecondsToDate((long) details.getValue());
+
                                             }
                                             if (details.getKey().toString().equalsIgnoreCase("sport")) {
                                                 ai.sport = details.getValue().toString();
@@ -1849,8 +1851,12 @@ public class MainActivity extends AppCompatActivity {
                 day = "Tomorrow";
             else
                 day = getDayOfMonth(list.get(position).date) + "/" + (list.get(position).date.getMonth() + 1) + "/" + (list.get(position).date.getYear() + 1900);
-            String dateHour = list.get(position).date.getHours() + "";
-            String dateMin = list.get(position).date.getMinutes() + "";
+            String dateHour = (list.get(position).date.getHours() < 10) ? "0" + list.get(position).date.getHours() :
+                                                                        list.get(position).date.getHours() +  "";
+
+            String dateMin = (list.get(position).date.getMinutes()<10)? "0" + list.get(position).date .getMinutes() :
+                    list.get(position).date .getMinutes() +  "";
+
             if (dateHour.equalsIgnoreCase("0")) dateHour += "0";
             if (dateMin.equalsIgnoreCase("0")) dateMin += "0";
             String hour = dateHour + ":" + dateMin;

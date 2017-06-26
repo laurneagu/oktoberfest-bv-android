@@ -286,9 +286,15 @@ public class SettingsActivity extends Activity  {
 
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
-                    progress = progressValue;
-                    //rangeRef.setValue(progress);
-                    progressText.setText(progress + " km");
+                    if(seekBar.getProgress() >= 1) {
+                        progress = progressValue;
+                        //rangeRef.setValue(progress);
+                        progressText.setText(progress + " km");
+                    }
+                    else{
+                        progressText.setText("1" + " km");
+                        progress=1;
+                    }
 
 
                     if(changeInSports.contains("R" + progress)){
