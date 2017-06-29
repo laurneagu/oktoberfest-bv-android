@@ -18,6 +18,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -83,7 +84,9 @@ public class ChatListActivity extends Fragment {
     CharSequence Titles[] = {"CONVERSATIONS", "FRIENDS"};
     int Numboftabs = 2;
     boolean addedSwipe = false;
+    boolean addedSwipe2 = false;
     final List<Chat1to1> chatList = new ArrayList<>();
+     String chatUID;
 
 
     private static final String FIREBASE_URL = "https://ludicon.firebaseio.com/";
@@ -178,10 +181,10 @@ public class ChatListActivity extends Fragment {
             progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
             progress.show();
 
-            User.setImage();
+            //User.setImage();
 
-            final String chatUID = getActivity().getIntent().getStringExtra("chatUID");
 
+            chatUID = getActivity().getIntent().getStringExtra("chatUID");
             dialog = ProgressDialog.show(getActivity(), "", "Loading. Please wait", true);
 
             // User picture and name for HEADER MENU
@@ -367,7 +370,7 @@ public class ChatListActivity extends Fragment {
                     Collections.sort(newChatList);
 
                     adapterChat = new MyCustomAdapterChat(newChatList, getActivity().getApplicationContext());
-                    ListView listView = (ListView) v.findViewById(R.id.chat_list);
+                    ListView listView = (ListView) v.findViewById(R.id.events_listView2);
                     listView.setAdapter(adapterChat);
                 }
 
@@ -389,6 +392,105 @@ public class ChatListActivity extends Fragment {
         }
     public void updateList() {
         chatList.clear();
+
+        DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(User.uid).child("chats");
+        firebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+
+                final long size = snapshot.getChildrenCount();
+                for (DataSnapshot data : snapshot.getChildren()) {
+                    final Chat1to1 chat = new Chat1to1();
+                    chat.userUID = data.getKey().toString();
+                    chat.chatID = data.getValue().toString();
+
+                    if (chatUID != null && chatUID.equalsIgnoreCase(chat.chatID)) {
+                        friendUID = chat.userUID;
+                    }
+
+                    DatabaseReference chatRef = User.firebaseRef.child("chat").child(chat.chatID).child("Messages");
+                    chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            for (DataSnapshot data : snapshot.getChildren()) {
+                                for (DataSnapshot snap : data.getChildren()) {
+                                    if (snap.getKey().toString().equalsIgnoreCase("author"))
+                                        chat.lastMessageAuthor = snap.getValue().toString().split(" ")[0];
+                                    if (snap.getKey().toString().equalsIgnoreCase("message"))
+                                        chat.lastMessageText = snap.getValue().toString();
+                                    if (snap.getKey().toString().equalsIgnoreCase("date"))
+                                        chat.lastMessageDateString = snap.getValue().toString();
+                                }
+                            }
+                            getChatInfo(chatList, chat, size);
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                        }
+                    });
+                }
+
+                if (chatUID != null) {
+                    Intent intent = new Intent(getActivity().getApplicationContext(), ChatTemplateActivity.class);
+                    intent.putExtra("uid", friendUID);
+                    intent.putExtra("firstConnection", false);
+                    intent.putExtra("chatID", chatUID);
+                    startActivity(intent);
+                }
+
+                // Dismiss loading dialog after  2 * TIMEOUT * chatList.size() ms
+                Timer timer = new Timer();
+                TimerTask delayedThreadStartTask = new TimerTask() {
+                    @Override
+                    public void run() {
+
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                dialog.dismiss();
+                            }
+                        }).start();
+                    }
+                };
+
+                timer.schedule(delayedThreadStartTask, TIMEOUT * 12);
+                progress.dismiss();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+
+        });
+        /*Swipe */
+        if (!addedSwipe) {
+            final SwipeRefreshLayout mSwipeRefreshLayout1 = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh1);
+            mSwipeRefreshLayout1.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    updateList();
+                    mSwipeRefreshLayout1.setRefreshing(false);
+                }
+            });
+            addedSwipe = true;
+        }
+
+                 /*Swipe */
+        if (!addedSwipe2) {
+            final SwipeRefreshLayout mSwipeRefreshLayout2 = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh2);
+            mSwipeRefreshLayout2.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    updateList();
+                    mSwipeRefreshLayout2.setRefreshing(false);
+                }
+            });
+            addedSwipe2 = true;
+        }
     }
 
 
