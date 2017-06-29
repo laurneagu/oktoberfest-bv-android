@@ -18,13 +18,14 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 public class GPSTracker extends Service implements LocationListener {
 
     private final Context mContext;
-    AppCompatActivity apa;
+    FragmentActivity apa;
 
     // flag for GPS status
     boolean isGPSEnabled = false;
@@ -48,7 +49,7 @@ public class GPSTracker extends Service implements LocationListener {
     // Declaring a Location Manager
     protected LocationManager locationManager;
 
-    public GPSTracker(Context context, AppCompatActivity apa) {
+    public GPSTracker(Context context, FragmentActivity apa) {
         this.mContext = context;
         this.apa = apa;
         getLocation();

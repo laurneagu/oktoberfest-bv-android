@@ -1,5 +1,6 @@
 package larc.ludiconprod.Activities;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -23,7 +24,10 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.provider.Settings;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
@@ -94,7 +98,7 @@ import larc.ludiconprod.Utils.util.Utils;
 
 import android.support.v4.widget.SwipeRefreshLayout;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Fragment {
 
     // Left side panel
     private ListView mDrawerList;
@@ -102,6 +106,9 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private ProgressDialog dialog;
     private int TIMEOUT = 80;
+    private View v;
+
+
 
     /* SlideTab */
     ViewPager pager;
@@ -131,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
 
     public MainActivity() {
         try {
-            broadcastManager = LocalBroadcastManager.getInstance(this);
+            broadcastManager = LocalBroadcastManager.getInstance(m_context);
             broadcastManager.registerReceiver(
                     receiveIsHappening, new IntentFilter("ServiceToMain_ReceiveIsHappening"));
             broadcastManager.registerReceiver(receiveStartResponse,
@@ -154,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager manager = (ActivityManager) v.getContext().getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if (serviceClass.getName().equals(service.service.getClassName())) {
                 return true;
@@ -218,9 +225,15 @@ public class MainActivity extends AppCompatActivity {
         Crashlytics.setUserName(User.name);
     }
 
+    Context m_context;
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        m_context=inflater.getContext();
+        v=inflater.inflate(R.layout.activity_main, container,false);
+
         try {
+
             super.onCreate(savedInstanceState);
 
             // Hide App bar
@@ -228,38 +241,42 @@ public class MainActivity extends AppCompatActivity {
             // the status bar.
 
             if (android.os.Build.VERSION.SDK_INT >= 11) {
-                getWindow().setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED, WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
+                getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED, WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
             }
 
             if (Build.VERSION.SDK_INT < 16) {
-                getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                         WindowManager.LayoutParams.FLAG_FULLSCREEN);
             }
             // remove title
-            requestWindowFeature(Window.FEATURE_NO_TITLE);
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            //this.getActivity().requestWindowFeature(Window.FEATURE_NO_TITLE);
+           // getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                  //  WindowManager.LayoutParams.FLAG_FULLSCREEN);
             // Go to chat if chatUID is present
-            String chatUID = getIntent().getStringExtra("chatUID");
+            // Set current context
+
+            //m_context = getActivity();
+
+            String chatUID = getActivity().getIntent().getStringExtra("chatUID");
             if (chatUID != null) {
-                Intent goToChatList = new Intent(this, ChatListActivity.class);
+                Intent goToChatList = new Intent(getActivity(), ChatListActivity.class);
                 goToChatList.putExtra("chatUID", chatUID);
                 startActivity(goToChatList);
             }
 
-            getSupportActionBar().hide();
-            setContentView(R.layout.activity_main);
+             // ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+              //getActivity().setContentView(R.layout.activity_main);
 
             // Creating The ViewPagerAdapter and Passing Fragment Manager, Titles fot the Tabs and Number Of Tabs.
-            adapter = new ViewPagerAdapter(getSupportFragmentManager(), Titles, Numboftabs);
+            adapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager(), Titles, Numboftabs);
 
             // Assigning ViewPager View and setting the adapter
-            pager = (ViewPager) findViewById(R.id.pager);
+            pager = (ViewPager) v.findViewById(R.id.pager);
             pager.setAdapter(adapter);
 
             // Assiging the Sliding Tab Layout View
-            tabs = (SlidingTabLayout) findViewById(R.id.tabs);
-            tabs.setDistributeEvenly(true); // To make the Tabs Fixed set this true, This makes the tabs Space Evenly in Available width
+            tabs = (SlidingTabLayout) v.findViewById(R.id.tabs);
+            tabs.setDistributeEvenly(false); // To make the Tabs Fixed set this true, This makes the tabs Space Evenly in Available width
 
             // Setting Custom Color for the Scroll bar indicator of the Tab View
             tabs.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
@@ -274,16 +291,16 @@ public class MainActivity extends AppCompatActivity {
             /**************/
 
             // Initialize Crashlytics (Fabric)
-            Fabric.with(this, new Crashlytics());
+            Fabric.with(getActivity(), new Crashlytics());
             logUser();
 
 
 
-            dialog = ProgressDialog.show(MainActivity.this, "", "Loading. Please wait", true);
+            dialog = ProgressDialog.show(getActivity(), "", "Loading. Please wait", true);
 
             // Check if there are any unsaved points in SharedPref and put them on DatabaseReference
             Map<String, Integer> unsavedPointsMap = new HashMap<>();
-            SharedPreferences pSharedPref = getSharedPreferences("Points", Context.MODE_PRIVATE);
+            SharedPreferences pSharedPref = v.getContext().getApplicationContext().getSharedPreferences("Points", Context.MODE_PRIVATE);
             try {
                 if (pSharedPref != null) {
                     String jsonString = pSharedPref.getString("UnsavedPointsMap", (new JSONObject()).toString());
@@ -337,9 +354,9 @@ public class MainActivity extends AppCompatActivity {
             // Background Service:
             if (!isMyServiceRunning(FriendlyService.class)) {
 
-                Intent mServiceIntent = new Intent(this, FriendlyService.class);
-                bindService(mServiceIntent, mServiceConn, Context.BIND_AUTO_CREATE | Context.BIND_ABOVE_CLIENT);
-                startService(mServiceIntent);
+                Intent mServiceIntent = new Intent(getActivity(), FriendlyService.class);
+                getActivity().bindService(mServiceIntent, mServiceConn, Context.BIND_AUTO_CREATE | Context.BIND_ABOVE_CLIENT);
+                getActivity().startService(mServiceIntent);
             }
 
             // Get user's favorite sports
@@ -401,7 +418,10 @@ public class MainActivity extends AppCompatActivity {
 
 
         } catch (Exception exc) {
+            exc.printStackTrace();
+
         }
+        return v;
 
     }
 
@@ -417,20 +437,20 @@ public class MainActivity extends AppCompatActivity {
             testGPSConnection();
 
             // Get user's last known location from SharedPref
-            String lats = getSharedPreferences("UserDetails", 0).getString("current_latitude", "0");
-            String lons = getSharedPreferences("UserDetails", 0).getString("current_longitude", "0");
+            String lats = getActivity().getSharedPreferences("UserDetails", 0).getString("current_latitude", "0");
+            String lons = getActivity().getSharedPreferences("UserDetails", 0).getString("current_longitude", "0");
 
             userLatitude = Double.parseDouble(lats);
             userLongitude = Double.parseDouble(lons);
 
             // it it is first time:
             if (userLatitude <= 0 || userLongitude <= 0) {
-                GPSTracker gps = new GPSTracker(getApplicationContext(), this);
+                GPSTracker gps = new GPSTracker(getActivity().getApplicationContext(),  getActivity());
                 if (gps.canGetLocation()) {
                     userLatitude = gps.getLatitude();
                     userLongitude = gps.getLongitude();
 
-                    SharedPreferences.Editor editor = getSharedPreferences("UserDetails", 0).edit();
+                    SharedPreferences.Editor editor = getActivity().getSharedPreferences("UserDetails", 0).edit();
                     editor.putString("current_latitude", String.valueOf(userLatitude));
                     editor.putString("current_longitude", String.valueOf(userLongitude));
 
@@ -443,12 +463,12 @@ public class MainActivity extends AppCompatActivity {
 
 
             //Clean up shared pref for events: just for debugging
-            SharedPreferences.Editor editor = getSharedPreferences("UserDetails", 0).edit();
+            SharedPreferences.Editor editor = getActivity().getSharedPreferences("UserDetails", 0).edit();
             String connectionsJSONString = new Gson().toJson(null);
             editor.putString("events", connectionsJSONString);
             editor.commit();
             // Update sharedpref for events:
-            editor = getSharedPreferences("UserDetails", 0).edit();
+            editor = getActivity().getSharedPreferences("UserDetails", 0).edit();
             editor.putString("uid", User.uid);
             editor.commit();
             DatabaseReference usersRef = User.firebaseRef.child("users").child(User.uid).child("events");
@@ -513,7 +533,7 @@ public class MainActivity extends AppCompatActivity {
                                         if (!favoriteSports.contains(ai.sport))
                                             mustAddEventToList = false;
 
-                                        String connectionsJSONString = getSharedPreferences("UserDetails", 0).getString("events", null);
+                                        String connectionsJSONString = getActivity().getSharedPreferences("UserDetails", 0).getString("events", null);
                                         Type type = new TypeToken<List<ActivityInfo>>() {
                                         }.getType();
                                         List<ActivityInfo> events = null;
@@ -549,7 +569,7 @@ public class MainActivity extends AppCompatActivity {
                                             }
                                         });
 
-                                        SharedPreferences.Editor editor = getSharedPreferences("UserDetails", 0).edit();
+                                        SharedPreferences.Editor editor = getActivity().getSharedPreferences("UserDetails", 0).edit();
                                         connectionsJSONString = new Gson().toJson(events);
                                         editor.putString("events", connectionsJSONString);
                                         editor.commit();
@@ -576,36 +596,37 @@ public class MainActivity extends AppCompatActivity {
             });
 
             // Left side panel
-            mDrawerList = (ListView) findViewById(R.id.leftMenu);
-            initializeLeftSidePanel();
+           // mDrawerList = (ListView) v.findViewById(R.id.leftMenu);
+            //initializeLeftSidePanel();
 
-            User.setImage();
+            //User.setImage();
 
             // User picture and name for HEADER MENU
-            Typeface segoeui = Typeface.createFromAsset(getAssets(), "fonts/seguisb.ttf");
+            /*Typeface segoeui = Typeface.createFromAsset(getActivity().getAssets(), "fonts/seguisb.ttf");
 
-            TextView userName = (TextView) findViewById(R.id.userName);
-            userName.setText(User.getFirstName(getApplicationContext()));
+            TextView userName = (TextView) v.findViewById(R.id.userName);
+            userName.setText(User.getFirstName(getContext()));
             userName.setTypeface(segoeui);
 
-            TextView userSportsNumber = (TextView) findViewById(R.id.userSportsNumber);
-            userSportsNumber.setText(User.getNumberOfSports(getApplicationContext()));
+            TextView userSportsNumber = (TextView) v.findViewById(R.id.userSportsNumber);
+            userSportsNumber.setText(User.getNumberOfSports(getActivity().getApplicationContext()));
             userSportsNumber.setTypeface(segoeui);
 
-            ImageView userPic = (ImageView) findViewById(R.id.userPicture);
+            ImageView userPic = (ImageView) v.findViewById(R.id.userPicture);
             Drawable d = new BitmapDrawable(getResources(), User.image);
             userPic.setImageDrawable(d);
-
+            */
             updateList(false);
 
         } catch (Exception exc) {
+            exc.printStackTrace();
         }
 
 
     }
 
     public void putEventInSP(ActivityInfo ev) {
-        SharedPreferences.Editor editor = getSharedPreferences("UserDetails", 0).edit();
+        SharedPreferences.Editor editor = getActivity().getSharedPreferences("UserDetails", 0).edit();
         Gson gson = new Gson();
         String json = gson.toJson(ev); // Type is activity info
         editor.putString("currentEvent", json);
@@ -614,7 +635,7 @@ public class MainActivity extends AppCompatActivity {
 
     public ActivityInfo getCurrentEventFromSP() {
         Gson gson = new Gson();
-        String json = getSharedPreferences("UserDetails", 0).getString("currentEvent", "");
+        String json = getActivity().getSharedPreferences("UserDetails", 0).getString("currentEvent", "");
         if (json != null) {
             ActivityInfo currentEvent = gson.fromJson(json, ActivityInfo.class);
             return currentEvent;
@@ -630,7 +651,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 showHappeningNow(ev, false);
                 updateList(false);
-                getSharedPreferences("UserDetails", 0).edit().putString("currentEventStateCheck", "0").commit();
+                getActivity().getSharedPreferences("UserDetails", 0).edit().putString("currentEventStateCheck", "0").commit();
             }
         }, milis);
     }
@@ -645,10 +666,10 @@ public class MainActivity extends AppCompatActivity {
         h.postDelayed(new Runnable() {
             @Override
             public void run() {
-                final Chronometer timer = (Chronometer) findViewById(R.id.chronometer);
-                String currentP = getSharedPreferences("UserDetails", 0).getString("currentEventPointsCounter", "0");
-                getSharedPreferences("UserDetails", 0).edit().putString("currentEventStateCheck", "2").commit();
-                Toast.makeText(getApplicationContext(), "Yaay! Activity finished in " + timer.getText().toString() + "!\nYou got " + currentP + " points! :-)", Toast.LENGTH_LONG).show();
+                final Chronometer timer = (Chronometer) getActivity().findViewById(R.id.chronometer);
+                String currentP = getActivity().getSharedPreferences("UserDetails", 0).getString("currentEventPointsCounter", "0");
+                getActivity().getSharedPreferences("UserDetails", 0).edit().putString("currentEventStateCheck", "2").commit();
+                Toast.makeText(getActivity().getApplicationContext(), "Yaay! Activity finished in " + timer.getText().toString() + "!\nYou got " + currentP + " points! :-)", Toast.LENGTH_LONG).show();
                 timer.stop();
                 hideHappeningRightNow();
                 handlerChecker.removeCallbacks(rCheck);
@@ -670,15 +691,15 @@ public class MainActivity extends AppCompatActivity {
             final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
             ref.child("mesg").child("service").child("stateEvent").setValue("Check1 " + new Date().getTime());
 
-            if (!GPSTracker.canGetGPSLocation(getApplicationContext())) {
-                Toast.makeText(getApplicationContext(), "Activate gps location first!", Toast.LENGTH_LONG).show();
+            if (!GPSTracker.canGetGPSLocation(getActivity().getApplicationContext())) {
+                Toast.makeText(getActivity().getApplicationContext(), "Activate gps location first!", Toast.LENGTH_LONG).show();
                 return;
             }
             DistanceValue dist = new DistanceValue();
             if (isLocationOk(dist)) {
                 putPointsInSP(getPointsByPriority(getCurrentEventFromSP().priority));
             } else {
-                Toast.makeText(getApplicationContext(), "You are not in the right location!\n" + dist.value + " meters far away!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity().getApplicationContext(), "You are not in the right location!\n" + dist.value + " meters far away!", Toast.LENGTH_LONG).show();
             }
             handlerChecker.postDelayed(this, INTERVAL * MIN);
         }
@@ -690,27 +711,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void putPointsInSP(int points) {
-        String current = getSharedPreferences("UserDetails", 0).getString("currentEventPointsCounter", "0");
+        String current = getActivity().getSharedPreferences("UserDetails", 0).getString("currentEventPointsCounter", "0");
         int val = Integer.parseInt(current);
         val += points;
         String nval = String.valueOf(val);
-        getSharedPreferences("UserDetails", 0).edit().putString("currentEventPointsCounter", nval).commit();
+        getActivity().getSharedPreferences("UserDetails", 0).edit().putString("currentEventPointsCounter", nval).commit();
     }
 
     void putPointsFromSPInFirebase() {
-        String currentVal = getSharedPreferences("UserDetails", 0).getString("currentEventPointsCounter", "0");
+        String currentVal = getActivity().getSharedPreferences("UserDetails", 0).getString("currentEventPointsCounter", "0");
         int val = Integer.parseInt(currentVal);
         ActivityInfo currentEvent = getCurrentEventFromSP();
 
         getActualPoints(currentEvent.sport, val, currentEvent.id); // update Firebase
 
-        getSharedPreferences("UserDetails", 0).edit().putString("currentEventPointsCounter", "0").commit();
+        getActivity().getSharedPreferences("UserDetails", 0).edit().putString("currentEventPointsCounter", "0").commit();
     }
 
     public void checkHappeningNow() {
 
         // Get the list of events from Shared Prefs
-        String connectionsJSONString = getSharedPreferences("UserDetails", 0).getString("events", null);
+        String connectionsJSONString = getActivity().getSharedPreferences("UserDetails", 0).getString("events", null);
         Type type = new TypeToken<List<ActivityInfo>>() {
         }.getType();
         List<ActivityInfo> events = null;
@@ -773,14 +794,14 @@ public class MainActivity extends AppCompatActivity {
                 if (hours < 1.0) {
 
                     // 0 - didn't start, 1 - started, 2 - stopped, 3 - nothing
-                    String state = getSharedPreferences("UserDetails", 0).getString("currentEventStateCheck", "3"); // it was 3 !!
+                    String state = getActivity().getSharedPreferences("UserDetails", 0).getString("currentEventStateCheck", "3"); // it was 3 !!
 
                     if (state.equalsIgnoreCase("0")) { // last event is the current one
 
                         putEventInSP(lastEvent);
                         showHappeningNow(lastEvent, false);
                         updateList(true);
-                        getSharedPreferences("UserDetails", 0).edit().putString("currentEventStateCheck", "0").commit();
+                        getActivity().getSharedPreferences("UserDetails", 0).edit().putString("currentEventStateCheck", "0").commit();
 
                     } else {
 
@@ -813,7 +834,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void hideHappeningRightNow() {
-        RelativeLayout rlCurrEvent = (RelativeLayout) findViewById(R.id.currEventLayout);
+        RelativeLayout rlCurrEvent = (RelativeLayout) getActivity().findViewById(R.id.currEventLayout);
         rlCurrEvent.setVisibility(View.GONE);
     }
 
@@ -822,7 +843,7 @@ public class MainActivity extends AppCompatActivity {
 
         final ActivityInfo currentEvent = ce;
 
-        RelativeLayout rlCurrEvent = (RelativeLayout) findViewById(R.id.currEventLayout);
+        RelativeLayout rlCurrEvent = (RelativeLayout) v.findViewById(R.id.currEventLayout);
 
         ViewGroup.LayoutParams params = rlCurrEvent.getLayoutParams();
         params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -830,20 +851,20 @@ public class MainActivity extends AppCompatActivity {
         rlCurrEvent.setLayoutParams(params);
 
         // Fill the current event details
-        final TextView firstPart = (TextView) findViewById(R.id.firstPartofTextCurrEvent);
-        final TextView secondPart = (TextView) findViewById(R.id.secondPartofTextCurrEvent);
-        final TextView time = (TextView) findViewById(R.id.timeTextCurrEvent);
-        final TextView place = (TextView) findViewById(R.id.placeTextCurrEvent);
-        final ImageView icon = (ImageView) findViewById(R.id.sportIconCurrEvent);
-        final ImageButton share = (ImageButton) findViewById(R.id.sharefb_btnCurrEvent);
-        final Button changeStateButton = (Button) findViewById(R.id.stateChangeButton);
-        final Chronometer timer = (Chronometer) findViewById(R.id.chronometer);
+        final TextView firstPart = (TextView) v.findViewById(R.id.firstPartofTextCurrEvent);
+        final TextView secondPart = (TextView) v.findViewById(R.id.secondPartofTextCurrEvent);
+        final TextView time = (TextView) v.findViewById(R.id.timeTextCurrEvent);
+        final TextView place = (TextView) v.findViewById(R.id.placeTextCurrEvent);
+        final ImageView icon = (ImageView) v.findViewById(R.id.sportIconCurrEvent);
+        final ImageButton share = (ImageButton) v.findViewById(R.id.sharefb_btnCurrEvent);
+        final Button changeStateButton = (Button) v.findViewById(R.id.stateChangeButton);
+        final Chronometer timer = (Chronometer) v.findViewById(R.id.chronometer);
 
 
         // Set name and picture for the first user of the event
         String uri = "@drawable/" + currentEvent.sport.toLowerCase().replace(" ", "");
 
-        int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+        int imageResource = getResources().getIdentifier(uri, null, getActivity().getPackageName());
         Drawable res = getResources().getDrawable(imageResource);
 
         icon.setImageDrawable(res);
@@ -875,8 +896,8 @@ public class MainActivity extends AppCompatActivity {
                 if ((int) changeStateButton.getTag() == 0) { // is start => Stop
 
 
-                    if (!GPSTracker.canGetGPSLocation(getApplicationContext())) {
-                        Toast.makeText(getApplicationContext(), "Activate gps location first!", Toast.LENGTH_LONG).show();
+                    if (!GPSTracker.canGetGPSLocation(getActivity().getApplicationContext())) {
+                        Toast.makeText(getActivity().getApplicationContext(), "Activate gps location first!", Toast.LENGTH_LONG).show();
                         return;
                     }
                     DistanceValue dist = new DistanceValue();
@@ -884,20 +905,20 @@ public class MainActivity extends AppCompatActivity {
                         timer.setBase(SystemClock.elapsedRealtime());
                         timer.start();
 
-                        String state = getSharedPreferences("UserDetails", 0).getString("currentEventStateCheck", "3");
+                        String state = getActivity().getSharedPreferences("UserDetails", 0).getString("currentEventStateCheck", "3");
                         if (!state.equalsIgnoreCase("1")) { // if it is not started yet
-                            getSharedPreferences("UserDetails", 0).edit().putString("eventStartedAt", new Date().toString()).commit();
-                            Toast.makeText(getApplicationContext(), "Activity started. Do not close the application if you want to sweat on points.", Toast.LENGTH_LONG).show();
+                            getActivity().getSharedPreferences("UserDetails", 0).edit().putString("eventStartedAt", new Date().toString()).commit();
+                            Toast.makeText(getActivity().getApplicationContext(), "Activity started. Do not close the application if you want to sweat on points.", Toast.LENGTH_LONG).show();
                             runPointsChecker();// Start points checker
 
                         }
                         changeStateButton.setText("Stop");
                         changeStateButton.setBackgroundColor(Color.parseColor("#BF3636"));
                         changeStateButton.setTag(1);
-                        getSharedPreferences("UserDetails", 0).edit().putString("currentEventStateCheck", "1").commit();
+                        getActivity().getSharedPreferences("UserDetails", 0).edit().putString("currentEventStateCheck", "1").commit();
 
                     } else { // location is not the right one
-                        Toast.makeText(getApplicationContext(), "You are not in the right location!\n" + dist.value + " meters far away!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity().getApplicationContext(), "You are not in the right location!\n" + dist.value + " meters far away!", Toast.LENGTH_LONG).show();
                     }
 
                 } else if ((int) changeStateButton.getTag() == 1) { // is Stop => Hide
@@ -907,11 +928,11 @@ public class MainActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             switch (which) {
                                 case DialogInterface.BUTTON_POSITIVE:
-                                    String currentP = getSharedPreferences("UserDetails", 0).getString("currentEventPointsCounter", "0");
-                                    getSharedPreferences("UserDetails", 0).edit().putString("currentEventStateCheck", "2").commit();
+                                    String currentP = getActivity().getSharedPreferences("UserDetails", 0).getString("currentEventPointsCounter", "0");
+                                    getActivity().getSharedPreferences("UserDetails", 0).edit().putString("currentEventStateCheck", "2").commit();
                                     timer.stop();
                                     changeStateButton.setVisibility(View.GONE);
-                                    Toast.makeText(getApplicationContext(), "Yaay! Activity finished in " + timer.getText().toString() + "!\nYou got " + currentP + " points! :-)", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getActivity().getApplicationContext(), "Yaay! Activity finished in " + timer.getText().toString() + "!\nYou got " + currentP + " points! :-)", Toast.LENGTH_LONG).show();
                                     hideHappeningRightNow();
 
                                     handlerChecker.removeCallbacks(rCheck);
@@ -927,7 +948,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     };
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, R.style.MyAlertDialogStyle);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.MyAlertDialogStyle);
                     builder.setMessage("Are you sure? Once you press Stop you can't start again this event!").setPositiveButton("Yes", dialogClickListener)
                             .setNegativeButton("No", dialogClickListener).show();
 
@@ -939,7 +960,7 @@ public class MainActivity extends AppCompatActivity {
         if (alreadyStarted) {
             changeStateButton.performClick();
 
-            String lastTimeString = getSharedPreferences("UserDetails", 0).getString("eventStartedAt", "0");
+            String lastTimeString = getActivity().getSharedPreferences("UserDetails", 0).getString("eventStartedAt", "0");
             if (!lastTimeString.equalsIgnoreCase("0")) {
                 Date startedTime = new Date(lastTimeString);
                 Date now = new Date();
@@ -947,7 +968,7 @@ public class MainActivity extends AppCompatActivity {
                 timer.setBase(SystemClock.elapsedRealtime() - diffMilis);
             }
         } else {
-            Toast.makeText(getApplicationContext(), "Awesome, you have an activity right now! :-)", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity().getApplicationContext(), "Awesome, you have an activity right now! :-)", Toast.LENGTH_LONG).show();
         }
 
         // Share on facebook
@@ -970,7 +991,7 @@ public class MainActivity extends AppCompatActivity {
                 ShareLinkContent content = new ShareLinkContent.Builder()
                         .setContentUrl(Uri.parse("http://ludicon.info/"))
                         .setImageUrl(Uri.parse("http://www.ludicon.info/img/sports/" + currentEvent.sport + ".png"))
-                        .setContentTitle(User.getFirstName(getApplicationContext()) + " is playing " + currentEvent.sport + audience + " at " + place)
+                        .setContentTitle(User.getFirstName(getActivity().getApplicationContext()) + " is playing " + currentEvent.sport + audience + " at " + place)
                         .setContentDescription("Ludicon ! Let's go and play !")
                         .build();
 
@@ -990,8 +1011,8 @@ public class MainActivity extends AppCompatActivity {
 
             String action = intent.getAction();
             String msg = intent.getStringExtra("Response");
-            final Button changeStateButton = (Button) findViewById(R.id.stateChangeButton);
-            final Chronometer timer = (Chronometer) findViewById(R.id.chronometer);
+            final Button changeStateButton = (Button) v.findViewById(R.id.stateChangeButton);
+            final Chronometer timer = (Chronometer) v.findViewById(R.id.chronometer);
 
             if (msg == "0") { // Ok, start, location ok
                 timer.setBase(SystemClock.elapsedRealtime() + 30000);
@@ -999,10 +1020,10 @@ public class MainActivity extends AppCompatActivity {
 
                 changeStateButton.setText("Stop");
                 changeStateButton.setBackgroundColor(Color.parseColor("#BF3636"));
-                getSharedPreferences("UserDetails", 0).edit().putString("HappeningNowEvent", "").commit();
-                Toast.makeText(getApplicationContext(), "Activity started. Do not close the application if you want to sweat on points.", Toast.LENGTH_LONG).show();
+                getContext().getSharedPreferences("UserDetails", 0).edit().putString("HappeningNowEvent", "").commit();
+                Toast.makeText(getContext(), "Activity started. Do not close the application if you want to sweat on points.", Toast.LENGTH_LONG).show();
             } else { // location is not the right one
-                Toast.makeText(getApplicationContext(), "You are not in the right location!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "You are not in the right location!", Toast.LENGTH_LONG).show();
             }
 
 
@@ -1018,10 +1039,10 @@ public class MainActivity extends AppCompatActivity {
 
 
             if (msg == "0") { // New event right Now, show Happening now
-                Toast.makeText(getApplicationContext(), "Awesome, you have an activity right now! :-)", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "Awesome, you have an activity right now! :-)", Toast.LENGTH_LONG).show();
                 /// Get Current event:
                 Gson gson = new Gson();
-                String json = getSharedPreferences("UserDetails", 0).getString("currentEvent", "");
+                String json = getContext().getSharedPreferences("UserDetails", 0).getString("currentEvent", "");
                 final ActivityInfo currentEvent = gson.fromJson(json, ActivityInfo.class);
 
                 if (currentEvent != null) {
@@ -1076,7 +1097,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private void initializeLocationManager() {
-        mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        mLocationManager = (LocationManager) getActivity().getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
     }
 
     class DistanceValue {
@@ -1087,7 +1108,7 @@ public class MainActivity extends AppCompatActivity {
         //Looper.prepare();
         dist.value = -1.0;
 
-        GPSTracker gps = new GPSTracker(getApplicationContext(), this);
+        GPSTracker gps = new GPSTracker(getActivity().getApplicationContext(), ((AppCompatActivity) getActivity()));
         if (!gps.canGetLocation()) {
             return false;
         }
@@ -1096,7 +1117,7 @@ public class MainActivity extends AppCompatActivity {
         gps.stopUsingGPS();
         if (current != null) {
 
-            String json = getSharedPreferences("UserDetails", 0).getString("currentEvent", "");
+            String json = getActivity().getSharedPreferences("UserDetails", 0).getString("currentEvent", "");
             Gson gson = new Gson();
             ActivityInfo currentEvent = gson.fromJson(json, ActivityInfo.class);
 
@@ -1128,7 +1149,7 @@ public class MainActivity extends AppCompatActivity {
     public void updateList(final boolean eventHappeningNow) {
 
         // stop swiping on my events
-        final SwipeRefreshLayout mSwipeRefreshLayout2 = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh2);
+        final SwipeRefreshLayout mSwipeRefreshLayout2 = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh2);
         mSwipeRefreshLayout2.setEnabled(false);
         mSwipeRefreshLayout2.setFocusable(false);
 
@@ -1153,7 +1174,7 @@ public class MainActivity extends AppCompatActivity {
                     long numberOfParticipants = 0;
 
                     String currentEventUID = "";
-                    String json = getSharedPreferences("UserDetails", 0).getString("currentEvent", "");
+                    String json = getActivity().getSharedPreferences("UserDetails", 0).getString("currentEvent", "");
                     Gson gson = new Gson();
                     final ActivityInfo currentEvent = gson.fromJson(json, ActivityInfo.class);
                     if (currentEvent != null) {
@@ -1217,8 +1238,8 @@ public class MainActivity extends AppCompatActivity {
                             event.latitude = latitude;
                             event.longitude = longitude;
 
-                            String lats = getSharedPreferences("UserDetails", 0).getString("current_latitude", "0");
-                            String lons = getSharedPreferences("UserDetails", 0).getString("current_longitude", "0");
+                            String lats = getActivity().getSharedPreferences("UserDetails", 0).getString("current_latitude", "0");
+                            String lons = getActivity().getSharedPreferences("UserDetails", 0).getString("current_longitude", "0");
 
                             userLatitude = Double.parseDouble(lats);
                             userLongitude = Double.parseDouble(lons);
@@ -1302,20 +1323,20 @@ public class MainActivity extends AppCompatActivity {
                 });
 
                 // Save my events also locally - to be used in the Create Activity
-                SharedPreferences.Editor editor = getSharedPreferences("UserDetails", 0).edit();
+                SharedPreferences.Editor editor = getActivity().getSharedPreferences("UserDetails", 0).edit();
                 editor.putString("myEvents", new Gson().toJson(myEventsList));
                 editor.commit();
 
                 /* Friends */
-                fradapter = new TimelineAroundActAdapter(friendsEventsList, getApplicationContext());
-                ListView frlistView = (ListView) findViewById(R.id.events_listView1);
+                fradapter = new TimelineAroundActAdapter(friendsEventsList, getActivity().getApplicationContext());
+                ListView frlistView = (ListView) v.findViewById(R.id.events_listView1);
                 if (frlistView != null) {
 
                     if (friendsEventsList.size() == 0 && !eventHappeningNow) {
                         frlistView.setBackgroundResource(R.drawable.noeventsaround_bg);
 
-                        Typeface segoeui = Typeface.createFromAsset(getApplication().getAssets(), "fonts/seguisb.ttf");
-                        final Button cloudoflistview1 = (Button) findViewById(R.id.cloudoflistview1);
+                        Typeface segoeui = Typeface.createFromAsset(getActivity().getApplication().getAssets(), "fonts/seguisb.ttf");
+                        final Button cloudoflistview1 = (Button) v.findViewById(R.id.cloudoflistview1);
                         cloudoflistview1.setVisibility(View.VISIBLE);
                         cloudoflistview1.setTypeface(segoeui);
                         cloudoflistview1.setOnClickListener(new View.OnClickListener() {
@@ -1324,12 +1345,12 @@ public class MainActivity extends AppCompatActivity {
                             public void onClick(View v) {
                                 cloudoflistview1.setBackgroundResource(R.drawable.cloud_selected);
 
-                                Intent intent = new Intent(getApplicationContext(), CreateNewActivity.class);
+                                Intent intent = new Intent(getActivity().getApplicationContext(), CreateNewActivity.class);
                                 startActivity(intent);
                             }
                         });
                     } else {
-                        final Button cloudoflistview1 = (Button) findViewById(R.id.cloudoflistview1);
+                        final Button cloudoflistview1 = (Button) v.findViewById(R.id.cloudoflistview1);
                         cloudoflistview1.setVisibility(View.INVISIBLE);
                         frlistView.setBackgroundColor(Color.parseColor("#FFFFFF"));
                     }
@@ -1338,15 +1359,15 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 /* My */
-                myadapter = new TimelineMyActAdapter(myEventsList, getApplicationContext());
-                ListView mylistView = (ListView) findViewById(R.id.events_listView2);
+                myadapter = new TimelineMyActAdapter(myEventsList, getActivity().getApplicationContext());
+                ListView mylistView = (ListView) v.findViewById(R.id.events_listView2);
                 if (mylistView != null) {
 
                     if (myEventsList.size() == 0 && !eventHappeningNow) {
                         mylistView.setBackgroundResource(R.drawable.noeventsaround_bg);
 
-                        Typeface segoeui = Typeface.createFromAsset(getApplication().getAssets(), "fonts/seguisb.ttf");
-                        final Button cloudoflistview2 = (Button) findViewById(R.id.cloudoflistview2);
+                        Typeface segoeui = Typeface.createFromAsset(getActivity().getApplication().getAssets(), "fonts/seguisb.ttf");
+                        final Button cloudoflistview2 = (Button) v.findViewById(R.id.cloudoflistview2);
                         cloudoflistview2.setVisibility(View.VISIBLE);
                         cloudoflistview2.setTypeface(segoeui);
                         cloudoflistview2.setOnClickListener(new View.OnClickListener() {
@@ -1355,12 +1376,12 @@ public class MainActivity extends AppCompatActivity {
                             public void onClick(View v) {
                                 cloudoflistview2.setBackgroundResource(R.drawable.cloud_selected);
 
-                                Intent intent = new Intent(getApplicationContext(), CreateNewActivity.class);
+                                Intent intent = new Intent(getActivity().getApplicationContext(), CreateNewActivity.class);
                                 startActivity(intent);
                             }
                         });
                     } else {
-                        final Button cloudoflistview2 = (Button) findViewById(R.id.cloudoflistview2);
+                        final Button cloudoflistview2 = (Button) v.findViewById(R.id.cloudoflistview2);
                         cloudoflistview2.setVisibility(View.INVISIBLE);
                         mylistView.setBackgroundColor(Color.parseColor("#FFFFFF"));
                     }
@@ -1370,7 +1391,7 @@ public class MainActivity extends AppCompatActivity {
 
                 /*Swipe */
                 if (!addedSwipe) {
-                    final SwipeRefreshLayout mSwipeRefreshLayout1 = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh1);
+                    final SwipeRefreshLayout mSwipeRefreshLayout1 = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh1);
                     mSwipeRefreshLayout1.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                         @Override
                         public void onRefresh() {
@@ -1405,10 +1426,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getActivity().getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
@@ -1439,7 +1459,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (mServiceConn != null) {
             try {
-                unbindService(mServiceConn);
+                getActivity().unbindService(mServiceConn);
             } catch (IllegalArgumentException e) {
                 System.out.println("Already unbounded! :)");
             }
@@ -1457,17 +1477,17 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
 
 
-        String state = getSharedPreferences("UserDetails", 0).getString("currentEventStateCheck", "3"); // 0 - didn't start, 1 - started, 2 - stopped, 3 - nothing
+        String state = getActivity().getSharedPreferences("UserDetails", 0).getString("currentEventStateCheck", "3"); // 0 - didn't start, 1 - started, 2 - stopped, 3 - nothing
 
         if (state.equalsIgnoreCase("1")) { // if the event is started
-            getSharedPreferences("UserDetails", 0).edit().putString("currentEventStateCheck", "2").commit(); // stop it
+            getActivity().getSharedPreferences("UserDetails", 0).edit().putString("currentEventStateCheck", "2").commit(); // stop it
             handlerChecker.removeCallbacks(rCheck);
             putPointsFromSPInFirebase();// updateFirebase
         }
 
         if (mServiceConn != null) {
             try {
-                unbindService(mServiceConn);
+                getActivity().unbindService(mServiceConn);
             } catch (IllegalArgumentException e) {
                 System.out.println("Already unbounded! :)");
             }
@@ -1477,24 +1497,25 @@ public class MainActivity extends AppCompatActivity {
 
     // Left side menu
     public void initializeLeftSidePanel() {
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.leftMenu);
+        mDrawerLayout = (DrawerLayout) v.findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) v.findViewById(R.id.leftMenu);
 
         // Set the adapter for the list view
-        mDrawerList.setAdapter(new LeftSidePanelAdapter(this, MainActivity.this));
+        mDrawerList.setAdapter(new LeftSidePanelAdapter(getActivity(), getActivity()));
         // Set the list's click listener
-        LeftPanelItemClicker.OnItemClick(mDrawerList, getApplicationContext(), MainActivity.this);
+        LeftPanelItemClicker.OnItemClick(mDrawerList, getActivity().getApplicationContext(), getActivity());
 
-        final ImageButton showPanel = (ImageButton) findViewById(R.id.showPanel);
+        /*final ImageButton showPanel = (ImageButton) v.findViewById(R.id.showPanel);
         showPanel.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click
                 mDrawerLayout.openDrawer(Gravity.LEFT);
             }
         });
+        */
 
         // Toggle efect on left side panel
-        mDrawerToggle = new android.support.v4.app.ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
+        mDrawerToggle = new android.support.v4.app.ActionBarDrawerToggle(getActivity(), mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -1529,7 +1550,7 @@ public class MainActivity extends AppCompatActivity {
         ;
         private ArrayList<Event> list = new ArrayList<>();
         private Context context;
-        final ListView listView = (ListView) findViewById(R.id.events_listView1);
+        final ListView listView = (ListView) v.findViewById(R.id.events_listView1);
 
         public TimelineAroundActAdapter(ArrayList<Event> list, Context context) {
             this.list = list;
@@ -1566,7 +1587,7 @@ public class MainActivity extends AppCompatActivity {
                         //Toast.makeText(getApplicationContext(), "Hei, wait for it..", Toast.LENGTH_SHORT).show();
                         currView.setBackgroundColor(Color.parseColor("#D3D3D3"));
 
-                        Intent intent = new Intent(getApplicationContext(), EventDetails.class);
+                        Intent intent = new Intent(getActivity().getApplicationContext(), EventDetails.class);
                         intent.putExtra("eventUid", list.get(position).id);
                         startActivity(intent);
                     }
@@ -1602,7 +1623,7 @@ public class MainActivity extends AppCompatActivity {
             // Redirect to user profile on picture click
             holder.profilePicture.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                    Intent intent = new Intent(getActivity().getApplicationContext(), ProfileActivity.class);
                     intent.putExtra("uid", list.get(position).getFirstUser());
                     startActivity(intent);
                 }
@@ -1610,7 +1631,7 @@ public class MainActivity extends AppCompatActivity {
 
             String uri = "@drawable/" + list.get(position).sport.toLowerCase().replace(" ", "");
 
-            int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+            int imageResource = getResources().getIdentifier(uri, null, getActivity().getPackageName());
             Drawable res = getResources().getDrawable(imageResource);
 
             holder.icon.setImageDrawable(res);
@@ -1724,7 +1745,7 @@ public class MainActivity extends AppCompatActivity {
 
         private ArrayList<Event> list = new ArrayList<>();
         private Context context;
-        final ListView listView = (ListView) findViewById(R.id.events_listView2);
+        final ListView listView = (ListView) getActivity().findViewById(R.id.events_listView2);
 
         public TimelineMyActAdapter(ArrayList<Event> list, Context context) {
             this.list = list;
@@ -1762,7 +1783,7 @@ public class MainActivity extends AppCompatActivity {
                                                 //Toast.makeText(getApplicationContext(), "Hei, wait for it..", Toast.LENGTH_SHORT).show();
                                                 currView.setBackgroundColor(Color.parseColor("#D3D3D3"));
 
-                                                Intent intent = new Intent(getApplicationContext(), EventDetails.class);
+                                                Intent intent = new Intent(getActivity().getApplicationContext(), EventDetails.class);
                                                 intent.putExtra("eventUid", list.get(position).id);
                                                 startActivity(intent);
                                             }
@@ -1798,7 +1819,7 @@ public class MainActivity extends AppCompatActivity {
                     if (User.uid.equals(list.get(position).creator)) {
                         Toast.makeText(context, "This is you ! We can't compare with yourself..", Toast.LENGTH_SHORT).show();
                     } else {
-                        Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                        Intent intent = new Intent(getActivity().getApplicationContext(), ProfileActivity.class);
                         intent.putExtra("uid", list.get(position).getFirstUser());
                         startActivity(intent);
                     }
@@ -1807,7 +1828,7 @@ public class MainActivity extends AppCompatActivity {
 
             String uri = "@drawable/" + list.get(position).sport.toLowerCase().replace(" ", "");
             Log.v("drawable", uri);
-            int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+            int imageResource = getResources().getIdentifier(uri, null, getActivity().getPackageName());
             Drawable res = getResources().getDrawable(imageResource);
 
             holder.icon.setImageDrawable(res);
@@ -1867,17 +1888,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void testGPSConnection() {
-        final Context context = getApplicationContext();
-        LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         boolean gps_enabled = false;
 
+        final Context context = m_context;//getActivity();
+
         try {
-            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            LocationManager lm = null;
+            lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+
+            if(lm != null) {
+                gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            }
         } catch (Exception ex) {
+            ex.printStackTrace();
         }
 
         if (!gps_enabled) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(MainActivity.this, R.style.MyAlertDialogStyle));
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.MyAlertDialogStyle));
             builder.setMessage("Location services are not enabled")
                     .setPositiveButton("Activate location services", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {

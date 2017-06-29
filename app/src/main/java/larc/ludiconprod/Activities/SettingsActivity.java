@@ -9,7 +9,9 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -62,10 +64,10 @@ import larc.ludiconprod.Utils.util.Utils;
 /**
  * Created by Laur User on 12/29/2015.
  */
-public class SettingsActivity extends Activity  {
+public class SettingsActivity extends Fragment {
 
     MyCustomAdapter dataAdapter = null;
-
+    private static View v;
     // Left side panel
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -91,34 +93,38 @@ public class SettingsActivity extends Activity  {
     boolean spinnerSelected=false;
 
     final private List<String> changeInSports = new ArrayList<String>();
+    public SettingsActivity() {
+    }
 
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        v=inflater.inflate(R.layout.settings, container,false);
         try {
-            super.onCreate(savedInstanceState);
+            //super.onCreate(savedInstanceState);
 
             // Hide App bar
             // If the Android version is lower than Jellybean, use this call to hide
             // the status bar.
             if (Build.VERSION.SDK_INT < 16) {
-                getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                         WindowManager.LayoutParams.FLAG_FULLSCREEN);
             }
             // remove title
-            requestWindowFeature(Window.FEATURE_NO_TITLE);
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            //getActivity().requestWindowFeature(Window.FEATURE_NO_TITLE);
+           // getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                   // WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-            setContentView(R.layout.settings);
+            //setContentView(R.layout.settings);
 
-            initializeLeftSidePanel();
+           // initializeLeftSidePanel();
 
-            User.setImage();
+           // User.setImage();
 
             //get sex from spinner
 
-            spinner = (Spinner) findViewById(R.id.sexSpinner);
-            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+            spinner = (Spinner) v.findViewById(R.id.sexSpinner);
+            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                     R.array.chooseSex_array, android.R.layout.simple_spinner_item);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinner.setAdapter(adapter);
@@ -173,7 +179,7 @@ public class SettingsActivity extends Activity  {
             });
 
             //set age to AgeTextField
-            ageText=(EditText) findViewById(R.id.Age);
+            ageText=(EditText) v.findViewById(R.id.Age);
             ageText.addTextChangedListener(new TextWatcher() {
 
                 public void afterTextChanged(Editable s) {}
@@ -229,33 +235,12 @@ public class SettingsActivity extends Activity  {
             });
 
 
-            // User picture and name for HEADER MENU
-            Typeface segoeui = Typeface.createFromAsset(getAssets(), "fonts/seguisb.ttf");
-
-            TextView userName = (TextView) findViewById(R.id.userName);
-            userName.setText(User.getFirstName(getApplicationContext()));
-            userName.setTypeface(segoeui);
-
-            TextView userSportsNumber = (TextView)findViewById(R.id.userSportsNumber);
-            userSportsNumber.setText(User.getNumberOfSports(getApplicationContext()));
-            userSportsNumber.setTypeface(segoeui);
-
-            ImageView userPic = (ImageView) findViewById(R.id.userPicture);
-            Drawable d = new BitmapDrawable(getResources(), User.image);
-            userPic.setImageDrawable(d);
-            userPic.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
-                    SettingsActivity.this.startActivity(mainIntent);
-                }
-            });
 
             // Set as italic the explanations for fields
-            TextView pickSports = (TextView)findViewById(R.id.textView7);
+            TextView pickSports = (TextView)v.findViewById(R.id.textView7);
             pickSports.setTypeface(pickSports.getTypeface(), Typeface.ITALIC);
 
-            TextView pickArea = (TextView)findViewById(R.id.textView9);
+            TextView pickArea = (TextView)v.findViewById(R.id.textView9);
             pickArea.setTypeface(pickArea.getTypeface(), Typeface.ITALIC);
 
             initializeSportIcons();
@@ -264,9 +249,9 @@ public class SettingsActivity extends Activity  {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
                     savedProgress = Integer.parseInt(snapshot.getValue().toString());
-                    progressText = (TextView) findViewById(R.id.progressText);
+                    progressText = (TextView) v.findViewById(R.id.progressText);
                     progressText.setText(savedProgress + " km");
-                    seekBar = (SeekBar) findViewById(R.id.seekBar2);
+                    seekBar = (SeekBar)v.findViewById(R.id.seekBar2);
                     seekBar.setProgress(savedProgress);
                 }
 
@@ -275,9 +260,9 @@ public class SettingsActivity extends Activity  {
                 }
             });
 
-            progressText = (TextView) findViewById(R.id.progressText);
+            progressText = (TextView) v.findViewById(R.id.progressText);
             progressText.setText(savedProgress + " km");
-            seekBar = (SeekBar) findViewById(R.id.seekBar2);
+            seekBar = (SeekBar) v.findViewById(R.id.seekBar2);
             seekBar.setProgress(savedProgress);
             seekBar.setProgressDrawable(getResources()
                     .getDrawable(R.drawable.progress_bar));
@@ -326,11 +311,11 @@ public class SettingsActivity extends Activity  {
 
             displayListView();
 
-            TextView hello_message = (TextView) findViewById(R.id.hello_message_activity);
+            TextView hello_message = (TextView) v.findViewById(R.id.hello_message_activity);
             hello_message.setText("");
 
             //// Create event in header menu
-            saveButton= (ImageButton)findViewById(R.id.header_button);
+            saveButton= (ImageButton)v.findViewById(R.id.header_button);
             saveButton.setVisibility(View.VISIBLE);
             saveButton.setBackgroundResource(R.drawable.save);
             saveButton.getLayoutParams().height =100;
@@ -355,26 +340,26 @@ public class SettingsActivity extends Activity  {
                                     }
                                 }
                                 userSports.setValue(map);
-                                Toast.makeText(getApplicationContext(), "Updates on sports saved!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity().getApplicationContext(), "Updates on sports saved!", Toast.LENGTH_SHORT).show();
                                 saveButton.setAlpha((float) 0.3);
                                 saveButton.setEnabled(false);
                                 changeInSports.clear();
-                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                Intent intent = new Intent(getActivity().getApplicationContext(), Main.class);
                                 startActivity(intent);
 
                     }
                     catch (Exception exception){
-                        Toast.makeText(getApplicationContext(),"Introduceti o varsta valida",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity().getApplicationContext(),"Introduceti o varsta valida",Toast.LENGTH_LONG).show();
                     }
                 }
             });
 
-            logOutButton= (Button)findViewById(R.id.logOutButton);
+            logOutButton= (Button)v.findViewById(R.id.logOutButton);
             logOutButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     LoginManager.getInstance().logOut();
-                    Intent intent = new Intent(getApplicationContext(), IntroActivity.class);
+                    Intent intent = new Intent(getActivity().getApplicationContext(), IntroActivity.class);
                     startActivity(intent);
                 }
             });
@@ -386,6 +371,7 @@ public class SettingsActivity extends Activity  {
         catch(Exception e) {
             Utils.quit();
         }
+        return v;
     }
 
     final String[] sports = new String[]{"football", "volleyball", "basketball", "squash", "pingpong", "tennis",
@@ -396,7 +382,7 @@ public class SettingsActivity extends Activity  {
 
 
         for (String sport : sports) {
-            imageResource = getResources().getIdentifier("@drawable/" + sport, null, getPackageName());
+            imageResource = getResources().getIdentifier("@drawable/" + sport, null, getActivity().getPackageName());
             regularSportIcons.put(sport, getResources().getDrawable(imageResource));
             //imageResource = getResources().getIdentifier("@drawable/desaturated_" + sport, null, getPackageName());
             //desaturatedSportIcons.put(sport, getResources().getDrawable(imageResource));
@@ -430,8 +416,8 @@ public class SettingsActivity extends Activity  {
                     }
 
                     //create an ArrayAdaptor from the Sport Array
-                    dataAdapter = new MyCustomAdapter(getApplicationContext(), R.layout.sport_info, sportsList);
-                    GridView gridView = (GridView) findViewById(R.id.gridView);
+                    dataAdapter = new MyCustomAdapter(getActivity().getApplicationContext(), R.layout.sport_info, sportsList);
+                    GridView gridView = (GridView) v.findViewById(R.id.gridView);
                     // Assign adapter to ListView
                     gridView.setAdapter(dataAdapter);
 
@@ -516,7 +502,7 @@ public class SettingsActivity extends Activity  {
             Log.v("ConvertView", String.valueOf(position));
 
             if (convertView == null) {
-                LayoutInflater vi = (LayoutInflater) getSystemService(
+                LayoutInflater vi = (LayoutInflater) getActivity().getSystemService(
                         Context.LAYOUT_INFLATER_SERVICE);
                 convertView = vi.inflate(R.layout.sport_info, null);
 
@@ -615,6 +601,7 @@ public class SettingsActivity extends Activity  {
     }
 
     // Left side menu
+    /*
     public void initializeLeftSidePanel() {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_settings);
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
@@ -679,11 +666,11 @@ public class SettingsActivity extends Activity  {
 
         return super.onOptionsItemSelected(item);
     }
+    */
 
     // Delete the history stack and point to Main activity
-    @Override
     public void onBackPressed() {
-        Intent toMain = new Intent(this,MainActivity.class);
+        Intent toMain = new Intent(getActivity(),Main.class);
         toMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(toMain);
     }

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="larc.ludiconprod"
-    android:versionCode="18"
-    android:versionName="1.42" >
+    android:versionCode="19"
+    android:versionName="1.43" >
 
     <uses-sdk
         android:minSdkVersion="9"
@@ -87,9 +87,9 @@
         <!-- </receiver> -->
 
         <activity
-            android:name=".Activities.MainActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat" >
+            android:name=".Activities.Main"
+            android:screenOrientation="portrait">
+            <!--android:theme="@style/Theme.AppCompat" > -->
         </activity>
         <activity
             android:name=".Activities.SettingsActivity"

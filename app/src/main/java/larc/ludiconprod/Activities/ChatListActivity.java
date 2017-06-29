@@ -12,7 +12,10 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
 import android.util.Log;
@@ -55,11 +58,15 @@ import larc.ludiconprod.Adapters.LeftSidePanelAdapter;
 import larc.ludiconprod.R;
 import larc.ludiconprod.UserInfo.User;
 import larc.ludiconprod.Utils.ChatUtils.Chat1to1;
+import larc.ludiconprod.Utils.MainPageUtils.ViewPagerAdapter;
+import larc.ludiconprod.Utils.ui.SlidingTabLayout;
 import larc.ludiconprod.Utils.util.ChatNotifier;
 import larc.ludiconprod.Utils.util.DateManager;
+import larc.ludiconprod.Utils.util.Utils;
+
 import java.util.*;
 
-public class ChatListActivity extends Activity {
+public class ChatListActivity extends Fragment {
 
     // Left side panel
     private ListView mDrawerList;
@@ -69,9 +76,21 @@ public class ChatListActivity extends Activity {
     private int TIMEOUT = 1;
     public static boolean isForeground = false;
     ProgressDialog progress;
+    private View v;
+    ViewPager pager;
+    ViewPagerAdapter adapter;
+    SlidingTabLayout tabs;
+    CharSequence Titles[] = {"CONVERSATIONS", "FRIENDS"};
+    int Numboftabs = 2;
+    boolean addedSwipe = false;
+    final List<Chat1to1> chatList = new ArrayList<>();
 
 
     private static final String FIREBASE_URL = "https://ludicon.firebaseio.com/";
+
+    public ChatListActivity(){
+
+    }
 
     @Override
     public void onStart() {
@@ -85,71 +104,98 @@ public class ChatListActivity extends Activity {
         isForeground = false;
     }
 
-    private MyCustomAdapter adapter;
+    private MyCustomAdapterChat adapterChat;
 
     @Override
     public void onResume() {
         super.onResume();
         isForeground = true;
 
-        if (adapter != null)
-            adapter.notifyDataSetChanged();
+        if (adapterChat != null)
+            adapterChat.notifyDataSetChanged();
     }
 
     Object waitForFriends = new Object();
 
     String friendUID = "";
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        v=inflater.inflate(R.layout.activity_chat_list, container,false);
+        try {
+            //super.onCreate(savedInstanceState);
 
-        // Hide App bar
-        // If the Android version is lower than Jellybean, use this call to hide
-        // the status bar.
-        if (Build.VERSION.SDK_INT < 16) {
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        }
+            // Hide App bar
+            // If the Android version is lower than Jellybean, use this call to hide
+            // the status bar.
+            if (Build.VERSION.SDK_INT < 16) {
+                getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                        WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            }
 
-        if (android.os.Build.VERSION.SDK_INT >= 11) {
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED, WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
-        }
+            if (android.os.Build.VERSION.SDK_INT >= 11) {
+                getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED, WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
+            }
 
-        // remove title
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            // remove title
+            // requestWindowFeature(Window.FEATURE_NO_TITLE);
+            // getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            //  WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_chat_list);
+            //this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            //setContentView(R.layout.activity_chat_list);
 
-        // Left side panel initializing
-        mDrawerList = (ListView) findViewById(R.id.leftMenu);
-        initializeLeftSidePanel();
+            // Left side panel initializing
+            // mDrawerList = (ListView) v.findViewById(R.id.leftMenu);
+            // initializeLeftSidePanel();
+            // Creating The ViewPagerAdapter and Passing Fragment Manager, Titles fot the Tabs and Number Of Tabs.
+            adapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager(), Titles, Numboftabs);
+
+            // Assigning ViewPager View and setting the adapter
+            pager = (ViewPager) v.findViewById(R.id.pagerChatFriends);
+            pager.setAdapter(adapter);
+
+            // Assiging the Sliding Tab Layout View
+            tabs = (SlidingTabLayout) v.findViewById(R.id.tabsChatFriends);
+            tabs.setDistributeEvenly(true); // To make the Tabs Fixed set this true, This makes the tabs Space Evenly in Available width
+
+            // Setting Custom Color for the Scroll bar indicator of the Tab View
+            tabs.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
+                @Override
+                public int getIndicatorColor(int position) {
+                    return getResources().getColor(R.color.tabsScrollColor);
+                }
+            });
+
+            // Setting the ViewPager For the SlidingTabsLayout
+            tabs.setViewPager(pager);
+            /**************/
 
         /* Progress dialog */
-        progress = new ProgressDialog(this);
-        progress.setTitle("Loading");
-        progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
-        progress.show();
+            progress = new ProgressDialog(getActivity());
+            progress.setTitle("Loading");
+            progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+            progress.show();
 
-        User.setImage();
+            User.setImage();
 
-        final String chatUID = getIntent().getStringExtra("chatUID");
+            final String chatUID = getActivity().getIntent().getStringExtra("chatUID");
 
-        dialog  = ProgressDialog.show(ChatListActivity.this, "", "Loading. Please wait", true);
+            dialog = ProgressDialog.show(getActivity(), "", "Loading. Please wait", true);
 
-        // User picture and name for HEADER MENU
-        Typeface segoeui = Typeface.createFromAsset(getAssets(), "fonts/seguisb.ttf");
+            // User picture and name for HEADER MENU
+        /*
+        Typeface segoeui = Typeface.createFromAsset(getActivity().getAssets(), "fonts/seguisb.ttf");
 
-        TextView userName = (TextView) findViewById(R.id.userName);
-        userName.setText(User.getFirstName(getApplicationContext()));
+        TextView userName = (TextView) v.findViewById(R.id.userName);
+        userName.setText(User.getFirstName(getActivity().getApplicationContext()));
         userName.setTypeface(segoeui);
 
-        TextView userSportsNumber = (TextView)findViewById(R.id.userSportsNumber);
-        userSportsNumber.setText(User.getNumberOfSports(getApplicationContext()));
+        TextView userSportsNumber = (TextView)v.findViewById(R.id.userSportsNumber);
+        userSportsNumber.setText(User.getNumberOfSports(getActivity().getApplicationContext()));
         userSportsNumber.setTypeface(segoeui);
+        */
 
         /*
         final ImageButton createNewChat = (ImageButton)findViewById(R.id.header_button);
@@ -164,110 +210,114 @@ public class ChatListActivity extends Activity {
             }
         });
         */
-
-        TextView hello_message = (TextView) findViewById(R.id.hello_message_activity);
+/*
+        TextView hello_message = (TextView) v.findViewById(R.id.hello_message_activity);
         hello_message.setText("");
-        ImageView userPic = (ImageView) findViewById(R.id.userPicture);
+        ImageView userPic = (ImageView) v.findViewById(R.id.userPicture);
         Drawable d = new BitmapDrawable(getResources(), User.image);
         userPic.setImageDrawable(d);
         userPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                Intent mainIntent = new Intent(getActivity().getApplicationContext(), MainActivity.class);
                 ChatListActivity.this.startActivity(mainIntent);
             }
         });
+*/
 
+            // Delete chat notifications
 
-        // Delete chat notifications
         ChatNotifier chatNotifier = new ChatNotifier();
         synchronized (chatNotifier.lock) {
             for (int i = chatNotifier.chatNotificationFirstIndex; i <= chatNotifier.chatNotificationIndex; ++i) {
-                chatNotifier.deleteNotification(getSystemService(NOTIFICATION_SERVICE), i);
+                chatNotifier.deleteNotification(getActivity().getSystemService(getActivity().NOTIFICATION_SERVICE), i);
             }
             chatNotifier.chatNotificationIndex = 0;
             chatNotifier.chatNotificationFirstIndex = 0;
         }
 
 
-        DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(User.uid).child("chats");
-        firebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
 
-                final List<Chat1to1> chatList = new ArrayList<>();
-                final long size = snapshot.getChildrenCount();
-                for (DataSnapshot data : snapshot.getChildren()) {
-                    final Chat1to1 chat = new Chat1to1();
-                    chat.userUID = data.getKey().toString();
-                    chat.chatID = data.getValue().toString();
+            DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(User.uid).child("chats");
+            firebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
 
-                    if(chatUID != null && chatUID.equalsIgnoreCase(chat.chatID))
-                    {
-                        friendUID =  chat.userUID;
-                    }
 
-                    DatabaseReference chatRef = User.firebaseRef.child("chat").child(chat.chatID).child("Messages");
-                    chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot snapshot) {
-                            for(DataSnapshot data : snapshot.getChildren())
-                            {
-                                for(DataSnapshot snap : data.getChildren())
-                                {
-                                    if (snap.getKey().toString().equalsIgnoreCase("author"))
-                                        chat.lastMessageAuthor = snap.getValue().toString().split(" ")[0];
-                                    if (snap.getKey().toString().equalsIgnoreCase("message"))
-                                        chat.lastMessageText = snap.getValue().toString();
-                                    if (snap.getKey().toString().equalsIgnoreCase("date"))
-                                        chat.lastMessageDateString = snap.getValue().toString();
-                                }
-                            }
-                              getChatInfo(chatList, chat, size);
+                    final long size = snapshot.getChildrenCount();
+                    for (DataSnapshot data : snapshot.getChildren()) {
+                        final Chat1to1 chat = new Chat1to1();
+                        chat.userUID = data.getKey().toString();
+                        chat.chatID = data.getValue().toString();
 
+                        if (chatUID != null && chatUID.equalsIgnoreCase(chat.chatID)) {
+                            friendUID = chat.userUID;
                         }
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                        }
-                    });
-                }
-
-                if(chatUID != null)
-                {
-                    Intent intent = new Intent(getApplicationContext(), ChatTemplateActivity.class);
-                    intent.putExtra("uid", friendUID);
-                    intent.putExtra("firstConnection", false);
-                    intent.putExtra("chatID", chatUID);
-                    startActivity(intent);
-                }
-
-                // Dismiss loading dialog after  2 * TIMEOUT * chatList.size() ms
-                Timer timer = new Timer();
-                TimerTask delayedThreadStartTask = new TimerTask() {
-                    @Override
-                    public void run() {
-
-                        new Thread(new Runnable() {
+                        DatabaseReference chatRef = User.firebaseRef.child("chat").child(chat.chatID).child("Messages");
+                        chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
-                            public void run() {
-                                dialog.dismiss();
+                            public void onDataChange(DataSnapshot snapshot) {
+                                for (DataSnapshot data : snapshot.getChildren()) {
+                                    for (DataSnapshot snap : data.getChildren()) {
+                                        if (snap.getKey().toString().equalsIgnoreCase("author"))
+                                            chat.lastMessageAuthor = snap.getValue().toString().split(" ")[0];
+                                        if (snap.getKey().toString().equalsIgnoreCase("message"))
+                                            chat.lastMessageText = snap.getValue().toString();
+                                        if (snap.getKey().toString().equalsIgnoreCase("date"))
+                                            chat.lastMessageDateString = snap.getValue().toString();
+                                    }
+                                }
+                                getChatInfo(chatList, chat, size);
+
                             }
-                        }).start();
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                            }
+                        });
                     }
-                };
 
-                timer.schedule(delayedThreadStartTask, TIMEOUT * 12);
-                progress.dismiss();
-            }
+                    if (chatUID != null) {
+                        Intent intent = new Intent(getActivity().getApplicationContext(), ChatTemplateActivity.class);
+                        intent.putExtra("uid", friendUID);
+                        intent.putExtra("firstConnection", false);
+                        intent.putExtra("chatID", chatUID);
+                        startActivity(intent);
+                    }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                    // Dismiss loading dialog after  2 * TIMEOUT * chatList.size() ms
+                    Timer timer = new Timer();
+                    TimerTask delayedThreadStartTask = new TimerTask() {
+                        @Override
+                        public void run() {
 
-            }
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    dialog.dismiss();
+                                }
+                            }).start();
+                        }
+                    };
 
-        });
+                    timer.schedule(delayedThreadStartTask, TIMEOUT * 12);
+                    progress.dismiss();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+
+            });
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        return v;
     }
+
 
     public void getChatInfo(final List<Chat1to1> chatList, final Chat1to1 chat, final long size)
     {
@@ -316,9 +366,9 @@ public class ChatListActivity extends Activity {
 
                     Collections.sort(newChatList);
 
-                    adapter = new MyCustomAdapter(newChatList, getApplicationContext());
-                    ListView listView = (ListView) findViewById(R.id.chat_list);
-                    listView.setAdapter(adapter);
+                    adapterChat = new MyCustomAdapterChat(newChatList, getActivity().getApplicationContext());
+                    ListView listView = (ListView) v.findViewById(R.id.chat_list);
+                    listView.setAdapter(adapterChat);
                 }
 
             }
@@ -328,9 +378,21 @@ public class ChatListActivity extends Activity {
             }
         });
     }
+    public void continueUpdatingTimeline() {
+        try {
+            updateList();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            Utils.quit();
+        }
+        }
+    public void updateList() {
+        chatList.clear();
+    }
 
 
-    public class MyCustomAdapter extends BaseAdapter implements ListAdapter {
+    public class MyCustomAdapterChat extends BaseAdapter implements ListAdapter {
 
         private List<Chat1to1> list = new ArrayList<>();
         private Context context;
@@ -346,7 +408,7 @@ public class ChatListActivity extends Activity {
         };
 
 
-        public MyCustomAdapter(List<Chat1to1> list, Context context) {
+        public MyCustomAdapterChat(List<Chat1to1> list, Context context) {
             //list.remove(0);
             this.list = list;
             this.context = context;
@@ -394,7 +456,7 @@ public class ChatListActivity extends Activity {
                             public void onDataChange(DataSnapshot snapshot) {
                                 currentView.setBackgroundColor(Color.parseColor("#D3D3D3"));
 
-                                Intent intent = new Intent(getApplicationContext(), ChatTemplateActivity.class);
+                                Intent intent = new Intent(getActivity().getApplicationContext(), ChatTemplateActivity.class);
                                 intent.putExtra("uid", list.get(position).userUID);
                                 intent.putExtra("firstConnection", false);
                                 intent.putExtra("chatID", list.get(position).chatID);
@@ -452,7 +514,7 @@ public class ChatListActivity extends Activity {
 
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                        Intent intent = new Intent(getActivity().getApplicationContext(), ProfileActivity.class);
                         intent.putExtra("uid", list.get(position).userUID);
                         startActivity(intent);
                     }
@@ -467,7 +529,7 @@ public class ChatListActivity extends Activity {
 
 
     // Left side menu
-
+/*
     public void initializeLeftSidePanel() {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_chats);
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
@@ -499,6 +561,7 @@ public class ChatListActivity extends Activity {
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
+    */
 
     public static DateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm");
 
@@ -545,10 +608,10 @@ public class ChatListActivity extends Activity {
     }
 
 
-    @Override
+   // @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_chat_list, menu);
+        getActivity().getMenuInflater().inflate(R.menu.menu_chat_list, menu);
         return true;
     }
 
@@ -568,9 +631,8 @@ public class ChatListActivity extends Activity {
     }
 
     // Delete the history stack and point to Main activity
-    @Override
     public void onBackPressed() {
-        Intent toMain = new Intent(this,MainActivity.class);
+        Intent toMain = new Intent(getActivity(),Main.class);
         toMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(toMain);
     }

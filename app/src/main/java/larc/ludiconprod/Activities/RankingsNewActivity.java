@@ -22,7 +22,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -98,7 +100,7 @@ import larc.ludiconprod.Utils.util.Utils;
  * Created by LaurUser on 8/27/2016.
  */
 
-public class RankingsNewActivity extends AppCompatActivity {
+public class RankingsNewActivity extends Fragment {
 
     // Left side panel
     private ListView mDrawerList;
@@ -120,12 +122,16 @@ public class RankingsNewActivity extends AppCompatActivity {
     private final ArrayList<UserInRanks> usersLocalList = new ArrayList<>();
     private final ArrayList<UserInRanks> usersFriendsList = new ArrayList<>();
     private TextView headerMessage;
+    private View v;
 
     public RankingsNewActivity() {
     }
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        v=inflater.inflate(R.layout.activity_rankings, container,false);
+
         try {
             super.onCreate(savedInstanceState);
 
@@ -133,36 +139,36 @@ public class RankingsNewActivity extends AppCompatActivity {
             // If the Android version is lower than Jellybean, use this call to hide
             // the status bar.
             if (Build.VERSION.SDK_INT < 16) {
-                getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                         WindowManager.LayoutParams.FLAG_FULLSCREEN);
             }
 
             if (android.os.Build.VERSION.SDK_INT >= 11) {
-                getWindow().setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED, WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
+                getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED, WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
             }
 
             // remove title
-            requestWindowFeature(Window.FEATURE_NO_TITLE);
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+           // requestWindowFeature(Window.FEATURE_NO_TITLE);
+            //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                  //  WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-            getSupportActionBar().hide();
-            setContentView(R.layout.activity_rankings);
+            //getSupportActionBar().hide();
+            //setContentView(R.layout.activity_rankings);
 
 
             // Set text message in header
-            headerMessage = (TextView) findViewById(R.id.hello_message_activity);
+            headerMessage = (TextView) v.findViewById(R.id.hello_message_activity);
             headerMessage.setText("FOOTBALL");
 
             // Creating The ViewPagerAdapter and Passing Fragment Manager, Titles fot the Tabs and Number Of Tabs.
-            adapter = new ViewPagerAdapter(getSupportFragmentManager(), Titles, Numboftabs);
+            adapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager(), Titles, Numboftabs);
 
             // Assigning ViewPager View and setting the adapter
-            pager = (ViewPager) findViewById(R.id.pager);
+            pager = (ViewPager) v.findViewById(R.id.pager);
             pager.setAdapter(adapter);
 
             // Assiging the Sliding Tab Layout View
-            tabs = (SlidingTabLayout) findViewById(R.id.tabs);
+            tabs = (SlidingTabLayout) v.findViewById(R.id.tabs);
             tabs.setDistributeEvenly(true); // To make the Tabs Fixed set this true, This makes the tabs Space Evenly in Available width
 
             // Setting Custom Color for the Scroll bar indicator of the Tab View
@@ -177,11 +183,11 @@ public class RankingsNewActivity extends AppCompatActivity {
             tabs.setViewPager(pager);
             /**************/
 
-            dialog = ProgressDialog.show(RankingsNewActivity.this, "", "Loading. Please wait", true);
+            dialog = ProgressDialog.show(getActivity(), "", "Loading. Please wait", true);
 
             // Add functionality on tapping sport icons
             //// ------------------------------------------------------------  //////////////////
-            ImageButton imButt = (ImageButton) findViewById(R.id.footballRankIB);
+            ImageButton imButt = (ImageButton) v.findViewById(R.id.footballRankIB);
             imButt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -192,7 +198,7 @@ public class RankingsNewActivity extends AppCompatActivity {
                 }
             });
 
-            imButt = (ImageButton) findViewById(R.id.volleyRankIB);
+            imButt = (ImageButton) v.findViewById(R.id.volleyRankIB);
             imButt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -203,7 +209,7 @@ public class RankingsNewActivity extends AppCompatActivity {
                 }
             });
 
-            imButt = (ImageButton) findViewById(R.id.basketballRankIB);
+            imButt = (ImageButton) v.findViewById(R.id.basketballRankIB);
             imButt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -214,7 +220,7 @@ public class RankingsNewActivity extends AppCompatActivity {
                 }
             });
 
-            imButt = (ImageButton) findViewById(R.id.squashRankIB);
+            imButt = (ImageButton) v.findViewById(R.id.squashRankIB);
             imButt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -225,7 +231,7 @@ public class RankingsNewActivity extends AppCompatActivity {
                 }
             });
 
-            imButt = (ImageButton) findViewById(R.id.pingpongRankIB);
+            imButt = (ImageButton) v.findViewById(R.id.pingpongRankIB);
             imButt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -236,7 +242,7 @@ public class RankingsNewActivity extends AppCompatActivity {
                 }
             });
 
-            imButt = (ImageButton) findViewById(R.id.tennisRankIB);
+            imButt = (ImageButton) v.findViewById(R.id.tennisRankIB);
             imButt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -247,7 +253,7 @@ public class RankingsNewActivity extends AppCompatActivity {
                 }
             });
 
-            imButt = (ImageButton) findViewById(R.id.cyclingRankIB);
+            imButt = (ImageButton) v.findViewById(R.id.cyclingRankIB);
             imButt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -258,7 +264,7 @@ public class RankingsNewActivity extends AppCompatActivity {
                 }
             });
 
-            imButt = (ImageButton) findViewById(R.id.joggingRankIB);
+            imButt = (ImageButton) v.findViewById(R.id.joggingRankIB);
             imButt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -269,7 +275,7 @@ public class RankingsNewActivity extends AppCompatActivity {
                 }
             });
 
-            imButt = (ImageButton) findViewById(R.id.gymRankIB);
+            imButt = (ImageButton) v.findViewById(R.id.gymRankIB);
             imButt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -280,7 +286,7 @@ public class RankingsNewActivity extends AppCompatActivity {
                 }
             });
 
-            imButt = (ImageButton) findViewById(R.id.otherRankIB);
+            imButt = (ImageButton) v.findViewById(R.id.otherRankIB);
             imButt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -297,8 +303,11 @@ public class RankingsNewActivity extends AppCompatActivity {
         } catch (Exception exc) {
             Utils.quit();
         }
-
+        finally {
+            return v;
+        }
     }
+
 
     @Override
     public void onResume() {
@@ -315,13 +324,14 @@ public class RankingsNewActivity extends AppCompatActivity {
         try {
 
             // Left side panel
-            mDrawerList = (ListView) findViewById(R.id.leftMenu);
-            initializeLeftSidePanel();
+            //mDrawerList = (ListView) findViewById(R.id.leftMenu);
+            //initializeLeftSidePanel();
 
-            User.setImage();
+            //User.setImage();
 
             // User picture and name for HEADER MENU
-            Typeface segoeui = Typeface.createFromAsset(getAssets(), "fonts/seguisb.ttf");
+            //Typeface segoeui = Typeface.createFromAsset(getAssets(), "fonts/seguisb.ttf");
+            /*
 
             TextView userName = (TextView) findViewById(R.id.userName);
             userName.setText(User.getFirstName(getApplicationContext()));
@@ -335,6 +345,7 @@ public class RankingsNewActivity extends AppCompatActivity {
             Drawable d = new BitmapDrawable(getResources(), User.image);
             userPic.setImageDrawable(d);
 
+
             userPic.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -342,6 +353,7 @@ public class RankingsNewActivity extends AppCompatActivity {
                     RankingsNewActivity.this.startActivity(mainIntent);
                 }
             });
+            */
             // -------------------------------------------------------------------------------------------------------------
             updateList();
 
@@ -409,15 +421,15 @@ public class RankingsNewActivity extends AppCompatActivity {
                 }
 
                 /* Local Ranking */
-                localAdapter = new UsersLocalAdapter(usersLocalList, getApplicationContext());
-                ListView frlistView = (ListView) findViewById(R.id.events_listView1);
+                localAdapter = new UsersLocalAdapter(usersLocalList, getActivity());
+                ListView frlistView = (ListView) v.findViewById(R.id.events_listView1);
                 if (frlistView != null) {
                     frlistView.setAdapter(localAdapter);
                 }
 
                 /*Swipe */
                 if (!addedSwipe) {
-                    final SwipeRefreshLayout mSwipeRefreshLayout1 = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh1);
+                    final SwipeRefreshLayout mSwipeRefreshLayout1 = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh1);
                     mSwipeRefreshLayout1.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                         @Override
                         public void onRefresh() {
@@ -430,7 +442,7 @@ public class RankingsNewActivity extends AppCompatActivity {
 
                  /*Swipe */
                 if (!addedSwipe2) {
-                    final SwipeRefreshLayout mSwipeRefreshLayout2 = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh2);
+                    final SwipeRefreshLayout mSwipeRefreshLayout2 = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh2);
                     mSwipeRefreshLayout2.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                         @Override
                         public void onRefresh() {
@@ -534,8 +546,8 @@ public class RankingsNewActivity extends AppCompatActivity {
 
 
                 /* Friends */
-                friendsAdapter = new UsersLocalAdapter(usersFriendsList, getApplicationContext());
-                ListView mylistView = (ListView) findViewById(R.id.events_listView2);
+                friendsAdapter = new UsersLocalAdapter(usersFriendsList, getActivity());
+                ListView mylistView = (ListView) v.findViewById(R.id.events_listView2);
                 if (mylistView != null) {
                     mylistView.setAdapter(friendsAdapter);
                 }
@@ -551,13 +563,14 @@ public class RankingsNewActivity extends AppCompatActivity {
 
     private UsersLocalAdapter localAdapter;
     private UsersLocalAdapter friendsAdapter;
-
+/*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getActivity().getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+    */
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -592,6 +605,7 @@ public class RankingsNewActivity extends AppCompatActivity {
 
 
     // Left side menu
+    /*
     public void initializeLeftSidePanel() {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
@@ -624,6 +638,7 @@ public class RankingsNewActivity extends AppCompatActivity {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
     }
+    */
 
     // Adapter for the Around activities tab
     public class UsersLocalAdapter extends BaseAdapter implements ListAdapter {
@@ -677,7 +692,7 @@ public class RankingsNewActivity extends AppCompatActivity {
                     public void onClick(View v) {
                         //Toast.makeText(getApplicationContext(), "View profile ?!", Toast.LENGTH_SHORT).show();
                         currView.setBackgroundColor(Color.parseColor("#C3DC6E"));
-                        Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                        Intent intent = new Intent(getActivity(), ProfileActivity.class);
                         intent.putExtra("uid", list.get(position).id);
                         startActivity(intent);
                     }

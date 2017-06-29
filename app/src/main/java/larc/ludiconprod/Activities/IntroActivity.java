@@ -242,7 +242,7 @@ public class IntroActivity extends Activity {
         handler.postDelayed(new Runnable() {
             public void run() {
                 // Actions to do after 5 seconds
-                Intent goToNextActivity = new Intent(getApplicationContext(), MainActivity.class); //AskPreferences.class);
+                Intent goToNextActivity = new Intent(getApplicationContext(), Main.class); //AskPreferences.class);
                 String chatUID = getIntent().getStringExtra("chatUID");
                 if (chatUID != null)
                     goToNextActivity.putExtra("chatUID", chatUID);

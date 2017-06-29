@@ -8,4 +8,11 @@
     <color name="bg1">#0C3855</color>
     <color name="bg2">#910c3855</color>
 <color name="black_overlay">#f5f3f3</color>
+
+    <color name="bb_inActiveBottomBarItemColor">#747474</color>
+    <color name="bb_darkBackgroundColor">#212121</color>
+    <color name="bb_tabletRightBorderDark">#505050</color>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
 </resources>

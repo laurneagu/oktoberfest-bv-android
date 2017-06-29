@@ -105,7 +105,7 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
         handler.postDelayed(new Runnable() {
             public void run() {
                 // Actions to do after 5 seconds
-                Intent goToNextActivity = new Intent(getApplicationContext(), MainActivity.class);
+                Intent goToNextActivity = new Intent(getApplicationContext(), Main.class);
                 startActivity(goToNextActivity);
                 finish();
             }

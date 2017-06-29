@@ -219,7 +219,7 @@ public class FriendlyService extends Service {
 
     public FriendlyService(){
         try{
-            broadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
+            broadcastManager = LocalBroadcastManager.getInstance(mContext);
             broadcastManager.registerReceiver(
                     receiveStartRequest, new IntentFilter("MainToService_StartRequest"));
 
@@ -648,7 +648,11 @@ public class FriendlyService extends Service {
 
         super.onCreate();
         mRunning = false;
+        mContext = this.getApplicationContext();
     }
+
+    private Context mContext;
+
 
     @Override
     public void onDestroy() {

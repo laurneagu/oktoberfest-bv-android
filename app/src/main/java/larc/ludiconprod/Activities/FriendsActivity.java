@@ -248,10 +248,10 @@ public class FriendsActivity extends Activity {
                                 // Sort friends alphabetically
                                 Collections.sort(friends);
 
-                                adapter = new MyCustomAdapter(friends,getApplicationContext());
+                                adapterFriends = new MyCustomAdapterFriends(friends,getApplicationContext());
                                 ListView listView = (ListView) findViewById(R.id.friends_listView);
                                 Log.v("TAG",friends.size()+"");
-                                listView.setAdapter(adapter);
+                                listView.setAdapter(adapterFriends);
                             }
                         }
 
@@ -286,22 +286,22 @@ public class FriendsActivity extends Activity {
         };
     }
 
-    private MyCustomAdapter adapter;
+    private MyCustomAdapterFriends adapterFriends;
     @Override
     public void onResume(){
         super.onResume();
 
-        if (adapter != null)
-            adapter.notifyDataSetChanged();
+        if (adapterFriends != null)
+            adapterFriends.notifyDataSetChanged();
 
     }
 
-    public class MyCustomAdapter extends BaseAdapter implements ListAdapter {
+    public class MyCustomAdapterFriends extends BaseAdapter implements ListAdapter {
 
         private ArrayList<FriendItem> list = new ArrayList<>();
         private Context context;
 
-        public MyCustomAdapter(ArrayList<FriendItem> list, Context context) {
+        public MyCustomAdapterFriends(ArrayList<FriendItem> list, Context context) {
             this.list = list;
             this.context = context;
         }

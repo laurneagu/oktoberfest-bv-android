@@ -18,6 +18,7 @@
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="65dp"
             android:layout_centerVertical="true" />
+        <!--
 
         <ImageButton android:layout_width="25dp"
             android:layout_height="25dp"
@@ -26,6 +27,7 @@
             android:layout_centerVertical="true"
             android:id="@+id/showPanel"
             />
+            -->
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
