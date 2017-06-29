@@ -35,6 +35,7 @@ import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
@@ -59,6 +60,7 @@ import larc.ludiconprod.Adapters.LeftSidePanelAdapter;
 import larc.ludiconprod.R;
 import larc.ludiconprod.UserInfo.User;
 import larc.ludiconprod.Utils.ChatUtils.Chat1to1;
+import larc.ludiconprod.Utils.FriendUtils.FriendItem;
 import larc.ludiconprod.Utils.MainPageUtils.ViewPagerAdapter;
 import larc.ludiconprod.Utils.ui.SlidingTabLayout;
 import larc.ludiconprod.Utils.util.ChatNotifier;
@@ -87,6 +89,8 @@ public class ChatListActivity extends Fragment {
     boolean addedSwipe2 = false;
     final List<Chat1to1> chatList = new ArrayList<>();
      String chatUID;
+    final ArrayList<FriendItem> friends = new ArrayList<>();
+    final ArrayList<String> friendsUIDs = new ArrayList<>();
 
 
     private static final String FIREBASE_URL = "https://ludicon.firebaseio.com/";
@@ -108,6 +112,7 @@ public class ChatListActivity extends Fragment {
     }
 
     private MyCustomAdapterChat adapterChat;
+    private ChatListActivity.MyCustomAdapterFriends adapterFriends;
 
     @Override
     public void onResume() {
@@ -241,79 +246,7 @@ public class ChatListActivity extends Fragment {
 
 
 
-            DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(User.uid).child("chats");
-            firebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot snapshot) {
-
-
-                    final long size = snapshot.getChildrenCount();
-                    for (DataSnapshot data : snapshot.getChildren()) {
-                        final Chat1to1 chat = new Chat1to1();
-                        chat.userUID = data.getKey().toString();
-                        chat.chatID = data.getValue().toString();
-
-                        if (chatUID != null && chatUID.equalsIgnoreCase(chat.chatID)) {
-                            friendUID = chat.userUID;
-                        }
-
-                        DatabaseReference chatRef = User.firebaseRef.child("chat").child(chat.chatID).child("Messages");
-                        chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot snapshot) {
-                                for (DataSnapshot data : snapshot.getChildren()) {
-                                    for (DataSnapshot snap : data.getChildren()) {
-                                        if (snap.getKey().toString().equalsIgnoreCase("author"))
-                                            chat.lastMessageAuthor = snap.getValue().toString().split(" ")[0];
-                                        if (snap.getKey().toString().equalsIgnoreCase("message"))
-                                            chat.lastMessageText = snap.getValue().toString();
-                                        if (snap.getKey().toString().equalsIgnoreCase("date"))
-                                            chat.lastMessageDateString = snap.getValue().toString();
-                                    }
-                                }
-                                getChatInfo(chatList, chat, size);
-
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                            }
-                        });
-                    }
-
-                    if (chatUID != null) {
-                        Intent intent = new Intent(getActivity().getApplicationContext(), ChatTemplateActivity.class);
-                        intent.putExtra("uid", friendUID);
-                        intent.putExtra("firstConnection", false);
-                        intent.putExtra("chatID", chatUID);
-                        startActivity(intent);
-                    }
-
-                    // Dismiss loading dialog after  2 * TIMEOUT * chatList.size() ms
-                    Timer timer = new Timer();
-                    TimerTask delayedThreadStartTask = new TimerTask() {
-                        @Override
-                        public void run() {
-
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    dialog.dismiss();
-                                }
-                            }).start();
-                        }
-                    };
-
-                    timer.schedule(delayedThreadStartTask, TIMEOUT * 12);
-                    progress.dismiss();
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-
-            });
+            continueUpdatingTimeline();
         }
         catch(Exception e){
             e.printStackTrace();
@@ -366,12 +299,13 @@ public class ChatListActivity extends Fragment {
                             i--;
                         }
                     }
-
                     Collections.sort(newChatList);
+
 
                     adapterChat = new MyCustomAdapterChat(newChatList, getActivity().getApplicationContext());
                     ListView listView = (ListView) v.findViewById(R.id.events_listView2);
                     listView.setAdapter(adapterChat);
+
                 }
 
             }
@@ -380,6 +314,17 @@ public class ChatListActivity extends Fragment {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+        if (!addedSwipe) {
+            final SwipeRefreshLayout mSwipeRefreshLayout1 = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh1);
+            mSwipeRefreshLayout1.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    updateList();
+                    mSwipeRefreshLayout1.setRefreshing(false);
+                }
+            });
+            addedSwipe = true;
+        }
     }
     public void continueUpdatingTimeline() {
         try {
@@ -392,6 +337,7 @@ public class ChatListActivity extends Fragment {
         }
     public void updateList() {
         chatList.clear();
+        friends.clear();
 
         DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(User.uid).child("chats");
         firebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -466,8 +412,40 @@ public class ChatListActivity extends Fragment {
             }
 
         });
+        Runnable getFirebaseInfo = getFirebaseInfoThread();
+        Thread FirebaseInfoThread = new Thread(getFirebaseInfo);
+        FirebaseInfoThread.start();
+
+        Toast.makeText(getActivity(), "wtfwtf !!",Toast.LENGTH_SHORT).show();
+
+        DatabaseReference friendRef = User.firebaseRef.child("users").child(User.uid).child("friends");
+        friendRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for(DataSnapshot data : snapshot.getChildren())
+                {
+                    FriendItem friend = new FriendItem();
+                    if (Boolean.parseBoolean(data.getValue().toString()) == true) {
+                        friend.uid = data.getKey();
+                        friends.add(friend);
+                        friendsUIDs.add(friend.uid);
+                    }
+                }
+
+                synchronized (waitForFriends) {
+                    try {
+                        waitForFriends.notify(); // ready, notify thread to get data from firebase
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError firebaseError) {
+            }
+        });
         /*Swipe */
-        if (!addedSwipe) {
+        /*if (!addedSwipe) {
             final SwipeRefreshLayout mSwipeRefreshLayout1 = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh1);
             mSwipeRefreshLayout1.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
@@ -478,9 +456,10 @@ public class ChatListActivity extends Fragment {
             });
             addedSwipe = true;
         }
+        */
 
                  /*Swipe */
-        if (!addedSwipe2) {
+       /* if (!addedSwipe2) {
             final SwipeRefreshLayout mSwipeRefreshLayout2 = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh2);
             mSwipeRefreshLayout2.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
@@ -489,8 +468,133 @@ public class ChatListActivity extends Fragment {
                     mSwipeRefreshLayout2.setRefreshing(false);
                 }
             });
+
             addedSwipe2 = true;
-        }
+        }*/
+    }
+    //Object waitForFriends = new Object();
+    public Runnable getFirebaseInfoThread() {
+        return new Runnable() {
+            public void run() {
+
+                synchronized (waitForFriends){
+                    try {
+                        waitForFriends.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                final List<Integer> toRemoveNoMoreFriends = new ArrayList<>();
+
+                Log.v("TAG",friends.size()+"Test laur");
+
+                for(int i = 0; i < friends.size() ; ++i){
+                    final int index = i;
+                    DatabaseReference userSports = User.firebaseRef.child("users").child(friends.get(i).uid);
+                    userSports.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            if (snapshot != null) {
+                                for (DataSnapshot data : snapshot.getChildren()) {
+                                    if (data.getKey().toString().equalsIgnoreCase("profileImageURL"))
+                                        friends.get(index).ImageUrl = data.getValue().toString();
+
+                                    if (data.getKey().toString().equalsIgnoreCase("sports")) {
+                                        int numOfSports =(int)data.getChildrenCount();
+                                        if(numOfSports == 1){
+                                            friends.get(index).numberOfSports = numOfSports  + " sport";
+                                        }
+                                        else {
+                                            friends.get(index).numberOfSports = numOfSports + " sports";
+                                        }
+                                    }
+
+                                    if (data.getKey().toString().equalsIgnoreCase("name"))
+                                        friends.get(index).name = data.getValue().toString();
+
+                                    if(data.getKey().toString().equalsIgnoreCase("friends")) {
+                                        friends.get(index).friendsString = data.getValue().toString();
+                                    }
+                                }
+
+                                if(friends.get(index).ImageUrl ==null){
+                                    toRemoveNoMoreFriends.add(index);
+                                }
+                            }
+
+                            if (index == friends.size()-1){ // if it is the last one, you can start the ui
+                                // Dismiss loading dialog after  2 * TIMEOUT * chatList.size() ms
+                                Timer timer = new Timer();
+                                TimerTask delayedThreadStartTask = new TimerTask() {
+                                    @Override
+                                    public void run() {
+
+                                        new Thread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                dialog.dismiss();
+                                            }
+                                        }).start();
+                                    }
+                                };
+
+                                timer.schedule(delayedThreadStartTask, TIMEOUT * 12);
+
+                                //progress.dismiss();
+                                int iRemovedCount=0;
+                                // Remove empty indexes
+                                for(Integer indexToRemove : toRemoveNoMoreFriends){
+                                    friends.remove(friends.get(indexToRemove-iRemovedCount));
+                                    iRemovedCount++;
+                                }
+                                for(int i=0;i<friends.size();i++){
+                                    //System.out.println(friends.get(i).name);
+                                    if(friends.get(i).name == null){
+                                        friends.remove(i);
+                                    }
+                                }
+
+                                if(friends!=null) {
+                                    // Sort friends alphabetically
+                                    Collections.sort(friends);
+                                }
+
+                                adapterFriends = new ChatListActivity.MyCustomAdapterFriends(friends,getActivity().getApplicationContext());
+                                ListView listView = (ListView) v.findViewById(R.id.events_listView1);
+                                Log.v("TAG",friends.size()+"");
+                                listView.setAdapter(adapterFriends);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError firebaseError) {
+                        }
+                    });
+                }
+
+                if(friends.size() == 0){
+                    // Dismiss loading dialog after  2 * TIMEOUT * chatList.size() ms
+                    Timer timer = new Timer();
+                    TimerTask delayedThreadStartTask = new TimerTask() {
+                        @Override
+                        public void run() {
+
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    dialog.dismiss();
+                                }
+                            }).start();
+                        }
+                    };
+
+                    timer.schedule(delayedThreadStartTask, TIMEOUT * 12);
+
+                    //progress.dismiss();
+                }
+            }
+
+        };
     }
 
 
@@ -625,6 +729,154 @@ public class ChatListActivity extends Fragment {
                 holder.imageView.setImageResource(R.drawable.logo);
             }
 
+            return view;
+        }
+    }
+    public class MyCustomAdapterFriends extends BaseAdapter implements ListAdapter {
+
+        private ArrayList<FriendItem> list = new ArrayList<>();
+        private Context context;
+
+        public MyCustomAdapterFriends(ArrayList<FriendItem> list, Context context) {
+            this.list = list;
+            this.context = context;
+        }
+
+        class ViewHolder {
+            TextView textName;
+            ImageView imageView;
+            ImageButton moreButton;
+            Button chatButton;
+            TextView numberSports;
+            TextView numberMutuals;
+        };
+
+        @Override
+        public int getCount() {
+            return list.size();
+        }
+        @Override
+        public Object getItem(int pos) {
+            return list.get(pos);
+        }
+        @Override
+        public long getItemId(int pos) {
+            return 0;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+
+
+            View view = convertView;
+            ChatListActivity.MyCustomAdapterFriends.ViewHolder holder = null;
+            if (view == null) {
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.friends_layout, null);
+
+                holder = new ChatListActivity.MyCustomAdapterFriends.ViewHolder();
+                holder.textName = (TextView) view.findViewById(R.id.list_item_string);
+                holder.imageView = (ImageView) view.findViewById(R.id.profileImageView);
+                holder.chatButton = (Button) view.findViewById(R.id.chat_btn);
+                holder.numberSports = (TextView) view.findViewById(R.id.numberSports);
+                holder.numberMutuals = (TextView) view.findViewById(R.id.numberoOfMutuals);
+
+                view.setTag(holder);
+            }
+            else {
+                holder = (ChatListActivity.MyCustomAdapterFriends.ViewHolder)view.getTag();
+            }
+
+            view.setBackgroundColor(Color.parseColor("#FFFFFF"));
+
+            // Set name in TextView
+            holder.textName.setText(list.get(position).name);
+
+            // Set Image in ImageView
+            DatabaseReference userRef = User.firebaseRef.child("users").child(list.get(position).uid).child("profileImageURL");
+            Log.v("Position", position + "");
+
+            Picasso.with(context).load(list.get(position).ImageUrl).into(holder.imageView);
+            holder.imageView.setBackgroundResource(R.drawable.defaultpicture);
+
+            // Number of sports
+            holder.numberSports.setText(list.get(position).numberOfSports);
+
+            // Calculate number of mutuals
+            if (list.get(position).friendsString != null) {
+                String[] friends = list.get(position).friendsString.split(",");
+                int numOfMutuals=0;
+                for(int i = 0 ; i < friends.length ; i ++){
+                    // current friend is still a friend of the friend :)
+                    if (friends[i].contains("true")){
+                        String friendsUid = friends[i].replace("true","").trim();
+                        friendsUid = friendsUid.replace("=","");
+
+                        // is also my friend
+                        if(friendsUIDs.contains(friendsUid)) numOfMutuals ++;
+                    }
+                }
+                if (numOfMutuals == 0){
+                    holder.numberMutuals.setText("no mutual friends");
+                }
+                else if (numOfMutuals == 1){
+                    holder.numberMutuals.setText("1 mutual friend");
+                }
+                else {
+                    holder.numberMutuals.setText(numOfMutuals + " mutual friends");
+                }
+            }
+            else {
+                holder.numberMutuals.setText("no mutual friends");
+            }
+
+            final View currentView = view;
+            view.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    currentView.setBackgroundColor(Color.parseColor("#D3D3D3"));
+                    Intent intent = new Intent(getActivity().getApplicationContext(), ProfileActivity.class);
+                    intent.putExtra("uid", list.get(position).uid);
+                    startActivity(intent);
+                }
+            });
+
+            final Button chatButton = holder.chatButton;
+            // Buttons behaviour
+            holder.chatButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    chatButton.setBackground(getResources().getDrawable(R.drawable.settings_icon_notselected));
+                    DatabaseReference userRef = User.firebaseRef.child("users").child(list.get(position).uid).child("chats");
+                    userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            // check if it's the first connection
+                            boolean firstConnection = true;
+                            String chatID = "";
+                            for (DataSnapshot data : snapshot.getChildren()) {
+                                if (data.getKey().equalsIgnoreCase(User.uid)) {
+                                    firstConnection = false;
+                                    chatID = data.getValue().toString();
+                                }
+                            }
+                            Intent intent = new Intent(getActivity().getApplicationContext(), ChatTemplateActivity.class);
+                            intent.putExtra("uid", list.get(position).uid);
+                            intent.putExtra("firstConnection", firstConnection);
+                            intent.putExtra("otherName", list.get(position).name);
+                            intent.putExtra("chatID", chatID);
+
+                            chatButton.setBackground(getResources().getDrawable(R.drawable.settings_icon_selected));
+
+                            startActivity(intent);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError firebaseError) {
+                        }
+                    });
+                }
+            });
             return view;
         }
     }
