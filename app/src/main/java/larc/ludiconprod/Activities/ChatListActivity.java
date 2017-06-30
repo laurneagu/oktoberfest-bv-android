@@ -117,6 +117,7 @@ public class ChatListActivity extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        updateList();
         isForeground = true;
 
         if (adapterChat != null)
@@ -246,7 +247,7 @@ public class ChatListActivity extends Fragment {
 
 
 
-            continueUpdatingTimeline();
+            //continueUpdatingTimeline();
         }
         catch(Exception e){
             e.printStackTrace();
@@ -338,6 +339,7 @@ public class ChatListActivity extends Fragment {
     public void updateList() {
         chatList.clear();
         friends.clear();
+        friendsUIDs.clear();
 
         DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(User.uid).child("chats");
         firebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -415,8 +417,6 @@ public class ChatListActivity extends Fragment {
         Runnable getFirebaseInfo = getFirebaseInfoThread();
         Thread FirebaseInfoThread = new Thread(getFirebaseInfo);
         FirebaseInfoThread.start();
-
-        Toast.makeText(getActivity(), "wtfwtf !!",Toast.LENGTH_SHORT).show();
 
         DatabaseReference friendRef = User.firebaseRef.child("users").child(User.uid).child("friends");
         friendRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -548,16 +548,16 @@ public class ChatListActivity extends Fragment {
                                     iRemovedCount++;
                                 }
                                 for(int i=0;i<friends.size();i++){
-                                    //System.out.println(friends.get(i).name);
-                                    if(friends.get(i).name == null){
-                                        friends.remove(i);
-                                    }
+                                    System.out.println(friends.get(i).name);
+                                   // if(friends.get(i).name == null){
+                                    //    friends.remove(i);
+                                    //}
                                 }
 
-                                if(friends!=null) {
+                                //if(friends!=null) {
                                     // Sort friends alphabetically
                                     Collections.sort(friends);
-                                }
+                               // }
 
                                 adapterFriends = new ChatListActivity.MyCustomAdapterFriends(friends,getActivity().getApplicationContext());
                                 ListView listView = (ListView) v.findViewById(R.id.events_listView1);
@@ -591,6 +591,18 @@ public class ChatListActivity extends Fragment {
                     timer.schedule(delayedThreadStartTask, TIMEOUT * 12);
 
                     //progress.dismiss();
+                }
+                if (!addedSwipe2) {
+                    final SwipeRefreshLayout mSwipeRefreshLayout2 = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh2);
+                    mSwipeRefreshLayout2.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                        @Override
+                        public void onRefresh() {
+                            updateList();
+                            mSwipeRefreshLayout2.setRefreshing(false);
+                        }
+                    });
+
+                    addedSwipe2 = true;
                 }
             }
 

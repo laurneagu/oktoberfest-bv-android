@@ -107,8 +107,7 @@ public class MainActivity extends Fragment {
     private ProgressDialog dialog;
     private int TIMEOUT = 80;
     private View v;
-
-
+    private Activity activity;
 
     /* SlideTab */
     ViewPager pager;
@@ -231,6 +230,7 @@ public class MainActivity extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         m_context=inflater.getContext();
         v=inflater.inflate(R.layout.activity_main, container,false);
+        activity=getActivity();
 
         try {
 
@@ -437,8 +437,8 @@ public class MainActivity extends Fragment {
             testGPSConnection();
 
             // Get user's last known location from SharedPref
-            String lats = getActivity().getSharedPreferences("UserDetails", 0).getString("current_latitude", "0");
-            String lons = getActivity().getSharedPreferences("UserDetails", 0).getString("current_longitude", "0");
+            String lats = activity.getSharedPreferences("UserDetails", 0).getString("current_latitude", "0");
+            String lons = activity.getSharedPreferences("UserDetails", 0).getString("current_longitude", "0");
 
             userLatitude = Double.parseDouble(lats);
             userLongitude = Double.parseDouble(lons);
