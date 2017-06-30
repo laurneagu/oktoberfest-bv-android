@@ -2,11 +2,11 @@
 <resources>
 <color name="ColorPrimary">#166eb1</color>
 <color name="ColorPrimaryDark">#237bbe</color>
-<color name="tabsScrollColor">#ffffff</color>
-    <color name="white">#ffffff</color>
-    <color name="black">#000000</color>
-    <color name="bg1">#0C3855</color>
-    <color name="bg2">#910c3855</color>
+<color name="tabsScrollColor">#ff69b4</color>
+<color name="white">#ffffff</color>
+<color name="black">#000000</color>
+<color name="bg1">#0C3855</color>
+<color name="bg2">#910c3855</color>
 <color name="black_overlay">#f5f3f3</color>
 
     <color name="bb_inActiveBottomBarItemColor">#747474</color>

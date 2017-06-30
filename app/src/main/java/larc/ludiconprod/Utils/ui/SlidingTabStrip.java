@@ -29,6 +29,9 @@ class SlidingTabStrip extends LinearLayout {
     private int mSelectedPosition;
     private float mSelectionOffset;
 
+    private int mLastBarSize = 0;
+    private int mBestDifference = 0;
+
     private SlidingTabLayout.TabColorizer mCustomTabColorizer;
     private final SimpleTabColorizer mDefaultTabColorizer;
 
@@ -109,12 +112,21 @@ class SlidingTabStrip extends LinearLayout {
 
             mSelectedIndicatorPaint.setColor(color);
 
-            canvas.drawRect(left, height - mSelectedIndicatorThickness, right,
+            //canvas.drawRect(left, height - mSelectedIndicatorThickness, right,
+            //        height, mSelectedIndicatorPaint);
+
+            int currBarSize = right-left;
+            if(currBarSize > mLastBarSize) {
+                mLastBarSize = currBarSize;
+                mBestDifference = right - left - 200;
+            }
+
+            canvas.drawRect(left + 40, height - mSelectedIndicatorThickness, left + mBestDifference,
                     height, mSelectedIndicatorPaint);
         }
 
         // Thin underline along the entire bottom edge
-        canvas.drawRect(0, height - mBottomBorderThickness, getWidth(), height, mBottomBorderPaint);
+        //canvas.drawRect(0, height - mBottomBorderThickness, getWidth(), height, mBottomBorderPaint);
     }
 
     /**

@@ -147,15 +147,6 @@ public class RankingsNewActivity extends Fragment {
                 getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED, WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
             }
 
-            // remove title
-           // requestWindowFeature(Window.FEATURE_NO_TITLE);
-            //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                  //  WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-            //getSupportActionBar().hide();
-            //setContentView(R.layout.activity_rankings);
-
-
             // Set text message in header
             headerMessage = (TextView) v.findViewById(R.id.hello_message_activity);
             headerMessage.setText("FOOTBALL");
@@ -169,7 +160,7 @@ public class RankingsNewActivity extends Fragment {
 
             // Assiging the Sliding Tab Layout View
             tabs = (SlidingTabLayout) v.findViewById(R.id.tabs);
-            tabs.setDistributeEvenly(true); // To make the Tabs Fixed set this true, This makes the tabs Space Evenly in Available width
+            tabs.setDistributeEvenly(false); // To make the Tabs Fixed set this true, This makes the tabs Space Evenly in Available width
 
             // Setting Custom Color for the Scroll bar indicator of the Tab View
             tabs.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
@@ -322,45 +313,10 @@ public class RankingsNewActivity extends Fragment {
 
     public void continueUpdatingTimeline() {
         try {
-
-            // Left side panel
-            //mDrawerList = (ListView) findViewById(R.id.leftMenu);
-            //initializeLeftSidePanel();
-
-            //User.setImage();
-
-            // User picture and name for HEADER MENU
-            //Typeface segoeui = Typeface.createFromAsset(getAssets(), "fonts/seguisb.ttf");
-            /*
-
-            TextView userName = (TextView) findViewById(R.id.userName);
-            userName.setText(User.getFirstName(getApplicationContext()));
-            userName.setTypeface(segoeui);
-
-            TextView userSportsNumber = (TextView)findViewById(R.id.userSportsNumber);
-            userSportsNumber.setText(User.getNumberOfSports(getApplicationContext()));
-            userSportsNumber.setTypeface(segoeui);
-
-            ImageView userPic = (ImageView) findViewById(R.id.userPicture);
-            Drawable d = new BitmapDrawable(getResources(), User.image);
-            userPic.setImageDrawable(d);
-
-
-            userPic.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
-                    RankingsNewActivity.this.startActivity(mainIntent);
-                }
-            });
-            */
-            // -------------------------------------------------------------------------------------------------------------
             updateList();
-
         } catch (Exception exc) {
             Utils.quit();
-        }
-
+          }
     }
 
     public String selectedSport = "football";
@@ -392,22 +348,24 @@ public class RankingsNewActivity extends Fragment {
 
                                     // Temporary solution to order the result, as for now Query is not working properly
                                     int i = 0;
+                                    /*
                                     while (usersLocalList.size() > i && userInRanks.points < usersLocalList.get(i).points) {
                                         i++;
                                     }
+                                    */
 
                                     usersLocalList.add(i, userInRanks);
-                                    if (localAdapter != null) localAdapter.notifyDataSetChanged();
+                                    //if (localAdapter != null) localAdapter.notifyDataSetChanged();
 
                                     // it's me, man -- add me to the friends list too
                                     if (data.getKey().equalsIgnoreCase(User.uid)){
                                             int j = 0;
-                                            while (usersFriendsList.size() > j && userInRanks.points < usersFriendsList.get(j).points) {
-                                                j++;
-                                            }
+                                            //while (usersFriendsList.size() > j && userInRanks.points < usersFriendsList.get(j).points) {
+                                            //    j++;
+                                            //}
                                             usersFriendsList.add(j, userInRanks);
 
-                                            if (friendsAdapter != null) friendsAdapter.notifyDataSetChanged();
+
                                     }
                                     break;
                                 }
@@ -419,6 +377,9 @@ public class RankingsNewActivity extends Fragment {
                         }
                     });
                 }
+
+                //if (localAdapter != null)localAdapter.notifyDataSetChanged();
+                //if (friendsAdapter != null) friendsAdapter.notifyDataSetChanged();
 
                 /* Local Ranking */
                 localAdapter = new UsersLocalAdapter(usersLocalList, getActivity());
@@ -511,13 +472,13 @@ public class RankingsNewActivity extends Fragment {
                                                         user.profileImageURL = dataFriendProfile.getValue().toString();
                                                         // Temporary solution to order the result
                                                         int i = 0;
-                                                        while (usersFriendsList.size() > i && user.points < usersFriendsList.get(i).points) {
+                                                        /*while (usersFriendsList.size() > i && user.points < usersFriendsList.get(i).points) {
                                                             i++;
-                                                        }
+                                                        }*/
 
                                                         usersFriendsList.add(i,user);
 
-                                                        if (friendsAdapter != null) friendsAdapter.notifyDataSetChanged();
+                                                        //if (friendsAdapter != null) friendsAdapter.notifyDataSetChanged();
 
                                                         break;
                                                     }
@@ -528,6 +489,9 @@ public class RankingsNewActivity extends Fragment {
 
                                             }
                                         });
+
+                                        if (friendsAdapter != null)
+                                            friendsAdapter.notifyDataSetChanged();
 
                                         break; /// yey it has points
                                     }
@@ -603,43 +567,6 @@ public class RankingsNewActivity extends Fragment {
         super.onDestroy();
     }
 
-
-    // Left side menu
-    /*
-    public void initializeLeftSidePanel() {
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.leftMenu);
-
-        // Set the adapter for the list view
-        mDrawerList.setAdapter(new LeftSidePanelAdapter(this, RankingsNewActivity.this));
-        // Set the list's click listener
-        LeftPanelItemClicker.OnItemClick(mDrawerList, getApplicationContext(), RankingsNewActivity.this);
-
-        final ImageButton showPanel = (ImageButton) findViewById(R.id.showPanel);
-        showPanel.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // Perform action on click
-                mDrawerLayout.openDrawer(Gravity.LEFT);
-            }
-        });
-
-        // Toggle efect on left side panel
-        mDrawerToggle = new android.support.v4.app.ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-            }
-        };
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-
-    }
-    */
-
     // Adapter for the Around activities tab
     public class UsersLocalAdapter extends BaseAdapter implements ListAdapter {
 
@@ -690,7 +617,6 @@ public class RankingsNewActivity extends Fragment {
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //Toast.makeText(getApplicationContext(), "View profile ?!", Toast.LENGTH_SHORT).show();
                         currView.setBackgroundColor(Color.parseColor("#C3DC6E"));
                         Intent intent = new Intent(getActivity(), ProfileActivity.class);
                         intent.putExtra("uid", list.get(position).id);
@@ -720,24 +646,26 @@ public class RankingsNewActivity extends Fragment {
                 holder.rl_ranks.setBackgroundColor(Color.TRANSPARENT);
             }
 
+            /*
             // Gold medal
             if (position == 0) {
-                holder.place.setImageResource(R.drawable.medal1);
+                holder.place.setBackgroundResource(R.drawable.medal1);
             }
             // Silver
             else if (position == 1) {
-                holder.place.setImageResource(R.drawable.medal2);
+                holder.place.setBackgroundResource(R.drawable.medal2);
             }
             // Bronze
             else if (position == 2) {
-               holder.place.setImageResource(R.drawable.medal3);
+               holder.place.setBackgroundResource(R.drawable.medal3);
             }
             // Other places
             else {
-                    holder.place.setImageResource(R.drawable.medal4);
+                    holder.place.setBackgroundResource(R.drawable.medal4);
                 }
+            */
 
-                if (position >= 9){
+            if (position >= 9){
 
                     int dpValue = 20; // margin in dips
                     float d = context.getResources().getDisplayMetrics().density;
@@ -751,6 +679,7 @@ public class RankingsNewActivity extends Fragment {
             holder.placeText.setVisibility(View.VISIBLE);
 
             holder.name.setText(list.get(position).name);
+
             holder.profilePicture.setBackgroundResource(R.drawable.defaultpicture);
             Picasso.with(context).load(list.get(position).profileImageURL).into(holder.profilePicture);
 

@@ -7,7 +7,7 @@
     <tab
         id="@+id/tab_favorites"
         icon="@drawable/ic_favorites"
-        title="Cuppons" />
+        title="Coupons" />
     <tab
         id="@+id/tab_nearby"
         icon="@drawable/ic_nearby"
@@ -20,6 +20,5 @@
     <tab
         id="@+id/tab_food"
         icon="@drawable/ic_restaurants"
-        title="Profile"
-        />
+        title="Profile" />
 </tabs>

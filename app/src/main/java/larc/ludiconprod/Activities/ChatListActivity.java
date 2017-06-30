@@ -78,7 +78,6 @@ public class ChatListActivity extends Fragment {
     private ProgressDialog dialog;
     private int TIMEOUT = 1;
     public static boolean isForeground = false;
-    ProgressDialog progress;
     private View v;
     ViewPager pager;
     ViewPagerAdapter adapter;
@@ -167,7 +166,7 @@ public class ChatListActivity extends Fragment {
 
             // Assiging the Sliding Tab Layout View
             tabs = (SlidingTabLayout) v.findViewById(R.id.tabsChatFriends);
-            tabs.setDistributeEvenly(true); // To make the Tabs Fixed set this true, This makes the tabs Space Evenly in Available width
+            tabs.setDistributeEvenly(false); // To make the Tabs Fixed set this true, This makes the tabs Space Evenly in Available width
 
             // Setting Custom Color for the Scroll bar indicator of the Tab View
             tabs.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
@@ -179,71 +178,19 @@ public class ChatListActivity extends Fragment {
 
             // Setting the ViewPager For the SlidingTabsLayout
             tabs.setViewPager(pager);
-            /**************/
-
-        /* Progress dialog */
-            progress = new ProgressDialog(getActivity());
-            progress.setTitle("Loading");
-            progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
-            progress.show();
-
-            //User.setImage();
-
 
             chatUID = getActivity().getIntent().getStringExtra("chatUID");
             dialog = ProgressDialog.show(getActivity(), "", "Loading. Please wait", true);
 
-            // User picture and name for HEADER MENU
-        /*
-        Typeface segoeui = Typeface.createFromAsset(getActivity().getAssets(), "fonts/seguisb.ttf");
-
-        TextView userName = (TextView) v.findViewById(R.id.userName);
-        userName.setText(User.getFirstName(getActivity().getApplicationContext()));
-        userName.setTypeface(segoeui);
-
-        TextView userSportsNumber = (TextView)v.findViewById(R.id.userSportsNumber);
-        userSportsNumber.setText(User.getNumberOfSports(getActivity().getApplicationContext()));
-        userSportsNumber.setTypeface(segoeui);
-        */
-
-        /*
-        final ImageButton createNewChat = (ImageButton)findViewById(R.id.header_button);
-        createNewChat.setVisibility(View.VISIBLE);
-        createNewChat.setBackgroundResource(R.drawable.admin_add2);
-
-        createNewChat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent friendListIntent = new Intent(getApplicationContext(), FriendsActivity.class);
-                ChatListActivity.this.startActivity(friendListIntent);
-            }
-        });
-        */
-/*
-        TextView hello_message = (TextView) v.findViewById(R.id.hello_message_activity);
-        hello_message.setText("");
-        ImageView userPic = (ImageView) v.findViewById(R.id.userPicture);
-        Drawable d = new BitmapDrawable(getResources(), User.image);
-        userPic.setImageDrawable(d);
-        userPic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent mainIntent = new Intent(getActivity().getApplicationContext(), MainActivity.class);
-                ChatListActivity.this.startActivity(mainIntent);
-            }
-        });
-*/
-
             // Delete chat notifications
-
-        ChatNotifier chatNotifier = new ChatNotifier();
-        synchronized (chatNotifier.lock) {
-            for (int i = chatNotifier.chatNotificationFirstIndex; i <= chatNotifier.chatNotificationIndex; ++i) {
-                chatNotifier.deleteNotification(getActivity().getSystemService(getActivity().NOTIFICATION_SERVICE), i);
+            ChatNotifier chatNotifier = new ChatNotifier();
+            synchronized (chatNotifier.lock) {
+                for (int i = chatNotifier.chatNotificationFirstIndex; i <= chatNotifier.chatNotificationIndex; ++i) {
+                    chatNotifier.deleteNotification(getActivity().getSystemService(getActivity().NOTIFICATION_SERVICE), i);
+                }
+                chatNotifier.chatNotificationIndex = 0;
+                chatNotifier.chatNotificationFirstIndex = 0;
             }
-            chatNotifier.chatNotificationIndex = 0;
-            chatNotifier.chatNotificationFirstIndex = 0;
-        }
 
 
 
@@ -256,8 +203,7 @@ public class ChatListActivity extends Fragment {
     }
 
 
-    public void getChatInfo(final List<Chat1to1> chatList, final Chat1to1 chat, final long size)
-    {
+    public void getChatInfo(final List<Chat1to1> chatList, final Chat1to1 chat, final long size) {
         DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(chat.userUID);
         firebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -276,24 +222,23 @@ public class ChatListActivity extends Fragment {
                             chat.friendPhoto = "";
                         }
 
-                    if  ((data.getKey()).compareTo("lastLogInTime") == 0)
+                    if ((data.getKey()).compareTo("lastLogInTime") == 0)
                         if (data.getValue() != null) {
-                            Date lastOnlineDate = DateManager.convertFromSecondsToDate((long)data.getValue());
-                            chat.lastTimeOnline= formatMessageDate(lastOnlineDate);
-                        }
-                        else{
-                            chat.lastTimeOnline="";
+                            Date lastOnlineDate = DateManager.convertFromSecondsToDate((long) data.getValue());
+                            chat.lastTimeOnline = formatMessageDate(lastOnlineDate);
+                        } else {
+                            chat.lastTimeOnline = "";
                         }
                 }
 
                 chatList.add(chat);
 
                 // Reach chat end of the list
-                if(chatList.size()==size){
-                    progress.dismiss();
+                if (chatList.size() == size) {
+                    ;
                     List<Chat1to1> newChatList = chatList;
 
-                    for(int i =0 ; i < newChatList.size() ; i++) {
+                    for (int i = 0; i < newChatList.size(); i++) {
                         // this is for the bug of creating conversation when tapping a friend
                         if (newChatList.get(i).lastMessageText.equalsIgnoreCase("Welcome to our chat! :)")) {
                             newChatList.remove(newChatList.get(i));
@@ -327,15 +272,7 @@ public class ChatListActivity extends Fragment {
             addedSwipe = true;
         }
     }
-    public void continueUpdatingTimeline() {
-        try {
-            updateList();
-        }
-        catch (Exception e){
-            e.printStackTrace();
-            Utils.quit();
-        }
-        }
+
     public void updateList() {
         chatList.clear();
         friends.clear();
@@ -388,24 +325,6 @@ public class ChatListActivity extends Fragment {
                     intent.putExtra("chatID", chatUID);
                     startActivity(intent);
                 }
-
-                // Dismiss loading dialog after  2 * TIMEOUT * chatList.size() ms
-                Timer timer = new Timer();
-                TimerTask delayedThreadStartTask = new TimerTask() {
-                    @Override
-                    public void run() {
-
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                dialog.dismiss();
-                            }
-                        }).start();
-                    }
-                };
-
-                timer.schedule(delayedThreadStartTask, TIMEOUT * 12);
-                progress.dismiss();
             }
 
             @Override
@@ -522,47 +441,42 @@ public class ChatListActivity extends Fragment {
                                 }
                             }
 
+
                             if (index == friends.size()-1){ // if it is the last one, you can start the ui
+
+
                                 // Dismiss loading dialog after  2 * TIMEOUT * chatList.size() ms
                                 Timer timer = new Timer();
                                 TimerTask delayedThreadStartTask = new TimerTask() {
-                                    @Override
-                                    public void run() {
-
-                                        new Thread(new Runnable() {
                                             @Override
                                             public void run() {
-                                                dialog.dismiss();
-                                            }
-                                        }).start();
+
+                                                new Thread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        dialog.dismiss();
+                                                    }
+                                                }).start();
                                     }
                                 };
 
-                                timer.schedule(delayedThreadStartTask, TIMEOUT * 12);
+                                timer.schedule(delayedThreadStartTask, TIMEOUT * 6);
 
-                                //progress.dismiss();
                                 int iRemovedCount=0;
                                 // Remove empty indexes
                                 for(Integer indexToRemove : toRemoveNoMoreFriends){
                                     friends.remove(friends.get(indexToRemove-iRemovedCount));
                                     iRemovedCount++;
                                 }
-                                for(int i=0;i<friends.size();i++){
-                                    System.out.println(friends.get(i).name);
-                                   // if(friends.get(i).name == null){
-                                    //    friends.remove(i);
-                                    //}
-                                }
 
-                                //if(friends!=null) {
-                                    // Sort friends alphabetically
                                     Collections.sort(friends);
-                               // }
 
-                                adapterFriends = new ChatListActivity.MyCustomAdapterFriends(friends,getActivity().getApplicationContext());
-                                ListView listView = (ListView) v.findViewById(R.id.events_listView1);
-                                Log.v("TAG",friends.size()+"");
-                                listView.setAdapter(adapterFriends);
+                                if(getActivity() != null) {
+                                    adapterFriends = new ChatListActivity.MyCustomAdapterFriends(friends, getActivity().getApplicationContext());
+                                    ListView listView = (ListView) v.findViewById(R.id.events_listView1);
+                                    Log.v("TAG", friends.size() + "");
+                                    listView.setAdapter(adapterFriends);
+                                }
                             }
                         }
 
@@ -573,6 +487,7 @@ public class ChatListActivity extends Fragment {
                 }
 
                 if(friends.size() == 0){
+
                     // Dismiss loading dialog after  2 * TIMEOUT * chatList.size() ms
                     Timer timer = new Timer();
                     TimerTask delayedThreadStartTask = new TimerTask() {
@@ -589,8 +504,6 @@ public class ChatListActivity extends Fragment {
                     };
 
                     timer.schedule(delayedThreadStartTask, TIMEOUT * 12);
-
-                    //progress.dismiss();
                 }
                 if (!addedSwipe2) {
                     final SwipeRefreshLayout mSwipeRefreshLayout2 = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh2);
