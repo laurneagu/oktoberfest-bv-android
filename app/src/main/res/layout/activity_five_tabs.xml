@@ -19,11 +19,10 @@
 
         app:bb_inActiveTabAlpha="0.3"
         app:bb_titleTextAppearance="@style/CustomTitleTextAppearance"
-    <!--
-app:bb_inActiveTabAlpha="0.3"
-app:bb_titleTypeFace="fonts/GreatVibes-Regular.otf"
-app:bb_titleTextAppearance="@style/CustomTitleTextAppearance"
-    -->
-
         />
+            <!--
+        app:bb_inActiveTabAlpha="0.3"
+        app:bb_titleTypeFace="fonts/GreatVibes-Regular.otf"
+        app:bb_titleTextAppearance="@style/CustomTitleTextAppearance"
+        -->
 </RelativeLayout>
