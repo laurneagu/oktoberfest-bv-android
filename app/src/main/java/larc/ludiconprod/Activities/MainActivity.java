@@ -25,6 +25,7 @@ import android.os.IBinder;
 import android.os.SystemClock;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -32,6 +33,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
@@ -42,6 +44,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.Chronometer;
@@ -107,7 +110,6 @@ public class MainActivity extends Fragment {
     private ProgressDialog dialog;
     private int TIMEOUT = 80;
     private View v;
-    private Activity activity;
 
     /* SlideTab */
     ViewPager pager;
@@ -230,7 +232,6 @@ public class MainActivity extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         m_context=inflater.getContext();
         v=inflater.inflate(R.layout.activity_main, container,false);
-        activity=getActivity();
 
         try {
 
@@ -437,8 +438,8 @@ public class MainActivity extends Fragment {
             testGPSConnection();
 
             // Get user's last known location from SharedPref
-            String lats = activity.getSharedPreferences("UserDetails", 0).getString("current_latitude", "0");
-            String lons = activity.getSharedPreferences("UserDetails", 0).getString("current_longitude", "0");
+            String lats = getActivity().getSharedPreferences("UserDetails", 0).getString("current_latitude", "0");
+            String lons = getActivity().getSharedPreferences("UserDetails", 0).getString("current_longitude", "0");
 
             userLatitude = Double.parseDouble(lats);
             userLongitude = Double.parseDouble(lons);
@@ -1330,28 +1331,67 @@ public class MainActivity extends Fragment {
                 /* Friends */
                 fradapter = new TimelineAroundActAdapter(friendsEventsList, getActivity().getApplicationContext());
                 ListView frlistView = (ListView) v.findViewById(R.id.events_listView1);
+                final FloatingActionButton cloudoflistview1 = (FloatingActionButton) v.findViewById(R.id.floatingButton1);
+                cloudoflistview1.setVisibility(View.VISIBLE);
+                frlistView.setOnScrollListener(new AbsListView.OnScrollListener() {
+                    @Override
+                    public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+                    }
+                    @Override
+                    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                        int lastItem = firstVisibleItem + visibleItemCount;
+                        if(visibleItemCount<totalItemCount) {
+                            //cloudoflistview2.animate().translationY(20).setDuration(300);
+                            if (lastItem == totalItemCount) {
+                                //cloudoflistview2.setVisibility(View.INVISIBLE);
+                                cloudoflistview1.animate().translationY(200).setDuration(300);
+                            } else {
+                                cloudoflistview1.animate().translationY(20).setDuration(300);
+                            }
+
+                        }
+                        else{
+                            //cloudoflistview1.animate().translationY(20).setDuration(300);
+                        }
+                    }
+                });
+                //cloudoflistview1.setTypeface(segoeui);
+                cloudoflistview1.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        // cloudoflistview1.setBackgroundResource(R.drawable.cloud_selected);
+
+                        DatabaseReference userSports = User.firebaseRef.child("users").child(User.uid).child("sports");
+                        userSports.addListenerForSingleValueEvent(new ValueEventListener() { // get user sports
+                            @Override
+                            public void onDataChange(DataSnapshot snapshot) {
+                                // Get user's favourite sports
+                                ArrayList<String> favouriteSports = new ArrayList<>();
+                                for (DataSnapshot sport : snapshot.getChildren()) {
+                                    if(!favouriteSports.contains(sport.getKey().toString()))
+                                        favouriteSports.add(sport.getKey().toString());
+                                }
+                                Intent createNewIntent = new Intent(getActivity(), CreateNewActivity.class);
+                                createNewIntent.putStringArrayListExtra("favourite_sports", favouriteSports);
+                                getActivity().startActivity(createNewIntent);
+                            }
+                            @Override
+                            public void onCancelled(DatabaseError firebaseError) {
+                            }
+                        });
+                    }
+                });
                 if (frlistView != null) {
 
                     if (friendsEventsList.size() == 0 && !eventHappeningNow) {
                         frlistView.setBackgroundResource(R.drawable.noeventsaround_bg);
 
                         Typeface segoeui = Typeface.createFromAsset(getActivity().getApplication().getAssets(), "fonts/seguisb.ttf");
-                        final Button cloudoflistview1 = (Button) v.findViewById(R.id.cloudoflistview1);
-                        cloudoflistview1.setVisibility(View.VISIBLE);
-                        cloudoflistview1.setTypeface(segoeui);
-                        cloudoflistview1.setOnClickListener(new View.OnClickListener() {
 
-                            @Override
-                            public void onClick(View v) {
-                                cloudoflistview1.setBackgroundResource(R.drawable.cloud_selected);
 
-                                Intent intent = new Intent(getActivity().getApplicationContext(), CreateNewActivity.class);
-                                startActivity(intent);
-                            }
-                        });
                     } else {
-                        final Button cloudoflistview1 = (Button) v.findViewById(R.id.cloudoflistview1);
-                        cloudoflistview1.setVisibility(View.INVISIBLE);
                         frlistView.setBackgroundColor(Color.parseColor("#FFFFFF"));
                     }
 
@@ -1361,28 +1401,63 @@ public class MainActivity extends Fragment {
                 /* My */
                 myadapter = new TimelineMyActAdapter(myEventsList, getActivity().getApplicationContext());
                 ListView mylistView = (ListView) v.findViewById(R.id.events_listView2);
+                final FloatingActionButton cloudoflistview2 = (FloatingActionButton) v.findViewById(R.id.floatingButton2);
+                cloudoflistview2.setVisibility(View.VISIBLE);
+
+                mylistView.setOnScrollListener(new AbsListView.OnScrollListener() {
+                    @Override
+                    public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+                    }
+                    @Override
+                    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+                        int lastItem = firstVisibleItem + visibleItemCount;
+                        //cloudoflistview2.animate().translationY(20).setDuration(300);
+                        if(totalItemCount>visibleItemCount) {
+                            if (lastItem == totalItemCount) {
+                                //cloudoflistview2.setVisibility(View.INVISIBLE);
+                                cloudoflistview2.animate().translationY(200).setDuration(300);
+                            } else {
+                                cloudoflistview2.animate().translationY(0).setDuration(300);
+                            }
+                        }
+                    }
+                });
+                cloudoflistview2.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        //cloudoflistview2.setBackgroundResource(R.drawable.cloud_selected);
+
+                        DatabaseReference userSports = User.firebaseRef.child("users").child(User.uid).child("sports");
+                        userSports.addListenerForSingleValueEvent(new ValueEventListener() { // get user sports
+                            @Override
+                            public void onDataChange(DataSnapshot snapshot) {
+                                // Get user's favourite sports
+                                ArrayList<String> favouriteSports = new ArrayList<>();
+                                for (DataSnapshot sport : snapshot.getChildren()) {
+                                    if(!favouriteSports.contains(sport.getKey().toString()))
+                                        favouriteSports.add(sport.getKey().toString());
+                                }
+                                Intent createNewIntent = new Intent(getActivity(), CreateNewActivity.class);
+                                createNewIntent.putStringArrayListExtra("favourite_sports", favouriteSports);
+                                getActivity().startActivity(createNewIntent);
+                            }
+                            @Override
+                            public void onCancelled(DatabaseError firebaseError) {
+                            }
+                        });
+                    }
+                });
                 if (mylistView != null) {
 
                     if (myEventsList.size() == 0 && !eventHappeningNow) {
                         mylistView.setBackgroundResource(R.drawable.noeventsaround_bg);
 
                         Typeface segoeui = Typeface.createFromAsset(getActivity().getApplication().getAssets(), "fonts/seguisb.ttf");
-                        final Button cloudoflistview2 = (Button) v.findViewById(R.id.cloudoflistview2);
-                        cloudoflistview2.setVisibility(View.VISIBLE);
-                        cloudoflistview2.setTypeface(segoeui);
-                        cloudoflistview2.setOnClickListener(new View.OnClickListener() {
 
-                            @Override
-                            public void onClick(View v) {
-                                cloudoflistview2.setBackgroundResource(R.drawable.cloud_selected);
-
-                                Intent intent = new Intent(getActivity().getApplicationContext(), CreateNewActivity.class);
-                                startActivity(intent);
-                            }
-                        });
                     } else {
-                        final Button cloudoflistview2 = (Button) v.findViewById(R.id.cloudoflistview2);
-                        cloudoflistview2.setVisibility(View.INVISIBLE);
                         mylistView.setBackgroundColor(Color.parseColor("#FFFFFF"));
                     }
 
@@ -1496,7 +1571,7 @@ public class MainActivity extends Fragment {
 
 
     // Left side menu
-    public void initializeLeftSidePanel() {
+   /* public void initializeLeftSidePanel() {
         mDrawerLayout = (DrawerLayout) v.findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) v.findViewById(R.id.leftMenu);
 
@@ -1505,17 +1580,17 @@ public class MainActivity extends Fragment {
         // Set the list's click listener
         LeftPanelItemClicker.OnItemClick(mDrawerList, getActivity().getApplicationContext(), getActivity());
 
-        /*final ImageButton showPanel = (ImageButton) v.findViewById(R.id.showPanel);
+        final ImageButton showPanel = (ImageButton) v.findViewById(R.id.showPanel);
         showPanel.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click
                 mDrawerLayout.openDrawer(Gravity.LEFT);
             }
         });
-        */
+
 
         // Toggle efect on left side panel
-        mDrawerToggle = new android.support.v4.app.ActionBarDrawerToggle(getActivity(), mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
+       mDrawerToggle = new android.support.v4.app.ActionBarDrawerToggle(getActivity(), mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -1528,7 +1603,7 @@ public class MainActivity extends Fragment {
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-    }
+    }*/
 
     // Adapter for the Around activities tab
     public class TimelineAroundActAdapter extends BaseAdapter implements ListAdapter {
@@ -1587,7 +1662,7 @@ public class MainActivity extends Fragment {
                         //Toast.makeText(getApplicationContext(), "Hei, wait for it..", Toast.LENGTH_SHORT).show();
                         currView.setBackgroundColor(Color.parseColor("#D3D3D3"));
 
-                        Intent intent = new Intent(getActivity().getApplicationContext(), EventDetails.class);
+                        Intent intent = new Intent(currView.getContext(), EventDetails.class);
                         intent.putExtra("eventUid", list.get(position).id);
                         startActivity(intent);
                     }

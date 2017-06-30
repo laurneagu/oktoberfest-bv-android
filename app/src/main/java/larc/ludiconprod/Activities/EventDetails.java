@@ -146,13 +146,13 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
         eventID = eventUid;
 
         // Left side panel -------------------------------------------------------------------------------------------
-        mDrawerList = (ListView) findViewById(R.id.leftMenu);
-        initializeLeftSidePanel();
+        //mDrawerList = (ListView) findViewById(R.id.leftMenu);
+        //initializeLeftSidePanel();
 
-        User.setImage();
+       // User.setImage();
 
         MapFragment mapFragment = (MapFragment) getFragmentManager()
-                .findFragmentById(R.id.map);
+               .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         // User picture and name for HEADER MENU
@@ -174,7 +174,7 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
         userPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                Intent mainIntent = new Intent(getApplicationContext(), Main.class);
                 EventDetails.this.startActivity(mainIntent);
             }
         });
@@ -796,7 +796,7 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
 
 
     // Left side panel -----------------------------------------------------------------------------
-    public void initializeLeftSidePanel() {
+   /* public void initializeLeftSidePanel() {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
 
@@ -827,7 +827,7 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-    }
+    }*/
     // -----------------------------------------------------------------------------
 
 }

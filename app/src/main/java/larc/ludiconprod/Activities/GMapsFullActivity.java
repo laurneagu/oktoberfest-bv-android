@@ -136,10 +136,10 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
         setContentView(R.layout.activity_gmaps_full);
 
         // Left side panel initializing -- DISABLED TEMPORARILYf
-        mDrawerList = (ListView) findViewById(R.id.leftMenu);
-        initializeLeftSidePanel();
+        //mDrawerList = (ListView) findViewById(R.id.leftMenu);
+        //initializeLeftSidePanel();
 
-        User.setImage();
+       // User.setImage();
 
       // User picture and name for HEADER MENU
         Typeface segoeui = Typeface.createFromAsset(getAssets(), "fonts/seguisb.ttf");
@@ -273,7 +273,7 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
 
     // Left side menu
 
-    public void initializeLeftSidePanel() {
+   /* public void initializeLeftSidePanel() {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_gmapsfull);
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
@@ -305,7 +305,7 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-    }
+    }*/
 
 
     @Override

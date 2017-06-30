@@ -218,10 +218,10 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
             favouriteSports = new ArrayList<>();
 
         // Left side panel initializing
-        mDrawerList = (ListView) findViewById(R.id.leftMenu);
-        initializeLeftSidePanel();
+       // mDrawerList = (ListView) findViewById(R.id.leftMenu);
+        //initializeLeftSidePanel();
 
-        User.setImage();
+        //User.setImage();
 
         // User picture and name for HEADER MENU
         // User picture and name for HEADER MENU
@@ -830,7 +830,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
             public void run() {
                 // Actions to do after 5 seconds
                 // Actions to do after 5 seconds
-                Intent goToNextActivity = new Intent(getApplicationContext(), MainActivity.class); //AskPreferences.class);
+                Intent goToNextActivity = new Intent(getApplicationContext(), Main.class); //AskPreferences.class);
                 startActivity(goToNextActivity);
                 finish();
             }
@@ -860,7 +860,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
         finish();
 
-        Intent toMain = new Intent(this, MainActivity.class);
+        Intent toMain = new Intent(this, Main.class);
         toMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(toMain);
     }
@@ -935,7 +935,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
     // Left side menu
 
-    public void initializeLeftSidePanel() {
+   /* public void initializeLeftSidePanel() {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_createnew);
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
 
@@ -967,6 +967,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
     }
+    */
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

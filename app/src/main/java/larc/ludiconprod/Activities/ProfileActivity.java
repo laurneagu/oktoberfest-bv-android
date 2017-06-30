@@ -98,10 +98,10 @@ public class ProfileActivity extends Activity {
 
             setContentView(R.layout.activity_profile);
 
-            mDrawerList = (ListView) findViewById(R.id.leftMenu);
-            initializeLeftSidePanel();
+            //mDrawerList = (ListView) findViewById(R.id.leftMenu);
+            //initializeLeftSidePanel();
 
-            User.setImage();
+            //User.setImage();
 
             // User picture and name for HEADER MENU
             Typeface segoeui = Typeface.createFromAsset(getAssets(), "fonts/seguisb.ttf");
@@ -515,7 +515,7 @@ public class ProfileActivity extends Activity {
     }
     // Left side menu
 
-    public void initializeLeftSidePanel() {
+    /*public void initializeLeftSidePanel() {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_settings);
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
 
@@ -546,5 +546,5 @@ public class ProfileActivity extends Activity {
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-    }
+    }*/
 }
