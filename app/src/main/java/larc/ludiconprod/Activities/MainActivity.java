@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Typeface;
@@ -1350,11 +1351,13 @@ public class MainActivity extends Fragment {
                         Point size = new Point();
                         display.getSize(size);
                         int height = size.y;
+                        DisplayMetrics displayMetrics = Resources.getSystem().getDisplayMetrics();
+                        int dpHeight = (int)(displayMetrics.heightPixels / displayMetrics.density + 0.5);
                         float density=metrics.ydpi;
                         float bottombarpixels=220*(density/160);
                         float value1= (float)((height-bottombarpixels)*1.5);
                         float value2= (float)((height-bottombarpixels));
-                        Toast.makeText(getActivity(),String.valueOf(bottombarpixels),Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(),String.valueOf(height),Toast.LENGTH_SHORT).show();
                         if(visibleItemCount<totalItemCount) {
                             //cloudoflistview2.animate().translationY(20).setDuration(300);
                             if (lastItem == totalItemCount) {
