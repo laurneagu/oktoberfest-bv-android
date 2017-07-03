@@ -1351,9 +1351,9 @@ public class MainActivity extends Fragment {
                         display.getSize(size);
                         int height = size.y;
                         float density=metrics.ydpi;
-                        float bottombarpixels=70*(height/density);
-                        float value1= (float)((height-bottombarpixels)*1.1);
-                        float value2= (float)((height-bottombarpixels)*0.826);
+                        float bottombarpixels=220*(density/160);
+                        float value1= (float)((height-bottombarpixels)*1.5);
+                        float value2= (float)((height-bottombarpixels));
                         Toast.makeText(getActivity(),String.valueOf(bottombarpixels),Toast.LENGTH_SHORT).show();
                         if(visibleItemCount<totalItemCount) {
                             //cloudoflistview2.animate().translationY(20).setDuration(300);
@@ -1434,9 +1434,9 @@ public class MainActivity extends Fragment {
                         display.getSize(size);
                         int height = size.y;
                         float density=metrics.ydpi;
-                        float bottombarpixels=70*(height/density);
-                        float value1= (float)((height-bottombarpixels)*1.1);
-                        float value2= (float)((height-bottombarpixels)*0.826);
+                        float bottombarpixels=220*(density/160);
+                        float value1= (float)((height-bottombarpixels)*1.5);
+                        float value2= (float)((height-bottombarpixels));
                         //cloudoflistview2.animate().translationY(20).setDuration(300);
                         if(visibleItemCount<totalItemCount) {
                             //cloudoflistview2.animate().translationY(20).setDuration(300);
