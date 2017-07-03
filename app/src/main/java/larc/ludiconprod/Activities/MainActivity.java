@@ -35,6 +35,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Display;
@@ -1345,12 +1346,15 @@ public class MainActivity extends Fragment {
                         int lastItem = firstVisibleItem + visibleItemCount;
                         WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
                         Display display = wm.getDefaultDisplay();
+                        DisplayMetrics metrics = getResources().getDisplayMetrics();
                         Point size = new Point();
                         display.getSize(size);
                         int height = size.y;
-                        float value1= (float)(height*0.826);
-                        float value2= (float)(height*0.68);
-                        Toast.makeText(getActivity(),String.valueOf(height),Toast.LENGTH_SHORT).show();
+                        float density=metrics.ydpi;
+                        float bottombarpixels=70*(height/density);
+                        float value1= (float)((height-bottombarpixels)*1.1);
+                        float value2= (float)((height-bottombarpixels)*0.826);
+                        Toast.makeText(getActivity(),String.valueOf(bottombarpixels),Toast.LENGTH_SHORT).show();
                         if(visibleItemCount<totalItemCount) {
                             //cloudoflistview2.animate().translationY(20).setDuration(300);
                             if (lastItem == totalItemCount) {
@@ -1425,11 +1429,14 @@ public class MainActivity extends Fragment {
                         int lastItem = firstVisibleItem + visibleItemCount;
                         WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
                         Display display = wm.getDefaultDisplay();
+                        DisplayMetrics metrics = getResources().getDisplayMetrics();
                         Point size = new Point();
                         display.getSize(size);
                         int height = size.y;
-                        float value1= (float)(height*0.826);
-                        float value2= (float)(height*0.68);
+                        float density=metrics.ydpi;
+                        float bottombarpixels=70*(height/density);
+                        float value1= (float)((height-bottombarpixels)*1.1);
+                        float value2= (float)((height-bottombarpixels)*0.826);
                         //cloudoflistview2.animate().translationY(20).setDuration(300);
                         if(visibleItemCount<totalItemCount) {
                             //cloudoflistview2.animate().translationY(20).setDuration(300);
