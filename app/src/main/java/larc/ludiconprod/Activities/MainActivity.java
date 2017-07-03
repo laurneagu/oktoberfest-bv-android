@@ -12,6 +12,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -36,6 +37,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -115,7 +117,7 @@ public class MainActivity extends Fragment {
     ViewPager pager;
     ViewPagerAdapter adapter;
     SlidingTabLayout tabs;
-    CharSequence Titles[] = {"Around Me", "My Activities"};
+    CharSequence Titles[] = {"My Activities", "Around Me"};
     int Numboftabs = 2;
     boolean addedSwipe = false;
     final ArrayList<String> favoriteSports = new ArrayList<>();
@@ -249,6 +251,14 @@ public class MainActivity extends Fragment {
                 getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                         WindowManager.LayoutParams.FLAG_FULLSCREEN);
             }
+            // remove title
+            //this.getActivity().requestWindowFeature(Window.FEATURE_NO_TITLE);
+           // getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                  //  WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            // Go to chat if chatUID is present
+            // Set current context
+
+            //m_context = getActivity();
 
             String chatUID = getActivity().getIntent().getStringExtra("chatUID");
             if (chatUID != null) {
@@ -256,6 +266,9 @@ public class MainActivity extends Fragment {
                 goToChatList.putExtra("chatUID", chatUID);
                 startActivity(goToChatList);
             }
+
+             // ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+              //getActivity().setContentView(R.layout.activity_main);
 
             // Creating The ViewPagerAdapter and Passing Fragment Manager, Titles fot the Tabs and Number Of Tabs.
             adapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager(), Titles, Numboftabs);
@@ -275,7 +288,6 @@ public class MainActivity extends Fragment {
                     return getResources().getColor(R.color.tabsScrollColor);
                 }
             });
-
 
             // Setting the ViewPager For the SlidingTabsLayout
             tabs.setViewPager(pager);
@@ -452,17 +464,16 @@ public class MainActivity extends Fragment {
                 }
             }
 
-            if(getActivity() != null) {
-                //Clean up shared pref for events: just for debugging
-                SharedPreferences.Editor editor = getActivity().getSharedPreferences("UserDetails", 0).edit();
-                String connectionsJSONString = new Gson().toJson(null);
-                editor.putString("events", connectionsJSONString);
-                editor.commit();
-                // Update sharedpref for events:
-                editor = getActivity().getSharedPreferences("UserDetails", 0).edit();
-                editor.putString("uid", User.uid);
-                editor.commit();
-            }
+
+            //Clean up shared pref for events: just for debugging
+            SharedPreferences.Editor editor = getActivity().getSharedPreferences("UserDetails", 0).edit();
+            String connectionsJSONString = new Gson().toJson(null);
+            editor.putString("events", connectionsJSONString);
+            editor.commit();
+            // Update sharedpref for events:
+            editor = getActivity().getSharedPreferences("UserDetails", 0).edit();
+            editor.putString("uid", User.uid);
+            editor.commit();
             DatabaseReference usersRef = User.firebaseRef.child("users").child(User.uid).child("events");
             usersRef.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -525,51 +536,49 @@ public class MainActivity extends Fragment {
                                         if (!favoriteSports.contains(ai.sport))
                                             mustAddEventToList = false;
 
-                                        if(getActivity() != null) {
-                                            String connectionsJSONString = getActivity().getSharedPreferences("UserDetails", 0).getString("events", null);
-                                            Type type = new TypeToken<List<ActivityInfo>>() {
-                                            }.getType();
-                                            List<ActivityInfo> events = null;
-                                            if (connectionsJSONString != null) {
-                                                events = new Gson().fromJson(connectionsJSONString, type);
-                                            }
-                                            if (events == null) {
-                                                events = new ArrayList<ActivityInfo>();
-                                                if (mustAddEventToList)
-                                                    events.add(ai);
-                                            } else {
-                                                Boolean exist = false;
-                                                for (ActivityInfo act : events) {
-                                                    // Trash detection
-                                                    if (ai.date == null || act.date == null) {
-                                                        exist = true;
-                                                        break;
-                                                    }
-                                                    if (ai.date.compareTo(act.date) == 0) {
-                                                        exist = true;
-                                                    }
+                                        String connectionsJSONString = getActivity().getSharedPreferences("UserDetails", 0).getString("events", null);
+                                        Type type = new TypeToken<List<ActivityInfo>>() {
+                                        }.getType();
+                                        List<ActivityInfo> events = null;
+                                        if (connectionsJSONString != null) {
+                                            events = new Gson().fromJson(connectionsJSONString, type);
+                                        }
+                                        if (events == null) {
+                                            events = new ArrayList<ActivityInfo>();
+                                            if (mustAddEventToList)
+                                                events.add(ai);
+                                        } else {
+                                            Boolean exist = false;
+                                            for (ActivityInfo act : events) {
+                                                // Trash detection
+                                                if (ai.date == null || act.date == null) {
+                                                    exist = true;
+                                                    break;
                                                 }
-                                                if (!exist && mustAddEventToList) {
-                                                    events.add(ai);
+                                                if (ai.date.compareTo(act.date) == 0) {
+                                                    exist = true;
                                                 }
                                             }
-
-                                            //sort by date
-                                            Collections.sort(events, new Comparator<ActivityInfo>() {
-                                                @Override
-                                                public int compare(ActivityInfo lhs, ActivityInfo rhs) {
-                                                    return lhs.date.compareTo(rhs.date);
-                                                }
-                                            });
-
-                                            SharedPreferences.Editor editor = getActivity().getSharedPreferences("UserDetails", 0).edit();
-                                            connectionsJSONString = new Gson().toJson(events);
-                                            editor.putString("events", connectionsJSONString);
-                                            editor.commit();
-
-                                            if (size == ii) {
-                                                checkHappeningNow();
+                                            if (!exist && mustAddEventToList) {
+                                                events.add(ai);
                                             }
+                                        }
+
+                                        //sort by date
+                                        Collections.sort(events, new Comparator<ActivityInfo>() {
+                                            @Override
+                                            public int compare(ActivityInfo lhs, ActivityInfo rhs) {
+                                                return lhs.date.compareTo(rhs.date);
+                                            }
+                                        });
+
+                                        SharedPreferences.Editor editor = getActivity().getSharedPreferences("UserDetails", 0).edit();
+                                        connectionsJSONString = new Gson().toJson(events);
+                                        editor.putString("events", connectionsJSONString);
+                                        editor.commit();
+
+                                        if (size == ii) {
+                                            checkHappeningNow();
                                         }
                                     }
 
@@ -589,6 +598,27 @@ public class MainActivity extends Fragment {
                 }
             });
 
+            // Left side panel
+           // mDrawerList = (ListView) v.findViewById(R.id.leftMenu);
+            //initializeLeftSidePanel();
+
+            //User.setImage();
+
+            // User picture and name for HEADER MENU
+            /*Typeface segoeui = Typeface.createFromAsset(getActivity().getAssets(), "fonts/seguisb.ttf");
+
+            TextView userName = (TextView) v.findViewById(R.id.userName);
+            userName.setText(User.getFirstName(getContext()));
+            userName.setTypeface(segoeui);
+
+            TextView userSportsNumber = (TextView) v.findViewById(R.id.userSportsNumber);
+            userSportsNumber.setText(User.getNumberOfSports(getActivity().getApplicationContext()));
+            userSportsNumber.setTypeface(segoeui);
+
+            ImageView userPic = (ImageView) v.findViewById(R.id.userPicture);
+            Drawable d = new BitmapDrawable(getResources(), User.image);
+            userPic.setImageDrawable(d);
+            */
             updateList(false);
 
         } catch (Exception exc) {
@@ -1144,18 +1174,20 @@ public class MainActivity extends Fragment {
                     boolean mustAddEventToList = true;
                     event.id = data.getKey();
                     Map<String, Boolean> participants = new HashMap<String, Boolean>();
+                    long numberOfParticipants = 0;
 
                     String currentEventUID = "";
-                    if(getActivity() != null) {
-                        String json = getActivity().getSharedPreferences("UserDetails", 0).getString("currentEvent", "");
-                        Gson gson = new Gson();
-                        final ActivityInfo currentEvent = gson.fromJson(json, ActivityInfo.class);
-                        if (currentEvent != null) {
-                            currentEventUID = currentEvent.id;
-                        }
+                    String json = getActivity().getSharedPreferences("UserDetails", 0).getString("currentEvent", "");
+                    Gson gson = new Gson();
+                    final ActivityInfo currentEvent = gson.fromJson(json, ActivityInfo.class);
+                    if (currentEvent != null) {
+                        currentEventUID = currentEvent.id;
+
                     }
 
                     for (DataSnapshot details : data.getChildren()) {
+
+                        // TODO TODO TODO !!!!!!!!!!!!!!!! Create another node with past events!!!!!!!!!!!!!!!!!!!!!!!!
 
                         if (details.getKey().toString().equalsIgnoreCase("active"))
                             mustAddEventToList = Boolean.parseBoolean(details.getValue().toString());
@@ -1209,13 +1241,9 @@ public class MainActivity extends Fragment {
                             event.latitude = latitude;
                             event.longitude = longitude;
 
-                            String lats = "0";
-                            String lons = "0";
+                            String lats = getActivity().getSharedPreferences("UserDetails", 0).getString("current_latitude", "0");
+                            String lons = getActivity().getSharedPreferences("UserDetails", 0).getString("current_longitude", "0");
 
-                            if(getActivity() != null){
-                                lats = getActivity().getSharedPreferences("UserDetails", 0).getString("current_latitude", "0");
-                                lons = getActivity().getSharedPreferences("UserDetails", 0).getString("current_longitude", "0");
-                            }
                             userLatitude = Double.parseDouble(lats);
                             userLongitude = Double.parseDouble(lons);
 
@@ -1297,19 +1325,14 @@ public class MainActivity extends Fragment {
                     }
                 });
 
-                if(getActivity() != null) {
-                    // Save my events also locally - to be used in the Create Activity
-                    SharedPreferences.Editor editor = getActivity().getSharedPreferences("UserDetails", 0).edit();
-                    editor.putString("myEvents", new Gson().toJson(myEventsList));
-                    editor.commit();
-                }
+                // Save my events also locally - to be used in the Create Activity
+                SharedPreferences.Editor editor = getActivity().getSharedPreferences("UserDetails", 0).edit();
+                editor.putString("myEvents", new Gson().toJson(myEventsList));
+                editor.commit();
 
                 /* Friends */
-                if(getActivity() != null) {
-                    fradapter = new TimelineAroundActAdapter(friendsEventsList, getActivity().getApplicationContext());
-                }
-
-                ListView frlistView = (ListView) v.findViewById(R.id.events_listView2);
+                fradapter = new TimelineAroundActAdapter(friendsEventsList, getActivity().getApplicationContext());
+                ListView frlistView = (ListView) v.findViewById(R.id.events_listView1);
                 final FloatingActionButton cloudoflistview1 = (FloatingActionButton) v.findViewById(R.id.floatingButton1);
                 cloudoflistview1.setVisibility(View.VISIBLE);
                 frlistView.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -1320,13 +1343,21 @@ public class MainActivity extends Fragment {
                     @Override
                     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                         int lastItem = firstVisibleItem + visibleItemCount;
+                        WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
+                        Display display = wm.getDefaultDisplay();
+                        Point size = new Point();
+                        display.getSize(size);
+                        int height = size.y;
+                        float value1= (float)(height*0.826);
+                        float value2= (float)(height*0.68);
+                        Toast.makeText(getActivity(),String.valueOf(height),Toast.LENGTH_SHORT).show();
                         if(visibleItemCount<totalItemCount) {
                             //cloudoflistview2.animate().translationY(20).setDuration(300);
                             if (lastItem == totalItemCount) {
                                 //cloudoflistview2.setVisibility(View.INVISIBLE);
-                                cloudoflistview1.animate().translationY(200).setDuration(300);
+                                cloudoflistview1.animate().y(value1).setDuration(300);
                             } else {
-                                cloudoflistview1.animate().translationY(30).setDuration(300);
+                                cloudoflistview1.animate().y(value2).setDuration(300);
                             }
 
                         }
@@ -1365,7 +1396,7 @@ public class MainActivity extends Fragment {
                 if (frlistView != null) {
 
                     if (friendsEventsList.size() == 0 && !eventHappeningNow) {
-                        //frlistView.setBackgroundResource(R.drawable.noeventsaround_bg);
+                        frlistView.setBackgroundResource(R.drawable.noeventsaround_bg);
 
                         Typeface segoeui = Typeface.createFromAsset(getActivity().getApplication().getAssets(), "fonts/seguisb.ttf");
 
@@ -1378,11 +1409,8 @@ public class MainActivity extends Fragment {
                 }
 
                 /* My */
-                if(getActivity() != null) {
-                    myadapter = new TimelineMyActAdapter(myEventsList, getActivity().getApplicationContext());
-                }
-
-                ListView mylistView = (ListView) v.findViewById(R.id.events_listView1);
+                myadapter = new TimelineMyActAdapter(myEventsList, getActivity().getApplicationContext());
+                ListView mylistView = (ListView) v.findViewById(R.id.events_listView2);
                 final FloatingActionButton cloudoflistview2 = (FloatingActionButton) v.findViewById(R.id.floatingButton2);
                 cloudoflistview2.setVisibility(View.VISIBLE);
 
@@ -1395,14 +1423,23 @@ public class MainActivity extends Fragment {
                     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
                         int lastItem = firstVisibleItem + visibleItemCount;
+                        WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
+                        Display display = wm.getDefaultDisplay();
+                        Point size = new Point();
+                        display.getSize(size);
+                        int height = size.y;
+                        float value1= (float)(height*0.826);
+                        float value2= (float)(height*0.68);
                         //cloudoflistview2.animate().translationY(20).setDuration(300);
-                        if(totalItemCount>visibleItemCount) {
+                        if(visibleItemCount<totalItemCount) {
+                            //cloudoflistview2.animate().translationY(20).setDuration(300);
                             if (lastItem == totalItemCount) {
                                 //cloudoflistview2.setVisibility(View.INVISIBLE);
-                                cloudoflistview2.animate().translationY(200).setDuration(300);
+                                cloudoflistview2.animate().y(value1).setDuration(300);
                             } else {
-                                cloudoflistview2.animate().translationY(30).setDuration(300);
+                                cloudoflistview2.animate().y(value2).setDuration(300);
                             }
+
                         }
                     }
                 });
@@ -1435,7 +1472,10 @@ public class MainActivity extends Fragment {
                 if (mylistView != null) {
 
                     if (myEventsList.size() == 0 && !eventHappeningNow) {
-                        //mylistView.setBackgroundResource(R.drawable.noeventsaround_bg);
+                        mylistView.setBackgroundResource(R.drawable.noeventsaround_bg);
+
+                        Typeface segoeui = Typeface.createFromAsset(getActivity().getApplication().getAssets(), "fonts/seguisb.ttf");
+
                     } else {
                         mylistView.setBackgroundColor(Color.parseColor("#FFFFFF"));
                     }
