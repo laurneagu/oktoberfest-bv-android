@@ -6,6 +6,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -19,6 +20,7 @@ import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -45,6 +47,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -104,7 +107,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
     private ActivitiesLocationListener locationListener;
     private LocationManager lm;
     private GoogleMap m_gmap;
-
+    private Switch switchPrivacy;
     private double latitude = 0;
     private double longitude = 0;
     private int isOfficial = 0;
@@ -168,6 +171,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
             lati = Double.parseDouble(latString);
             longi = Double.parseDouble(longString);
         } catch (NullPointerException e) {
+            e.printStackTrace();
 //            Context context = getApplicationContext();
 //            int duration = Toast.LENGTH_LONG;
 //
@@ -226,7 +230,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         // User picture and name for HEADER MENU
         // User picture and name for HEADER MENU
         Typeface segoeui = Typeface.createFromAsset(getAssets(), "fonts/seguisb.ttf");
-
+        switchPrivacy=(Switch) findViewById(R.id.switchPrivacy);
         TextView userName = (TextView) findViewById(R.id.userName);
         userName.setText(User.getFirstName(getApplicationContext()));
         userName.setTypeface(segoeui);
@@ -235,16 +239,17 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         userSportsNumber.setText(User.getNumberOfSports(getApplicationContext()));
         userSportsNumber.setTypeface(segoeui);
 
-        ImageView userPic = (ImageView) findViewById(R.id.userPicture);
+       /* ImageView userPic = (ImageView) findViewById(R.id.userPicture);
         Drawable d = new BitmapDrawable(getResources(), User.image);
         userPic.setImageDrawable(d);
         userPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                Intent mainIntent = new Intent(getApplicationContext(), Main.class);
                 CreateNewActivity.this.startActivity(mainIntent);
             }
         });
+        */
 
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
@@ -647,7 +652,12 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
             map.put("privacy", "private");
         }
         */
-            map.put("privacy", "public");
+            if(switchPrivacy.isChecked()) {
+                map.put("privacy", "private");
+            }
+            else{
+                map.put("privacy", "public");
+            }
 
             // Set location
             final Map<String, Object> mapAux = new HashMap<>();

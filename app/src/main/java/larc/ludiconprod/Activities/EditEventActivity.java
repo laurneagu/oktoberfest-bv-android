@@ -44,6 +44,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -115,6 +116,7 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
     private Boolean dateHasChanged=false;
     private Boolean timeHasChanged=false;
     private String defaultDate = "";
+    Switch switchPrivacy;
 
     private List<String> sports = new ArrayList<String>() {{
         add("football");
@@ -182,6 +184,12 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_create_new);
+
+        switchPrivacy=(Switch) findViewById(R.id.switchPrivacy) ;
+        if(getIntent().getStringExtra("eventPrivacy").equalsIgnoreCase("private")){
+            switchPrivacy.setChecked(true);
+        }
+
 
         //// Create event in header menu
         createEvent = (ImageButton) findViewById(R.id.header_button);
@@ -606,8 +614,14 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
         } else {
             map.put("privacy", "private");
         }
-*/
+
+
+*/       if(!switchPrivacy.isChecked()) {
             map.put("privacy", "public");
+        }
+        else{
+            map.put("privacy", "private");
+        }
 
             // Set location
             final Map<String, Object> mapAux = new HashMap<>();
@@ -744,7 +758,7 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
             public void run() {
                 // Actions to do after 5 seconds
                 // Actions to do after 5 seconds
-                Intent goToNextActivity = new Intent(getApplicationContext(), MainActivity.class); //AskPreferences.class);
+                Intent goToNextActivity = new Intent(getApplicationContext(), Main.class); //AskPreferences.class);
                 startActivity(goToNextActivity);
                 finish();
             }
@@ -767,7 +781,7 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
         locationListener = null;
         finish();
 
-        Intent toMain = new Intent(this, MainActivity.class);
+        Intent toMain = new Intent(this, Main.class);
         toMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(toMain);
     }

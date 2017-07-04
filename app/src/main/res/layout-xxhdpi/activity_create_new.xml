@@ -168,6 +168,8 @@
                 android:layout_marginLeft="50dp"
                 android:layout_below="@+id/dateTimeHint"/>
 
+
+
             <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -208,11 +210,20 @@
                 android:layout_below="@+id/locationTB"
                 android:textStyle="italic"
                 android:textSize="10dp" />
+            <Switch
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Private"
+                android:layout_marginTop="10dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/locationHint"
+                android:id="@+id/switchPrivacy"/>
+
 
             <fragment xmlns:android="http://schemas.android.com/apk/res/android"
                 android:name="com.google.android.gms.maps.MapFragment"
                 android:id="@+id/map"
-                android:layout_below="@+id/locationHint"
+                android:layout_below="@+id/switchPrivacy"
                 android:layout_width="400dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"

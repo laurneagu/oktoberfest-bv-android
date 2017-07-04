@@ -465,10 +465,10 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
                             .setPositiveButton("YES", new DialogInterface.OnClickListener() {
 
                                 public void onClick(DialogInterface dialog, int whichButton) {
-                                    FirebaseDatabase.getInstance().getReference().child("events").child(eventUid).child("users").child("+" + 5*participants +userName.getText()).setValue(true);
+                                    FirebaseDatabase.getInstance().getReference().child("events").child(eventUid).child("users").child("+" + 5*participants +userName.getText()).setValue(User.uid);
                                     Toast.makeText(getApplicationContext(),"You have added 1 friend",Toast.LENGTH_SHORT).show();
                                     finish();
-                                    Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                                    Intent mainIntent = new Intent(getApplicationContext(), Main.class);
                                     EventDetails.this.startActivity(mainIntent);
 //                                    startActivity(getIntent());
                                 }
@@ -503,7 +503,7 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
                                                     if (users.equalsIgnoreCase(userName.getText().toString())) {
                                                         User.firebaseRef.child("events").child(eventUid).child("users").child(data.getKey()).removeValue();
                                                         finish();
-                                                        Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                                                        Intent mainIntent = new Intent(getApplicationContext(), Main.class);
                                                         EventDetails.this.startActivity(mainIntent);
 //                                                        startActivity(getIntent());
                                                         return;
@@ -599,13 +599,32 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
                                 for(DataSnapshot data : details.getChildren())
                                 {
                                     if (!data.getKey().equalsIgnoreCase(User.uid)) {
-                                        users.put(data.getKey().toString(), Boolean.parseBoolean(data.getValue().toString()));
+                                           // users.put(data.getKey().toString(), Boolean.parseBoolean(data.getValue().toString()));
+                                        users.put(data.getKey().toString(),data.getValue());
 
                                         if(!isAnotherUser){
 
-                                            if(data.getKey().toString().startsWith("+")){
-                                                continue;
-                                            }
+                                                final DatabaseReference userReferinta = FirebaseDatabase.getInstance().getReference().child("events").child(eventUid).child("users");
+                                                userReferinta.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(DataSnapshot snapshot) {
+                                                        for (DataSnapshot data : snapshot.getChildren()) {
+
+                                                            if (data.getKey().toString().startsWith("+")) {
+                                                                if (data.getValue().toString().equalsIgnoreCase(User.uid)) {
+
+                                                                    userReferinta.child(data.getKey()).removeValue();
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(DatabaseError firebaseError) {
+                                                    }
+                                                });
+
+
 
 
                                             User.firebaseRef.child("events").child(eventUid).child("createdBy").setValue(data.getKey().toString());

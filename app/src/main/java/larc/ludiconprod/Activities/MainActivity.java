@@ -1273,9 +1273,10 @@ public class MainActivity extends Fragment {
                                 String userID = user.getKey().toString();
                                 if (userID.equalsIgnoreCase(User.uid)) {
                                     doIParticipate = true;
-                                    participants.put(user.getKey().toString(), (Boolean) user.getValue());
+                                    TODO: //change true with player is accepted or not
+                                    participants.put(user.getKey().toString(), true);
                                 } else {
-                                    participants.put(user.getKey().toString(), (Boolean) user.getValue());
+                                    participants.put(user.getKey().toString(), true);
                                 }
                             }
                         }
@@ -1795,10 +1796,11 @@ public class MainActivity extends Fragment {
                                 map.put(data.getKey(), data.getValue());
                             }
 
-                            map.put(User.uid, true);
+                            //map.put(User.uid, true);
                             // NOTE: I need userRef to set the map value
-                            DatabaseReference userRef = User.firebaseRef.child("events").child(list.get(position).id).child("users");
-                            userRef.updateChildren(map);
+                            DatabaseReference userRef = User.firebaseRef.child("events").child(list.get(position).id).child("users").child(User.uid);
+                            userRef.child("accepted").setValue(false);
+                            userRef.child("profilePictureURL").setValue(User.profilePictureURL);
 
 
                             Map<String, Object> inEv = new HashMap<>();

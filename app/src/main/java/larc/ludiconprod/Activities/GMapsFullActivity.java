@@ -152,12 +152,13 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
         userSportsNumber.setText(User.getNumberOfSports(getApplicationContext()));
         userSportsNumber.setTypeface(segoeui);
 
-        ImageView userPic = (ImageView) findViewById(R.id.userPicture);
+     /*   ImageView userPic = (ImageView) findViewById(R.id.userPicture);
         Drawable d = new BitmapDrawable(getResources(), User.image);
         userPic.setImageDrawable(d);
 
             ImageView menuButton = (ImageView) findViewById(R.id.showPanel);
             menuButton.setVisibility(View.INVISIBLE);
+            */
             
         mapFragment= (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
@@ -243,6 +244,7 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
         startDemo();
         }
         catch(Exception exc) {
+            exc.printStackTrace();
             Utils.quit();
         }
     }
@@ -308,7 +310,7 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
     }*/
 
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -329,7 +331,7 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
 
         return super.onOptionsItemSelected(item);
     }
-
+*/
     // Cluster code !
     private ClusterManager<AuthPlace> mClusterManager;
     private Random mRandom = new Random(1984);
