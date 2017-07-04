@@ -92,11 +92,14 @@ import java.util.concurrent.TimeUnit;
 
 import larc.ludiconprod.Adapters.LeftPanelItemClicker;
 import larc.ludiconprod.Adapters.LeftSidePanelAdapter;
+import larc.ludiconprod.Adapters.MainActivity.AroundMeAdapter;
+import larc.ludiconprod.Adapters.MainActivity.MyAdapter;
 import larc.ludiconprod.R;
 import larc.ludiconprod.UserInfo.ActivityInfo;
 import larc.ludiconprod.UserInfo.User;
 import larc.ludiconprod.Services.FriendlyService;
 import larc.ludiconprod.Utils.Event;
+import larc.ludiconprod.Utils.General;
 import larc.ludiconprod.Utils.Location.GPSTracker;
 import larc.ludiconprod.Utils.MainPageUtils.ViewPagerAdapter;
 import larc.ludiconprod.Utils.ui.SlidingTabLayout;
@@ -106,11 +109,6 @@ import larc.ludiconprod.Utils.util.Utils;
 import android.support.v4.widget.SwipeRefreshLayout;
 
 public class MainActivity extends Fragment {
-
-    // Left side panel
-    private ListView mDrawerList;
-    private ActionBarDrawerToggle mDrawerToggle;
-    private DrawerLayout mDrawerLayout;
     private ProgressDialog dialog;
     private int TIMEOUT = 80;
     private View v;
@@ -126,19 +124,14 @@ public class MainActivity extends Fragment {
     int userRange = 100;
     private final ArrayList<Event> myEventsList = new ArrayList<>();
 
-    private TimelineAroundActAdapter fradapter;
-    private TimelineMyActAdapter myadapter;
+    private AroundMeAdapter fradapter;
+    private MyAdapter myadapter;
 
     private ServiceConnection mServiceConn = new ServiceConnection() {
         @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-
-        }
-
+        public void onServiceConnected(ComponentName name, IBinder service) {}
         @Override
-        public void onServiceDisconnected(ComponentName name) {
-
-        }
+        public void onServiceDisconnected(ComponentName name) {}
     };
 
     public MainActivity() {
@@ -253,14 +246,6 @@ public class MainActivity extends Fragment {
                 getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                         WindowManager.LayoutParams.FLAG_FULLSCREEN);
             }
-            // remove title
-            //this.getActivity().requestWindowFeature(Window.FEATURE_NO_TITLE);
-           // getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                  //  WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            // Go to chat if chatUID is present
-            // Set current context
-
-            //m_context = getActivity();
 
             String chatUID = getActivity().getIntent().getStringExtra("chatUID");
             if (chatUID != null) {
@@ -268,9 +253,6 @@ public class MainActivity extends Fragment {
                 goToChatList.putExtra("chatUID", chatUID);
                 startActivity(goToChatList);
             }
-
-             // ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
-              //getActivity().setContentView(R.layout.activity_main);
 
             // Creating The ViewPagerAdapter and Passing Fragment Manager, Titles fot the Tabs and Number Of Tabs.
             adapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager(), Titles, Numboftabs);
@@ -293,13 +275,10 @@ public class MainActivity extends Fragment {
 
             // Setting the ViewPager For the SlidingTabsLayout
             tabs.setViewPager(pager);
-            /**************/
 
             // Initialize Crashlytics (Fabric)
             Fabric.with(getActivity(), new Crashlytics());
             logUser();
-
-
 
             dialog = ProgressDialog.show(getActivity(), "", "Loading. Please wait", true);
 
@@ -321,7 +300,6 @@ public class MainActivity extends Fragment {
                 e.printStackTrace();
             }
             for (final Map.Entry<String, Integer> entry : unsavedPointsMap.entrySet()) {
-
                 // Avoid redundant check of event's sport
                 if(entry.getValue() == 0)
                     continue;
@@ -391,36 +369,6 @@ public class MainActivity extends Fragment {
                 public void onCancelled(DatabaseError firebaseError) {
                 }
             });
-            //getSharedPreferences("UserDetails", 0).edit().putString("HappeningNowEvent", "").commit();
-
-
-            /// Get Current event for HappeningNOW:
-//        Gson gson = new Gson();
-//        String json = getSharedPreferences("UserDetails", 0).getString("HappeningNowEvent", "");
-//        final ActivityInfo currentEvent = gson.fromJson(json, ActivityInfo.class);
-//        if ( currentEvent != null ) {
-//
-//            long diffInMillisec = currentEvent.date.getTime() -new Date().getTime();
-//            long diffInSec = TimeUnit.MILLISECONDS.toSeconds(diffInMillisec);
-//            diffInSec/= 3600;
-//
-//            if(diffInSec > 2){ // over 2 hours
-//                getSharedPreferences("UserDetails", 0).edit().putString("HappeningNowEvent", "").commit();
-//            }
-//            else {
-//                Toast.makeText(getApplicationContext(), "Awesome, you have an activity right now! :-)", Toast.LENGTH_LONG).show();
-//                SharedPreferences.Editor editor = getSharedPreferences("UserDetails", 0).edit();
-//                Gson gson1 = new Gson();
-//                String json1 = gson.toJson(currentEvent); // Type is activity info
-//                editor.putString("currentEvent", json1);
-//                editor.commit();
-//                showHappeningNow(currentEvent);
-//                updateList();
-//            }
-//
-//
-//        }
-
 
         } catch (Exception exc) {
             exc.printStackTrace();
@@ -451,6 +399,7 @@ public class MainActivity extends Fragment {
             // it it is first time:
             if (userLatitude <= 0 || userLongitude <= 0) {
                 GPSTracker gps = new GPSTracker(getActivity().getApplicationContext(),  getActivity());
+
                 if (gps.canGetLocation()) {
                     userLatitude = gps.getLatitude();
                     userLongitude = gps.getLongitude();
@@ -1150,9 +1099,7 @@ public class MainActivity extends Fragment {
 
     // ********************************************* End Location:
 
-
     public void updateList(final boolean eventHappeningNow) {
-
         // stop swiping on my events
         final SwipeRefreshLayout mSwipeRefreshLayout2 = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh2);
         mSwipeRefreshLayout2.setEnabled(false);
@@ -1165,8 +1112,6 @@ public class MainActivity extends Fragment {
             public void onDataChange(DataSnapshot snapshot) {
                 myEventsList.clear();
 
-                final ArrayList<Event> eventList = new ArrayList<>();
-
                 final ArrayList<Event> friendsEventsList = new ArrayList<>();
                 for (DataSnapshot data : snapshot.getChildren()) {
                     Event event = new Event();
@@ -1176,7 +1121,6 @@ public class MainActivity extends Fragment {
                     boolean mustAddEventToList = true;
                     event.id = data.getKey();
                     Map<String, Boolean> participants = new HashMap<String, Boolean>();
-                    long numberOfParticipants = 0;
 
                     String currentEventUID = "";
                     String json = getActivity().getSharedPreferences("UserDetails", 0).getString("currentEvent", "");
@@ -1184,13 +1128,9 @@ public class MainActivity extends Fragment {
                     final ActivityInfo currentEvent = gson.fromJson(json, ActivityInfo.class);
                     if (currentEvent != null) {
                         currentEventUID = currentEvent.id;
-
                     }
 
                     for (DataSnapshot details : data.getChildren()) {
-
-                        // TODO TODO TODO !!!!!!!!!!!!!!!! Create another node with past events!!!!!!!!!!!!!!!!!!!!!!!!
-
                         if (details.getKey().toString().equalsIgnoreCase("active"))
                             mustAddEventToList = Boolean.parseBoolean(details.getValue().toString());
 
@@ -1293,7 +1233,7 @@ public class MainActivity extends Fragment {
 
                     // If event's sport is not in user's favourites do not include it
                     if (!favoriteSports.contains(event.sport))
-                        mustAddEventToList = false;
+                    mustAddEventToList = false;
 
                     if (event.noUsers == event.roomCapacity)
                         mustAddEventToList = false;
@@ -1334,7 +1274,7 @@ public class MainActivity extends Fragment {
                 editor.commit();
 
                 /* Friends */
-                fradapter = new TimelineAroundActAdapter(friendsEventsList, getActivity().getApplicationContext());
+                fradapter = new AroundMeAdapter(friendsEventsList, getActivity().getApplicationContext(), getActivity(), getResources());
                 ListView frlistView = (ListView) v.findViewById(R.id.events_listView1);
                 final FloatingActionButton cloudoflistview1 = (FloatingActionButton) v.findViewById(R.id.floatingButton1);
                 cloudoflistview1.setVisibility(View.VISIBLE);
@@ -1417,7 +1357,7 @@ public class MainActivity extends Fragment {
                 }
 
                 /* My */
-                myadapter = new TimelineMyActAdapter(myEventsList, getActivity().getApplicationContext());
+                myadapter = new MyAdapter(myEventsList, getActivity().getApplicationContext(), getActivity(), getResources());
                 ListView mylistView = (ListView) v.findViewById(R.id.events_listView2);
                 final FloatingActionButton cloudoflistview2 = (FloatingActionButton) v.findViewById(R.id.floatingButton2);
                 cloudoflistview2.setVisibility(View.VISIBLE);
@@ -1549,18 +1489,12 @@ public class MainActivity extends Fragment {
             return true;
         }
 
-        // Left side panel
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-
 
         if (mServiceConn != null) {
             try {
@@ -1574,13 +1508,11 @@ public class MainActivity extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-
 
         String state = getActivity().getSharedPreferences("UserDetails", 0).getString("currentEventStateCheck", "3"); // 0 - didn't start, 1 - started, 2 - stopped, 3 - nothing
 
@@ -1599,408 +1531,13 @@ public class MainActivity extends Fragment {
         }
     }
 
-
-    // Left side menu
-   /* public void initializeLeftSidePanel() {
-        mDrawerLayout = (DrawerLayout) v.findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) v.findViewById(R.id.leftMenu);
-
-        // Set the adapter for the list view
-        mDrawerList.setAdapter(new LeftSidePanelAdapter(getActivity(), getActivity()));
-        // Set the list's click listener
-        LeftPanelItemClicker.OnItemClick(mDrawerList, getActivity().getApplicationContext(), getActivity());
-
-        final ImageButton showPanel = (ImageButton) v.findViewById(R.id.showPanel);
-        showPanel.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // Perform action on click
-                mDrawerLayout.openDrawer(Gravity.LEFT);
-            }
-        });
-
-
-        // Toggle efect on left side panel
-       mDrawerToggle = new android.support.v4.app.ActionBarDrawerToggle(getActivity(), mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-            }
-        };
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-
-    }*/
-
-    // Adapter for the Around activities tab
-    public class TimelineAroundActAdapter extends BaseAdapter implements ListAdapter {
-
-        class ViewHolder {
-            TextView name;
-            ImageView profilePicture;
-            TextView firstPart;
-            TextView secondPart;
-            TextView time;
-            TextView place;
-            ImageView icon;
-            ImageButton details;
-            Button join;
-            TextView players;
-            TextView description;
-        }
-
-        ;
-        private ArrayList<Event> list = new ArrayList<>();
-        private Context context;
-        final ListView listView = (ListView) v.findViewById(R.id.events_listView1);
-
-        public TimelineAroundActAdapter(ArrayList<Event> list, Context context) {
-            this.list = list;
-            this.context = context;
-        }
-
-        @Override
-        public int getCount() {
-            return list.size();
-        }
-
-        @Override
-        public Object getItem(int pos) {
-            return list.get(pos);
-        }
-
-        @Override
-        public long getItemId(int pos) {
-            return 0;
-        }
-
-        @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
-            View view = convertView;
-            ViewHolder holder = null;
-            if (view == null) {
-                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(R.layout.timeline_list_layout, null);
-
-
-
-                holder = new ViewHolder();
-                holder.name = (TextView) view.findViewById(R.id.nameLabel);
-                holder.profilePicture = (ImageView) view.findViewById(R.id.profilePicture);
-                holder.firstPart = (TextView) view.findViewById(R.id.firstPartofText);
-                holder.secondPart = (TextView) view.findViewById(R.id.secondPartofText);
-                holder.time = (TextView) view.findViewById(R.id.timeText);
-                holder.place = (TextView) view.findViewById(R.id.placeText);
-                holder.icon = (ImageView) view.findViewById(R.id.sportIcon);
-                //holder.details = (ImageButton) view.findViewById(R.id.details_btn);
-                holder.join = (Button) view.findViewById(R.id.join_btn);
-                holder.description = (TextView) view.findViewById(R.id.descriptionID);
-                holder.players = (TextView) view.findViewById(R.id.playersID);
-
-                view.setTag(holder);
-            } else {
-                holder = (ViewHolder) view.getTag();
-            }
-
-            // Set name and picture for the first user of the event
-            view.setBackgroundColor(Color.parseColor("#FFFFFF"));
-
-            final View currView = view;
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //Toast.makeText(getApplicationContext(), "Hei, wait for it..", Toast.LENGTH_SHORT).show();
-                    currView.setBackgroundColor(Color.parseColor("#D3D3D3"));
-
-                    Intent intent = new Intent(currView.getContext(), EventDetails.class);
-                    intent.putExtra("eventUid", list.get(position).id);
-                    startActivity(intent);
-                }
-            });
-
-            holder.name.setText(list.get(position).creatorName.split(" ")[0]);
-            holder.profilePicture.setBackgroundResource(R.drawable.defaultpicture);
-            Picasso.with(context).load(list.get(position).profileImageURL).into(holder.profilePicture);
-
-
-            // Redirect to user profile on picture click
-            holder.profilePicture.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    Intent intent = new Intent(getActivity().getApplicationContext(), ProfileActivity.class);
-                    intent.putExtra("uid", list.get(position).getFirstUser());
-                    startActivity(intent);
-                }
-            });
-
-            String uri = "@drawable/" + list.get(position).sport.toLowerCase().replace(" ", "");
-
-            int imageResource = getResources().getIdentifier(uri, null, getActivity().getPackageName());
-            Drawable res = getResources().getDrawable(imageResource);
-
-            holder.icon.setImageDrawable(res);
-            if (list.get(position).sport.equalsIgnoreCase("jogging"))
-                holder.firstPart.setText("Will go " + list.get(position).sport);
-            else
-                holder.firstPart.setText("Will play " + list.get(position).sport);
-            if ((list.get(position).noUsers - 1) > 1) {
-                holder.secondPart.setText(" with " + (list.get(position).noUsers - 1) + " others");
-            } else if ((list.get(position).noUsers - 1) == 1) {
-                holder.secondPart.setText(" with 1 other");
-            } else {
-                holder.secondPart.setText(" with no others");
-            }
-
-            if (list.get(position).description.equalsIgnoreCase(""))
-                holder.description.setText("\"" + "I don't have a description for my event :(" + "\"");
-            else
-                holder.description.setText("\"" + list.get(position).description + "\"");
-
-            holder.players.setText(list.get(position).noUsers + "/" + list.get(position).roomCapacity);
-
-            if (list.get(position) != null)
-                holder.place.setText(list.get(position).place);
-            else
-                holder.place.setText("Unknown");
-            Calendar c = Calendar.getInstance();
-            Date today = c.getTime();
-            int todayDay = getDayOfMonth(today);
-            int todayMonth = today.getMonth();
-            int todayYear = today.getYear();
-
-            String day;
-            if (todayDay == getDayOfMonth(list.get(position).date) && todayMonth == list.get(position).date.getMonth() && todayYear == list.get(position).date.getYear())
-                day = "Today";
-            else if (todayDay == (getDayOfMonth(list.get(position).date) - 1) && todayMonth == list.get(position).date.getMonth() && todayYear == list.get(position).date.getYear())
-                day = "Tomorrow";
-            else
-                day = getDayOfMonth(list.get(position).date) + "/" + (list.get(position).date.getMonth() + 1) + "/" + (list.get(position).date.getYear() + 1900);
-            String dateHour = list.get(position).date.getHours() + "";
-            String dateMin = list.get(position).date.getMinutes() + "";
-            if (dateHour.equalsIgnoreCase("0")) dateHour += "0";
-            if (dateMin.equalsIgnoreCase("0")) dateMin += "0";
-            String hour = dateHour + ":" + dateMin;
-            holder.time.setText(day + " at " + hour);
-
-            holder.join.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    DatabaseReference usersRef = User.firebaseRef.child("events").child(list.get(position).id).child("users");
-                    usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot snapshot) {
-                            Map<String, Object> map = new HashMap<>();
-                            for (DataSnapshot data : snapshot.getChildren()) {
-
-                                map.put(data.getKey(), data.getValue());
-                            }
-
-                            //map.put(User.uid, true);
-                            // NOTE: I need userRef to set the map value
-                            DatabaseReference userRef = User.firebaseRef.child("events").child(list.get(position).id).child("users").child(User.uid);
-                            userRef.child("accepted").setValue(false);
-                            userRef.child("profilePictureURL").setValue(User.profilePictureURL);
-
-
-                            Map<String, Object> inEv = new HashMap<>();
-                            inEv.put("participation", true);
-                            inEv.put("points", 0);
-
-                            Map<String, Object> ev = new HashMap<String, Object>();
-                            ev.put(list.get(position).id, inEv);
-                            list.remove(position);
-                            User.firebaseRef.child("users").child(User.uid).child("events").updateChildren(ev);
-                            updateList(false);
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError firebaseError) {
-                        }
-                    });
-                }
-            });
-
-            return view;
-        }
-    }
-
-
-    public static int getDayOfMonth(Date aDate) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(aDate);
-        return cal.get(Calendar.DAY_OF_MONTH);
-    }
-
-
-    // Adapter for the My pending activities tab
-    public class TimelineMyActAdapter extends BaseAdapter implements ListAdapter {
-
-        class ViewHolder {
-            TextView name;
-            ImageView profilePicture;
-            TextView firstPart;
-            TextView secondPart;
-            TextView time;
-            TextView place;
-            ImageView icon;
-            ImageButton details;
-            TextView description;
-            TextView players;
-        }
-
-        private ArrayList<Event> list = new ArrayList<>();
-        private Context context;
-        final ListView listView = (ListView) getActivity().findViewById(R.id.events_listView2);
-
-        public TimelineMyActAdapter(ArrayList<Event> list, Context context) {
-            this.list = list;
-            this.context = context;
-        }
-
-        @Override
-        public int getCount() {
-            return list.size();
-        }
-
-        @Override
-        public Object getItem(int pos) {
-            return list.get(pos);
-        }
-
-        @Override
-        public long getItemId(int pos) {
-            return 0;
-        }
-
-        @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
-
-            View view = convertView;
-            ViewHolder holder = null;
-            if (view == null) {
-                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(R.layout.timeline_list_myactivities_layout, null);
-                final View currView = view;
-
-                view.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                //Toast.makeText(getApplicationContext(), "Hei, wait for it..", Toast.LENGTH_SHORT).show();
-                                                currView.setBackgroundColor(Color.parseColor("#D3D3D3"));
-
-                                                Intent intent = new Intent(getActivity().getApplicationContext(), EventDetails.class);
-                                                intent.putExtra("eventUid", list.get(position).id);
-                                                startActivity(intent);
-                                            }
-                                        }
-                );
-                holder = new ViewHolder();
-                holder.name = (TextView) view.findViewById(R.id.nameLabel);
-                holder.profilePicture = (ImageView) view.findViewById(R.id.profilePicture);
-                holder.firstPart = (TextView) view.findViewById(R.id.firstPartofText);
-                holder.secondPart = (TextView) view.findViewById(R.id.secondPartofText);
-                holder.time = (TextView) view.findViewById(R.id.timeText);
-                holder.place = (TextView) view.findViewById(R.id.placeText);
-                holder.icon = (ImageView) view.findViewById(R.id.sportIcon);
-                holder.description = (TextView) view.findViewById(R.id.descriptionID);
-                holder.players = (TextView) view.findViewById(R.id.playersID);
-
-                view.setTag(holder);
-            } else {
-                holder = (ViewHolder) view.getTag();
-            }
-
-            // Set name and picture for the first user of the event
-            view.setBackgroundColor(Color.parseColor("#FFFFFF"));
-
-            String firstName = list.get(position).creatorName.split(" ")[0];
-            holder.name.setText(firstName);
-            holder.profilePicture.setBackgroundResource(R.drawable.defaultpicture);
-            Picasso.with(context).load(list.get(position).profileImageURL).into(holder.profilePicture);
-
-            // Redirect to user profile on picture click
-            holder.profilePicture.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    if (User.uid.equals(list.get(position).creator)) {
-                        Toast.makeText(context, "This is you ! We can't compare with yourself..", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Intent intent = new Intent(getActivity().getApplicationContext(), ProfileActivity.class);
-                        intent.putExtra("uid", list.get(position).getFirstUser());
-                        startActivity(intent);
-                    }
-                }
-            });
-
-            String uri = "@drawable/" + list.get(position).sport.toLowerCase().replace(" ", "");
-            Log.v("drawable", uri);
-            int imageResource = getResources().getIdentifier(uri, null, getActivity().getPackageName());
-            Drawable res = getResources().getDrawable(imageResource);
-
-            holder.icon.setImageDrawable(res);
-            if (list.get(position).sport.equalsIgnoreCase("jogging"))
-                holder.firstPart.setText("Will go " + list.get(position).sport);
-            else
-                holder.firstPart.setText("Will play " + list.get(position).sport);
-            if ((list.get(position).noUsers - 1) > 1) {
-                holder.secondPart.setText(" with " + (list.get(position).noUsers - 1) + " others");
-            } else if ((list.get(position).noUsers - 1) == 1) {
-                holder.secondPart.setText(" with 1 other");
-            } else {
-                holder.secondPart.setText(" with no others");
-            }
-
-            if (list.get(position).description.equalsIgnoreCase(""))
-                holder.description.setText("\"" + "I don't have a description for my event :(" + "\"");
-            else
-                holder.description.setText("\"" + list.get(position).description + "\"");
-
-            holder.players.setText(list.get(position).noUsers + "/" + list.get(position).roomCapacity);
-
-            if (list.get(position) != null) {
-                if (list.get(position).isOfficial == 0) {
-                    holder.place.setTextColor(Color.DKGRAY);
-                }
-                holder.place.setText(list.get(position).place);
-            } else
-                holder.place.setText("Unknown");
-
-            Calendar c = Calendar.getInstance();
-            Date today = c.getTime();
-            int todayDay = getDayOfMonth(today);
-            int todayMonth = today.getMonth();
-            int todayYear = today.getYear();
-
-            String day;
-            if (todayDay == getDayOfMonth(list.get(position).date) && todayMonth == list.get(position).date.getMonth() && todayYear == list.get(position).date.getYear())
-                day = "Today";
-            else if (todayDay == (getDayOfMonth(list.get(position).date) - 1) && todayMonth == list.get(position).date.getMonth() && todayYear == list.get(position).date.getYear())
-                day = "Tomorrow";
-            else
-                day = getDayOfMonth(list.get(position).date) + "/" + (list.get(position).date.getMonth() + 1) + "/" + (list.get(position).date.getYear() + 1900);
-            String dateHour = (list.get(position).date.getHours() < 10) ? "0" + list.get(position).date.getHours() :
-                                                                        list.get(position).date.getHours() +  "";
-
-            String dateMin = (list.get(position).date.getMinutes()<10)? "0" + list.get(position).date .getMinutes() :
-                    list.get(position).date .getMinutes() +  "";
-
-            if (dateHour.equalsIgnoreCase("0")) dateHour += "0";
-            if (dateMin.equalsIgnoreCase("0")) dateMin += "0";
-            String hour = dateHour + ":" + dateMin;
-            holder.time.setText(day + " at " + hour);
-
-            return view;
-        }
-    }
-
     void testGPSConnection() {
         boolean gps_enabled = false;
 
-        final Context context = m_context;//getActivity();
+        final Context context = m_context;
 
         try {
-            LocationManager lm = null;
+            LocationManager lm;
             lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
             if(lm != null) {

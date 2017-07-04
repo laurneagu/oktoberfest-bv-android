@@ -573,13 +573,6 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         try {
             Calendar calendar = myCalendar;
 
-                /*new GregorianCalendar(myCalendar.get(Calendar.YEAR),
-                myCalendar.get(Calendar.MONTH),
-                myCalendar.get(Calendar.DAY_OF_MONTH), // dono fucking why ?!
-                myCalendar.get(Calendar.HOUR_OF_DAY),
-                myCalendar.get(Calendar.MINUTE));
-                */
-
             UniqueIDCreator idCreator = new UniqueIDCreator();
             final String id = idCreator.nextSessionId();
 
@@ -612,46 +605,8 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
             map.put("creatorImage", User.profilePictureURL);
 
 
-//            // TODO OMG WTF ASL PLS, wtf? why do we get the name and the image from firebase?????????????????????????????
-//            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(User.uid);
-//            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(DataSnapshot snapshot) {
-//                    for (DataSnapshot data : snapshot.getChildren()) {
-//                        if (data.getKey().equalsIgnoreCase("name")) {
-//                            map.put("creatorName", data.getValue().toString());
-//                            Log.v("CreatorName", data.getValue().toString());
-//                        }
-//                        if (data.getKey().equalsIgnoreCase("profileImageURL")) {
-//                            map.put("creatorImage", data.getValue().toString());
-//                            Log.v("CreatorImage", data.getValue().toString());
-//                        }
-//                    }
-//                }
-//
-//                @Override
-//                public void onCancelled(DatabaseError firebaseError) {
-//                }
-//            });
-//            // TODO OMG WTF ASL PLS, just why????
-//            try {
-//                Thread.sleep(200, 1);
-//            } catch (InterruptedException exc) {
-//            }
-
             Log.v("Name", User.firstName + User.lastName);
-            //map.put("date",  java.text.DateFormat.getDateTimeInstance().format(calendar.getTime()));
-            //Log.v("date", java.text.DateFormat.getDateTimeInstance().format(calendar.getTime()) );
 
-            // Set privacy
-        /*
-        Button privacy = (Button) findViewById(R.id.publicBut);
-        if (privacy.getAlpha() == 1) {
-            map.put("privacy", "public");
-        } else {
-            map.put("privacy", "private");
-        }
-        */
             if(switchPrivacy.isChecked()) {
                 map.put("privacy", "private");
             }
