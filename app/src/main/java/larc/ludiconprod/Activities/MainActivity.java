@@ -1685,18 +1685,7 @@ public class MainActivity extends Fragment {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.timeline_list_layout, null);
 
-                final View currView = view;
-                view.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //Toast.makeText(getApplicationContext(), "Hei, wait for it..", Toast.LENGTH_SHORT).show();
-                        currView.setBackgroundColor(Color.parseColor("#D3D3D3"));
 
-                        Intent intent = new Intent(currView.getContext(), EventDetails.class);
-                        intent.putExtra("eventUid", list.get(position).id);
-                        startActivity(intent);
-                    }
-                });
 
                 holder = new ViewHolder();
                 holder.name = (TextView) view.findViewById(R.id.nameLabel);
@@ -1719,6 +1708,18 @@ public class MainActivity extends Fragment {
             // Set name and picture for the first user of the event
             view.setBackgroundColor(Color.parseColor("#FFFFFF"));
 
+            final View currView = view;
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //Toast.makeText(getApplicationContext(), "Hei, wait for it..", Toast.LENGTH_SHORT).show();
+                    currView.setBackgroundColor(Color.parseColor("#D3D3D3"));
+
+                    Intent intent = new Intent(currView.getContext(), EventDetails.class);
+                    intent.putExtra("eventUid", list.get(position).id);
+                    startActivity(intent);
+                }
+            });
 
             holder.name.setText(list.get(position).creatorName.split(" ")[0]);
             holder.profilePicture.setBackgroundResource(R.drawable.defaultpicture);
