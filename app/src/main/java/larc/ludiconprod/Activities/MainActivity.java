@@ -1278,6 +1278,7 @@ public class MainActivity extends Fragment {
                 ListView frlistView = (ListView) v.findViewById(R.id.events_listView1);
                 final FloatingActionButton cloudoflistview1 = (FloatingActionButton) v.findViewById(R.id.floatingButton1);
                 cloudoflistview1.setVisibility(View.VISIBLE);
+
                 frlistView.setOnScrollListener(new AbsListView.OnScrollListener() {
                     @Override
                     public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -1292,19 +1293,16 @@ public class MainActivity extends Fragment {
                         Point size = new Point();
                         display.getSize(size);
                         int height = size.y;
-                        DisplayMetrics displayMetrics = Resources.getSystem().getDisplayMetrics();
-                        int dpHeight = (int)(displayMetrics.heightPixels / displayMetrics.density + 0.5);
                         float density=metrics.ydpi;
-                        float bottombarpixels=220*(density/160);
+                        float bottombarpixels=250*(density/160);
                         float value1= (float)((height-bottombarpixels)*1.5);
                         float value2= (float)((height-bottombarpixels));
-                        Toast.makeText(getActivity(),String.valueOf(height),Toast.LENGTH_SHORT).show();
                         if(visibleItemCount<totalItemCount) {
                             //cloudoflistview2.animate().translationY(20).setDuration(300);
-                            if (lastItem == totalItemCount) {
+                            if (lastItem == visibleItemCount) {
                                 //cloudoflistview2.setVisibility(View.INVISIBLE);
                                 cloudoflistview1.animate().y(value1).setDuration(300);
-                            } else {
+                            } else{
                                 cloudoflistview1.animate().y(value2).setDuration(300);
                             }
 
@@ -1378,7 +1376,7 @@ public class MainActivity extends Fragment {
                         display.getSize(size);
                         int height = size.y;
                         float density=metrics.ydpi;
-                        float bottombarpixels=220*(density/160);
+                        float bottombarpixels=250*(density/160);
                         float value1= (float)((height-bottombarpixels)*1.5);
                         float value2= (float)((height-bottombarpixels));
                         //cloudoflistview2.animate().translationY(20).setDuration(300);
