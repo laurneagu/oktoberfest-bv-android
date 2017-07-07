@@ -8,15 +8,15 @@
     <!--android:paddingTop="@dimen/activity_vertical_margin"-->
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:id="@+id/scroll"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingBottom="@dimen/activity_vertical_margin"
-                android:layout_marginTop="60dp"
-                android:fillViewport="true">
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:layout_marginTop="60dp"
+        android:fillViewport="true">
 
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
@@ -24,18 +24,18 @@
             android:layout_height="match_parent"
             tools:context="larc.ludiconprod.Activities.CreateNewActivity">
 
-    <!-- SPORTS PICK -->
+            <!-- SPORTS PICK -->
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="Pick a sport"
-        android:layout_marginLeft="20dp"
-        android:id="@+id/sportPickTV"
-        android:textColor="#81878b"
-        android:textStyle="bold"
-        android:textSize="20dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="Pick a sport"
+                android:layout_marginLeft="20dp"
+                android:id="@+id/sportPickTV"
+                android:textColor="#81878b"
+                android:textStyle="bold"
+                android:textSize="20dp" />
             <Button
                 android:layout_width="50dp"
                 android:layout_height="50dp"
@@ -46,18 +46,18 @@
                 android:layout_marginLeft="50dp"
                 android:background="@drawable/football"/>
 
-<!--MAX PLAYERS-->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="40dp"
-            android:text="Num. of players"
-            android:textColor="#81878b"
-            android:id="@+id/MaxPlayers"
-            android:layout_toRightOf="@+id/sportPickTV"
-            android:textStyle="bold"
-            android:textSize="20dp" />
+            <!--MAX PLAYERS-->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="40dp"
+                android:text="Num. of players"
+                android:textColor="#81878b"
+                android:id="@+id/MaxPlayers"
+                android:layout_toRightOf="@+id/sportPickTV"
+                android:textStyle="bold"
+                android:textSize="20dp" />
 
             <RelativeLayout
                 android:layout_width="fill_parent"
@@ -69,27 +69,27 @@
                 android:layout_toRightOf="@+id/selectedSportButton">
 
                 <Button
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_marginTop="9dp"
-                android:layout_toLeftOf="@+id/maxPlayersET"
-                android:background="@drawable/numberpicker_down_normal"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="9dp"
+                    android:layout_toLeftOf="@+id/maxPlayersET"
+                    android:background="@drawable/numberpicker_down_normal"
                     android:id="@+id/removePeople"
-                android:layout_marginRight="25dp"
-                />
+                    android:layout_marginRight="25dp"
+                    />
 
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="7dp"
-                android:text="3"
-                android:textColor="#0e64a6"
-                android:layout_centerInParent="true"
-                android:background="@drawable/create_edittext"
-                android:editable="false"
-                android:textAlignment="center"
-                android:textColorHint="#0e64a6"
-                android:id="@+id/maxPlayersET" />
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="7dp"
+                    android:text="3"
+                    android:textColor="#0e64a6"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/create_edittext"
+                    android:editable="false"
+                    android:textAlignment="center"
+                    android:textColorHint="#0e64a6"
+                    android:id="@+id/maxPlayersET" />
 
 
                 <Button
@@ -105,17 +105,17 @@
 
             <!--DESCRIPTION-->
             <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
-            android:text="Description"
-            android:textColor="#81878b"
-            android:id="@+id/Description"
-            android:layout_below="@+id/maxPlayersLayout"
-            android:textStyle="bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:text="Description"
+                android:textColor="#81878b"
+                android:id="@+id/Description"
+                android:layout_below="@+id/maxPlayersLayout"
+                android:textStyle="bold"
                 android:layout_marginBottom="10dp"
-            android:textSize="20dp" />
+                android:textSize="20dp" />
 
             <EditText
                 android:layout_width="250dp"
@@ -129,18 +129,18 @@
                 android:textColorHint="#0e64a6"
                 android:id="@+id/DescriptionInput" />
 
-        <!-- DATE TIME PICK -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="5dp"
-            android:text="Date and time"
-            android:textColor="#81878b"
-            android:id="@+id/datetimeTB"
-            android:layout_below="@+id/DescriptionInput"
-            android:textStyle="bold"
-            android:textSize="20dp" />
+            <!-- DATE TIME PICK -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5dp"
+                android:text="Date and time"
+                android:textColor="#81878b"
+                android:id="@+id/datetimeTB"
+                android:layout_below="@+id/DescriptionInput"
+                android:textStyle="bold"
+                android:textSize="20dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -218,29 +218,50 @@
                 android:layout_centerHorizontal="true"
                 android:layout_below="@+id/locationHint"
                 android:id="@+id/switchPrivacy"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_below="@+id/switchPrivacy"
+                android:id="@+id/relativeLayout2">
+
+
+
+                <MultiAutoCompleteTextView
+                    android:id="@+id/simpleMultiAutoCompleteTextView"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#0f0"
+                    android:gravity="center"
+                    android:hint="Enter Your Text Here"
+                    android:padding="10dp"
+                    android:dropDownHeight="100dp"
+                    android:textColor="#f00"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </RelativeLayout>
 
 
             <fragment xmlns:android="http://schemas.android.com/apk/res/android"
                 android:name="com.google.android.gms.maps.MapFragment"
                 android:id="@+id/map"
-                android:layout_below="@+id/switchPrivacy"
+                android:layout_below="@+id/relativeLayout2"
                 android:layout_width="400dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="5dp"/>
 
-        <Button
-            android:id="@+id/createEvent"
-            android:layout_width="100dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="10dp"
-            android:textAllCaps="false"
-            android:background="@drawable/create_button"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/map"
-            android:onClick="OnCreateEvent"
-            android:textStyle="bold"
-            android:textSize="20dp" />
+            <Button
+                android:id="@+id/createEvent"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:textAllCaps="false"
+                android:background="@drawable/create_button"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/map"
+                android:onClick="OnCreateEvent"
+                android:textStyle="bold"
+                android:textSize="20dp" />
 
 
             <ProgressBar android:indeterminate="true"

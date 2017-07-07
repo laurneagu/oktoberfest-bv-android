@@ -19,13 +19,17 @@ import android.location.LocationManager;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,6 +39,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -44,6 +49,7 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -53,6 +59,8 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 import android.support.v7.app.AlertDialog.Builder;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.DatabaseError;
@@ -72,7 +80,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -81,7 +91,9 @@ import java.util.TimeZone;
 
 import larc.ludiconprod.Adapters.LeftPanelItemClicker;
 import larc.ludiconprod.Adapters.LeftSidePanelAdapter;
+import larc.ludiconprod.Model.ChatHandler;
 import larc.ludiconprod.R;
+import larc.ludiconprod.UserInfo.FriendsList;
 import larc.ludiconprod.UserInfo.User;
 import larc.ludiconprod.Utils.Event;
 import larc.ludiconprod.Utils.Location.GPSTracker;
@@ -89,6 +101,7 @@ import larc.ludiconprod.Utils.Location.GPS_Positioning;
 import larc.ludiconprod.Utils.Location.ActivitiesLocationListener;
 import larc.ludiconprod.Utils.Sport;
 import larc.ludiconprod.Utils.util.DateManager;
+import larc.ludiconprod.Utils.util.SystemUiHider;
 import larc.ludiconprod.Utils.util.UniqueIDCreator;
 import larc.ludiconprod.Utils.util.Utils;
 
@@ -111,8 +124,27 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
     private double latitude = 0;
     private double longitude = 0;
     private int isOfficial = 0;
+    ArrayAdapter<String> versionNames;
+
+    MultiAutoCompleteTextView simpleMultiAutoCompleteTextView;
+    ArrayList<String> androidVersionNames=new ArrayList<String>();
+    ArrayList<String> FriendsIdList=new ArrayList<String>();
+    ArrayList<String> RemainFriendsIdList=new ArrayList<String>();
+    ArrayList<String> FriendNameList=new ArrayList<String>();
+    ArrayList<String> FriendChatList=new ArrayList<String>();
+    private int mPreviousLength;
+    private boolean mBackSpace;
 
     private String addressName = ""; //default address
+    String originalText;
+    int end=-1;
+    int first=-1;
+    int position=0;
+    boolean texttChoice=false;
+    int contor=0;
+    int initial=0;
+    ArrayList<String> editTextContent=new ArrayList<String>();
+    ArrayList<Integer> itemToRemove=new ArrayList<Integer>();
 
     private List<String> sports = new ArrayList<String>() {{
         add("football");
@@ -198,46 +230,136 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
     private final CreateNewActivity myAct = this;
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Hide App bar
-        // If the Android version is lower than Jellybean, use this call to hide
-        // the status bar.
-        if (Build.VERSION.SDK_INT < 16) {
+        try {
+            // Hide App bar
+            // If the Android version is lower than Jellybean, use this call to hide
+            // the status bar.
+            if (Build.VERSION.SDK_INT < 16) {
+                getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                        WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            }
+            // remove title
+            requestWindowFeature(Window.FEATURE_NO_TITLE);
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                     WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        }
-        // remove title
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        setContentView(R.layout.activity_create_new);
+            setContentView(R.layout.activity_create_new);
+            //String currentEventUID = "";
+            String json = getSharedPreferences("UserDetails", 0).getString("friendsList", null);
+            Type type = new TypeToken<ArrayList<FriendsList>>() {
+            }.getType();
+            ArrayList<FriendsList> myCurrentFriends = new Gson().fromJson(json, type);
+            for (int i = 0; i < myCurrentFriends.size(); i++) {
+                androidVersionNames.add(myCurrentFriends.get(i).name);
+                FriendsIdList.add(myCurrentFriends.get(i).id);
+                FriendNameList.add(myCurrentFriends.get(i).name);
+            }
+             simpleMultiAutoCompleteTextView = (MultiAutoCompleteTextView) findViewById(R.id.simpleMultiAutoCompleteTextView);
+           versionNames = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, androidVersionNames);
+            simpleMultiAutoCompleteTextView.setAdapter(versionNames);
 
-        // Get favourite sports from intent
-        favouriteSports = getIntent().getStringArrayListExtra("favourite_sports");
-        if(favouriteSports == null)
-            favouriteSports = new ArrayList<>();
+// set threshold value 1 that help us to start the searching from first character
+            simpleMultiAutoCompleteTextView.setThreshold(1);
+// set tokenizer that distinguish the various substrings by comma
+            simpleMultiAutoCompleteTextView.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+            simpleMultiAutoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-        // Left side panel initializing
-       // mDrawerList = (ListView) findViewById(R.id.leftMenu);
-        //initializeLeftSidePanel();
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    String selectedItem = (String) parent.getItemAtPosition(position);
 
-        //User.setImage();
+                    for (int i = 0; i < androidVersionNames.size(); i++) {
+                        if (selectedItem.equalsIgnoreCase(androidVersionNames.get(i))) {
+                            versionNames.remove(selectedItem);
+                            editTextContent.add(selectedItem+", ");
 
-        // User picture and name for HEADER MENU
-        // User picture and name for HEADER MENU
-        Typeface segoeui = Typeface.createFromAsset(getAssets(), "fonts/seguisb.ttf");
-        switchPrivacy=(Switch) findViewById(R.id.switchPrivacy);
-        TextView userName = (TextView) findViewById(R.id.userName);
-        userName.setText(User.getFirstName(getApplicationContext()));
-        userName.setTypeface(segoeui);
 
-        TextView userSportsNumber = (TextView) findViewById(R.id.userSportsNumber);
-        userSportsNumber.setText(User.getNumberOfSports(getApplicationContext()));
-        userSportsNumber.setTypeface(segoeui);
+
+                        }
+
+
+
+                    }
+                }
+            });
+            simpleMultiAutoCompleteTextView.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    mPreviousLength = s.length();
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    mBackSpace = mPreviousLength > s.length();
+
+
+                    position=simpleMultiAutoCompleteTextView.getSelectionEnd();
+
+                    if (mBackSpace && position !=0 ) {
+
+                        int itemCount=0;
+                        ArrayList<Integer> endPosition=new ArrayList<Integer>();
+                         int arrayPosition=0;
+                        for(int i=0;i < editTextContent.size();i++){
+
+                            arrayPosition=arrayPosition+editTextContent.get(i).length();
+                            endPosition.add(arrayPosition);
+                        }
+                        for(int i=1;i < endPosition.size();i++) {
+                            if(position > endPosition.get(i-1) && position<=endPosition.get(i)){
+                                itemCount=i;
+                        }
+                        break;
+                        }
+
+                        versionNames.add(editTextContent.get(itemCount).substring(0,editTextContent.get(itemCount).length()-2));
+                        editTextContent.remove(itemCount);
+                        String textField="";
+                        for(int i=0;i<editTextContent.size();i++){
+                            textField=textField+editTextContent.get(i);
+                        }
+                        simpleMultiAutoCompleteTextView.setText(textField);
+                        simpleMultiAutoCompleteTextView.setSelection(textField.length());
+
+                    }
+
+                }
+            });
+
+
+            // Get favourite sports from intent
+            favouriteSports = getIntent().getStringArrayListExtra("favourite_sports");
+            if (favouriteSports == null)
+                favouriteSports = new ArrayList<>();
+
+            // Left side panel initializing
+            // mDrawerList = (ListView) findViewById(R.id.leftMenu);
+            //initializeLeftSidePanel();
+
+            //User.setImage();
+
+            // User picture and name for HEADER MENU
+            // User picture and name for HEADER MENU
+            Typeface segoeui = Typeface.createFromAsset(getAssets(), "fonts/seguisb.ttf");
+            switchPrivacy = (Switch) findViewById(R.id.switchPrivacy);
+            TextView userName = (TextView) findViewById(R.id.userName);
+            userName.setText(User.getFirstName(getApplicationContext()));
+            userName.setTypeface(segoeui);
+
+            TextView userSportsNumber = (TextView) findViewById(R.id.userSportsNumber);
+            userSportsNumber.setText(User.getNumberOfSports(getApplicationContext()));
+            userSportsNumber.setTypeface(segoeui);
 
        /* ImageView userPic = (ImageView) findViewById(R.id.userPicture);
         Drawable d = new BitmapDrawable(getResources(), User.image);
@@ -251,26 +373,26 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         });
         */
 
-        MapFragment mapFragment = (MapFragment) getFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+            MapFragment mapFragment = (MapFragment) getFragmentManager()
+                    .findFragmentById(R.id.map);
+            mapFragment.getMapAsync(this);
 
-        // Clear auto scroll
-        final EditText editTextDesc = (EditText) findViewById(R.id.DescriptionInput);
+            // Clear auto scroll
+            final EditText editTextDesc = (EditText) findViewById(R.id.DescriptionInput);
 
-        ScrollView scroll = (ScrollView) findViewById(R.id.scroll);
-        scroll.setOnTouchListener(new View.OnTouchListener() {
+            ScrollView scroll = (ScrollView) findViewById(R.id.scroll);
+            scroll.setOnTouchListener(new View.OnTouchListener() {
 
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (editTextDesc.hasFocus()) {
-                    editTextDesc.clearFocus();
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (editTextDesc.hasFocus()) {
+                        editTextDesc.clearFocus();
+                    }
+                    return false;
                 }
-                return false;
-            }
-        });
+            });
 
-        // DropDown for the sports
+            // DropDown for the sports
 
         /*
         Spinner spinner = (Spinner) findViewById(R.id.sports_spinner);
@@ -288,181 +410,267 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         ((TextView)v).setTextColor(Color.parseColor("#000000"));
         */
 
-        selectedSportButton = (Button) findViewById(R.id.selectedSportButton);
-        String uri = "@drawable/" + favouriteSports.get(0);
-        int imageResource = getResources().getIdentifier(uri, null, getPackageName());
-        selectedSportButton.setBackgroundResource(imageResource);
-        selectedSportButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DatabaseReference userSports = User.firebaseRef.child("users").child(User.uid).child("sports");
-                userSports.addListenerForSingleValueEvent(new ValueEventListener() { // get user sports
-                    @Override
-                    public void onDataChange(DataSnapshot snapshot) {
-                        showGridSportsDialog();
-                    }
-                    @Override
-                    public void onCancelled(DatabaseError firebaseError) {
-                    }
-                });
-            }
-        });
+            selectedSportButton = (Button) findViewById(R.id.selectedSportButton);
+            String uri = "@drawable/" + favouriteSports.get(0);
+            int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+            selectedSportButton.setBackgroundResource(imageResource);
+            selectedSportButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DatabaseReference userSports = User.firebaseRef.child("users").child(User.uid).child("sports");
+                    userSports.addListenerForSingleValueEvent(new ValueEventListener() { // get user sports
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            showGridSportsDialog();
+                        }
 
-        TextView hello_message = (TextView) findViewById(R.id.hello_message_activity);
-        hello_message.setText("");
-
-        // Events on buttons of Max players capacity
-
-        final EditText maxCapacityET = (EditText) findViewById(R.id.maxPlayersET);
-
-        final Button removePeople = (Button) findViewById(R.id.removePeople);
-
-        removePeople.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    removePeople.setAlpha((float) 0.3);
-
-                    int currValue = Integer.parseInt(maxCapacityET.getText().toString());
-                    if (currValue >= 3)
-                        currValue--;
-                    maxCapacityET.setText(currValue + "");
-                } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    removePeople.setAlpha((float) 1);
+                        @Override
+                        public void onCancelled(DatabaseError firebaseError) {
+                        }
+                    });
                 }
-                return true;
-            }
-        });
+            });
 
-        //// Create event in header menu
-        createEvent = (ImageButton) findViewById(R.id.header_button);
-        createEvent.setVisibility(View.VISIBLE);
-        createEvent.setBackgroundResource(R.drawable.save);
-        createEvent.getLayoutParams().height = 100;
-        createEvent.getLayoutParams().width = 100;
+            TextView hello_message = (TextView) findViewById(R.id.hello_message_activity);
+            hello_message.setText("");
 
-        createEvent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            // Events on buttons of Max players capacity
 
-                Builder builder = new Builder(CreateNewActivity.this, R.style.MyAlertDialogStyle);
-                builder.setTitle("Add an event")
-                        .setMessage("Are you sure you want to add an event?")
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setNegativeButton("NO", null)
-                        .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            final EditText maxCapacityET = (EditText) findViewById(R.id.maxPlayersET);
 
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                if (!OnCreateEvent()) {
-                                    createEvent.setEnabled(true);
-                                    createEvent.setClickable(true);
-                                    createEvent.setAlpha((float) 1);
-                                    return;
+            final Button removePeople = (Button) findViewById(R.id.removePeople);
+
+            removePeople.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        removePeople.setAlpha((float) 0.3);
+
+                        int currValue = Integer.parseInt(maxCapacityET.getText().toString());
+                        if (currValue >= 3)
+                            currValue--;
+                        maxCapacityET.setText(currValue + "");
+                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        removePeople.setAlpha((float) 1);
+                    }
+                    return true;
+                }
+            });
+
+            //// Create event in header menu
+            createEvent = (ImageButton) findViewById(R.id.header_button);
+            createEvent.setVisibility(View.VISIBLE);
+            createEvent.setBackgroundResource(R.drawable.save);
+            createEvent.getLayoutParams().height = 100;
+            createEvent.getLayoutParams().width = 100;
+
+            createEvent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Builder builder = new Builder(CreateNewActivity.this, R.style.MyAlertDialogStyle);
+                    builder.setTitle("Add an event")
+                            .setMessage("Are you sure you want to add an event?")
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setNegativeButton("NO", null)
+                            .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    for(int i=0;i<FriendNameList.size();i++){
+                                        boolean contains=false;
+                                        for(int j=0;j<editTextContent.size();j++) {
+                                            if (editTextContent.get(j).contains(FriendNameList.get(i))){
+                                                contains=true;
+                                            }
+
+
+
+                                        }
+                                        if(!contains){
+                                            itemToRemove.add(0);
+                                        }
+                                        else{
+                                            itemToRemove.add(1);
+                                        }
+
+                                    }
+                                    for(int i=0;i<itemToRemove.size();i++) {
+                                        if(itemToRemove.get(i) == 1){
+                                            RemainFriendsIdList.add(FriendsIdList.get(i));
+                                        }
+
+                                    }
+
+
+                                    // Get instance of ChatHandler
+                                    final ChatHandler chatHandler = ChatHandler.getInstance();
+
+                                    // Get list of chats for the current user
+                                    Task task  = chatHandler.getListOfChats(User.uid);
+                                    task.addOnCompleteListener(CreateNewActivity.this, new OnCompleteListener() {
+                                        @Override
+                                        public void onComplete(@NonNull Task task) {
+                                            Dictionary<String, String> uidsChat= (Dictionary<String,String>)task.getResult();
+                                            for(int i=0;i<RemainFriendsIdList.size();i++){
+                                               if(chatHandler.isFirstConversation(uidsChat.keys(),RemainFriendsIdList.get(i))){
+                                                   FriendChatList.add("First chat");
+                                               }else{
+                                                    FriendChatList.add(uidsChat.get(RemainFriendsIdList.get(i)));
+                                               }
+                                            }
+
+                                            for(int i=0;i<FriendChatList.size();i++){
+                                                if(FriendChatList.get(i).equalsIgnoreCase("First chat")){
+                                                    String chatId =chatHandler.generateChat(RemainFriendsIdList.get(i),User.uid);
+                                                    chatHandler.sendMessage(chatId,User.uid, User.name);
+                                                }else
+                                                {
+                                                    chatHandler.sendMessage(FriendChatList.get(i),User.uid, User.name);
+                                                }
+                                            }
+                                        }
+                                    });
+
+                                    /*
+                                    DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(User.uid).child("chats");
+                                    firebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            for(int i=0;i<RemainFriendsIdList.size();i++){
+                                                if(dataSnapshot.hasChild(RemainFriendsIdList.get(i))){
+                                                    FriendChatList.add(dataSnapshot.child(RemainFriendsIdList.get(i)).getValue().toString());
+
+                                                }
+                                                else{
+                                                    FriendChatList.add("First chat");
+                                                }
+                                            }
+
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+                                    */
+
+
+                                    if (!OnCreateEvent()) {
+                                        createEvent.setEnabled(true);
+                                        createEvent.setClickable(true);
+                                        createEvent.setAlpha((float) 1);
+                                        return;
+                                    }
+
+
+                                    SharedPreferences sharedPref = myAct.getSharedPreferences("LocationPrefs", 0);
+                                    SharedPreferences.Editor editor = sharedPref.edit();
+                                    editor.putString("sel_latitude", null);
+                                    editor.putString("sel_longitude", null);
+                                    editor.commit();
+                                    createEvent.setAlpha((float) 0.3);
+                                    createEvent.setClickable(false);
                                 }
-
-
-                                SharedPreferences sharedPref = myAct.getSharedPreferences("LocationPrefs", 0);
-                                SharedPreferences.Editor editor = sharedPref.edit();
-                                editor.putString("sel_latitude", null);
-                                editor.putString("sel_longitude", null);
-                                editor.commit();
-                                createEvent.setAlpha((float) 0.3);
-                                createEvent.setClickable(false);
-                            }
-                        }).show();
-            }
-        });
-
-        final Button addPeople = (Button) findViewById(R.id.addPeople);
-
-        addPeople.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    addPeople.setAlpha((float) 0.3);
-
-                    int currValue = Integer.parseInt(maxCapacityET.getText().toString());
-                    if (currValue <= 50)
-                        currValue++;
-                    maxCapacityET.setText(currValue + "");
-                } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    addPeople.setAlpha((float) 1);
+                            }).show();
                 }
-                return true;
-            }
-        });
+            });
 
+            final Button addPeople = (Button) findViewById(R.id.addPeople);
 
-        /// Date and Time holders
+            addPeople.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        addPeople.setAlpha((float) 0.3);
 
-        editTextDateHolder = (EditText) findViewById(R.id.calendarHolderET);
-        editTextTimeHolder = (EditText) findViewById(R.id.timeHolderET);
-
-        final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
-
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
-                // TODO Auto-generated method stub
-                myCalendar.set(Calendar.YEAR, year);
-                myCalendar.set(Calendar.MONTH, monthOfYear);
-                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateLabel();
-            }
-
-        };
-
-        String myFormat = "dd-MMM-yy"; //In which you need put here
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.UK);
-        editTextDateHolder.setText(sdf.format(myCalendar.getTime()));
-        editTextDateHolder.setFocusable(false);
-        editTextDateHolder.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-                if (imm != null) {
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                }
-                // TODO Auto-generated method stub
-                DatePickerDialog dpd = new DatePickerDialog(CreateNewActivity.this, R.style.DialogTheme, date, myCalendar
-                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH));
-                dpd.show();
-            }
-        });
-
-        // Time picker
-        int hour = myCalendar.get(Calendar.HOUR_OF_DAY);
-        int minute = myCalendar.get(Calendar.MINUTE);
-        editTextTimeHolder.setText((hour < 9 ? "0" : "") + hour + ":" + (minute < 9 ? "0" : "") + minute);
-        editTextTimeHolder.setFocusable(false);
-        editTextTimeHolder.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-                if (imm != null) {
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                }
-
-                int hour = myCalendar.get(Calendar.HOUR_OF_DAY);
-                int minute = myCalendar.get(Calendar.MINUTE);
-                TimePickerDialog mTimePicker;
-                mTimePicker = new TimePickerDialog(CreateNewActivity.this, R.style.DialogTheme, new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                        editTextTimeHolder.setText((selectedHour < 9 ? "0" : "") + selectedHour + ":" + (selectedMinute < 9 ? "0" : "") + selectedMinute);
-                        myCalendar.set(Calendar.HOUR_OF_DAY, selectedHour);
-                        myCalendar.set(Calendar.MINUTE, selectedMinute);
-
+                        int currValue = Integer.parseInt(maxCapacityET.getText().toString());
+                        if (currValue <= 50)
+                            currValue++;
+                        maxCapacityET.setText(currValue + "");
+                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        addPeople.setAlpha((float) 1);
                     }
-                }, hour, minute, true);//Yes 24 hour time
-                mTimePicker.setTitle("Select Time");
-                mTimePicker.show();
+                    return true;
+                }
+            });
 
-            }
-        });
+
+            /// Date and Time holders
+
+            editTextDateHolder = (EditText) findViewById(R.id.calendarHolderET);
+            editTextTimeHolder = (EditText) findViewById(R.id.timeHolderET);
+
+            final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+
+                @Override
+                public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                      int dayOfMonth) {
+                    // TODO Auto-generated method stub
+                    myCalendar.set(Calendar.YEAR, year);
+                    myCalendar.set(Calendar.MONTH, monthOfYear);
+                    myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                    updateLabel();
+                }
+
+            };
+
+            String myFormat = "dd-MMM-yy"; //In which you need put here
+            SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.UK);
+            editTextDateHolder.setText(sdf.format(myCalendar.getTime()));
+            editTextDateHolder.setFocusable(false);
+            editTextDateHolder.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    if (imm != null) {
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    }
+                    // TODO Auto-generated method stub
+                    DatePickerDialog dpd = new DatePickerDialog(CreateNewActivity.this, R.style.DialogTheme, date, myCalendar
+                            .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                            myCalendar.get(Calendar.DAY_OF_MONTH));
+                    dpd.show();
+                }
+            });
+
+            // Time picker
+            int hour = myCalendar.get(Calendar.HOUR_OF_DAY);
+            int minute = myCalendar.get(Calendar.MINUTE);
+            editTextTimeHolder.setText((hour < 9 ? "0" : "") + hour + ":" + (minute < 9 ? "0" : "") + minute);
+            editTextTimeHolder.setFocusable(false);
+            editTextTimeHolder.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    if (imm != null) {
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    }
+
+                    int hour = myCalendar.get(Calendar.HOUR_OF_DAY);
+                    int minute = myCalendar.get(Calendar.MINUTE);
+                    TimePickerDialog mTimePicker;
+                    mTimePicker = new TimePickerDialog(CreateNewActivity.this, R.style.DialogTheme, new TimePickerDialog.OnTimeSetListener() {
+                        @Override
+                        public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                            editTextTimeHolder.setText((selectedHour < 9 ? "0" : "") + selectedHour + ":" + (selectedMinute < 9 ? "0" : "") + selectedMinute);
+                            myCalendar.set(Calendar.HOUR_OF_DAY, selectedHour);
+                            myCalendar.set(Calendar.MINUTE, selectedMinute);
+
+                        }
+                    }, hour, minute, true);//Yes 24 hour time
+                    mTimePicker.setTitle("Select Time");
+                    mTimePicker.show();
+
+                }
+            });
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     private ImageButton createEvent;
@@ -683,6 +891,9 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
             map.put("description", description);
             map.put("message", null);
 
+
+
+
             // Set sport
             // TODO Get sport key
             String sportName = sports.get(sportIndex);
@@ -770,6 +981,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
                         lm = null;
                         locationListener = null;
 
+
                         jumpToMainActivity();
                     }
                 }
@@ -779,6 +991,11 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
                 }
             });
+
+
+
+
+
         } catch (Exception exc) {
             Utils.quit();
         }

@@ -29,6 +29,7 @@ import android.widget.Toast;
 //import com.batch.android.Config;
 
 import larc.ludiconprod.R;
+import larc.ludiconprod.UserInfo.FriendsList;
 import larc.ludiconprod.UserInfo.User;
 import larc.ludiconprod.Utils.ConnectionChecker.IConnectionChecker;
 import larc.ludiconprod.Utils.ConnectionChecker.ConnectionChecker;
@@ -62,15 +63,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
@@ -84,6 +88,9 @@ public class IntroActivity extends Activity {
     private ImageView logo;
     private ImageView background;
     private FirebaseAuth mAuth;
+    ArrayList<FriendsList> fl=new ArrayList<FriendsList>();
+    ArrayList<String> friendsList=new ArrayList<String>();
+    private String currFriend;
 
 
     @Override
@@ -221,15 +228,21 @@ public class IntroActivity extends Activity {
                                 }
                             }
                         });
+
                 Bundle parameters = new Bundle();
                 parameters.putString("fields", "id,name,email");
                 request.setParameters(parameters);
+
                 request.executeAsync();
                 updateUI();
             }
         };
 
+
         updateUI();
+        Runnable getFirebaseInfo = searchFriends();
+        Thread FirebaseInfoThread = new Thread(getFirebaseInfo);
+        FirebaseInfoThread.start();
 
 
     }
@@ -471,6 +484,10 @@ public class IntroActivity extends Activity {
 
                                             }
 
+                                            getFriendsDetails();
+
+
+
                                         }
 
                                         @Override
@@ -498,6 +515,116 @@ public class IntroActivity extends Activity {
             greeting.setText("");
         }
     }
+    public void putFriendsListINSP(ArrayList<FriendsList> friends) {
+
+
+
+                    SharedPreferences.Editor editor = getSharedPreferences("UserDetails", 0).edit();
+                    Gson gson = new Gson();
+                    String json = gson.toJson(fl);
+                    editor.putString("friendsList", json);
+                    editor.commit();
+                }
+
+
+
+    public void getFriendsDetails(){
+
+
+
+        try {
+
+                        final DatabaseReference friendsRef = User.firebaseRef.child("users").child(User.uid).child("friends");
+                        friendsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                    if (Boolean.parseBoolean(data.getValue().toString()) == true) {
+                                        friendsList.add(data.getKey());
+                                    }
+                                }
+
+                                synchronized (waitForFriends) {
+                                    try {
+                                        waitForFriends.notify(); // ready, notify thread to get data from firebase
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+
+                        });
+
+
+
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+
+
+    }
+    Object waitForFriends = new Object();
+    public Runnable searchFriends(){
+        return new Runnable() {
+            public void run() {
+                synchronized (waitForFriends) {
+                    try {
+                        waitForFriends.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                for (int i = 0; i < friendsList.size(); i++) {
+                    DatabaseReference userReference1 = User.firebaseRef.child("users");
+                    userReference1.child(friendsList.get(i)).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            FriendsList friendslist = new FriendsList();
+                            friendslist.name = dataSnapshot.child("name").getValue().toString();
+                            friendslist.id = dataSnapshot.child("id").getValue().toString();
+                            if(!friendslist.id.contains("facebook:")){
+                                friendslist.id= "facebook:".concat(friendslist.id);
+                            }
+                            fl. add(friendslist);
+                            putFriendsListINSP(fl);
+
+
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+
+                }
+
+                synchronized (wait) {
+                    try {
+                        wait.notify(); // ready, notify thread to get data from firebase
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+            }
+        };
+    }
+    Object wait = new Object();
 
     public void updateFriends() {
 

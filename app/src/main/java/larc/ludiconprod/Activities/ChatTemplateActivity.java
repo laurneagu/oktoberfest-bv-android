@@ -175,10 +175,6 @@ public class ChatTemplateActivity extends ListActivity {
             userUIDMap.put(otherUserUid, "");
             addUserUIDs.setValue(userUIDMap);
 
-            Date now = new Date();
-            String formattedDate = String.format(new Locale("English"), "%tb", now) + " " +
-                    String.format(new Locale("English"), "%td", now) + ", " +
-                    String.format(new Locale("English"), "%tR", now);
             // Create our 'model', a Chat object
             DatabaseReference newChat = keyRef.child("Messages").push();
             Chat chat = new Chat("Welcome to our chat! :)", "Ludicon", DateManager.getTimeNowInSeconds(),"ludicon-admin");
