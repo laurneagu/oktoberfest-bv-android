@@ -26,29 +26,29 @@
             android:layout_width="wrap_content"
             android:id="@+id/currEventLayout"
             android:layout_height="0dp"
-            android:background="@color/white"
+            android:background="@color/com_facebook_blue"
             android:elevation="2dp"
             android:layout_below="@+id/relativeLayout1">
 
 
-        <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:id="@+id/sportIconCurrEvent"
-            android:layout_alignTop="@+id/nameLabelCurrEvent"
-            android:layout_alignLeft="@+id/linearLayout4CurrEvent"
-            android:layout_alignStart="@+id/linearLayout4CurrEvent" />
-        <TextView
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="HAPPENING NOW !"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp"
-            android:id="@+id/nameLabelCurrEvent"
-            android:layout_marginTop="15dp"
-            android:layout_marginLeft="110dp"
-            android:layout_alignParentTop="true" />
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:id="@+id/sportIconCurrEvent"
+                android:layout_alignTop="@+id/nameLabelCurrEvent"
+                android:layout_alignLeft="@+id/linearLayout4CurrEvent"
+                android:layout_alignStart="@+id/linearLayout4CurrEvent" />
+            <TextView
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="HAPPENING NOW !"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:id="@+id/nameLabelCurrEvent"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="110dp"
+                android:layout_alignParentTop="true" />
 
             <LinearLayout
                 android:layout_width="wrap_content"

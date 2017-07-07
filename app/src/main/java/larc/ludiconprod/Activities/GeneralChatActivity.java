@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.database.DataSetObserver;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -25,8 +24,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import larc.ludiconprod.R;
-import larc.ludiconprod.ChatUtils.Chat;
-import larc.ludiconprod.ChatUtils.ChatListAdapter;
+import larc.ludiconprod.Utils.ChatUtils.Chat;
+import larc.ludiconprod.Utils.ChatUtils.ChatListAdapter;
 import larc.ludiconprod.UserInfo.User;
 import larc.ludiconprod.Utils.util.DateManager;
 

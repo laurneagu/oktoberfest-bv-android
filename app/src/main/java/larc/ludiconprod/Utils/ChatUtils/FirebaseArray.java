@@ -1,4 +1,4 @@
-package larc.ludiconprod.ChatUtils;
+package larc.ludiconprod.Utils.ChatUtils;
 
 /**
  * Created by Ciprian on 7/17/2016.

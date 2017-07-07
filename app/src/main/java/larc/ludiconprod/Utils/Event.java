@@ -11,7 +11,6 @@ public class Event {
     public Map<String, Boolean> usersUID = new HashMap<String,Boolean>();
     public Date date;
     public int noUsers;
-    public boolean active;
     public String sport;
     public String creator;
     public String place;
@@ -20,13 +19,12 @@ public class Event {
     public String id;
     public String creatorName;
     public String profileImageURL;
-    public String getFirstUser() {
-        return creator;
-    }
     public int isOfficial;
     public int roomCapacity;
-    public int priority;
     public String description;
     public String message;
-
+    public boolean active;
+    public int others;
+    public int points;
+    public int priority;
 }

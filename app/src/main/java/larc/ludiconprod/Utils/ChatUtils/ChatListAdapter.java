@@ -1,7 +1,6 @@
-package larc.ludiconprod.ChatUtils;
+package larc.ludiconprod.Utils.ChatUtils;
 
 
-import android.Manifest;
 import android.app.Activity;
 import android.graphics.Typeface;
 import android.view.View;
@@ -9,7 +8,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.google.firebase.database.Query;
 
-import java.sql.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;

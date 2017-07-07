@@ -1,4 +1,4 @@
-package larc.ludiconprod.Services;
+package larc.ludiconprod.Service;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -38,8 +38,8 @@ import java.util.TimeZone;
 
 import larc.ludiconprod.Activities.ChatListActivity;
 import larc.ludiconprod.Activities.ChatTemplateActivity;
-import larc.ludiconprod.ChatUtils.Chat;
-import larc.ludiconprod.UserInfo.ActivityInfo;
+import larc.ludiconprod.Utils.ChatUtils.Chat;
+import larc.ludiconprod.Utils.Event;
 import larc.ludiconprod.Utils.util.ChatNotifier;
 import larc.ludiconprod.Utils.util.DateManager;
 import larc.ludiconprod.Utils.util.Notifier;
@@ -117,9 +117,7 @@ public class FriendlyService extends Service {
     private Location getLocationOnlyOnce(){
 
         try {
-
             initializeLocationManager();
-
             try {
                 mLocationManager.requestLocationUpdates(
                         LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
@@ -166,7 +164,7 @@ public class FriendlyService extends Service {
 
             String json = getSharedPreferences("UserDetails", 0).getString("currentEvent", "");
             Gson gson = new Gson();
-            ActivityInfo currentEvent = gson.fromJson(json, ActivityInfo.class);
+            Event currentEvent = gson.fromJson(json, Event.class);
 
             if ( currentEvent != null ) {
                 Location targetLocation = new Location("");//provider name is unecessary
@@ -290,9 +288,9 @@ public class FriendlyService extends Service {
                 while (true) {
                     try {
                         String connectionsJSONString = getSharedPreferences("UserDetails", 0).getString("events", null);
-                        Type type = new TypeToken<List<ActivityInfo>>() {
+                        Type type = new TypeToken<List<Event>>() {
                         }.getType();
-                        List<ActivityInfo> events = null;
+                        List<Event> events = null;
                         if (connectionsJSONString != null) {
                             events = new Gson().fromJson(connectionsJSONString, type);
                         }
@@ -312,7 +310,7 @@ public class FriendlyService extends Service {
                             Date limit = new Date(aux.getTime() + 30 * MIN);
                             //User.firebaseRef.child("mesgEventsLimit").setValue(limit.toString());
 
-                            for (ActivityInfo ai : events) {
+                            for (Event ai : events) {
                                 if (ai.date != null && ai.date.after(now) && ai.date.before(limit) && !checkNotSent30.containsKey(ai.date)) {
                                     checkNotSent30.put(ai.date, i);
 

@@ -1,6 +1,4 @@
-package larc.ludiconprod.ChatUtils;
-
-import larc.ludiconprod.Utils.util.DateManager;
+package larc.ludiconprod.Utils.ChatUtils;
 
 /**
  * @author greg

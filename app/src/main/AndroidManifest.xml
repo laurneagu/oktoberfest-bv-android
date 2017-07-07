@@ -28,7 +28,6 @@
     <uses-permission android:name="android.permission.GET_TASKS" />
 
     <application
-        android:name=".Utils.UseParse"
         android:allowBackup="true"
         android:hardwareAccelerated="false"
         android:icon="@drawable/logo_shadow"
@@ -129,7 +128,7 @@
         </activity>
 
         <service
-            android:name=".Services.FriendlyService"
+            android:name=".Service.FriendlyService"
             android:exported="false" />
 
         <activity

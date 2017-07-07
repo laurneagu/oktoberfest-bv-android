@@ -36,7 +36,6 @@ import larc.ludiconprod.Utils.General;
  */
 
 public class MyAdapter extends BaseAdapter implements ListAdapter {
-
         class ViewHolder {
             TextView name;
             ImageView profilePicture;
@@ -54,15 +53,16 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
         private Activity activity;
         private Resources resources;
 
-        private ListView listView;
-
         public MyAdapter(ArrayList<Event> list, Context context, Activity activity, Resources resources) {
             this.list = list;
             this.context = context;
             this.activity = activity;
             this.resources = resources;
+        }
 
-            this.listView = (ListView) activity.findViewById(R.id.events_listView2);
+        public void setListOfEvents(ArrayList<Event> newList){
+            this.list = newList;
+            this.notifyDataSetChanged();
         }
 
         @Override
@@ -110,16 +110,16 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
 
             final View currView = view;
             view.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            currView.setBackgroundColor(Color.parseColor("#D3D3D3"));
+                    @Override
+                    public void onClick(View v) {
+                        currView.setBackgroundColor(Color.parseColor("#D3D3D3"));
 
-                                            Intent intent = new Intent(currView.getContext(), EventDetails.class);
-                                            intent.putExtra("eventUid", list.get(position).id);
-                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                            activity.startActivity(intent);
-                                        }
-                                    }
+                        Intent intent = new Intent(currView.getContext(), EventDetails.class);
+                        intent.putExtra("eventUid", list.get(position).id);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        activity.startActivity(intent);
+                }
+              }
             );
 
             String firstName = list.get(position).creatorName.split(" ")[0];
@@ -134,7 +134,7 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
                         Toast.makeText(context, "This is you ! We can't compare with yourself..", Toast.LENGTH_SHORT).show();
                     } else {
                         Intent intent = new Intent(currView.getContext(), ProfileActivity.class);
-                        intent.putExtra("uid", list.get(position).getFirstUser());
+                        intent.putExtra("uid", list.get(position).creator);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         activity.startActivity(intent);
                     }

@@ -1,4 +1,4 @@
-package larc.ludiconprod.ChatUtils;
+package larc.ludiconprod.Utils.ChatUtils;
 
 import android.app.Activity;
 import android.view.View;

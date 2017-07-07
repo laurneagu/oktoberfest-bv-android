@@ -14,63 +14,44 @@ import larc.ludiconprod.R;
  */
 
 public class Main extends FragmentActivity{
-
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_five_tabs);
-        //MainActivity fragment=new MainActivity();
 
-        /*
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.frame,fragment).commit();
-        */
-        // messageView = (TextView) findViewById(R.id.messageView);
-
+        // Initialize bottom bar
         final BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {
-                // messageView.setText(TabMessage.get(tabId, false));
-
                 if(tabId == R.id.tab_recents) {
                     MainActivity main = new MainActivity();
-
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.frame, main).commit();
-                }
-
-                else if(tabId == R.id.tab_nearby){
+                }else if(tabId == R.id.tab_nearby){
                     RankingsNewActivity rankings=new RankingsNewActivity();
-
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.frame,rankings).commit();
-                }
-                else if(tabId==R.id.tab_food){
+                }else if(tabId==R.id.tab_food){
                     SettingsActivity settings=new SettingsActivity();
-
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.frame,settings).commit();
-                }
-                else if(tabId==R.id.tab_friends){
+                }else if(tabId==R.id.tab_friends){
                     ChatListActivity chatFriends=new ChatListActivity();
-
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.frame,chatFriends).commit();
                 }
-
             }
         });
 
         bottomBar.setOnTabReselectListener(new OnTabReselectListener() {
             @Override
-            public void onTabReSelected(@IdRes int tabId) {
-                //Toast.makeText(getApplicationContext(), TabMessage.get(tabId, true), Toast.LENGTH_LONG).show();
+            public void onTabReSelected(@IdRes int tabId) { // Reselect action
             }
         });
 
-        BottomBarTab nearby = bottomBar.getTabWithId(R.id.tab_nearby);
+        // Notifications on tabs
+        //BottomBarTab nearby = bottomBar.getTabWithId(R.id.tab_nearby);
         //nearby.setBadgeCount(5);
     }
 }

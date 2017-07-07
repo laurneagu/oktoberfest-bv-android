@@ -1,4 +1,4 @@
-package larc.ludiconprod.Services;
+package larc.ludiconprod.Service;
 
 import android.content.Context;
 import android.os.AsyncTask;

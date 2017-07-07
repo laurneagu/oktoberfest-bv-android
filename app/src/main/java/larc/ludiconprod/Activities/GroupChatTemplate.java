@@ -13,7 +13,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
@@ -38,8 +37,8 @@ import java.util.Locale;
 
 import larc.ludiconprod.Adapters.LeftPanelItemClicker;
 import larc.ludiconprod.Adapters.LeftSidePanelAdapter;
-import larc.ludiconprod.ChatUtils.Chat;
-import larc.ludiconprod.ChatUtils.ChatListAdapter;
+import larc.ludiconprod.Utils.ChatUtils.Chat;
+import larc.ludiconprod.Utils.ChatUtils.ChatListAdapter;
 import larc.ludiconprod.UserInfo.User;
 
 import larc.ludiconprod.R;

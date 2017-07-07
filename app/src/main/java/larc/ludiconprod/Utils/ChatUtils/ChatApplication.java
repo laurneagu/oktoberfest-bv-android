@@ -1,6 +1,4 @@
-package larc.ludiconprod.ChatUtils;
-
-import com.google.firebase.database.DatabaseReference;
+package larc.ludiconprod.Utils.ChatUtils;
 
 /**
  * @author Jenny Tong (mimming)

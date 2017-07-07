@@ -41,34 +41,12 @@ public class User {
 
     public static final String password = "pass";
 
-    /* This function will fill the user info from parse */
-//    public static void updateUserFromParse(Context context){
-//        User.firstName = (String)User.parseUser.get("firstName");
-//        User.lastName = (String)User.parseUser.get("lastName");
-//
-//    }
-
     public static void setImage(){
         ImageView fbImage = ( ( ImageView)profilePictureView.getChildAt(0));
         Bitmap    bitmap  = ( (BitmapDrawable) fbImage.getDrawable()).getBitmap();
         User.image = bitmap;
 
     }
-
-//    public static void updateParseImage(Context context){
-//        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//        User.image.compress(Bitmap.CompressFormat.PNG, 100, stream);
-//        byte[] data = stream.toByteArray();
-//
-//        ParseFile imageFile = new ParseFile("profileImage"+User.parseUser.getObjectId()+".png", data);
-//        try {
-//            imageFile.save();
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-//
-//        User.parseUser.put("image",imageFile);
-//    }
 
     public static void setPassword(String i_password, Context context){
         SharedPreferences sharedPref = context.getSharedPreferences(mfilename, 0);

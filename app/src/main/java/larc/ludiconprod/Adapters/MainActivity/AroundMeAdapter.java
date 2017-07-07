@@ -1,6 +1,7 @@
 package larc.ludiconprod.Adapters.MainActivity;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -29,6 +30,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import larc.ludiconprod.Activities.EventDetails;
+import larc.ludiconprod.Activities.FriendsActivity;
+import larc.ludiconprod.Activities.MainActivity;
 import larc.ludiconprod.Activities.ProfileActivity;
 import larc.ludiconprod.R;
 import larc.ludiconprod.UserInfo.User;
@@ -58,18 +61,25 @@ public class AroundMeAdapter extends BaseAdapter implements ListAdapter {
         private Context context;
         private Activity activity;
         private Resources resources;
+        private MainActivity fragment;
         final ListView listView;
 
-        public AroundMeAdapter(ArrayList<Event> list, Context context, Activity activity, Resources resources) {
+        public AroundMeAdapter(ArrayList<Event> list, Context context, Activity activity, Resources resources, MainActivity fragment) {
             this.list = list;
             this.context = context;
             this.activity = activity;
             this.resources = resources;
+            this.fragment = fragment;
 
             this.listView = (ListView) activity.findViewById(R.id.events_listView1); // era v.
         }
 
-        @Override
+    public void setListOfEvents(ArrayList<Event> newList){
+        this.list = newList;
+        this.notifyDataSetChanged();
+    }
+
+    @Override
         public int getCount() {
             return list.size();
         }
@@ -139,7 +149,7 @@ public class AroundMeAdapter extends BaseAdapter implements ListAdapter {
             holder.profilePicture.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     Intent intent = new Intent(currView.getContext(), ProfileActivity.class);
-                    intent.putExtra("uid", currentEvent.getFirstUser());
+                    intent.putExtra("uid", currentEvent.creator);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     activity.startActivity(intent);
                 }
@@ -234,7 +244,7 @@ public class AroundMeAdapter extends BaseAdapter implements ListAdapter {
                             list.remove(position);
                             User.firebaseRef.child("users").child(User.uid).child("events").updateChildren(ev);
 
-                            //updateList(false);
+                            fragment.updateListOfEvents(false);
                         }
 
                         @Override
