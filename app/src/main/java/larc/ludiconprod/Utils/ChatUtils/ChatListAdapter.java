@@ -2,6 +2,7 @@ package larc.ludiconprod.Utils.ChatUtils;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.text.Spannable;
 import android.text.method.LinkMovementMethod;
@@ -18,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Date;
 
+import larc.ludiconprod.Activities.EventDetails;
 import larc.ludiconprod.R;
 import larc.ludiconprod.Utils.util.DateManager;
 
@@ -72,7 +74,26 @@ public class ChatListAdapter extends FirebaseListAdapter<Chat> {
 
             msgDateRight.setText(formattedDate);
             msgDateRight.setTypeface(null, Typeface.ITALIC);
-            msgTextRight.setText(chat.getMessage());
+            if(chat.getMessage().contains("[%##")) {
+                final String eventID=chat.getMessage().substring(4,chat.getMessage().length()-4);
+
+                msgTextRight.setMovementMethod(LinkMovementMethod.getInstance());
+                msgTextRight.setText("You are invited to this event!!", TextView.BufferType.SPANNABLE);
+                Spannable mySpannable = (Spannable) msgTextRight.getText();
+                ClickableSpan myClickableSpan = new ClickableSpan() {
+                    @Override
+                    public void onClick(View widget) {
+                        Intent intent = new Intent(mActivity, EventDetails.class);
+                        intent.putExtra("eventUid", eventID);
+                        mActivity.startActivity(intent);
+                    }
+                };
+                mySpannable.setSpan(myClickableSpan, 19, 23, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            else{
+
+                msgTextRight.setText(chat.getMessage());
+            }
             linLayoutLeft = (LinearLayout) view.findViewById(R.id.content_with_background_left);
             linLayoutLeft.setAlpha(0);
             msgDateLeft = (TextView) view.findViewById(R.id.message_date_left);
@@ -96,8 +117,8 @@ public class ChatListAdapter extends FirebaseListAdapter<Chat> {
             msgDateLeft.setText(formattedDate);
             if( this.isGroupChat)
                 msgTextLeft.setText(author + ": " + chat.getMessage());
-             if(msgTextLeft.getText().toString().contains("[%##")) {
-               final String eventID=msgTextLeft.getText().toString().substring(3,msgTextLeft.getText().toString().length()-4);
+             if(chat.getMessage().contains("[%##")) {
+               final String eventID=chat.getMessage().substring(4,chat.getMessage().length()-4);
 
                 msgTextLeft.setMovementMethod(LinkMovementMethod.getInstance());
                 msgTextLeft.setText("You are invited to this event!!", TextView.BufferType.SPANNABLE);
@@ -105,11 +126,12 @@ public class ChatListAdapter extends FirebaseListAdapter<Chat> {
                 ClickableSpan myClickableSpan = new ClickableSpan() {
                     @Override
                     public void onClick(View widget) {
-                        Toast.makeText(mActivity,eventID,Toast.LENGTH_LONG).show();
-
+                        Intent intent = new Intent(mActivity, EventDetails.class);
+                        intent.putExtra("eventUid", eventID);
+                        mActivity.startActivity(intent);
                     }
                 };
-                mySpannable.setSpan(myClickableSpan, 12, 16, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                mySpannable.setSpan(myClickableSpan, 19, 23, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
                 else{
 

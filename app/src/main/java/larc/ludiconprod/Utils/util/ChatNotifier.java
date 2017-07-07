@@ -62,7 +62,12 @@ public class ChatNotifier {
 
 
         builder.setContentTitle(author);
-        builder.setContentText(message);
+        if(message.contains("[%##")){
+            builder.setContentText("You are invited at this event!!");
+        }
+        else {
+            builder.setContentText(message);
+        }
         builder.setSmallIcon(R.drawable.logo_notif);
 
         Bitmap largeIcon = BitmapFactory.decodeResource(m_resources, R.drawable.logo);

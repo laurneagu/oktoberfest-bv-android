@@ -610,6 +610,7 @@ public class ChatListActivity extends Fragment {
             }
             String lastMessageAuthor = "";
             if (!list.get(position).lastMessageAuthor.equalsIgnoreCase("Ludicon")) {
+
                 if (!list.get(position).userName.split(" ")[0].equalsIgnoreCase(list.get(position).lastMessageAuthor))
                     lastMessageAuthor = "You";
                 else lastMessageAuthor = list.get(position).lastMessageAuthor;
@@ -617,6 +618,9 @@ public class ChatListActivity extends Fragment {
                 String lastMessageTrimmed = list.get(position).lastMessageText;
                 if(lastMessageTrimmed.length() > 35)
                     lastMessageTrimmed = lastMessageTrimmed.substring(0,35) + "[...]";
+                if(lastMessageTrimmed.contains("[%##")){
+                    lastMessageTrimmed="You are invited to this event!!";
+                }
                 holder.lastMessage.setText(lastMessageAuthor + ": " + lastMessageTrimmed);
             }
             else
