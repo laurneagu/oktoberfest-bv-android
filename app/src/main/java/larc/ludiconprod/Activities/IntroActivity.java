@@ -28,6 +28,7 @@ import android.widget.Toast;
 //import com.batch.android.Batch;
 //import com.batch.android.Config;
 
+import larc.ludiconprod.Layer.DataPersistence.ChatPersistence;
 import larc.ludiconprod.R;
 import larc.ludiconprod.UserInfo.FriendsList;
 import larc.ludiconprod.UserInfo.User;
@@ -91,11 +92,13 @@ public class IntroActivity extends Activity {
     ArrayList<FriendsList> fl=new ArrayList<FriendsList>();
     ArrayList<String> friendsList=new ArrayList<String>();
     private String currFriend;
+    private Activity activity;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         // Hide App bar
         // If the Android version is lower than Jellybean, use this call to hide
@@ -186,6 +189,8 @@ public class IntroActivity extends Activity {
 
         setContentView(R.layout.activity_intro);
 
+        this.activity = this;
+
         // TODO relative to the phone screen, not hardoded
         background = (ImageView) findViewById(R.id.bg);
         background.setImageResource(R.drawable.intro_bg);
@@ -256,9 +261,14 @@ public class IntroActivity extends Activity {
             public void run() {
                 // Actions to do after 5 seconds
                 Intent goToNextActivity = new Intent(getApplicationContext(), Main.class); //AskPreferences.class);
+
                 String chatUID = getIntent().getStringExtra("chatUID");
-                if (chatUID != null)
-                    goToNextActivity.putExtra("chatUID", chatUID);
+
+                if (chatUID != null) {
+                    ChatPersistence chatPersistence = ChatPersistence.getInstance();
+                    chatPersistence.setChatNotificationStatus(activity, "1");
+                }
+
                 startActivity(goToNextActivity);
                 finish();
             }
