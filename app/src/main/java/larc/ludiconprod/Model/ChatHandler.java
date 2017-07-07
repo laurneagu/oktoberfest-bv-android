@@ -101,9 +101,9 @@ public class ChatHandler {
 
         return newChatID;
     }
-    public void sendMessage(String chatId, String firstUser, String userName){
+    public void sendMessage(String chatId, String firstUser, String userName,String message){
         DatabaseReference mDatabaseReferenceRef=FirebaseDatabase.getInstance().getReference().child("chat").child(chatId).child("Messages");
-        Chat chat = new Chat("mesaj", userName, DateManager.getTimeNowInSeconds(), firstUser);
+        Chat chat = new Chat(message, userName, DateManager.getTimeNowInSeconds(), firstUser);
 
         // Create a new, auto-generated child of that chat location, and save our chat data there
         mDatabaseReferenceRef.push().setValue(chat);

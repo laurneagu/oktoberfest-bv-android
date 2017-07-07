@@ -476,60 +476,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
                             .setPositiveButton("YES", new DialogInterface.OnClickListener() {
 
                                 public void onClick(DialogInterface dialog, int whichButton) {
-                                    for(int i=0;i<FriendNameList.size();i++){
-                                        boolean contains=false;
-                                        for(int j=0;j<editTextContent.size();j++) {
-                                            if (editTextContent.get(j).contains(FriendNameList.get(i))){
-                                                contains=true;
-                                            }
 
-
-
-                                        }
-                                        if(!contains){
-                                            itemToRemove.add(0);
-                                        }
-                                        else{
-                                            itemToRemove.add(1);
-                                        }
-
-                                    }
-                                    for(int i=0;i<itemToRemove.size();i++) {
-                                        if(itemToRemove.get(i) == 1){
-                                            RemainFriendsIdList.add(FriendsIdList.get(i));
-                                        }
-
-                                    }
-
-
-                                    // Get instance of ChatHandler
-                                    final ChatHandler chatHandler = ChatHandler.getInstance();
-
-                                    // Get list of chats for the current user
-                                    Task task  = chatHandler.getListOfChats(User.uid);
-                                    task.addOnCompleteListener(CreateNewActivity.this, new OnCompleteListener() {
-                                        @Override
-                                        public void onComplete(@NonNull Task task) {
-                                            Dictionary<String, String> uidsChat= (Dictionary<String,String>)task.getResult();
-                                            for(int i=0;i<RemainFriendsIdList.size();i++){
-                                               if(chatHandler.isFirstConversation(uidsChat.keys(),RemainFriendsIdList.get(i))){
-                                                   FriendChatList.add("First chat");
-                                               }else{
-                                                    FriendChatList.add(uidsChat.get(RemainFriendsIdList.get(i)));
-                                               }
-                                            }
-
-                                            for(int i=0;i<FriendChatList.size();i++){
-                                                if(FriendChatList.get(i).equalsIgnoreCase("First chat")){
-                                                    String chatId =chatHandler.generateChat(RemainFriendsIdList.get(i),User.uid);
-                                                    chatHandler.sendMessage(chatId,User.uid, User.name);
-                                                }else
-                                                {
-                                                    chatHandler.sendMessage(FriendChatList.get(i),User.uid, User.name);
-                                                }
-                                            }
-                                        }
-                                    });
 
                                     /*
                                     DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(User.uid).child("chats");
@@ -980,6 +927,61 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
                         // Sanity checks
                         lm = null;
                         locationListener = null;
+
+                        for(int i=0;i<FriendNameList.size();i++){
+                            boolean contains=false;
+                            for(int j=0;j<editTextContent.size();j++) {
+                                if (editTextContent.get(j).contains(FriendNameList.get(i))){
+                                    contains=true;
+                                }
+
+
+
+                            }
+                            if(!contains){
+                                itemToRemove.add(0);
+                            }
+                            else{
+                                itemToRemove.add(1);
+                            }
+
+                        }
+                        for(int i=0;i<itemToRemove.size();i++) {
+                            if(itemToRemove.get(i) == 1){
+                                RemainFriendsIdList.add(FriendsIdList.get(i));
+                            }
+
+                        }
+
+
+                        // Get instance of ChatHandler
+                        final ChatHandler chatHandler = ChatHandler.getInstance();
+
+                        // Get list of chats for the current user
+                        Task task  = chatHandler.getListOfChats(User.uid);
+                        task.addOnCompleteListener(CreateNewActivity.this, new OnCompleteListener() {
+                            @Override
+                            public void onComplete(@NonNull Task task) {
+                                Dictionary<String, String> uidsChat= (Dictionary<String,String>)task.getResult();
+                                for(int i=0;i<RemainFriendsIdList.size();i++){
+                                    if(chatHandler.isFirstConversation(uidsChat.keys(),RemainFriendsIdList.get(i))){
+                                        FriendChatList.add("First chat");
+                                    }else{
+                                        FriendChatList.add(uidsChat.get(RemainFriendsIdList.get(i)));
+                                    }
+                                }
+
+                                for(int i=0;i<FriendChatList.size();i++){
+                                    if(FriendChatList.get(i).equalsIgnoreCase("First chat")){
+                                        String chatId =chatHandler.generateChat(RemainFriendsIdList.get(i),User.uid);
+                                        chatHandler.sendMessage(chatId,User.uid, User.name,"[%##"+id.toString()+"##%]");
+                                    }else
+                                    {
+                                        chatHandler.sendMessage(FriendChatList.get(i),User.uid, User.name,"[%##"+id.toString()+"##%]");
+                                    }
+                                }
+                            }
+                        });
 
 
                         jumpToMainActivity();

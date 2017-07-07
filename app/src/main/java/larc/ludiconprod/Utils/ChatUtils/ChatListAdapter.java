@@ -3,9 +3,14 @@ package larc.ludiconprod.Utils.ChatUtils;
 
 import android.app.Activity;
 import android.graphics.Typeface;
+import android.text.Spannable;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.firebase.database.Query;
 
 import java.text.DateFormat;
@@ -44,7 +49,7 @@ public class ChatListAdapter extends FirebaseListAdapter<Chat> {
      * @param chat An instance representing the current state of a chat message
      */
     @Override
-    protected void populateView(View view, Chat chat, int position) {
+    protected void populateView(final View view, Chat chat, int position) {
         // Map a Chat object to an entry in our listview
         String author = chat.getAuthor();
         LinearLayout linLayoutRight;
@@ -88,9 +93,28 @@ public class ChatListAdapter extends FirebaseListAdapter<Chat> {
             String formattedDate = formatMessageDate(messageDate);
 
             msgDateLeft.setText(formattedDate);
-            if( this.isGroupChat )
+            if( this.isGroupChat)
                 msgTextLeft.setText(author + ": " + chat.getMessage());
-            else msgTextLeft.setText(chat.getMessage());
+             if(msgTextLeft.getText().toString().contains("[%##")) {
+               final String eventID=msgTextLeft.getText().toString().substring(3,msgTextLeft.getText().toString().length()-4);
+
+                msgTextLeft.setMovementMethod(LinkMovementMethod.getInstance());
+                msgTextLeft.setText("You are invited to this event!!", TextView.BufferType.SPANNABLE);
+                Spannable mySpannable = (Spannable) msgTextLeft.getText();
+                ClickableSpan myClickableSpan = new ClickableSpan() {
+                    @Override
+                    public void onClick(View widget) {
+                        Toast.makeText(mActivity,eventID,Toast.LENGTH_LONG).show();
+
+                    }
+                };
+                mySpannable.setSpan(myClickableSpan, 12, 16, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+                else{
+
+                    msgTextLeft.setText(chat.getMessage());
+                }
+            }
             linLayoutRight = (LinearLayout) view.findViewById(R.id.content_with_background_right);
             linLayoutRight.setAlpha(0);
             msgDateRight = (TextView) view.findViewById(R.id.message_date_right);
@@ -99,7 +123,7 @@ public class ChatListAdapter extends FirebaseListAdapter<Chat> {
             msgDateRight.setTypeface(null, Typeface.ITALIC);
             msgTextRight.setText("");
         }
-    }
+
 
     public static DateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm");
 
