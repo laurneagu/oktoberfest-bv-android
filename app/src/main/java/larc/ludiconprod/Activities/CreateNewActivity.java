@@ -979,6 +979,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
                                     {
                                         chatHandler.sendMessage(FriendChatList.get(i),User.uid, User.name,"[%##"+id.toString()+"##%]");
                                     }
+
                                 }
                             }
                         });

@@ -88,6 +88,7 @@ public class ChatListAdapter extends FirebaseListAdapter<Chat> {
             msgDateLeft.setTypeface(null, Typeface.ITALIC);
             msgTextLeft = (TextView) view.findViewById(R.id.message_text_left);
 
+
             // Format date to the template Today/Yesterday
             Date messageDate = DateManager.convertFromSecondsToDate(chat.date);
             String formattedDate = formatMessageDate(messageDate);
