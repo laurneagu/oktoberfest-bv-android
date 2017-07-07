@@ -168,9 +168,11 @@ public class MainActivity extends Fragment {
 
             String chatUID = getActivity().getIntent().getStringExtra("chatUID");
             if (chatUID != null) {
+                /*
                 Intent goToChatList = new Intent(getActivity(), ChatListActivity.class);
                 goToChatList.putExtra("chatUID", chatUID);
                 startActivity(goToChatList);
+                */
             }
 
             // Creating ViewPager Adapter and Passing Fragment Manager, Titles fot the Tabs and Number Of Tabs

@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.widget.Toast;
 import larc.ludiconprod.BottomBarHelper.*;
+import larc.ludiconprod.Layer.DataPersistence.ChatPersistence;
 import larc.ludiconprod.R;
 
 /**
@@ -21,6 +22,17 @@ public class Main extends FragmentActivity{
 
         // Initialize bottom bar
         final BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+
+        // Go to chat list activity when notification is thrown
+        ChatPersistence chatPersistence = ChatPersistence.getInstance();
+        String chatNotificationStatus = chatPersistence.getChatNotificationStatus(this);
+
+        if(chatNotificationStatus.equalsIgnoreCase("1")){
+            bottomBar.setDefaultTab(R.id.tab_friends);
+            // reset chat notification status
+            chatPersistence.setChatNotificationStatus(this, "0");
+        }
+
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {

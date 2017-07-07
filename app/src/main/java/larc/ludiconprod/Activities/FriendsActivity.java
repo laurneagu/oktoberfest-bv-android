@@ -99,9 +99,7 @@ public class FriendsActivity extends Activity {
 
         dialog  = ProgressDialog.show(FriendsActivity.this, "", "Loading. Please wait", true);
 
-
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
-        initializeLeftSidePanel();
 
         try {
             User.setImage();
@@ -445,31 +443,6 @@ public class FriendsActivity extends Activity {
         }
     }
 
-    // Method which downloads Image from URL
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
-
-        public DownloadImageTask(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
-        }
-    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -490,41 +463,6 @@ public class FriendsActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    // Left side menu
-
-    public void initializeLeftSidePanel() {
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_settings);
-        mDrawerList = (ListView) findViewById(R.id.leftMenu);
-
-        // Set the adapter for the list view
-        mDrawerList.setAdapter(new LeftSidePanelAdapter(this, FriendsActivity.this));
-        // Set the list's click listener
-        LeftPanelItemClicker.OnItemClick(mDrawerList, getApplicationContext(), FriendsActivity.this);
-
-        final ImageButton showPanel = (ImageButton) findViewById(R.id.showPanel);
-        showPanel.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // Perform action on click
-                mDrawerLayout.openDrawer(Gravity.LEFT);
-            }
-        });
-
-        // Toggle efect on left side panel
-        mDrawerToggle = new android.support.v4.app.ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-            }
-        };
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-
     }
 
     // Delete the history stack and point to Main activity
