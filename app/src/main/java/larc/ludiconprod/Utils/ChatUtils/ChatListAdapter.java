@@ -36,6 +36,7 @@ public class ChatListAdapter extends FirebaseListAdapter<Chat> {
     private String mUsername;
     private boolean isGroupChat;
 
+
     public ChatListAdapter(Query ref, Activity activity, int layout, String mUsername, boolean isGroupChat) {
         super( activity,Chat.class, layout, ref);
         this.mUsername = mUsername;
