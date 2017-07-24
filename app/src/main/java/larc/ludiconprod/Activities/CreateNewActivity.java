@@ -1,3 +1,4 @@
+/*
 package larc.ludiconprod.Activities;
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -5,30 +6,24 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
-import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.LocationManager;
-import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -63,7 +58,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -79,7 +73,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -88,19 +81,14 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
-import larc.ludiconprod.Adapters.LeftPanelItemClicker;
-import larc.ludiconprod.Adapters.LeftSidePanelAdapter;
 import larc.ludiconprod.Model.ChatHandler;
 import larc.ludiconprod.R;
 import larc.ludiconprod.UserInfo.FriendsList;
 import larc.ludiconprod.UserInfo.User;
 import larc.ludiconprod.Utils.Event;
-import larc.ludiconprod.Utils.Location.GPSTracker;
-import larc.ludiconprod.Utils.Location.GPS_Positioning;
 import larc.ludiconprod.Utils.Location.ActivitiesLocationListener;
 import larc.ludiconprod.Utils.Sport;
 import larc.ludiconprod.Utils.util.DateManager;
-import larc.ludiconprod.Utils.util.SystemUiHider;
 import larc.ludiconprod.Utils.util.UniqueIDCreator;
 import larc.ludiconprod.Utils.util.Utils;
 
@@ -360,17 +348,18 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
             userSportsNumber.setText(User.getNumberOfSports(getApplicationContext()));
             userSportsNumber.setTypeface(segoeui);
 
-       /* ImageView userPic = (ImageView) findViewById(R.id.userPicture);
+ ImageView userPic = (ImageView) findViewById(R.id.userPicture);
         Drawable d = new BitmapDrawable(getResources(), User.image);
         userPic.setImageDrawable(d);
         userPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent mainIntent = new Intent(getApplicationContext(), Main.class);
+                Intent mainIntent = new Intent(getApplicationContext(), MainVechi.class);
                 CreateNewActivity.this.startActivity(mainIntent);
             }
         });
-        */
+
+
 
             MapFragment mapFragment = (MapFragment) getFragmentManager()
                     .findFragmentById(R.id.map);
@@ -393,7 +382,6 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
             // DropDown for the sports
 
-        /*
         Spinner spinner = (Spinner) findViewById(R.id.sports_spinner);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -407,7 +395,8 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         spinner.setSelection(0, true);
         View v = spinner.getSelectedView();
         ((TextView)v).setTextColor(Color.parseColor("#000000"));
-        */
+
+
 
             selectedSportButton = (Button) findViewById(R.id.selectedSportButton);
             String uri = "@drawable/" + favouriteSports.get(0);
@@ -477,7 +466,6 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
                                 public void onClick(DialogInterface dialog, int whichButton) {
 
 
-                                    /*
                                     DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(User.uid).child("chats");
                                     firebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
 
@@ -500,7 +488,8 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
                                         }
                                     });
-                                    */
+
+
 
 
                                     if (!OnCreateEvent()) {
@@ -680,7 +669,6 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
     }
 
 
-    /*
         public void onPrivacyButtonsClicked(View view) {
             // Is the button now selected
             TextView selected,notselected;
@@ -702,7 +690,8 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
                     break;
             }
         }
-        */
+
+
     public boolean checkEventDateIsNotInPast(Date creationDate) {
         Date now = new Date();
         if (creationDate.before(now)) {
@@ -860,7 +849,6 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
                         //User.firebaseRef.child("mesg").setValue("World is on fire");
 
                         // Script to refresh sports in the database
-                    /*
                     User.firebaseRef.child("sports").child("Football").child("id").setValue("0");
                     User.firebaseRef.child("sports").child("volleyball").child("id").setValue("1");
                     User.firebaseRef.child("sports").child("Basketball").child("id").setValue("2");
@@ -869,7 +857,8 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
                     User.firebaseRef.child("sports").child("Tennis").child("id").setValue("5");
                     User.firebaseRef.child("sports").child("Cycling").child("id").setValue("6");
                     User.firebaseRef.child("sports").child("Jogging").child("id").setValue("7");
-                    */
+
+
                     }
 
                     // Get the events from Shared Prefs
@@ -952,7 +941,6 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
                         }
 
-
                         // Get instance of ChatHandler
                         final ChatHandler chatHandler = ChatHandler.getInstance();
 
@@ -1005,17 +993,18 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         return true;
     }
 
-    /**
-     * Method that jumps to the MainActivity
-     */
+*
+     * Method that jumps to the MainActivityVechi
+
+
     public void jumpToMainActivity() {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
                 // Actions to do after 5 seconds
                 // Actions to do after 5 seconds
-                Intent goToNextActivity = new Intent(getApplicationContext(), Main.class); //AskPreferences.class);
-                startActivity(goToNextActivity);
+                //Intent goToNextActivity = new Intent(getApplicationContext(), MainVechi.class); //AskPreferences.class);
+               // startActivity(goToNextActivity);
                 finish();
             }
         }, 2000); // Delay time for transition to next activity -> insert any time wanted here instead of 5000
@@ -1044,7 +1033,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
         finish();
 
-        Intent toMain = new Intent(this, Main.class);
+        Intent toMain = new Intent(this, MainVechi.class);
         toMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(toMain);
     }
@@ -1119,7 +1108,7 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 
     // Left side menu
 
-   /* public void initializeLeftSidePanel() {
+ public void initializeLeftSidePanel() {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_createnew);
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
 
@@ -1151,7 +1140,8 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
     }
-    */
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -1240,14 +1230,14 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
             holder.box.setChecked(sport.isChecked);
             holder.box.setTag(sport);
             holder.text.setTextColor(getResources().getColor(R.color.white));
-            /*
             if (sportIndex==position) {
                 holder.rl.setBackgroundColor(getResources().getColor(R.color.bg1));
                 holder.image.setImageBitmap(sport.icon);
                 holder.box.setTextColor(getResources().getColor(R.color.white));
                 holder.box.setAlpha((float) 0.9);
             } else {
-            */
+
+
             holder.box.setTextColor(getResources().getColor(R.color.white));
             holder.rl.setBackgroundColor(getResources().getColor(R.color.bg2));
             holder.image.setImageBitmap(sport.icon);
@@ -1261,3 +1251,4 @@ public class CreateNewActivity extends Activity implements OnMapReadyCallback {
 }
 
 
+*/

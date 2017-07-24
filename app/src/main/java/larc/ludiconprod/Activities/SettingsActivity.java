@@ -1,9 +1,8 @@
+/*
 package larc.ludiconprod.Activities;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -16,16 +15,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -36,9 +29,7 @@ import android.widget.ImageView;
 import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.SeekBar;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Spinner;
@@ -54,16 +45,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.*;
 
-import larc.ludiconprod.Adapters.LeftPanelItemClicker;
-import larc.ludiconprod.Adapters.LeftSidePanelAdapter;
 import larc.ludiconprod.R;
 import larc.ludiconprod.UserInfo.User;
 import larc.ludiconprod.Utils.Sport;
 import larc.ludiconprod.Utils.util.Utils;
 
+*/
 /**
  * Created by Laur User on 12/29/2015.
- */
+ *//*
+
 public class SettingsActivity extends Fragment {
 
     MyCustomAdapter dataAdapter = null;
@@ -344,7 +335,7 @@ public class SettingsActivity extends Fragment {
                                 saveButton.setAlpha((float) 0.3);
                                 saveButton.setEnabled(false);
                                 changeInSports.clear();
-                                Intent intent = new Intent(getActivity().getApplicationContext(), Main.class);
+                                Intent intent = new Intent(getActivity().getApplicationContext(), MainVechi.class);
                                 startActivity(intent);
 
                     }
@@ -359,8 +350,8 @@ public class SettingsActivity extends Fragment {
                 @Override
                 public void onClick(View v) {
                     LoginManager.getInstance().logOut();
-                    Intent intent = new Intent(getActivity().getApplicationContext(), IntroActivity.class);
-                    startActivity(intent);
+                    //Intent intent = new Intent(getActivity().getApplicationContext(), IntroActivity.class);
+                    //startActivity(intent);
                 }
             });
 
@@ -422,7 +413,8 @@ public class SettingsActivity extends Fragment {
                     gridView.setAdapter(dataAdapter);
 
 
-                    /*
+                    */
+/*
                     sportRed.addListenerForSingleValueEvent(new ValueEventListener() { // get the rest of the sports
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
@@ -441,7 +433,8 @@ public class SettingsActivity extends Fragment {
                             //User.firebaseRef.child("msge").setValue("The read failed: " + firebaseError.getMessage());
                         }
                     });
-                        */
+                        *//*
+
 
 
                 }
@@ -601,7 +594,8 @@ public class SettingsActivity extends Fragment {
     }
 
     // Left side menu
-    /*
+    */
+/*
     public void initializeLeftSidePanel() {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_settings);
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
@@ -666,13 +660,15 @@ public class SettingsActivity extends Fragment {
 
         return super.onOptionsItemSelected(item);
     }
-    */
+    *//*
 
-    // Delete the history stack and point to Main activity
+
+    // Delete the history stack and point to MainVechi activity
     public void onBackPressed() {
-        Intent toMain = new Intent(getActivity(),Main.class);
+        Intent toMain = new Intent(getActivity(),MainVechi.class);
         toMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(toMain);
     }
 
 }
+*/

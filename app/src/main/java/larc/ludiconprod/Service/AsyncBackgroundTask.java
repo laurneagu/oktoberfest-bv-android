@@ -1,3 +1,4 @@
+/*
 package larc.ludiconprod.Service;
 
 import android.content.Context;
@@ -5,9 +6,11 @@ import android.os.AsyncTask;
 
 import larc.ludiconprod.UserInfo.User;
 
+*/
 /**
  * Created by Andrei on 2/27/2016.
- */
+ *//*
+
 public class AsyncBackgroundTask extends AsyncTask<Void, Void, Void> {
 
     Context context;
@@ -45,3 +48,4 @@ public class AsyncBackgroundTask extends AsyncTask<Void, Void, Void> {
     }
 
 }
+*/

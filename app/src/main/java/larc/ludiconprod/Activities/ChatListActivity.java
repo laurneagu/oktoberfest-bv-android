@@ -1,16 +1,10 @@
+/*
 package larc.ludiconprod.Activities;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -20,13 +14,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -35,7 +27,6 @@ import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
@@ -44,19 +35,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
-import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import larc.ludiconprod.Adapters.LeftPanelItemClicker;
-import larc.ludiconprod.Adapters.LeftSidePanelAdapter;
 import larc.ludiconprod.R;
 import larc.ludiconprod.UserInfo.User;
 import larc.ludiconprod.Utils.ChatUtils.Chat1to1;
@@ -65,7 +50,6 @@ import larc.ludiconprod.Utils.MainPageUtils.ViewPagerAdapter;
 import larc.ludiconprod.Utils.ui.SlidingTabLayout;
 import larc.ludiconprod.Utils.util.ChatNotifier;
 import larc.ludiconprod.Utils.util.DateManager;
-import larc.ludiconprod.Utils.util.Utils;
 
 import java.util.*;
 
@@ -363,8 +347,11 @@ public class ChatListActivity extends Fragment {
             public void onCancelled(DatabaseError firebaseError) {
             }
         });
-        /*Swipe */
-        /*if (!addedSwipe) {
+        */
+/*Swipe *//*
+
+        */
+/*if (!addedSwipe) {
             final SwipeRefreshLayout mSwipeRefreshLayout1 = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh1);
             mSwipeRefreshLayout1.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
@@ -375,10 +362,14 @@ public class ChatListActivity extends Fragment {
             });
             addedSwipe = true;
         }
-        */
+        *//*
 
-                 /*Swipe */
-       /* if (!addedSwipe2) {
+
+                 */
+/*Swipe *//*
+
+       */
+/* if (!addedSwipe2) {
             final SwipeRefreshLayout mSwipeRefreshLayout2 = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh2);
             mSwipeRefreshLayout2.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
@@ -389,7 +380,8 @@ public class ChatListActivity extends Fragment {
             });
 
             addedSwipe2 = true;
-        }*/
+        }*//*
+
     }
     //Object waitForFriends = new Object();
     public Runnable getFirebaseInfoThread() {
@@ -812,6 +804,7 @@ public class ChatListActivity extends Fragment {
 
 
     // Left side menu
+*/
 /*
     public void initializeLeftSidePanel() {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_chats);
@@ -844,7 +837,8 @@ public class ChatListActivity extends Fragment {
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
-    */
+    *//*
+
 
     public static DateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm");
 
@@ -913,11 +907,12 @@ public class ChatListActivity extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    // Delete the history stack and point to Main activity
+    // Delete the history stack and point to MainVechi activity
     public void onBackPressed() {
-        Intent toMain = new Intent(getActivity(),Main.class);
+        Intent toMain = new Intent(getActivity(),MainVechi.class);
         toMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(toMain);
     }
 
 }
+*/

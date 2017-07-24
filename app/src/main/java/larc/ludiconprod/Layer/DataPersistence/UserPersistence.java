@@ -1,3 +1,4 @@
+/*
 package larc.ludiconprod.Layer.DataPersistence;
 
 import android.app.Activity;
@@ -6,9 +7,11 @@ import android.content.SharedPreferences;
 import larc.ludiconprod.UserInfo.User;
 import larc.ludiconprod.Utils.Location.LocationInfo;
 
+*/
 /**
  * Created by LaurUser on 7/5/2017.
- */
+ *//*
+
 
 public class UserPersistence {
     final static String userDetailsString = "UserDetails";
@@ -33,3 +36,4 @@ public class UserPersistence {
     }
 
 }
+*/

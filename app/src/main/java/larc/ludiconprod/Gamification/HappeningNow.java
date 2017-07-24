@@ -1,3 +1,4 @@
+/*
 package larc.ludiconprod.Gamification;
 
 import android.app.Activity;
@@ -26,7 +27,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import larc.ludiconprod.Activities.MainActivity;
+import larc.ludiconprod.Activities.MainActivityVechi;
 import larc.ludiconprod.Layer.DataPersistence.EventPersistence;
 import larc.ludiconprod.Layer.DataPersistence.PointsPersistence;
 import larc.ludiconprod.LocationHelper.DistanceValue;
@@ -37,9 +38,11 @@ import larc.ludiconprod.UserInfo.User;
 import larc.ludiconprod.Utils.Event;
 import larc.ludiconprod.Utils.Location.GPSTracker;
 
+*/
 /**
  * Created by LaurUser on 7/6/2017.
- */
+ *//*
+
 
 public class HappeningNow {
     // Singleton
@@ -55,7 +58,7 @@ public class HappeningNow {
 
     private View view;
     private Activity activity;
-    private MainActivity fragmentActivity;
+    private MainActivityVechi fragmentActivity;
     private Resources resources;
     private LocationChecker locationChecker;
     public final Handler handlerChecker = new Handler();
@@ -67,7 +70,7 @@ public class HappeningNow {
     public long TIMEOUT_EVENT = 120; // min
 
     public static void setData(View view, Activity activity,
-                               MainActivity fragmentActivity, Resources resources, LocationChecker locationChecker){
+                               MainActivityVechi fragmentActivity, Resources resources, LocationChecker locationChecker){
         if(instance == null) {
             instance = new HappeningNow();
         }
@@ -436,7 +439,8 @@ public class HappeningNow {
         }
     };
 
-    /*
+    */
+/*
     public void onDestroyPage(){
         // Stop the event
         EventPersistence eventPersistence = EventPersistence.getInstance();
@@ -446,5 +450,7 @@ public class HappeningNow {
         // Save points
         savePointsInDatabase();
     }
-    */
+    *//*
+
 }
+*/

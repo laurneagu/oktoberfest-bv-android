@@ -1,3 +1,4 @@
+/*
 package larc.ludiconprod.Activities;
 
 import android.content.Context;
@@ -17,9 +18,11 @@ import android.widget.EditText;
 import larc.ludiconprod.R;
 
 
+*/
 /**
  * Created by opprime on 16-7-21.
- */
+ *//*
+
 public class EditTextField extends android.support.v7.widget.AppCompatEditText {
     private Context mContext;
     private Bitmap mClearButton;
@@ -38,13 +41,15 @@ public class EditTextField extends android.support.v7.widget.AppCompatEditText {
 
 
 
-    /**
+    */
+/**
      * 按钮显示方式
      * NEVER   不显示清空按钮
      * ALWAYS  始终显示清空按钮
      * WHILEEDITING   输入框内容不为空且有获得焦点
      * UNLESSEDITING  输入框内容不为空且没有获得焦点
-     * */
+     * *//*
+
     public enum ClearButtonMode {
         NEVER, ALWAYS, WHILEEDITING, UNLESSEDITING
     }
@@ -69,9 +74,11 @@ public class EditTextField extends android.support.v7.widget.AppCompatEditText {
 
 
 
-    /**
+    */
+/**
      * 初始化
-     */
+     *//*
+
     private void init(Context context, AttributeSet attributeSet) {
         this.mContext = context;
         TypedArray typedArray = context.obtainStyledAttributes(attributeSet, R.styleable.EditTextField);
@@ -105,10 +112,12 @@ public class EditTextField extends android.support.v7.widget.AppCompatEditText {
 
 
 
-    /**
+    */
+/**
      * 按钮状态管理
      * @param canvas onDraw的Canvas
-     */
+     *//*
+
     private void buttonManager(Canvas canvas) {
         switch (mClearButtonMode) {
             case ALWAYS:
@@ -127,10 +136,12 @@ public class EditTextField extends android.support.v7.widget.AppCompatEditText {
 
 
 
-    /**
+    */
+/**
      * 设置输入框的内边距
      * @param isShow  是否显示按钮
-     */
+     *//*
+
     private void setPadding(boolean isShow) {
         int paddingRight = mInitPaddingRight + (isShow ? mClearButton.getWidth() + mButtonPadding + mButtonPadding : 0);
 
@@ -139,10 +150,12 @@ public class EditTextField extends android.support.v7.widget.AppCompatEditText {
 
 
 
-    /**
+    */
+/**
      * 取得显示按钮与不显示按钮时的Rect
      * @param isShow  是否显示按钮
-     */
+     *//*
+
     private Rect getRect(boolean isShow) {
         int left, top, right, bottom;
 
@@ -161,11 +174,13 @@ public class EditTextField extends android.support.v7.widget.AppCompatEditText {
 
 
 
-    /**
+    */
+/**
      * 绘制按钮图片
      * @param canvas onDraw的Canvas
      * @param rect   图片位置
-     */
+     *//*
+
     private void drawBitmap(Canvas canvas, Rect rect) {
         if (rect != null) {
             canvas.drawBitmap(mClearButton, null, rect, mPaint);
@@ -206,10 +221,12 @@ public class EditTextField extends android.support.v7.widget.AppCompatEditText {
 
 
 
-    /**
+    */
+/**
      * 获取Drawable
      * @param resourseId  资源ID
-     */
+     *//*
+
     private Drawable getDrawableCompat(int resourseId) {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
             return getResources().getDrawable(resourseId, mContext.getTheme());
@@ -218,18 +235,22 @@ public class EditTextField extends android.support.v7.widget.AppCompatEditText {
         }
     }
 
-    /**
+    */
+/**
      * 设置按钮左右内边距
      * @param buttonPadding 单位为dp
-     */
+     *//*
+
     public void setButtonPadding(int buttonPadding) {
         this.mButtonPadding = dp2px(buttonPadding);
     }
 
-    /**
+    */
+/**
      * 设置按钮显示方式
      * @param clearButtonMode 显示方式
-     */
+     *//*
+
     public void setClearButtonMode(ClearButtonMode clearButtonMode) {
         this.mClearButtonMode = clearButtonMode;
     }
@@ -242,4 +263,4 @@ public class EditTextField extends android.support.v7.widget.AppCompatEditText {
         final float scale = getResources().getDisplayMetrics().density;
         return (int) (dipValue * scale + 0.5f);
     }
-}
+}*/

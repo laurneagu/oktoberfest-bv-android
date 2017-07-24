@@ -1,8 +1,11 @@
+/*
 package larc.ludiconprod.Activities;
 
+*/
 /**
  * Created by Ciprian on 7/23/2016.
- */
+ *//*
+
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -101,7 +104,7 @@ public class GroupChatTemplate extends ListActivity {
         userPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                Intent mainIntent = new Intent(getApplicationContext(), MainActivityVechi.class);
                 GroupChatTemplate.this.startActivity(mainIntent);
             }
         });
@@ -246,4 +249,4 @@ public class GroupChatTemplate extends ListActivity {
 
     }
 
-}
+}*/

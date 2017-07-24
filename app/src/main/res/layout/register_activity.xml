@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <include
+            android:id="@+id/tool_bar"
+            layout="@layout/header_login"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+            <EditText
+                android:id="@+id/firstName"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:drawableLeft="@drawable/ic_bnav_user_selected"
+                android:ems="10"
+                android:paddingLeft="15dp"
+                android:textSize="16sp"
+                android:layout_marginTop="15dp"
+                android:inputType="text"
+                android:background="@drawable/rounded_edittext"
+                android:hint="First Name"/>
+            <EditText
+                android:id="@+id/lastName"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:drawableLeft="@drawable/ic_bnav_user_selected"
+                android:ems="10"
+                android:textSize="16sp"
+                android:paddingLeft="15dp"
+                android:layout_marginTop="15dp"
+                android:inputType="text"
+                android:background="@drawable/rounded_edittext"
+                android:hint="Last Name"/>
+            <EditText
+                android:id="@+id/emailAdress"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:drawableLeft="@drawable/ic_email"
+                android:ems="10"
+                android:textSize="16sp"
+                android:paddingLeft="15dp"
+                android:layout_marginTop="15dp"
+                android:inputType="textEmailAddress"
+                android:background="@drawable/rounded_edittext"
+                android:hint="Email Adress"/>
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:drawableLeft="@drawable/ic_lock"
+                android:ems="10"
+                android:textSize="16sp"
+                android:paddingLeft="15dp"
+                android:layout_marginTop="15dp"
+                android:inputType="textPassword"
+                android:background="@drawable/rounded_edittext"
+                android:hint="Password"/>
+            <EditText
+                android:id="@+id/passwordRepeat"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:drawableLeft="@drawable/ic_lock"
+                android:ems="10"
+                android:textSize="16sp"
+                android:paddingLeft="15dp"
+                android:layout_marginTop="15dp"
+                android:inputType="textPassword"
+                android:background="@drawable/rounded_edittext"
+                android:hint="Repeat Password"/>
+            <Button
+                android:id="@+id/createAccountButton"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="CREATE ACCOUNT"
+                android:textSize="14sp"
+                android:textColor="#ffffff"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/rounded_button"/>
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,3 +1,4 @@
+/*
 package larc.ludiconprod.Model;
 
 import com.google.android.gms.tasks.Task;
@@ -22,9 +23,11 @@ import larc.ludiconprod.UserInfo.User;
 import larc.ludiconprod.Utils.ChatUtils.Chat;
 import larc.ludiconprod.Utils.util.DateManager;
 
+*/
 /**
  * Created by ancuta on 7/7/2017.
- */
+ *//*
+
 
 public class ChatHandler {
     // Singleton
@@ -109,3 +112,4 @@ public class ChatHandler {
         mDatabaseReferenceRef.push().setValue(chat);
     }
 }
+*/

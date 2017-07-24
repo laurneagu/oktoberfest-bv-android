@@ -257,7 +257,9 @@
 
     <include layout="@layout/header" />
 
+    <!--
     <include layout="@layout/leftside_panel" />
+    -->
 
 
 </android.support.v4.widget.DrawerLayout>

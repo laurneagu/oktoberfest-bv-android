@@ -1,3 +1,4 @@
+/*
 package larc.ludiconprod.Model;
 
 import android.app.Activity;
@@ -28,9 +29,11 @@ import larc.ludiconprod.Utils.Event;
 import larc.ludiconprod.Utils.Location.LocationInfo;
 import larc.ludiconprod.Utils.util.DateManager;
 
+*/
 /**
  * Created by LaurUser on 7/5/2017.
- */
+ *//*
+
 
 public class EventHandler {
     private int TIMEOUT = 80;
@@ -232,3 +235,4 @@ public class EventHandler {
     }
 }
 
+*/

@@ -1,3 +1,4 @@
+/*
 package larc.ludiconprod.Activities;
 
 import android.app.Activity;
@@ -81,7 +82,8 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
 
     @Override
     public void onMapReady(GoogleMap map) {
-        /*
+        */
+/*
         locationListener = new ActivitiesLocationListener(getApplication());
         locationListener.BindMap(map);
 
@@ -110,7 +112,8 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
         } catch (SecurityException exc) {
             exc.printStackTrace();
         }
-        */
+        *//*
+
     }
     Marker lastAddedMarker;
     MapFragment mapFragment;
@@ -152,13 +155,15 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
         userSportsNumber.setText(User.getNumberOfSports(getApplicationContext()));
         userSportsNumber.setTypeface(segoeui);
 
-     /*   ImageView userPic = (ImageView) findViewById(R.id.userPicture);
+     */
+/*   ImageView userPic = (ImageView) findViewById(R.id.userPicture);
         Drawable d = new BitmapDrawable(getResources(), User.image);
         userPic.setImageDrawable(d);
 
             ImageView menuButton = (ImageView) findViewById(R.id.showPanel);
             menuButton.setVisibility(View.INVISIBLE);
-            */
+            *//*
+
             
         mapFragment= (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
@@ -275,7 +280,8 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
 
     // Left side menu
 
-   /* public void initializeLeftSidePanel() {
+   */
+/* public void initializeLeftSidePanel() {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_gmapsfull);
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
@@ -307,10 +313,12 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-    }*/
+    }*//*
 
 
-    /*@Override
+
+    */
+/*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -331,7 +339,8 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
 
         return super.onOptionsItemSelected(item);
     }
-*/
+*//*
+
     // Cluster code !
     private ClusterManager<AuthPlace> mClusterManager;
     private Random mRandom = new Random(1984);
@@ -359,10 +368,12 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
 
     }
 
-    /**
+    */
+/**
      * Draws profile photos inside markers (using IconGenerator).
      * When there are multiple people in the cluster, draw multiple photos (using MultiDrawable).
-     */
+     *//*
+
     private class PersonRenderer extends DefaultClusterRenderer<AuthPlace> {
         private final IconGenerator mIconGenerator = new IconGenerator(getApplicationContext());
         private final IconGenerator mClusterIconGenerator = new IconGenerator(getApplicationContext());
@@ -547,11 +558,13 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
                         toast.show();
                     }
 
-                    /*
+                    */
+/*
                     googleMap.addMarker(new MarkerOptions()
                             .position(new LatLng(latitude,longitude))
                             .title("You are here"));
-                    */
+                    *//*
+
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude,longitude), 15));
                 }
 
@@ -723,3 +736,4 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
         }
     }
 }
+*/

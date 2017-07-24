@@ -1,3 +1,4 @@
+/*
 package larc.ludiconprod.Activities;
 
 import android.app.ListActivity;
@@ -78,7 +79,8 @@ public class ChatTemplateActivity extends ListActivity {
         setContentView(R.layout.activity_chat);
 
         // Left side panel
-        /*
+        */
+/*
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
         initializeLeftSidePanel();
 
@@ -95,8 +97,10 @@ public class ChatTemplateActivity extends ListActivity {
         TextView userSportsNumber = (TextView)findViewById(R.id.userSportsNumber);
         userSportsNumber.setText(User.getNumberOfSports(getApplicationContext()));
         userSportsNumber.setTypeface(segoeui);
+        *//*
+
         */
-        /*
+/*
 
         ImageView userPic = (ImageView) findViewById(R.id.userPicture);
         Drawable d = new BitmapDrawable(getResources(), User.image);
@@ -104,11 +108,12 @@ public class ChatTemplateActivity extends ListActivity {
         userPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                Intent mainIntent = new Intent(getApplicationContext(), MainActivityVechi.class);
                 ChatTemplateActivity.this.startActivity(mainIntent);
             }
         });
-        */
+        *//*
+
 
         Intent intent = getIntent();
         final String otherUserUid  = intent.getStringExtra("uid");
@@ -343,3 +348,4 @@ public class ChatTemplateActivity extends ListActivity {
     }
 
 }
+*/

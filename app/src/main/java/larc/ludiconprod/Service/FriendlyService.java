@@ -1,3 +1,4 @@
+/*
 package larc.ludiconprod.Service;
 
 import android.app.Service;
@@ -45,9 +46,11 @@ import larc.ludiconprod.Utils.util.DateManager;
 import larc.ludiconprod.Utils.util.Notifier;
 
 
+*/
 /**
  * Created by Andrei on 2/27/2016.
- */
+ *//*
+
 
 public class FriendlyService extends Service {
 
@@ -68,7 +71,9 @@ public class FriendlyService extends Service {
     private Object waitForNextEvent = new Object();
 
 
-    /* LOCATION */
+    */
+/* LOCATION *//*
+
     private static final String TAG = "BOOMBOOMTESTGPS";
     private LocationManager mLocationManager = null;
     private static final int LOCATION_INTERVAL = 1000*60*1;
@@ -153,7 +158,9 @@ public class FriendlyService extends Service {
     }
 
 
-    /*** LOCATION END */
+    */
+/*** LOCATION END *//*
+
 
     private boolean isLocationOk(){
         //Looper.prepare();
@@ -680,3 +687,4 @@ public class FriendlyService extends Service {
 
 
 
+*/

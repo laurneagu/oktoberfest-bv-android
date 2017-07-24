@@ -15,7 +15,7 @@
         android:layout_marginRight="20dp"
         android:clickable="true"
         android:visibility="invisible"
-        app:srcCompat="@drawable/create"
+        android:src="@drawable/create"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         />

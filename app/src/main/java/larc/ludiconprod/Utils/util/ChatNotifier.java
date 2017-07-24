@@ -1,3 +1,4 @@
+/*
 package larc.ludiconprod.Utils.util;
 
 import android.app.Notification;
@@ -18,15 +19,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import larc.ludiconprod.Activities.ChatListActivity;
-import larc.ludiconprod.Activities.ChatTemplateActivity;
-import larc.ludiconprod.Activities.IntroActivity;
 import larc.ludiconprod.R;
 import larc.ludiconprod.UserInfo.User;
 
+*/
 /**
  * Created by Andrei on 4/18/2016.
- */
+ *//*
+
 public class ChatNotifier {
 
     public static int chatNotificationFirstIndex = 0;
@@ -125,3 +125,4 @@ public class ChatNotifier {
         };
     }
 }
+*/

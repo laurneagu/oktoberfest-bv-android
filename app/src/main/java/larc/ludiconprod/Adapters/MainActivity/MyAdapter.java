@@ -1,3 +1,4 @@
+/*
 package larc.ludiconprod.Adapters.MainActivity;
 
 import android.app.Activity;
@@ -31,9 +32,11 @@ import larc.ludiconprod.UserInfo.User;
 import larc.ludiconprod.Utils.Event;
 import larc.ludiconprod.Utils.General;
 
+*/
 /**
  * Created by LaurUser on 7/4/2017.
- */
+ *//*
+
 
 public class MyAdapter extends BaseAdapter implements ListAdapter {
         class ViewHolder {
@@ -201,3 +204,4 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
             return view;
         }
     }
+*/

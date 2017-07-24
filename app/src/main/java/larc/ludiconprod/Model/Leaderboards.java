@@ -1,3 +1,4 @@
+/*
 package larc.ludiconprod.Model;
 
 import com.google.firebase.database.DataSnapshot;
@@ -7,9 +8,11 @@ import com.google.firebase.database.ValueEventListener;
 
 import larc.ludiconprod.UserInfo.User;
 
+*/
 /**
  * Created by LaurUser on 7/5/2017.
- */
+ *//*
+
 
 public class Leaderboards {
 
@@ -36,7 +39,8 @@ public class Leaderboards {
         // TODO - to remove this
         // OLD IMPLEMENTATION TO SAVE IN FIREBASE in /points node the number of points for current activity
         // NOT NEEDED ANYMORE SAVE JUST IN THE user/event_id/points NODE + automatically will update LEADERBOARDS
-        /*
+        */
+/*
         // Get and update total number of points for user in sport
         DatabaseReference pointsRef = leaderboardsReference.child(sport).child(User.uid);
         pointsRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -68,10 +72,12 @@ public class Leaderboards {
             public void onCancelled(DatabaseError firebaseError) {
             }
         });
-        */
+        *//*
+
     }
 
-    /*
+    */
+/*
     private void writeToDatabaseReference(final String sport, int points, final int unsavedPoints, final String eventID) {
         DatabaseReference pointsRef = User.firebaseRef.child("points").child(sport).child(User.uid);
 
@@ -82,5 +88,7 @@ public class Leaderboards {
             User.firebaseRef.child("users").child(User.uid).child("events").child(eventID).child("points").setValue(unsavedPoints);
         }
     }
-    */
+    *//*
+
 }
+*/

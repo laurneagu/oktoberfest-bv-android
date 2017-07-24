@@ -5,6 +5,8 @@
 
     <string name="app_name">Ludicon</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="errorMessage">Incorrect email or password</string>
+    <string name="pick_image_intent_text"></string>
 
     <string name="hello_world">LUDICON is here!</string>
     <string name="action_settings">Settings</string>

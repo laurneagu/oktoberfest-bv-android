@@ -1,3 +1,4 @@
+/*
 package larc.ludiconprod.Activities;
 
 import android.app.Activity;
@@ -7,15 +8,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
-import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.LocationManager;
-import android.media.Image;
 import android.os.Build;
 import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -23,7 +21,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -77,8 +74,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
-import larc.ludiconprod.Adapters.LeftPanelItemClicker;
-import larc.ludiconprod.Adapters.LeftSidePanelAdapter;
 import larc.ludiconprod.R;
 import larc.ludiconprod.UserInfo.User;
 import larc.ludiconprod.Utils.Event;
@@ -249,7 +244,7 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
         userPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                Intent mainIntent = new Intent(getApplicationContext(), MainActivityVechi.class);
                 EditEventActivity.this.startActivity(mainIntent);
             }
         });
@@ -280,7 +275,8 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
 
         // DropDown for the sports
 
-        /*
+        */
+/*
         Spinner spinner = (Spinner) findViewById(R.id.sports_spinner);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -294,7 +290,8 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
         spinner.setSelection(0, true);
         View v = spinner.getSelectedView();
         ((TextView)v).setTextColor(Color.parseColor("#000000"));
-        */
+        *//*
+
 
         // Receive sport name and put picture of that sport as button
         String selectedSportName = getIntent().getStringExtra("sport");
@@ -484,7 +481,8 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
     }
 
 
-    /*
+    */
+/*
         public void onPrivacyButtonsClicked(View view) {
             // Is the button now selected
             TextView selected,notselected;
@@ -506,7 +504,8 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
                     break;
             }
         }
-        */
+        *//*
+
     public boolean checkEventDateIsNotInPast(Date creationDate) {
         Date now = new Date();
         Log.v("event vs now", creationDate.toString() + " " + now);
@@ -537,12 +536,14 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
         }
 
 
-                /*new GregorianCalendar(myCalendar.get(Calendar.YEAR),
+                */
+/*new GregorianCalendar(myCalendar.get(Calendar.YEAR),
                 myCalendar.get(Calendar.MONTH),
                 myCalendar.get(Calendar.DAY_OF_MONTH), // dono fucking why ?!
                 myCalendar.get(Calendar.HOUR_OF_DAY),
                 myCalendar.get(Calendar.MINUTE));
-                */
+                *//*
+
 
             UniqueIDCreator idCreator = new UniqueIDCreator();
             //final String id = idCreator.nextSessionId();
@@ -607,7 +608,8 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
             //Log.v("date", java.text.DateFormat.getDateTimeInstance().format(calendar.getTime()) );
 
             // Set privacy
-        /*
+        */
+/*
         Button privacy = (Button) findViewById(R.id.publicBut);
         if (privacy.getAlpha() == 1) {
             map.put("privacy", "public");
@@ -616,7 +618,8 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
         }
 
 
-*/       if(!switchPrivacy.isChecked()) {
+*//*
+       if(!switchPrivacy.isChecked()) {
             map.put("privacy", "public");
         }
         else{
@@ -684,7 +687,8 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
                         //User.firebaseRef.child("mesg").setValue("World is on fire");
 
                         // Script to refresh sports in the database
-                    /*
+                    */
+/*
                     User.firebaseRef.child("sports").child("Football").child("id").setValue("0");
                     User.firebaseRef.child("sports").child("Volley").child("id").setValue("1");
                     User.firebaseRef.child("sports").child("Basketball").child("id").setValue("2");
@@ -693,7 +697,8 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
                     User.firebaseRef.child("sports").child("Tennis").child("id").setValue("5");
                     User.firebaseRef.child("sports").child("Cycling").child("id").setValue("6");
                     User.firebaseRef.child("sports").child("Jogging").child("id").setValue("7");
-                    */
+                    *//*
+
                     }
 
                     // Get the events from Shared Prefs
@@ -749,16 +754,18 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
             });
     }
 
-    /**
-     * Method that jumps to the MainActivity
-     */
+    */
+/**
+     * Method that jumps to the MainActivityVechi
+     *//*
+
     public void jumpToMainActivity() {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
                 // Actions to do after 5 seconds
                 // Actions to do after 5 seconds
-                Intent goToNextActivity = new Intent(getApplicationContext(), Main.class); //AskPreferences.class);
+                Intent goToNextActivity = new Intent(getApplicationContext(), MainVechi.class); //AskPreferences.class);
                 startActivity(goToNextActivity);
                 finish();
             }
@@ -781,7 +788,7 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
         locationListener = null;
         finish();
 
-        Intent toMain = new Intent(this, Main.class);
+        Intent toMain = new Intent(this, MainVechi.class);
         toMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(toMain);
     }
@@ -825,7 +832,8 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
 
     // Left side menu
 
-    /*public void initializeLeftSidePanel() {
+    */
+/*public void initializeLeftSidePanel() {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_createnew);
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
 
@@ -856,7 +864,8 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-    }*/
+    }*//*
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -946,14 +955,16 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
             holder.box.setChecked(sport.isChecked);
             holder.box.setTag(sport);
             holder.text.setTextColor(getResources().getColor(R.color.white));
-            /*
+            */
+/*
             if (sportIndex==position) {
                 holder.rl.setBackgroundColor(getResources().getColor(R.color.bg1));
                 holder.image.setImageBitmap(sport.icon);
                 holder.box.setTextColor(getResources().getColor(R.color.white));
                 holder.box.setAlpha((float) 0.9);
             } else {
-            */
+            *//*
+
             holder.box.setTextColor(getResources().getColor(R.color.white));
             holder.rl.setBackgroundColor(getResources().getColor(R.color.bg2));
 
@@ -971,3 +982,4 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
 }
 
 
+*/

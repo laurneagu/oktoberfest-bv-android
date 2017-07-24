@@ -1,3 +1,4 @@
+/*
 package larc.ludiconprod.Utils.Tests;
 
 import android.app.Notification;
@@ -5,7 +6,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
-import larc.ludiconprod.Activities.MainActivity;
+import larc.ludiconprod.Activities.MainActivityVechi;
 import larc.ludiconprod.R;
 import larc.ludiconprod.UserInfo.User;
 
@@ -48,7 +49,7 @@ public class BackgroundService2 extends Service {
             Notification note=new Notification(R.drawable.logo,
                     "Can you hear the music?",
                     System.currentTimeMillis());
-            Intent ii =new Intent(this, MainActivity.class);
+            Intent ii =new Intent(this, MainActivityVechi.class);
 
             ii.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|
                     Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -66,4 +67,4 @@ public class BackgroundService2 extends Service {
         stopForeground(true);
 
     }
-}
+}*/

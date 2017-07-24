@@ -1,3 +1,4 @@
+/*
 package larc.ludiconprod.Adapters;
 
 import android.app.Activity;
@@ -16,9 +17,11 @@ import java.util.List;
 import larc.ludiconprod.R;
 import larc.ludiconprod.UserInfo.User;
 
+*/
 /**
  * Created by LaurUser on 12/28/2015.
- */
+ *//*
+
 public class LeftSidePanelAdapter  extends BaseAdapter implements View.OnClickListener {
 
     private Context m_context;
@@ -69,4 +72,4 @@ public class LeftSidePanelAdapter  extends BaseAdapter implements View.OnClickLi
     @Override
     public void onClick(View view) {
     }
-}
+}*/

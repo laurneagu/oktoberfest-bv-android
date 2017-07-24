@@ -1,7 +1,7 @@
+/*
 package larc.ludiconprod.Adapters.MainActivity;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -30,17 +30,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import larc.ludiconprod.Activities.EventDetails;
-import larc.ludiconprod.Activities.FriendsActivity;
-import larc.ludiconprod.Activities.MainActivity;
+import larc.ludiconprod.Activities.MainActivityVechi;
 import larc.ludiconprod.Activities.ProfileActivity;
 import larc.ludiconprod.R;
 import larc.ludiconprod.UserInfo.User;
 import larc.ludiconprod.Utils.Event;
 import larc.ludiconprod.Utils.General;
 
+*/
 /**
  * Created by LaurUser on 7/4/2017.
- */
+ *//*
+
 
 public class AroundMeAdapter extends BaseAdapter implements ListAdapter {
 
@@ -61,10 +62,10 @@ public class AroundMeAdapter extends BaseAdapter implements ListAdapter {
         private Context context;
         private Activity activity;
         private Resources resources;
-        private MainActivity fragment;
+        private MainActivityVechi fragment;
         final ListView listView;
 
-        public AroundMeAdapter(ArrayList<Event> list, Context context, Activity activity, Resources resources, MainActivity fragment) {
+        public AroundMeAdapter(ArrayList<Event> list, Context context, Activity activity, Resources resources, MainActivityVechi fragment) {
             this.list = list;
             this.context = context;
             this.activity = activity;
@@ -257,3 +258,4 @@ public class AroundMeAdapter extends BaseAdapter implements ListAdapter {
         }
 }
 
+*/

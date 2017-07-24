@@ -4,7 +4,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     >
+    <!--
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="45dp"
@@ -19,44 +21,49 @@
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="65dp"
             android:layout_centerVertical="true" />
+            -->
+    <!--
 
-        <ImageButton android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:background="@drawable/ic_drawer"
-            android:layout_marginLeft="30dp"
-            android:layout_centerVertical="true"
-            android:id="@+id/showPanel"
-            />
-        <TextView
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:textColor="#FFFFFF"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:textSize="23dp"
-            android:gravity="center"
-            android:layout_centerInParent="true"
-            android:id="@+id/hello_message_activity"
-            android:textStyle="bold" />
-        <ImageButton
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@drawable/admin_add2"
-            android:id="@+id/header_button"
-            android:visibility="invisible"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="7dp"
-            />
+    <ImageButton android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:background="@drawable/ic_drawer"
+        android:layout_marginLeft="30dp"
+        android:layout_centerVertical="true"
+        android:id="@+id/showPanel"
+        />
+        -->
+    <!--
+            <TextView
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="#FFFFFF"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:textSize="23dp"
+                android:gravity="center"
+                android:layout_centerInParent="true"
+                android:id="@+id/hello_message_activity"
+                android:textStyle="bold" />
+            <ImageButton
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/admin_add2"
+                android:id="@+id/header_button"
+                android:visibility="invisible"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="7dp"
+                />
 
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/imageView" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView" />
 
-    </RelativeLayout>
+        </RelativeLayout>
+    -->
 </LinearLayout>
 
     <!-- HEADER PANEL END -->

@@ -1,3 +1,4 @@
+/*
 package larc.ludiconprod.Activities;
 
 
@@ -60,9 +61,9 @@ public class GeneralChatActivity extends ListActivity {
         // Make sure we have a mUsername
         setupUsername();
 
-        /*
         setTitle("Chatting as " + mUsername);
-        */
+
+
 
         // Setup our DatabaseReference mDatabaseReferenceRef
         // TODO User to User Chat
@@ -158,3 +159,4 @@ public class GeneralChatActivity extends ListActivity {
         }
     }
 }
+*/

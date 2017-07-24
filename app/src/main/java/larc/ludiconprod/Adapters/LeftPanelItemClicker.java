@@ -1,3 +1,4 @@
+/*
 package larc.ludiconprod.Adapters;
 
 import android.app.Activity;
@@ -24,9 +25,11 @@ import larc.ludiconprod.Activities.SettingsActivity;
 import larc.ludiconprod.Activities.StatisticsActivity;
 import larc.ludiconprod.UserInfo.User;
 
+*/
 /**
  * Created by LaurUser on 12/28/2015.
- */
+ *//*
+
 public class LeftPanelItemClicker {
     public static void OnItemClick(ListView i_Drawerlist, final Context i_context,final Activity i_currActivity){
         i_Drawerlist.setOnItemClickListener(
@@ -89,4 +92,4 @@ public class LeftPanelItemClicker {
                         }
                     }});
     }
-}
+}*/

@@ -1,3 +1,4 @@
+/*
 package larc.ludiconprod.Activities;
 
 import android.app.ProgressDialog;
@@ -44,9 +45,11 @@ import larc.ludiconprod.Utils.UserInRanks;
 import larc.ludiconprod.Utils.ui.SlidingTabLayout;
 import larc.ludiconprod.Utils.util.Utils;
 
+*/
 /**
  * Created by LaurUser on 8/27/2016.
- */
+ *//*
+
 
 public class RankingsNewActivity extends Fragment {
 
@@ -57,7 +60,9 @@ public class RankingsNewActivity extends Fragment {
     private ProgressDialog dialog;
     private int TIMEOUT = 80;
 
-    /* SlideTab */
+    */
+/* SlideTab *//*
+
     Toolbar toolbar;
     ViewPager pager;
     ViewPagerAdapter adapter;
@@ -120,7 +125,9 @@ public class RankingsNewActivity extends Fragment {
 
             // Setting the ViewPager For the SlidingTabsLayout
             tabs.setViewPager(pager);
-            /**************/
+            */
+/**************//*
+
 
             dialog = ProgressDialog.show(getActivity(), "", "Loading. Please wait", true);
 
@@ -296,11 +303,13 @@ public class RankingsNewActivity extends Fragment {
 
                                     // Temporary solution to order the result, as for now Query is not working properly
                                     int i = 0;
-                                    /*
+                                    */
+/*
                                     while (usersLocalList.size() > i && userInRanks.points < usersLocalList.get(i).points) {
                                         i++;
                                     }
-                                    */
+                                    *//*
+
 
                                     usersLocalList.add(i, userInRanks);
                                     //if (localAdapter != null) localAdapter.notifyDataSetChanged();
@@ -329,14 +338,18 @@ public class RankingsNewActivity extends Fragment {
                 //if (localAdapter != null)localAdapter.notifyDataSetChanged();
                 //if (friendsAdapter != null) friendsAdapter.notifyDataSetChanged();
 
-                /* Local Ranking */
+                */
+/* Local Ranking *//*
+
                 localAdapter = new UsersLocalAdapter(usersLocalList, getActivity());
                 ListView frlistView = (ListView) v.findViewById(R.id.events_listView1);
                 if (frlistView != null) {
                     frlistView.setAdapter(localAdapter);
                 }
 
-                /*Swipe */
+                */
+/*Swipe *//*
+
                 if (!addedSwipe) {
                     final SwipeRefreshLayout mSwipeRefreshLayout1 = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh1);
                     mSwipeRefreshLayout1.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -349,7 +362,9 @@ public class RankingsNewActivity extends Fragment {
                     addedSwipe = true;
                 }
 
-                 /*Swipe */
+                 */
+/*Swipe *//*
+
                 if (!addedSwipe2) {
                     final SwipeRefreshLayout mSwipeRefreshLayout2 = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh2);
                     mSwipeRefreshLayout2.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -420,9 +435,11 @@ public class RankingsNewActivity extends Fragment {
                                                         user.profileImageURL = dataFriendProfile.getValue().toString();
                                                         // Temporary solution to order the result
                                                         int i = 0;
-                                                        /*while (usersFriendsList.size() > i && user.points < usersFriendsList.get(i).points) {
+                                                        */
+/*while (usersFriendsList.size() > i && user.points < usersFriendsList.get(i).points) {
                                                             i++;
-                                                        }*/
+                                                        }*//*
+
 
                                                         usersFriendsList.add(i,user);
 
@@ -457,7 +474,9 @@ public class RankingsNewActivity extends Fragment {
 
 
 
-                /* Friends */
+                */
+/* Friends *//*
+
                 friendsAdapter = new UsersLocalAdapter(usersFriendsList, getActivity());
                 ListView mylistView = (ListView) v.findViewById(R.id.events_listView2);
                 if (mylistView != null) {
@@ -475,6 +494,7 @@ public class RankingsNewActivity extends Fragment {
 
     private UsersLocalAdapter localAdapter;
     private UsersLocalAdapter friendsAdapter;
+*/
 /*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -482,7 +502,8 @@ public class RankingsNewActivity extends Fragment {
         getActivity().getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-    */
+    *//*
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -594,7 +615,8 @@ public class RankingsNewActivity extends Fragment {
                 holder.rl_ranks.setBackgroundColor(Color.TRANSPARENT);
             }
 
-            /*
+            */
+/*
             // Gold medal
             if (position == 0) {
                 holder.place.setBackgroundResource(R.drawable.medal1);
@@ -611,7 +633,8 @@ public class RankingsNewActivity extends Fragment {
             else {
                     holder.place.setBackgroundResource(R.drawable.medal4);
                 }
-            */
+            *//*
+
 
             if (position >= 9){
 
@@ -638,3 +661,4 @@ public class RankingsNewActivity extends Fragment {
     }
 }
 
+*/

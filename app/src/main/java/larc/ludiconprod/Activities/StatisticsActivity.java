@@ -1,3 +1,4 @@
+/*
 package larc.ludiconprod.Activities;
 
 
@@ -9,7 +10,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.CalendarContract;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -568,7 +568,7 @@ public class StatisticsActivity extends Activity {
         userPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                Intent mainIntent = new Intent(getApplicationContext(), MainActivityVechi.class);
                 StatisticsActivity.this.startActivity(mainIntent);
             }
         });
@@ -729,3 +729,4 @@ public class StatisticsActivity extends Activity {
 
 }
 
+*/

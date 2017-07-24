@@ -1,7 +1,7 @@
+/*
 package larc.ludiconprod.Activities;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,15 +9,12 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -52,8 +49,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import larc.ludiconprod.Adapters.FriendsListAdapter;
-import larc.ludiconprod.Adapters.LeftPanelItemClicker;
-import larc.ludiconprod.Adapters.LeftSidePanelAdapter;
 import larc.ludiconprod.R;
 import larc.ludiconprod.UserInfo.User;
 import larc.ludiconprod.Utils.CustomView.NonScrollListView;
@@ -97,15 +92,17 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
 
     }
 
-    /**
-     * Method that jumps to the MainActivity
-     */
+    */
+/**
+     * Method that jumps to the MainActivityVechi
+     *//*
+
     public void jumpToMainActivity() {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
                 // Actions to do after 5 seconds
-                Intent goToNextActivity = new Intent(getApplicationContext(), Main.class);
+                Intent goToNextActivity = new Intent(getApplicationContext(), MainVechi.class);
                 startActivity(goToNextActivity);
                 finish();
             }
@@ -174,7 +171,7 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
         userPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent mainIntent = new Intent(getApplicationContext(), Main.class);
+                Intent mainIntent = new Intent(getApplicationContext(), MainVechi.class);
                 EventDetails.this.startActivity(mainIntent);
             }
         });
@@ -468,7 +465,7 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
                                     FirebaseDatabase.getInstance().getReference().child("events").child(eventUid).child("users").child("+" + 5*participants +userName.getText()).setValue(User.uid);
                                     Toast.makeText(getApplicationContext(),"You have added 1 friend",Toast.LENGTH_SHORT).show();
                                     finish();
-                                    Intent mainIntent = new Intent(getApplicationContext(), Main.class);
+                                    Intent mainIntent = new Intent(getApplicationContext(), MainVechi.class);
                                     EventDetails.this.startActivity(mainIntent);
 //                                    startActivity(getIntent());
                                 }
@@ -503,7 +500,7 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
                                                     if (users.equalsIgnoreCase(userName.getText().toString())) {
                                                         User.firebaseRef.child("events").child(eventUid).child("users").child(data.getKey()).removeValue();
                                                         finish();
-                                                        Intent mainIntent = new Intent(getApplicationContext(), Main.class);
+                                                        Intent mainIntent = new Intent(getApplicationContext(), MainVechi.class);
                                                         EventDetails.this.startActivity(mainIntent);
 //                                                        startActivity(getIntent());
                                                         return;
@@ -815,7 +812,8 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
 
 
     // Left side panel -----------------------------------------------------------------------------
-   /* public void initializeLeftSidePanel() {
+   */
+/* public void initializeLeftSidePanel() {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
 
@@ -846,7 +844,9 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-    }*/
+    }*//*
+
     // -----------------------------------------------------------------------------
 
 }
+*/

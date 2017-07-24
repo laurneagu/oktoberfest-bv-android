@@ -1,26 +1,22 @@
+/*
 package larc.ludiconprod.Activities;
 
 import android.app.Activity;
 
-import java.io.Console;
 import java.util.*;
 
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,11 +32,6 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.facebook.GraphRequest;
-import com.facebook.AccessToken;
-import com.facebook.GraphResponse;
-import com.facebook.HttpMethod;
-import com.facebook.internal.Logger;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.DatabaseError;
@@ -48,16 +39,12 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import larc.ludiconprod.Adapters.LeftPanelItemClicker;
-import larc.ludiconprod.Adapters.LeftSidePanelAdapter;
 import larc.ludiconprod.R;
 import larc.ludiconprod.UserInfo.User;
 import larc.ludiconprod.Utils.FriendUtils.FriendItem;
-import larc.ludiconprod.Utils.util.Utils;
 
 public class FriendsActivity extends Activity {
 
@@ -110,12 +97,16 @@ public class FriendsActivity extends Activity {
         // User picture and name for HEADER MENU
         Typeface segoeui = Typeface.createFromAsset(getAssets(), "fonts/seguisb.ttf");
 
-        /* Progress dialog */
-        /*progress = new ProgressDialog(this);
+        */
+/* Progress dialog *//*
+
+        */
+/*progress = new ProgressDialog(this);
         progress.setTitle("Loading");
         progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
         progress.show();
-        */
+        *//*
+
 
         TextView userName = (TextView) findViewById(R.id.userName);
         userName.setText(User.getFirstName(getApplicationContext()));
@@ -131,7 +122,7 @@ public class FriendsActivity extends Activity {
         userPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                Intent mainIntent = new Intent(getApplicationContext(), MainActivityVechi.class);
                 FriendsActivity.this.startActivity(mainIntent);
             }
         });
@@ -465,11 +456,12 @@ public class FriendsActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    // Delete the history stack and point to Main activity
+    // Delete the history stack and point to MainVechi activity
     @Override
     public void onBackPressed() {
-        Intent toMain = new Intent(this,MainActivity.class);
+        Intent toMain = new Intent(this,MainActivityVechi.class);
         toMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(toMain);
     }
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package larc.ludiconprod.Adapters;
 
 import android.content.Context;
@@ -20,9 +21,11 @@ import larc.ludiconprod.Activities.GroupChatTemplate;
 import larc.ludiconprod.R;
 import larc.ludiconprod.Utils.UserInfo;
 
+*/
 /**
  * Created by LaurUser on 5/14/2016.
- */
+ *//*
+
 public class FriendsListAdapter extends BaseAdapter implements ListAdapter {
 
     private ArrayList<UserInfo> list = new ArrayList<>();
@@ -80,3 +83,4 @@ public class FriendsListAdapter extends BaseAdapter implements ListAdapter {
         return view;
     }
 }
+*/

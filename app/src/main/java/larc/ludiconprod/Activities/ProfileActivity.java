@@ -1,18 +1,15 @@
+/*
 package larc.ludiconprod.Activities;
 
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,7 +18,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.MenuItem;
@@ -47,8 +43,6 @@ import com.squareup.picasso.Picasso;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import larc.ludiconprod.Adapters.LeftPanelItemClicker;
-import larc.ludiconprod.Adapters.LeftSidePanelAdapter;
 import larc.ludiconprod.R;
 import larc.ludiconprod.UserInfo.User;
 import larc.ludiconprod.Utils.util.Utils;
@@ -120,7 +114,7 @@ public class ProfileActivity extends Activity {
             userPic.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                    Intent mainIntent = new Intent(getApplicationContext(), MainActivityVechi.class);
                     ProfileActivity.this.startActivity(mainIntent);
                 }
             });
@@ -362,7 +356,8 @@ public class ProfileActivity extends Activity {
 
         public StatsPerSportAdapter(ArrayList<ComparePals> compArray, Context context) {
             this.compareArray = compArray;
-            /*
+            */
+/*
             this.compareArray = new ArrayList<ComparePals>();
 
             for(int i = 0; i < compArray.size(); i++) {
@@ -370,7 +365,8 @@ public class ProfileActivity extends Activity {
                     this.compareArray.add(new ComparePals(compArray.get(i).first_points, compArray.get(i).second_points, compArray.get(i).sport));
                 }
             }
-*/
+*//*
+
             this.context = context;
         }
 
@@ -515,7 +511,8 @@ public class ProfileActivity extends Activity {
     }
     // Left side menu
 
-    /*public void initializeLeftSidePanel() {
+    */
+/*public void initializeLeftSidePanel() {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_settings);
         mDrawerList = (ListView) findViewById(R.id.leftMenu);
 
@@ -546,5 +543,7 @@ public class ProfileActivity extends Activity {
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-    }*/
+    }*//*
+
 }
+*/
