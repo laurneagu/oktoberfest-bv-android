@@ -2,10 +2,15 @@ package larc.ludiconprod.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -17,6 +22,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 import larc.ludiconprod.Controller.HTTPResponseController;
@@ -64,7 +71,6 @@ public class LoginActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.login_activity);
         backButton=(ImageButton) findViewById(R.id.backButton);
         backButton.setBackgroundResource(R.drawable.ic_nav_up);

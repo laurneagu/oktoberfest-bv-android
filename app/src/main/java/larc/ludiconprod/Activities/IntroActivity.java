@@ -24,8 +24,10 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
+import com.facebook.login.LoginBehavior;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
@@ -36,8 +38,11 @@ import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -65,6 +70,10 @@ public class IntroActivity extends Activity {
     Boolean go=false;
     Bitmap image;
     Profile profile;
+    JSONObject jsonObject;
+    LoginResult loginRslt;
+    LoginButton facebookButton;
+
 
     public void goToActivity(){
         if(!go) {
@@ -104,7 +113,8 @@ public class IntroActivity extends Activity {
 
 
 
-        final LoginButton facebookButton=(LoginButton) findViewById(R.id.facebookButton);
+        facebookButton=(LoginButton) findViewById(R.id.facebookButton);
+        facebookButton.setLoginBehavior(LoginBehavior.NATIVE_WITH_FALLBACK); facebookButton.setLoginBehavior(LoginBehavior.NATIVE_ONLY); facebookButton.setLoginBehavior(LoginBehavior.WEB_ONLY);
         facebookButton.setTypeface(typeFace);
         facebookButton.setReadPermissions(Arrays.asList("public_profile, email, user_friends"));
         loginButton=(Button) findViewById(R.id.loginButton);
@@ -122,13 +132,15 @@ public class IntroActivity extends Activity {
 
            @Override
            public void onSuccess(final LoginResult loginResult) {
-               GraphRequest request = GraphRequest.newMeRequest(
+               final GraphRequest request = GraphRequest.newMeRequest(
                        loginResult.getAccessToken(),
                        new GraphRequest.GraphJSONObjectCallback() {
                            @Override
                            public void onCompleted(
                                    JSONObject object,
                                    GraphResponse response) {
+                               jsonObject=object;
+                               loginRslt=loginResult;
 
 
 
@@ -138,57 +150,15 @@ public class IntroActivity extends Activity {
                                        protected void onCurrentProfileChanged(Profile profile1, Profile profile2) {
                                            profile=profile2;
                                            mProfileTracker.stopTracking();
+                                           updateFriends();
                                        }
                                    };
                                }
                                else {
                                    profile = Profile.getCurrentProfile();
+                                   updateFriends();
                                }
-                                   String firstName = profile.getFirstName();
-                                   String lastName = profile.getLastName();
-                                   String email = object.optString("email");
-                                   String password = loginResult.getAccessToken().getUserId();
-                                   HashMap<String, String> params = new HashMap<String, String>();
-                                   params.put("firstName", firstName);
-                                   params.put("lastName", lastName);
-                                   params.put("email", email);
-                                   params.put("password", password);
-                                   params.put("isCustom", "1");
-                                   HashMap<String, String> headers = new HashMap<String, String>();
-                                   headers.put("apiKey", "b0a83e90-4ee7-49b7-9200-fdc5af8c2d33");
-                                   HTTPResponseController.getInstance().returnResponse(params, headers, IntroActivity.this, "http://207.154.236.13/api/register/");
-                                   facebookButton.setVisibility(View.INVISIBLE);
-                                   loginButton.setVisibility(View.INVISIBLE);
-                                   registerButton.setVisibility(View.INVISIBLE);
-                                   infoTextView.setVisibility(View.INVISIBLE);
-                                   Picasso.with(IntroActivity.this)
-                                           .load("https://graph.facebook.com/" + password + "/picture?type=large")
-                                           .into(new Target() {
-                                               @Override
-                                               public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                                                   image = bitmap;
-                                                   profileImage.setImageBitmap(image);
-                                                   String imageString = ProfileDetailsActivity.encodeToBase64(image, Bitmap.CompressFormat.JPEG, 100);
-                                                   setImageForProfile(IntroActivity.this, imageString);
 
-                                                   logo.animate().translationY(300f);
-                                                   profileImage.setAlpha(0.3f);
-                                                   logo.animate().translationY(-300f).setDuration(1000);
-                                                   profileImage.animate().alpha(1f).setDuration(1000);
-
-                                               }
-
-
-                                               @Override
-                                               public void onBitmapFailed(Drawable errorDrawable) {
-
-                                               }
-
-                                               @Override
-                                               public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                                               }
-                                           });
 
 
 
@@ -264,6 +234,88 @@ public class IntroActivity extends Activity {
 
 
 
+    }
+    public ArrayList<String> updateFriends() {
+        final ArrayList<String> friends=new ArrayList< String>();
+
+        new GraphRequest(
+                AccessToken.getCurrentAccessToken(),
+                "/me/friends",
+                null,
+                HttpMethod.GET,
+                new GraphRequest.Callback() {
+                    public void onCompleted(GraphResponse response) {
+                            /* handle the result */
+                        try {
+                            JSONArray friendsList = response.getJSONObject().getJSONArray("data");
+
+                            for (int l = 0; l < friendsList.length(); l++) {
+                                friends.add(friendsList.getJSONObject(l).getString("id"));
+
+
+                            }
+                            setupProfile(friends,jsonObject,loginRslt,facebookButton);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+        ).executeAsync();
+
+        return friends;
+    }
+
+    public void setupProfile(ArrayList<String> friends,JSONObject object,LoginResult loginResult,LoginButton facebookButton){
+        String firstName = profile.getFirstName();
+        String lastName = profile.getLastName();
+        String email = object.optString("email");
+        String password = loginResult.getAccessToken().getUserId();
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("firstName", firstName);
+        params.put("lastName", lastName);
+        params.put("email", email);
+        params.put("password", password);
+        params.put("isCustom", "1");
+        for(int i=0;i<friends.size();i++){
+            params.put("fbFriends["+i+"]",friends.get(i));
+        }
+        System.out.println(friends);
+        HashMap<String, String> headers = new HashMap<String, String>();
+        headers.put("apiKey", "b0a83e90-4ee7-49b7-9200-fdc5af8c2d33");
+        HTTPResponseController.getInstance().returnResponse(params, headers, IntroActivity.this, "http://207.154.236.13/api/register/");
+        facebookButton.setVisibility(View.INVISIBLE);
+        loginButton.setVisibility(View.INVISIBLE);
+        registerButton.setVisibility(View.INVISIBLE);
+        infoTextView.setVisibility(View.INVISIBLE);
+        Picasso.with(IntroActivity.this)
+                .load("https://graph.facebook.com/" + password + "/picture?type=large")
+                .into(new Target() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                        image = bitmap;
+                        profileImage.setImageBitmap(image);
+                        String imageString = ProfileDetailsActivity.encodeToBase64(image, Bitmap.CompressFormat.JPEG, 100);
+                        setImageForProfile(IntroActivity.this, imageString);
+
+                        logo.animate().translationY(300f);
+                        profileImage.setAlpha(0.3f);
+                        logo.animate().translationY(-300f).setDuration(1000);
+                        profileImage.animate().alpha(1f).setDuration(1000);
+
+                    }
+
+
+                    @Override
+                    public void onBitmapFailed(Drawable errorDrawable) {
+
+                    }
+
+                    @Override
+                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                    }
+                });
     }
 
 
