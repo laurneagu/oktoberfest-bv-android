@@ -18,7 +18,7 @@
         android:text="LOG OUT"
         android:layout_centerVertical="true"
         android:layout_marginTop="15dp"
-        android:background="@drawable/rounded_button"/>
+        android:background="@drawable/rounded_button_notselected"/>
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"

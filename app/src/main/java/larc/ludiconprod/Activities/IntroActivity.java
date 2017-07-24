@@ -64,6 +64,7 @@ public class IntroActivity extends Activity {
     ImageView logo;
     Boolean go=false;
     Bitmap image;
+    Profile profile;
 
     public void goToActivity(){
         if(!go) {
@@ -109,7 +110,6 @@ public class IntroActivity extends Activity {
         loginButton=(Button) findViewById(R.id.loginButton);
         loginButton.setTypeface(typeFace);
 
-
         registerButton=(Button) findViewById(R.id.registerButton);
         registerButton.setTypeface(typeFace);
         infoTextView=(TextView) findViewById(R.id.textView);
@@ -117,6 +117,9 @@ public class IntroActivity extends Activity {
         logo.animate().translationY(-300f).setDuration(1000);
         callbackManager = CallbackManager.Factory.create();
        facebookButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+
+           private ProfileTracker mProfileTracker;
+
            @Override
            public void onSuccess(final LoginResult loginResult) {
                GraphRequest request = GraphRequest.newMeRequest(
@@ -128,56 +131,67 @@ public class IntroActivity extends Activity {
                                    GraphResponse response) {
 
 
-                               Profile profile = Profile.getCurrentProfile();
-                               while (profile == null) {
+
+                               if(Profile.getCurrentProfile() == null) {
+                                   mProfileTracker = new ProfileTracker() {
+                                       @Override
+                                       protected void onCurrentProfileChanged(Profile profile1, Profile profile2) {
+                                           profile=profile2;
+                                           mProfileTracker.stopTracking();
+                                       }
+                                   };
+                               }
+                               else {
                                    profile = Profile.getCurrentProfile();
                                }
-                               String firstName=profile.getFirstName();
-                               String lastName=profile.getLastName();
-                               String email=object.optString("email");
-                               String password=loginResult.getAccessToken().getUserId();
-                               HashMap<String, String> params = new HashMap<String, String>();
-                               params.put("firstName", firstName);
-                               params.put("lastName",lastName);
-                               params.put("email",email);
-                               params.put("password", password);
-                               params.put("isCustom","1");
-                               HashMap<String, String> headers = new HashMap<String, String>();
-                               headers.put("apiKey", "b0a83e90-4ee7-49b7-9200-fdc5af8c2d33");
-                               HTTPResponseController.getInstance().returnResponse(params, headers, IntroActivity.this, "http://207.154.236.13/api/register/");
-                               facebookButton.setVisibility(View.INVISIBLE);
-                               loginButton.setVisibility(View.INVISIBLE);
-                               registerButton.setVisibility(View.INVISIBLE);
-                               infoTextView.setVisibility(View.INVISIBLE);
-                               Picasso.with(IntroActivity.this)
-                                       .load("https://graph.facebook.com/" + password+ "/picture?type=large")
-                                       .into(new Target() {
-                                           @Override
-                                           public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                                               image=bitmap;
+                                   String firstName = profile.getFirstName();
+                                   String lastName = profile.getLastName();
+                                   String email = object.optString("email");
+                                   String password = loginResult.getAccessToken().getUserId();
+                                   HashMap<String, String> params = new HashMap<String, String>();
+                                   params.put("firstName", firstName);
+                                   params.put("lastName", lastName);
+                                   params.put("email", email);
+                                   params.put("password", password);
+                                   params.put("isCustom", "1");
+                                   HashMap<String, String> headers = new HashMap<String, String>();
+                                   headers.put("apiKey", "b0a83e90-4ee7-49b7-9200-fdc5af8c2d33");
+                                   HTTPResponseController.getInstance().returnResponse(params, headers, IntroActivity.this, "http://207.154.236.13/api/register/");
+                                   facebookButton.setVisibility(View.INVISIBLE);
+                                   loginButton.setVisibility(View.INVISIBLE);
+                                   registerButton.setVisibility(View.INVISIBLE);
+                                   infoTextView.setVisibility(View.INVISIBLE);
+                                   Picasso.with(IntroActivity.this)
+                                           .load("https://graph.facebook.com/" + password + "/picture?type=large")
+                                           .into(new Target() {
+                                               @Override
+                                               public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                                                   image = bitmap;
+                                                   profileImage.setImageBitmap(image);
+                                                   String imageString = ProfileDetailsActivity.encodeToBase64(image, Bitmap.CompressFormat.JPEG, 100);
+                                                   setImageForProfile(IntroActivity.this, imageString);
 
-                                           }
+                                                   logo.animate().translationY(300f);
+                                                   profileImage.setAlpha(0.3f);
+                                                   logo.animate().translationY(-300f).setDuration(1000);
+                                                   profileImage.animate().alpha(1f).setDuration(1000);
 
-                                           @Override
-                                           public void onBitmapFailed(Drawable errorDrawable) {
+                                               }
 
-                                           }
 
-                                           @Override
-                                           public void onPrepareLoad(Drawable placeHolderDrawable) {
+                                               @Override
+                                               public void onBitmapFailed(Drawable errorDrawable) {
 
-                                           }
-                                       });
+                                               }
 
-                                   profileImage.setImageBitmap(image);
-                                   String imageString=ProfileDetailsActivity.encodeToBase64(image, Bitmap.CompressFormat.JPEG, 100);
-                                   setImageForProfile(IntroActivity.this,imageString);
+                                               @Override
+                                               public void onPrepareLoad(Drawable placeHolderDrawable) {
 
-                               logo.animate().translationY(300f);
-                               profileImage.setAlpha(0.3f);
-                               logo.animate().translationY(-300f).setDuration(1000);
-                               profileImage.animate().alpha(1f).setDuration(1000);
-                               profileImage.setDrawingCacheEnabled(false);
+                                               }
+                                           });
+
+
+
                            }
                        });
                Bundle parameters = new Bundle();

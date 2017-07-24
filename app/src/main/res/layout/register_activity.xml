@@ -89,7 +89,7 @@
                 android:textSize="14sp"
                 android:textColor="#ffffff"
                 android:layout_marginTop="15dp"
-                android:background="@drawable/rounded_button"/>
+                android:background="@drawable/rounded_button_notselected"/>
 
 
         </LinearLayout>

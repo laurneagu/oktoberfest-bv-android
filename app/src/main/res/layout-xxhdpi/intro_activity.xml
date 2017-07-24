@@ -85,7 +85,7 @@
             android:textSize="14sp"
             android:textColor="#ffffff"
             android:visibility="invisible"
-            android:background="@drawable/rounded_button"
+            android:background="@drawable/pink_button_selector"
             android:alpha="0.3"/>
 
         <Button
@@ -96,8 +96,11 @@
             android:text="REGISTER"
             android:textSize="14sp"
             android:textColor="#ffffff"
+            android:elevation="10dp"
+            android:translationZ="10dp"
+            android:stateListAnimator="@null"
             android:visibility="invisible"
-            android:background="@drawable/rounded_button"
+            android:background="@drawable/pink_button_selector"
             android:alpha="0.3"/>
     </RelativeLayout>
         <RelativeLayout

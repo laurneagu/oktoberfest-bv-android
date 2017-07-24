@@ -28,7 +28,7 @@ android {
 
     defaultConfig {
         applicationId "larc.ludiconprod"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 20
         versionCode 20
         versionName "1.5"

@@ -140,6 +140,6 @@
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:background="@drawable/rounded_button"/>
+        android:background="@drawable/rounded_button_notselected"/>
 
 </RelativeLayout>
