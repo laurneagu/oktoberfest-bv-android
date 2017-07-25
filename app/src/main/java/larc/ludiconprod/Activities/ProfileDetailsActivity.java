@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.text.Editable;
@@ -45,6 +47,7 @@ public class ProfileDetailsActivity extends Activity {
     String myBase64Image;
     Button saveAndContinueButton;
     TextView introText;
+
     int sex=0;
     EditText age;
 
@@ -84,19 +87,30 @@ public class ProfileDetailsActivity extends Activity {
         chooseAPhoto=(ImageView) findViewById(R.id.chooseAPhoto);
         chooseAPhoto.setImageResource(R.drawable.ic_image_add);
         imgProfilePicture=(ImageView) findViewById(R.id.imgProfilePicture);
+        TextView descriptionText =(TextView)findViewById(R.id.textView5) ;
+
+        Typeface typeFace= Typeface.createFromAsset(getAssets(),"fonts/Quicksand-Medium.ttf");
+        Typeface typeFaceBold= Typeface.createFromAsset(getAssets(),"fonts/Quicksand-Bold.ttf");
+        descriptionText.setTypeface(typeFace);
+        male.setTypeface(typeFace);
+        female.setTypeface(typeFace);
+
+
+
         if(!getImageForProfile().equals("0")){
             Bitmap bitmap=decodeBase64(getImageForProfile());
             imgProfilePicture.setImageBitmap(bitmap);
             chooseAPhoto.setImageResource(R.drawable.ic_image_edit);
             myBase64Image=getImageForProfile();
-
-
         }
 
         saveAndContinueButton=(Button) findViewById(R.id.saveAndContinueButton);
+        saveAndContinueButton.setTypeface(typeFaceBold);
         introText=(TextView) findViewById(R.id.introText);
         introText.setText("New you out here "+ Persistance.getInstance().getUserInfo(this).firstName+"?Cool!");
+        introText.setTypeface(typeFace);
         age=(EditText)findViewById(R.id.age);
+        age.setTypeface(typeFace);
         if(getIntent().getStringExtra("profileImage")!= null){
             myBase64Image=getIntent().getStringExtra("profileImage");
             imgProfilePicture.setImageBitmap(decodeBase64(getIntent().getStringExtra("profileImage")));
@@ -109,9 +123,11 @@ public class ProfileDetailsActivity extends Activity {
         if(getIntent().getStringExtra("gender")!=null){
             if(getIntent().getStringExtra("gender").equals("0")){
                 male.setChecked(true);
+                male.setTextColor(Color.parseColor("#ffffff"));
             }
             else if(getIntent().getStringExtra("gender").equals("1")){
                 female.setChecked(true);
+                male.setTextColor(Color.parseColor("#ffffff"));
             }
         }
         age.addTextChangedListener(new TextWatcher() {
@@ -135,10 +151,12 @@ public class ProfileDetailsActivity extends Activity {
 
         if(male.isChecked()){
             male.setBackgroundResource(R.drawable.toggle_male);
+            male.setTextColor(Color.parseColor("#ffffff"));
 
         }
         else{
             female.setBackgroundResource(R.drawable.toggle_female);
+            male.setTextColor(Color.parseColor("#ffffff"));
         }
         sexSwitch.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -146,12 +164,16 @@ public class ProfileDetailsActivity extends Activity {
                 if(male.isChecked()){
                     male.setBackgroundResource(R.drawable.toggle_male);
                     female.setBackgroundResource(transparent);
+                    male.setTextColor(Color.parseColor("#ffffff"));
+                    female.setTextColor(Color.parseColor("#1A0c3855"));
                     sex=0;
 
                 }
                 else{
                     female.setBackgroundResource(R.drawable.toggle_female);
                     male.setBackgroundResource(transparent);
+                    male.setTextColor(Color.parseColor("#1A0c3855"));
+                    female.setTextColor(Color.parseColor("#ffffff"));
                     sex=1;
                 }
             }

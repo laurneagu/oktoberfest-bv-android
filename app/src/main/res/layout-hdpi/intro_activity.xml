@@ -53,6 +53,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:text="Or use email"
+                android:textSize="14sp"
                 android:visibility="invisible"
                 android:alpha="0.3"/>
         </RelativeLayout>
@@ -114,6 +115,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
+                android:visibility="invisible"
+                android:textSize="14sp"
                 android:text="By continuing you agree our \n   Terms and Privacy Policy" />
         </RelativeLayout>
 

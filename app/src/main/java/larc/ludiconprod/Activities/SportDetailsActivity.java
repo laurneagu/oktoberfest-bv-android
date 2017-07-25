@@ -3,6 +3,9 @@ package larc.ludiconprod.Activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -65,8 +68,13 @@ public class SportDetailsActivity extends Activity {
         seekBar=(SeekBar) findViewById(R.id.seekBar);
         seekBar.setMax(19);
         seekBar.setProgress(19);
+        seekBar.getProgressDrawable().setColorFilter(Color.parseColor("#d4498b"), PorterDuff.Mode.SRC);
+        seekBar.getThumb().setColorFilter(Color.parseColor("#d4498b"), PorterDuff.Mode.SRC_IN);
         savePreferincesButton=(Button) findViewById(R.id.savePreferincesButton);
         progressText=(TextView) findViewById(R.id.rangeTextView);
+        Typeface typeFace= Typeface.createFromAsset(getAssets(),"fonts/Quicksand-Medium.ttf");
+        Typeface typeFaceBold= Typeface.createFromAsset(getAssets(),"fonts/Quicksand-Bold.ttf");
+        savePreferincesButton.setTypeface(typeFaceBold);
         for(int i=0;i<sportsArray.length;i++){
             sports.add(sportsArray[i]);
         }
@@ -118,7 +126,7 @@ public class SportDetailsActivity extends Activity {
             public void onClick(View view) {
 
                 if(!footballSelected && counter > 1 ){
-                    football.setAlpha(0.3f);
+                    football.setAlpha(0.4f);
                     footballSelected=true;
                     football.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_sport_football,0,0,0);
                     counter--;
@@ -143,7 +151,7 @@ public class SportDetailsActivity extends Activity {
             public void onClick(View view) {
 
                 if(!basketballSelected && counter > 1){
-                    basketball.setAlpha(0.3f);
+                    basketball.setAlpha(0.4f);
                     basketballSelected=true;
                     basketball.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_sport_basketball,0,0,0);
                     counter--;
@@ -168,7 +176,7 @@ public class SportDetailsActivity extends Activity {
             public void onClick(View view) {
 
                 if(!volleyballSelected && counter > 1){
-                    volleyball.setAlpha(0.3f);
+                    volleyball.setAlpha(0.4f);
                     volleyballSelected=true;
                     volleyball.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_sport_voleyball,0,0,0);
                     counter--;
@@ -193,7 +201,7 @@ public class SportDetailsActivity extends Activity {
             public void onClick(View view) {
 
                 if(!joggingSelected && counter > 1){
-                    jogging.setAlpha(0.3f);
+                    jogging.setAlpha(0.4f);
                     joggingSelected=true;
                     jogging.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_sport_jogging,0,0,0);
                     counter--;
@@ -218,7 +226,7 @@ public class SportDetailsActivity extends Activity {
             public void onClick(View view) {
 
                 if(!gymSelected && counter > 1){
-                    gym.setAlpha(0.3f);
+                    gym.setAlpha(0.4f);
                     gymSelected=true;
                     gym.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_sport_gym,0,0,0);
                     counter--;
@@ -243,7 +251,7 @@ public class SportDetailsActivity extends Activity {
             public void onClick(View view) {
 
                 if(!cyclingSelected && counter > 1){
-                    cycling.setAlpha(0.3f);
+                    cycling.setAlpha(0.4f);
                     cyclingSelected=true;
                     cycling.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_sport_cycling,0,0,0);
                     counter--;
@@ -268,7 +276,7 @@ public class SportDetailsActivity extends Activity {
             public void onClick(View view) {
 
                 if(!tennisSelected && counter > 1){
-                    tennis.setAlpha(0.3f);
+                    tennis.setAlpha(0.4f);
                     tennisSelected=true;
                     tennis.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_sport_tennis,0,0,0);
                     counter--;
@@ -293,7 +301,7 @@ public class SportDetailsActivity extends Activity {
             public void onClick(View view) {
 
                 if(!pingPongSelected && counter > 1){
-                    pingPong.setAlpha(0.3f);
+                    pingPong.setAlpha(0.4f);
                     pingPongSelected=true;
                     pingPong.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_sport_pingpong,0,0,0);
                     counter--;
@@ -318,7 +326,7 @@ public class SportDetailsActivity extends Activity {
             public void onClick(View view) {
 
                 if(!squashSelected && counter > 1){
-                    squash.setAlpha(0.3f);
+                    squash.setAlpha(0.4f);
                     squashSelected=true;
                     squash.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_sport_squash,0,0,0);
                     counter--;
@@ -343,7 +351,7 @@ public class SportDetailsActivity extends Activity {
             public void onClick(View view) {
 
                 if(!othersSelected && counter > 1){
-                    others.setAlpha(0.3f);
+                    others.setAlpha(0.4f);
                     othersSelected=true;
                     others.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_sport_others,0,0,0);
                     counter--;

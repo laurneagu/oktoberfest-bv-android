@@ -62,6 +62,7 @@ public class IntroActivity extends Activity {
     Button loginButton;
     Button registerButton;
     TextView infoTextView;
+    TextView termsAndPrivacyPolicy;
     ImageView profileImage;
     private ProfileTracker profileTracker;
     private CallbackManager callbackManager;
@@ -112,13 +113,14 @@ public class IntroActivity extends Activity {
         Typeface typeFace= Typeface.createFromAsset(getAssets(),"fonts/Quicksand-Bold.ttf");
 
 
-
         facebookButton=(LoginButton) findViewById(R.id.facebookButton);
         facebookButton.setLoginBehavior(LoginBehavior.NATIVE_WITH_FALLBACK); facebookButton.setLoginBehavior(LoginBehavior.NATIVE_ONLY); facebookButton.setLoginBehavior(LoginBehavior.WEB_ONLY);
         facebookButton.setTypeface(typeFace);
         facebookButton.setReadPermissions(Arrays.asList("public_profile, email, user_friends"));
         loginButton=(Button) findViewById(R.id.loginButton);
         loginButton.setTypeface(typeFace);
+        termsAndPrivacyPolicy=(TextView) findViewById(R.id.termsAndPrivacyPolicy);
+
 
         registerButton=(Button) findViewById(R.id.registerButton);
         registerButton.setTypeface(typeFace);
@@ -126,64 +128,6 @@ public class IntroActivity extends Activity {
         profileImage=(ImageView) findViewById(R.id.profileImage) ;
         logo.animate().translationY(-300f).setDuration(1000);
         callbackManager = CallbackManager.Factory.create();
-       facebookButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-
-           private ProfileTracker mProfileTracker;
-
-           @Override
-           public void onSuccess(final LoginResult loginResult) {
-               final GraphRequest request = GraphRequest.newMeRequest(
-                       loginResult.getAccessToken(),
-                       new GraphRequest.GraphJSONObjectCallback() {
-                           @Override
-                           public void onCompleted(
-                                   JSONObject object,
-                                   GraphResponse response) {
-                               jsonObject=object;
-                               loginRslt=loginResult;
-
-
-
-                               if(Profile.getCurrentProfile() == null) {
-                                   mProfileTracker = new ProfileTracker() {
-                                       @Override
-                                       protected void onCurrentProfileChanged(Profile profile1, Profile profile2) {
-                                           profile=profile2;
-                                           mProfileTracker.stopTracking();
-                                           updateFriends();
-                                       }
-                                   };
-                               }
-                               else {
-                                   profile = Profile.getCurrentProfile();
-                                   updateFriends();
-                               }
-
-
-
-
-                           }
-                       });
-               Bundle parameters = new Bundle();
-               parameters.putString("fields", "id,name,email,picture.type(large)");
-               request.setParameters(parameters);
-               request.executeAsync();
-           }
-
-           @Override
-           public void onCancel() {
-               System.out.println("onCancel");
-
-           }
-
-           @Override
-           public void onError(FacebookException error) {
-               System.out.println("onCancel");
-           }
-       });
-
-
-
         if(Persistance.getInstance().getUserInfo(this).profileImage != null){
             Bitmap image;
             image=decodeBase64(Persistance.getInstance().getUserInfo(this).profileImage);
@@ -195,21 +139,69 @@ public class IntroActivity extends Activity {
             loginButton.setVisibility(View.VISIBLE);
             registerButton.setVisibility(View.VISIBLE);
             infoTextView.setVisibility(View.VISIBLE);
+            termsAndPrivacyPolicy.setVisibility(View.VISIBLE);
             facebookButton.animate().alpha(1f).setDuration(1000);
             loginButton.animate().alpha(1f).setDuration(1000);
             registerButton.animate().alpha(1f).setDuration(1000);
             infoTextView.animate().alpha(1f).setDuration(1000);
             go=true;
         }
+        facebookLogin();
         new CountDownTimer(1500, 1000) {
 
             public void onTick(long millisUntilFinished) {
             }
 
             public void onFinish() {
+                if(Persistance.getInstance().getUserInfo(IntroActivity.this).facebookId.equals("")){
                 goToActivity();
+               }
+               else if(!go){
+                    new GraphRequest(
+                            AccessToken.getCurrentAccessToken(),
+                            "/me/friends",
+                            null,
+                            HttpMethod.GET,
+                            new GraphRequest.Callback() {
+                                public void onCompleted(GraphResponse response) {
+                                    final ArrayList<String> friends=new ArrayList< String>();
+                                    JSONArray friendsList = null;
+                                    try {
+                                        friendsList = response.getJSONObject().getJSONArray("data");
+                                        for (int l = 0; l < friendsList.length(); l++) {
+                                            friends.add(friendsList.getJSONObject(l).getString("id"));
+                                        }
+
+                                        String firstName = Persistance.getInstance().getUserInfo(IntroActivity.this).firstName;
+                                        String lastName = Persistance.getInstance().getUserInfo(IntroActivity.this).lastName;
+                                        String email = Persistance.getInstance().getUserInfo(IntroActivity.this).email;
+                                        String password =Persistance.getInstance().getUserInfo(IntroActivity.this).password;
+                                        HashMap<String, String> params = new HashMap<String, String>();
+                                        params.put("firstName", firstName);
+                                        params.put("lastName", lastName);
+                                        params.put("email", email);
+                                        params.put("password", password);
+                                        params.put("isCustom", "1");
+                                        for(int i=0;i<friends.size();i++){
+                                            params.put("fbFriends["+i+"]",friends.get(i));
+                                        }
+                                        HashMap<String, String> headers = new HashMap<String, String>();
+                                        headers.put("apiKey", "b0a83e90-4ee7-49b7-9200-fdc5af8c2d33");
+                                        HTTPResponseController.getInstance().returnResponse(params, headers, IntroActivity.this, "http://207.154.236.13/api/register/");
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
+
+
+                                }
+                            }
+                    ).executeAsync();
+                }
             }
         }.start();
+
+
 
 
 
@@ -265,6 +257,68 @@ public class IntroActivity extends Activity {
 
         return friends;
     }
+    public void facebookLogin() {
+        facebookButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            private ProfileTracker mProfileTracker;
+
+            @Override
+            public void onSuccess(final LoginResult loginResult) {
+                final GraphRequest request = GraphRequest.newMeRequest(
+                        loginResult.getAccessToken(),
+                        new GraphRequest.GraphJSONObjectCallback() {
+                            @Override
+                            public void onCompleted(
+                                    JSONObject object,
+                                    GraphResponse response) {
+
+                                jsonObject = object;
+                                loginRslt = loginResult;
+
+
+
+                                if (Profile.getCurrentProfile() == null) {
+                                    mProfileTracker = new ProfileTracker() {
+                                        @Override
+                                        protected void onCurrentProfileChanged(Profile profile1, Profile profile2) {
+                                            profile = profile2;
+                                            mProfileTracker.stopTracking();
+                                            updateFriends();
+                                        }
+                                    };
+                                } else {
+                                    profile = Profile.getCurrentProfile();
+                                    updateFriends();
+                                }
+
+
+                            }
+                        });
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "id,name,email,picture.type(large)");
+                request.setParameters(parameters);
+                request.executeAsync();
+            }
+
+            @Override
+            public void onCancel() {
+                facebookButton.setVisibility(View.VISIBLE);
+                loginButton.setVisibility(View.VISIBLE);
+                registerButton.setVisibility(View.VISIBLE);
+                infoTextView.setVisibility(View.VISIBLE);
+                termsAndPrivacyPolicy.setVisibility(View.VISIBLE);
+
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                facebookButton.setVisibility(View.VISIBLE);
+                loginButton.setVisibility(View.VISIBLE);
+                registerButton.setVisibility(View.VISIBLE);
+                infoTextView.setVisibility(View.VISIBLE);
+                termsAndPrivacyPolicy.setVisibility(View.VISIBLE);
+            }
+        });
+    }
 
     public void setupProfile(ArrayList<String> friends,JSONObject object,LoginResult loginResult,LoginButton facebookButton){
         String firstName = profile.getFirstName();
@@ -280,14 +334,9 @@ public class IntroActivity extends Activity {
         for(int i=0;i<friends.size();i++){
             params.put("fbFriends["+i+"]",friends.get(i));
         }
-        System.out.println(friends);
         HashMap<String, String> headers = new HashMap<String, String>();
         headers.put("apiKey", "b0a83e90-4ee7-49b7-9200-fdc5af8c2d33");
         HTTPResponseController.getInstance().returnResponse(params, headers, IntroActivity.this, "http://207.154.236.13/api/register/");
-        facebookButton.setVisibility(View.INVISIBLE);
-        loginButton.setVisibility(View.INVISIBLE);
-        registerButton.setVisibility(View.INVISIBLE);
-        infoTextView.setVisibility(View.INVISIBLE);
         Picasso.with(IntroActivity.this)
                 .load("https://graph.facebook.com/" + password + "/picture?type=large")
                 .into(new Target() {
@@ -322,14 +371,22 @@ public class IntroActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-
-            callbackManager.onActivityResult(requestCode, resultCode, data);
+        facebookButton.setVisibility(View.INVISIBLE);
+        loginButton.setVisibility(View.INVISIBLE);
+        registerButton.setVisibility(View.INVISIBLE);
+        infoTextView.setVisibility(View.INVISIBLE);
+        termsAndPrivacyPolicy.setVisibility(View.INVISIBLE);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
 
     }
 
     @Override
     public void onBackPressed() {
-        finish();
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+       // intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);//***Change Here***
+        startActivity(intent);
+        System.exit(0);
     }
 
 }

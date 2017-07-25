@@ -2,6 +2,7 @@ package larc.ludiconprod.Controller;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Handler;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -74,12 +75,24 @@ public class HTTPResponseController {
 
 
                         if(user.range.equals("0")){
-                            Intent intent = new Intent(activity, ProfileDetailsActivity.class);
-                            activity.startActivity(intent);
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Intent intent = new Intent(activity, ProfileDetailsActivity.class);
+                                    activity.startActivity(intent);
+                                }
+                            }, 5000);
+
                         }
                         else{
-                            Intent intent = new Intent(activity, MainActivity.class);
-                            activity.startActivity(intent);
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Intent intent = new Intent(activity, MainActivity.class);
+                                    activity.startActivity(intent);
+                                }
+                            }, 5000);
+
 
                         }
                     }
@@ -88,8 +101,16 @@ public class HTTPResponseController {
                     }
                 }
                 else if(activity.getLocalClassName().toString().equals("Activities.RegisterActivity")){
-                    Intent intent = new Intent(activity, LoginActivity.class);
-                    activity.startActivity(intent);
+
+                    Toast.makeText(activity,"Account has created!!",Toast.LENGTH_LONG).show();
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Intent intent = new Intent(activity, LoginActivity.class);
+                            activity.startActivity(intent);
+                        }
+                    }, 3000);
+
 
                 }
                 else if(activity.getLocalClassName().toString().equals("Activities.SportDetailsActivity")){

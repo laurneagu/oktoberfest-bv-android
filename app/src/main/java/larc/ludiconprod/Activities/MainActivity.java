@@ -29,6 +29,8 @@ public class MainActivity extends Activity {
             public void onClick(View view) {
                 SharedPreferences settings = MainActivity.this.getSharedPreferences("UserDetails", MainActivity.this.MODE_PRIVATE);
                 settings.edit().clear().commit();
+                SharedPreferences profile = MainActivity.this.getSharedPreferences("ProfileImage", MainActivity.this.MODE_PRIVATE);
+                profile.edit().clear().commit();
                 LoginManager.getInstance().logOut();
                 Intent intent = new Intent(MainActivity.this, IntroActivity.class);
                 MainActivity.this.startActivity(intent);
