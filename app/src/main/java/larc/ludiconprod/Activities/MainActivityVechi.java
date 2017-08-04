@@ -68,8 +68,6 @@ public class MainActivityVechi extends Fragment {
 
     private View v;
 
-    */
-/* SlideTab *//*
 
     ViewPager pager;
     ViewPagerAdapter adapter;
@@ -171,12 +169,10 @@ public class MainActivityVechi extends Fragment {
 
             String chatUID = getActivity().getIntent().getStringExtra("chatUID");
             if (chatUID != null) {
-                */
-/*
                 Intent goToChatList = new Intent(getActivity(), ChatListActivity.class);
                 goToChatList.putExtra("chatUID", chatUID);
                 startActivity(goToChatList);
-                *//*
+
 
             }
 
@@ -332,8 +328,7 @@ public class MainActivityVechi extends Fragment {
         mSwipeRefreshLayout2.setEnabled(false);
         mSwipeRefreshLayout2.setFocusable(false);
 
-        */
-/* Friends *//*
+ Friends
 
         fradapter = new AroundMeAdapter(new ArrayList<Event>(), getActivity().getApplicationContext(), getActivity(), getResources(), currentFragment);
         ListView frlistView = (ListView) v.findViewById(R.id.events_listView1);
@@ -395,8 +390,8 @@ public class MainActivityVechi extends Fragment {
         });
 
         if (frlistView != null) {
-            if (*/
-/*friendsEventsList.size() == 0 && *//*
+            if (
+friendsEventsList.size() == 0 &&
 !eventHappeningNow) {
                 // place holder no events created
             }
@@ -404,8 +399,7 @@ public class MainActivityVechi extends Fragment {
             frlistView.setAdapter(fradapter);
         }
 
-        */
-/* My *//*
+ My
 
         myadapter = new MyAdapter(new ArrayList<Event>(), getActivity().getApplicationContext(), getActivity(), getResources());
         ListView mylistView = (ListView) v.findViewById(R.id.events_listView2);
@@ -475,7 +469,7 @@ public class MainActivityVechi extends Fragment {
             mylistView.setAdapter(myadapter);
         }
 
-         //Swipe *//*
+         //Swipe
 
         if (!addedSwipe) {
             final SwipeRefreshLayout mSwipeRefreshLayout1 = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh1);

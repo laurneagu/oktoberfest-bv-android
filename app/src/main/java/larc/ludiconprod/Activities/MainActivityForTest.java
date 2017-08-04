@@ -16,24 +16,24 @@ import larc.ludiconprod.R;
  * Created by ancuta on 7/13/2017.
  */
 
-public class MainActivity extends Activity {
+public class MainActivityForTest extends Activity {
 
     @Override
     public void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
 
-        setContentView(R.layout.main_activity);
+        setContentView(R.layout.main_activity_test);
         Button logOutButton=(Button)findViewById(R.id.logOutButton);
         logOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharedPreferences settings = MainActivity.this.getSharedPreferences("UserDetails", MainActivity.this.MODE_PRIVATE);
+                SharedPreferences settings = MainActivityForTest.this.getSharedPreferences("UserDetails", MainActivityForTest.this.MODE_PRIVATE);
                 settings.edit().clear().commit();
-                SharedPreferences profile = MainActivity.this.getSharedPreferences("ProfileImage", MainActivity.this.MODE_PRIVATE);
+                SharedPreferences profile = MainActivityForTest.this.getSharedPreferences("ProfileImage", MainActivityForTest.this.MODE_PRIVATE);
                 profile.edit().clear().commit();
                 LoginManager.getInstance().logOut();
-                Intent intent = new Intent(MainActivity.this, IntroActivity.class);
-                MainActivity.this.startActivity(intent);
+                Intent intent = new Intent(MainActivityForTest.this, IntroActivity.class);
+                MainActivityForTest.this.startActivity(intent);
             }
         });
     }

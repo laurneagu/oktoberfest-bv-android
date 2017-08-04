@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:id="@+id/selected_location_layout"
+
+    android:gravity="center">
+    <larc.ludiconprod.ViewPagerHelper.MyLinearLayout
+        android:id="@+id/root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        android:background="@android:color/transparent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="#ffffff"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+
+                <ImageView
+                    android:id="@+id/companyImage"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_margin="8dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ph_company" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Sala Elite Football"
+                        android:id="@+id/locationName"
+                        android:textSize="14sp"
+                        android:textColor="#d4498b"
+                        android:fontFamily="@string/fontmedium"
+                        android:layout_marginTop="8dp"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Bulevardul Iuliu Maniu,Nr.9,&#xD;Bucharest,Romania"
+                        android:id="@+id/adress"
+                        android:textSize="14sp"
+                        android:textColor="#0c3855"
+                        android:fontFamily="@string/fontmedium" />
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:orientation="horizontal">
+
+
+
+                        <TextView
+                            android:id="@+id/ludicoinsNumber"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textSize="14sp"
+                            android:layout_gravity="center"
+                            android:textColor="#fcb851"
+                            android:text="  +25" />
+
+                        <ImageView
+                            android:id="@+id/ludicoinImage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="center"
+                            android:background="@drawable/ic_ludicoins_small" />
+
+                        <TextView
+                            android:id="@+id/pointsNumber"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="14sp"
+                            android:textColor="#1573ba"
+                            android:layout_weight="1"
+                            android:text="  +100" />
+
+                        <ImageView
+                            android:id="@+id/pointsImage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="center"
+                            android:background="@drawable/ic_points_small" />
+
+                        <TextView
+                            android:id="@+id/perHour"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textSize="14sp"
+                            android:textColor="#0c3855"
+                            android:alpha="0.4"
+                            android:layout_gravity="center"
+                            android:text="  per hour" />
+
+
+
+
+
+                    </LinearLayout>
+                </LinearLayout>
+
+
+            </LinearLayout>
+        </RelativeLayout>
+    </larc.ludiconprod.ViewPagerHelper.MyLinearLayout>
+</LinearLayout>

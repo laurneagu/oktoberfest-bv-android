@@ -96,10 +96,10 @@
         </style>
 
         <style name="BB_BottomBarBadge_Text" parent="TextAppearance.AppCompat.Body2">
-            <item name="android:textColor">#FFFFFF</item>
+            <item name="android:textColor">#d4498b</item>
         </style>
     <style name="CustomTitleTextAppearance">
-        <item name="android:textSize">10dp</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:textStyle">normal</item>
     </style>
 </resources>

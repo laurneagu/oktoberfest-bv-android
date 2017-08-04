@@ -1,10 +1,13 @@
+/*
 package larc.ludiconprod.Gamification;
 
 import larc.ludiconprod.LocationHelper.LocationChecker;
 
+*/
 /**
  * Created by LaurUser on 7/6/2017.
- */
+ *//*
+
 
 public class RewardLayer {
 
@@ -28,3 +31,4 @@ public class RewardLayer {
     }
 
 }
+*/

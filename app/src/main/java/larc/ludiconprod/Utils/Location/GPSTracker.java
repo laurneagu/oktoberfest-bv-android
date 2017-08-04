@@ -5,6 +5,7 @@ package larc.ludiconprod.Utils.Location;
  */
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Service;
 import android.content.Context;
@@ -25,7 +26,7 @@ import android.util.Log;
 public class GPSTracker extends Service implements LocationListener {
 
     private final Context mContext;
-    FragmentActivity apa;
+    Activity apa;
 
     // flag for GPS status
     boolean isGPSEnabled = false;
@@ -49,7 +50,7 @@ public class GPSTracker extends Service implements LocationListener {
     // Declaring a Location Manager
     protected LocationManager locationManager;
 
-    public GPSTracker(Context context, FragmentActivity apa) {
+    public GPSTracker(Context context, Activity apa) {
         this.mContext = context;
         this.apa = apa;
         getLocation();

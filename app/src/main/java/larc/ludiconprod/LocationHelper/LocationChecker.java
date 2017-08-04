@@ -1,3 +1,4 @@
+/*
 package larc.ludiconprod.LocationHelper;
 
 import android.app.Activity;
@@ -16,9 +17,11 @@ import larc.ludiconprod.R;
 import larc.ludiconprod.Utils.Event;
 import larc.ludiconprod.Utils.Location.GPSTracker;
 
+*/
 /**
  * Created by LaurUser on 7/5/2017.
- */
+ *//*
+
 
 public class LocationChecker {
 
@@ -107,3 +110,4 @@ public class LocationChecker {
         return true;
     }
 }
+*/

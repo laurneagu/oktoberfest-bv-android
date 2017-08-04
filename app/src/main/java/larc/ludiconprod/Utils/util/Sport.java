@@ -1,4 +1,4 @@
-package larc.ludiconprod;
+package larc.ludiconprod.Utils.util;
 
 /**
  * Created by ancuta on 7/12/2017.

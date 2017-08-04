@@ -1,17 +1,21 @@
-/*
+
 package larc.ludiconprod.Adapters.MainActivity;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
@@ -21,187 +25,286 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import org.w3c.dom.Text;
+
+import java.text.DateFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import larc.ludiconprod.Activities.EventDetails;
-import larc.ludiconprod.Activities.ProfileActivity;
+import de.hdodenhof.circleimageview.CircleImageView;
+import larc.ludiconprod.Activities.ActivitiesActivity;
+import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
-import larc.ludiconprod.UserInfo.User;
 import larc.ludiconprod.Utils.Event;
 import larc.ludiconprod.Utils.General;
+import larc.ludiconprod.Utils.util.Sport;
 
-*/
-/**
- * Created by LaurUser on 7/4/2017.
- *//*
+
+
+
 
 
 public class MyAdapter extends BaseAdapter implements ListAdapter {
-        class ViewHolder {
-            TextView name;
-            ImageView profilePicture;
-            TextView firstPart;
-            TextView secondPart;
-            TextView time;
-            TextView place;
-            ImageView icon;
-            TextView description;
-            TextView players;
-        }
+    public static Bitmap decodeBase64(String input)
+    {
+        byte[] decodedBytes = Base64.decode(input, 0);
+        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+    }
+    public String getMonth(int month) {
+        String date=new DateFormatSymbols().getMonths()[month-1];
+        return date.substring(0,1).toUpperCase().concat(date.substring(1,3));
+    }
 
-        private ArrayList<Event> list = new ArrayList<>();
-        private Context context;
-        private Activity activity;
-        private Resources resources;
+    class ViewHolder {
 
-        public MyAdapter(ArrayList<Event> list, Context context, Activity activity, Resources resources) {
-            this.list = list;
-            this.context = context;
-            this.activity = activity;
-            this.resources = resources;
-        }
+        CircleImageView profileImage;
+        TextView creatorName;
+        TextView sportName;
+        TextView ludicoinsNumber;
+        TextView pointsNumber;
+        TextView eventDate;
+        TextView locationEvent;
+        TextView playersNumber;
+        CircleImageView friends0;
+        CircleImageView friends1;
+        CircleImageView friends2;
+        TextView friendsNumber;
+        ImageView imageViewBackground;
+        TextView creatorLevelMyActivity;
 
-        public void setListOfEvents(ArrayList<Event> newList){
-            this.list = newList;
-            this.notifyDataSetChanged();
-        }
+    }
 
-        @Override
-        public int getCount() {
-            return list.size();
-        }
+    private ArrayList<Event> list = new ArrayList<>();
+    private Context context;
+    private Activity activity;
+    private Resources resources;
+    private ActivitiesActivity fragment;
+    final ListView listView;
 
-        @Override
-        public Object getItem(int pos) {
-            return list.get(pos);
-        }
+    public MyAdapter(ArrayList<Event> list, Context context, Activity activity, Resources resources, ActivitiesActivity fragment) {
+        this.list = list;
+        this.context = context;
+        this.activity = activity;
+        this.resources = resources;
+        this.fragment = fragment;
 
-        @Override
-        public long getItemId(int pos) {
-            return 0;
-        }
+        this.listView = (ListView) activity.findViewById(R.id.events_listView1); // era v.
+    }
 
-        @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
-            View view = convertView;
-            ViewHolder holder;
+    public void setListOfEvents(ArrayList<Event> newList){
+        this.list = newList;
+        this.notifyDataSetChanged();
+    }
 
+    @Override
+    public int getCount() {
+        return list.size();
+    }
+
+    @Override
+    public Object getItem(int pos) {
+        return list.get(pos);
+    }
+
+    @Override
+    public long getItemId(int pos) {
+        return 0;
+    }
+
+    @Override
+    public View getView(final int position, View convertView, ViewGroup parent) {
+        View view = convertView;
+        if(list.size() > 0) {
+            MyAdapter.ViewHolder holder;
+
+            final Event currentEvent = list.get(position);
+
+            // Initialize the view
             if (view == null) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(R.layout.timeline_list_myactivities_layout, null);
+                view = inflater.inflate(R.layout.my_activity_card, null);
 
-                holder = new ViewHolder();
-                holder.name = (TextView) view.findViewById(R.id.nameLabel);
-                holder.profilePicture = (ImageView) view.findViewById(R.id.profilePicture);
-                holder.firstPart = (TextView) view.findViewById(R.id.firstPartofText);
-                holder.secondPart = (TextView) view.findViewById(R.id.secondPartofText);
-                holder.time = (TextView) view.findViewById(R.id.timeText);
-                holder.place = (TextView) view.findViewById(R.id.placeText);
-                holder.icon = (ImageView) view.findViewById(R.id.sportIcon);
-                holder.description = (TextView) view.findViewById(R.id.descriptionID);
-                holder.players = (TextView) view.findViewById(R.id.playersID);
+
+                holder = new MyAdapter.ViewHolder();
+                holder.profileImage = (CircleImageView) view.findViewById(R.id.profileImage);
+                holder.creatorName = (TextView) view.findViewById(R.id.creatorName);
+                holder.sportName = (TextView) view.findViewById(R.id.sportName);
+                holder.ludicoinsNumber = (TextView) view.findViewById(R.id.ludicoinsNumber);
+                holder.pointsNumber = (TextView) view.findViewById(R.id.pointsNumber);
+                holder.eventDate = (TextView) view.findViewById(R.id.eventDate);
+                holder.locationEvent = (TextView) view.findViewById(R.id.locationEvent);
+                holder.playersNumber = (TextView) view.findViewById(R.id.playersNumber);
+                holder.friends0 = (CircleImageView) view.findViewById(R.id.friends0);
+                holder.friends1 = (CircleImageView) view.findViewById(R.id.friends1);
+                holder.friends2 = (CircleImageView) view.findViewById(R.id.friends2);
+                holder.friendsNumber = (TextView) view.findViewById(R.id.friendsNumber);
+                holder.imageViewBackground = (ImageView) view.findViewById(R.id.imageViewBackground);
+                holder.creatorLevelMyActivity=(TextView)view.findViewById(R.id.creatorLevelMyActivity);
+
 
                 view.setTag(holder);
             } else {
-                holder = (ViewHolder) view.getTag();
+                holder = (MyAdapter.ViewHolder) view.getTag();
             }
+
+            // Clean up layout
+            holder.friends0.setVisibility(View.INVISIBLE);
+            holder.friends1.setVisibility(View.INVISIBLE);
+            holder.friends2.setVisibility(View.INVISIBLE);
+            holder.friendsNumber.setVisibility(View.INVISIBLE);
 
             // Set name and picture for the first user of the event
             view.setBackgroundColor(Color.parseColor("#FFFFFF"));
 
             final View currView = view;
+
+            // Event details redirect
             view.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        currView.setBackgroundColor(Color.parseColor("#D3D3D3"));
-
-                        Intent intent = new Intent(currView.getContext(), EventDetails.class);
-                        intent.putExtra("eventUid", list.get(position).id);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        activity.startActivity(intent);
-                }
-              }
-            );
-
-            String firstName = list.get(position).creatorName.split(" ")[0];
-            holder.name.setText(firstName);
-            holder.profilePicture.setBackgroundResource(R.drawable.defaultpicture);
-            Picasso.with(context).load(list.get(position).profileImageURL).into(holder.profilePicture);
-
-            // Redirect to user profile on picture click
-            holder.profilePicture.setOnClickListener(new View.OnClickListener() {
+                @Override
                 public void onClick(View v) {
-                    if (User.uid.equals(list.get(position).creator)) {
-                        Toast.makeText(context, "This is you ! We can't compare with yourself..", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Intent intent = new Intent(currView.getContext(), ProfileActivity.class);
-                        intent.putExtra("uid", list.get(position).creator);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        activity.startActivity(intent);
-                    }
+                    currView.setBackgroundColor(Color.parseColor("#D3D3D3"));
+
+                    //Intent intent = new Intent(currView.getContext(), EventDetails.class);
+                    //intent.putExtra("eventUid", currentEvent.id);
+                    // activity.startActivity(intent);
+                    Toast.makeText(context, "Go to EventDetails", Toast.LENGTH_LONG).show();
                 }
             });
 
-            String uri = "@drawable/" + list.get(position).sport.toLowerCase().replace(" ", "");
-            Log.v("drawable", uri);
-            int imageResource = this.resources.getIdentifier(uri, null, context.getPackageName());
-            Drawable res = this.resources.getDrawable(imageResource);
+            // Set user event creator name and picture
+            holder.creatorName.setText(currentEvent.creatorName);
+            if (!Persistance.getInstance().getUserInfo(activity).profileImage.equals("0")) {
+                System.out.println(Persistance.getInstance().getUserInfo(activity).profileImage + " poza");
+                Bitmap bitmap = decodeBase64(Persistance.getInstance().getUserInfo(activity).profileImage);
+                holder.profileImage.setImageBitmap(bitmap);
 
-            holder.icon.setImageDrawable(res);
-            if (list.get(position).sport.equalsIgnoreCase("jogging"))
-                holder.firstPart.setText("Will go " + list.get(position).sport);
-            else
-                holder.firstPart.setText("Will play " + list.get(position).sport);
-            if ((list.get(position).noUsers - 1) > 1) {
-                holder.secondPart.setText(" with " + (list.get(position).noUsers - 1) + " others");
-            } else if ((list.get(position).noUsers - 1) == 1) {
-                holder.secondPart.setText(" with 1 other");
-            } else {
-                holder.secondPart.setText(" with no others");
             }
 
-            if (list.get(position).description.equalsIgnoreCase(""))
-                holder.description.setText("\"" + "I don't have a description for my event :(" + "\"");
-            else
-                holder.description.setText("\"" + list.get(position).description + "\"");
-
-            holder.players.setText(list.get(position).noUsers + "/" + list.get(position).roomCapacity);
-
-            if (list.get(position) != null) {
-                if (list.get(position).isOfficial == 0) {
-                    holder.place.setTextColor(Color.DKGRAY);
+            // Redirect to user profile on picture tap
+            holder.profileImage.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    //Intent intent = new Intent(currView.getContext(), ProfileActivity.class);
+                    // intent.putExtra("uid", currentEvent.creator);
+                    //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    // activity.startActivity(intent);
+                    Toast.makeText(context, "Go to ProfileDetails", Toast.LENGTH_LONG).show();
                 }
-                holder.place.setText(list.get(position).place);
-            } else
-                holder.place.setText("Unknown");
+            });
 
+
+            // Event details set message for sport played
+            Sport sport = new Sport(currentEvent.sportCode);
+
+            String weWillPlayString = "";
+
+            if (currentEvent.sportCode.equalsIgnoreCase("JOG") ||
+                    currentEvent.sportCode.equalsIgnoreCase("GYM") || currentEvent.sportCode.equalsIgnoreCase("CYC"))
+                weWillPlayString = "Will go to " + sport.sportName;
+            else
+                weWillPlayString = "Will play " + sport.sportName;
+
+            holder.sportName.setText(weWillPlayString);
+
+            holder.ludicoinsNumber.setText("  +" + String.valueOf(currentEvent.ludicoins));
+            holder.pointsNumber.setText("  +" + String.valueOf(currentEvent.points));
+
+
+            holder.locationEvent.setText(currentEvent.placeName);
+            holder.playersNumber.setText(currentEvent.numberOfParticipants + "/" + currentEvent.capacity);
+            int counter = 0;
+            if (currentEvent.numberOfParticipants - 1 >= 1) {
+                holder.friends0.setVisibility(View.VISIBLE);
+            }
+            if (currentEvent.numberOfParticipants - 1 >= 2) {
+                holder.friends1.setVisibility(View.VISIBLE);
+            }
+            if (currentEvent.numberOfParticipants - 1 >= 3) {
+                holder.friends2.setVisibility(View.VISIBLE);
+            }
+            if (currentEvent.numberOfParticipants - 1 >= 4) {
+                holder.friendsNumber.setVisibility(View.VISIBLE);
+                holder.friendsNumber.setText("+" + String.valueOf(currentEvent.numberOfParticipants - 4));
+
+            }
+            for (int i = 0; i < currentEvent.participansProfilePicture.size(); i++) {
+                if (!currentEvent.participansProfilePicture.get(i).equals("") && counter == 0) {
+                    Bitmap bitmap = decodeBase64(currentEvent.participansProfilePicture.get(i));
+                    holder.friends0.setImageBitmap(bitmap);
+                } else if (!currentEvent.participansProfilePicture.get(i).equals("") && counter == 1) {
+                    Bitmap bitmap = decodeBase64(currentEvent.participansProfilePicture.get(i));
+                    holder.friends1.setImageBitmap(bitmap);
+                } else if (!currentEvent.participansProfilePicture.get(i).equals("") && counter == 2) {
+                    Bitmap bitmap = decodeBase64(currentEvent.participansProfilePicture.get(i));
+                    holder.friends2.setImageBitmap(bitmap);
+                }
+            }
+
+            switch (currentEvent.sportCode) {
+                case "FOT":
+                    holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_football);
+                    break;
+                case "BAS":
+                    holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_basketball);
+                    break;
+                case "VOL":
+                    holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_volleyball);
+                    break;
+                case "JOG":
+                    holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_jogging);
+                    break;
+                case "GYM":
+                    holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_gym);
+                    break;
+                case "CYC":
+                    holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_cycling);
+                    break;
+                case "TEN":
+                    holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_tennis);
+                    break;
+                case "PIN":
+                    holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_pingpong);
+                    break;
+                case "SQU":
+                    holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_squash);
+                    break;
+                case "OTH":
+                    holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_others);
+                    break;
+
+            }
+
+            holder.creatorLevelMyActivity.setText(String.valueOf(currentEvent.creatorLevel));
+
+
+            // Event details set message for date and time
             Calendar c = Calendar.getInstance();
             Date today = c.getTime();
             int todayDay = General.getDayOfMonth(today);
             int todayMonth = today.getMonth();
             int todayYear = today.getYear();
+            String displayDate = "";
+            String[] stringDateAndTime = currentEvent.eventDate.split(" ");
+            try {
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                displayDate = formatter.format(formatter.parse(stringDateAndTime[0]));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            String[] stringDate = displayDate.split("-");
+            String date = "";
+            if (Integer.parseInt(stringDate[1]) - 1 == todayMonth && Integer.parseInt(stringDate[2]) == todayDay) {
+                date = "Today, " + stringDateAndTime[1].substring(0, 5);
+            } else if (Integer.parseInt(stringDate[1]) - 1 == todayMonth && Integer.parseInt(stringDate[2]) - 1 == todayDay) {
+                date = "Tomorrow, " + stringDateAndTime[1].substring(0, 5);
+            } else {
+                date = getMonth(Integer.parseInt(stringDate[1])) + " " + stringDate[2] + ", " + stringDateAndTime[1].substring(0, 5);
+            }
+            holder.eventDate.setText(date);
 
-            String day;
-            if (todayDay == General.getDayOfMonth(list.get(position).date) && todayMonth == list.get(position).date.getMonth() && todayYear == list.get(position).date.getYear())
-                day = "Today";
-            else if (todayDay == (General.getDayOfMonth(list.get(position).date) - 1) && todayMonth == list.get(position).date.getMonth() && todayYear == list.get(position).date.getYear())
-                day = "Tomorrow";
-            else
-                day = General.getDayOfMonth(list.get(position).date) + "/" + (list.get(position).date.getMonth() + 1) + "/" + (list.get(position).date.getYear() + 1900);
-            String dateHour = (list.get(position).date.getHours() < 10) ? "0" + list.get(position).date.getHours() :
-                    list.get(position).date.getHours() +  "";
-
-            String dateMin = (list.get(position).date.getMinutes()<10)? "0" + list.get(position).date .getMinutes() :
-                    list.get(position).date .getMinutes() +  "";
-
-            if (dateHour.equalsIgnoreCase("0")) dateHour += "0";
-            if (dateMin.equalsIgnoreCase("0")) dateMin += "0";
-            String hour = dateHour + ":" + dateMin;
-            holder.time.setText(day + " at " + hour);
-
-            return view;
         }
+        return view;
     }
-*/
+    }
+

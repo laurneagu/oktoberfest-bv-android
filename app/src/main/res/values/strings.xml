@@ -3,6 +3,10 @@
     <dimen name="custom_profile_image">50dp</dimen>
     <dimen name="custom_profile_padding">2dp</dimen>
 
+    <string name="fontregular">Quicksand-Regular.ttf</string>
+    <string name="fontmedium">Quicksand-Medium.ttf</string>
+    <string name="fontbold">Quicksand-Bold.ttf</string>
+
     <string name="app_name">Ludicon</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="errorMessage">Incorrect email or password</string>

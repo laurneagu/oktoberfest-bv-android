@@ -1,4 +1,3 @@
-/*
 package larc.ludiconprod.Activities;
 
 import android.os.Bundle;
@@ -10,13 +9,11 @@ import larc.ludiconprod.BottomBarHelper.*;
 import larc.ludiconprod.Layer.DataPersistence.ChatPersistence;
 import larc.ludiconprod.R;
 
-*/
-/**
- * Created by Razvan on 28.06.2017.
- *//*
 
 
-public class MainVechi extends FragmentActivity{
+
+
+public class Main extends FragmentActivity{
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,11 +35,11 @@ public class MainVechi extends FragmentActivity{
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {
-                if(tabId == R.id.tab_recents) {
-                    MainActivityVechi main = new MainActivityVechi();
+                if(tabId == R.id.tab_activities) {
+                    ActivitiesActivity main = new ActivitiesActivity();
                     getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.frame, main).commit();
-                }else if(tabId == R.id.tab_nearby){
+                           .replace(R.id.frame, main).commit();
+                }/*else if(tabId == R.id.tab_nearby){
                     RankingsNewActivity rankings=new RankingsNewActivity();
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.frame,rankings).commit();
@@ -55,6 +52,8 @@ public class MainVechi extends FragmentActivity{
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.frame,chatFriends).commit();
                 }
+                */
+
             }
         });
 
@@ -69,4 +68,3 @@ public class MainVechi extends FragmentActivity{
         //nearby.setBadgeCount(5);
     }
 }
-*/

@@ -136,7 +136,7 @@ public class GMapsFullActivity extends Activity implements PlaceSelectionListene
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                     WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        setContentView(R.layout.activity_gmaps_full);
+        setContentView(R.layout.gmaps_activity);
 
         // Left side panel initializing -- DISABLED TEMPORARILYf
         //mDrawerList = (ListView) findViewById(R.id.leftMenu);

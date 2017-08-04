@@ -335,7 +335,7 @@ public class SettingsActivity extends Fragment {
                                 saveButton.setAlpha((float) 0.3);
                                 saveButton.setEnabled(false);
                                 changeInSports.clear();
-                                Intent intent = new Intent(getActivity().getApplicationContext(), MainVechi.class);
+                                Intent intent = new Intent(getActivity().getApplicationContext(), Main.class);
                                 startActivity(intent);
 
                     }
@@ -663,9 +663,9 @@ public class SettingsActivity extends Fragment {
     *//*
 
 
-    // Delete the history stack and point to MainVechi activity
+    // Delete the history stack and point to Main activity
     public void onBackPressed() {
-        Intent toMain = new Intent(getActivity(),MainVechi.class);
+        Intent toMain = new Intent(getActivity(),Main.class);
         toMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(toMain);
     }

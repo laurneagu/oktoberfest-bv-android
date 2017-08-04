@@ -907,9 +907,9 @@ public class ChatListActivity extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    // Delete the history stack and point to MainVechi activity
+    // Delete the history stack and point to Main activity
     public void onBackPressed() {
-        Intent toMain = new Intent(getActivity(),MainVechi.class);
+        Intent toMain = new Intent(getActivity(),Main.class);
         toMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(toMain);
     }

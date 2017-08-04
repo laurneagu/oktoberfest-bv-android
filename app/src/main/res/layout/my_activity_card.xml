@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/aroundMeCardRelativeLayout"
+
+    >
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignBottom="@+id/aroundMeCardLayout"
+        android:background="@drawable/bg_sport_football"
+        android:id="@+id/imageViewBackground"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/aroundMeCardLayout"
+        >
+
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:orientation="horizontal">
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+
+            <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/profileImage"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/ph_user" />
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="48dp"
+                    android:id="@+id/imageView"/>
+                <TextView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@drawable/round_textview_green"
+                    android:textSize="12sp"
+                    android:text="12"
+                    android:id="@+id/creatorLevelMyActivity"
+                    android:textColor="#ffffff"
+                    android:layout_toRightOf="@id/imageView"
+                    android:layout_alignBottom="@id/imageView"
+                    android:textAlignment="center"
+                    android:paddingBottom="3dp"
+                    android:paddingTop="3dp"
+                    android:layout_marginBottom="4dp"
+                    />
+            </RelativeLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:id="@+id/creatorName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:textColor="#d4498b"
+                    android:text="Creator Name" />
+
+                <TextView
+                    android:id="@+id/sportName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:text="Will play Football" />
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginRight="16dp"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:id="@+id/youGain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="14sp"
+                android:textColor="#0c3855"
+                android:text="You will gain" />
+
+            <TextView
+                android:id="@+id/ludicoinsNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="14sp"
+                android:layout_gravity="center"
+                android:textColor="#fcb851"
+                android:text="  +25" />
+
+            <ImageView
+                android:id="@+id/ludicoinImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_ludicoins_small" />
+
+            <TextView
+                android:id="@+id/pointsNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="#1573ba"
+                android:layout_weight="1"
+                android:text="  +100" />
+
+            <ImageView
+                android:id="@+id/pointsImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_points_small" />
+
+            <TextView
+                android:id="@+id/perHour"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="14sp"
+                android:textColor="#0c3855"
+                android:alpha="0.4"
+                android:layout_gravity="center"
+                android:text="  per hour" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:id="@+id/date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="#0c3855"
+                    android:alpha="0.4"
+                    android:text="Date" />
+
+                <TextView
+                    android:id="@+id/eventDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="#0c3855"
+                    android:text="Aug 16,15:30" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:id="@+id/location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="#0c3855"
+                    android:alpha="0.4"
+                    android:text="Location" />
+
+                <TextView
+                    android:id="@+id/locationEvent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="#0c3855"
+                    android:text="Sos.Stefan cel Mare, 43" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/players"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="#0c3855"
+                android:alpha="0.4"
+                android:text="Players  " />
+
+            <TextView
+                android:id="@+id/playersNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="#02b9ad"
+                android:text="7/9" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="33dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="16dp"
+            android:orientation="horizontal">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/friends0"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:background="@drawable/ph_user"
+                android:visibility="invisible"/>
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/friends1"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginLeft="4dp"
+                android:visibility="invisible"
+                android:layout_gravity="center"
+                android:background="@drawable/ph_user"/>
+            <de.hdodenhof.circleimageview.CircleImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/friends2"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginLeft="4dp"
+                android:visibility="invisible"
+                android:layout_gravity="center"
+                android:background="@drawable/ph_user"
+                />
+
+            <TextView
+                android:id="@+id/friendsNumber"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:textAlignment="center"
+                android:paddingTop="8dp"
+                android:textSize="14sp"
+                android:textColor="#02b9ad"
+                android:visibility="invisible"
+                android:layout_gravity="center"
+                android:background="@drawable/round_textview"
+                android:text="+3" />
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+            </RelativeLayout>
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

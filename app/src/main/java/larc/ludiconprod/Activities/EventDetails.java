@@ -102,7 +102,7 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
         handler.postDelayed(new Runnable() {
             public void run() {
                 // Actions to do after 5 seconds
-                Intent goToNextActivity = new Intent(getApplicationContext(), MainVechi.class);
+                Intent goToNextActivity = new Intent(getApplicationContext(), Main.class);
                 startActivity(goToNextActivity);
                 finish();
             }
@@ -171,7 +171,7 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
         userPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent mainIntent = new Intent(getApplicationContext(), MainVechi.class);
+                Intent mainIntent = new Intent(getApplicationContext(), Main.class);
                 EventDetails.this.startActivity(mainIntent);
             }
         });
@@ -465,7 +465,7 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
                                     FirebaseDatabase.getInstance().getReference().child("events").child(eventUid).child("users").child("+" + 5*participants +userName.getText()).setValue(User.uid);
                                     Toast.makeText(getApplicationContext(),"You have added 1 friend",Toast.LENGTH_SHORT).show();
                                     finish();
-                                    Intent mainIntent = new Intent(getApplicationContext(), MainVechi.class);
+                                    Intent mainIntent = new Intent(getApplicationContext(), Main.class);
                                     EventDetails.this.startActivity(mainIntent);
 //                                    startActivity(getIntent());
                                 }
@@ -500,7 +500,7 @@ public class EventDetails extends Activity implements OnMapReadyCallback {
                                                     if (users.equalsIgnoreCase(userName.getText().toString())) {
                                                         User.firebaseRef.child("events").child(eventUid).child("users").child(data.getKey()).removeValue();
                                                         finish();
-                                                        Intent mainIntent = new Intent(getApplicationContext(), MainVechi.class);
+                                                        Intent mainIntent = new Intent(getApplicationContext(), Main.class);
                                                         EventDetails.this.startActivity(mainIntent);
 //                                                        startActivity(getIntent());
                                                         return;

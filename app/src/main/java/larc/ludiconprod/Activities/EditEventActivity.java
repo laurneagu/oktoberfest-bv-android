@@ -765,7 +765,7 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
             public void run() {
                 // Actions to do after 5 seconds
                 // Actions to do after 5 seconds
-                Intent goToNextActivity = new Intent(getApplicationContext(), MainVechi.class); //AskPreferences.class);
+                Intent goToNextActivity = new Intent(getApplicationContext(), Main.class); //AskPreferences.class);
                 startActivity(goToNextActivity);
                 finish();
             }
@@ -788,7 +788,7 @@ public class EditEventActivity extends Activity implements OnMapReadyCallback {
         locationListener = null;
         finish();
 
-        Intent toMain = new Intent(this, MainVechi.class);
+        Intent toMain = new Intent(this, Main.class);
         toMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(toMain);
     }

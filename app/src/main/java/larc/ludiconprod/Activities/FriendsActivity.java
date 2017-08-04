@@ -456,7 +456,7 @@ public class FriendsActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    // Delete the history stack and point to MainVechi activity
+    // Delete the history stack and point to Main activity
     @Override
     public void onBackPressed() {
         Intent toMain = new Intent(this,MainActivityVechi.class);

@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f7f9fc">
+    <ImageView
+        android:layout_marginTop="56dp"
+        android:layout_width="match_parent"
+        android:layout_height="12dp"
+        android:background="@drawable/shadow_top_to_bottom"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+
+
+
+
+    <include
+        android:id="@+id/tool_bar"
+        layout="@layout/header_login"
+        android:layout_height="56dp"
+        android:layout_width="match_parent"
+        />
+        <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/scroll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="24dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:scrollbars="none"
+            android:fillViewport="true">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+                <TextView
+                android:id="@+id/activityText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ACTIVITY"
+                android:textSize="14sp"
+                android:fontFamily="@string/fontbold"
+                android:textColor="#0c3855"/>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_below="@+id/activityText"
+                    android:layout_marginTop="16dp"
+                    android:id="@+id/spinnerLayout"
+                    android:background="@drawable/rounded_edittext">
+
+                     <Spinner
+                         android:id="@+id/sportSpinner"
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:background="@drawable/gradient_spinner"
+                         android:gravity="center"
+                         />
+
+
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/spinnerLayout"
+                    android:id="@+id/chooseSportNameLayout">
+
+
+                    <TextView
+                        android:id="@+id/chooseSportNameText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="OTHER SPORT"
+                        android:textSize="14sp"
+                        android:layout_marginTop="24dp"
+
+                        android:fontFamily="@string/fontbold"
+                        android:textColor="#0c3855"/>
+
+                    <EditText
+                        android:id="@+id/editText"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:ems="10"
+                        android:background="@drawable/rounded_edittext"
+                        android:layout_marginTop="16dp"
+                        android:layout_below="@+id/chooseSportNameText"
+                        android:inputType="text"
+                        android:textSize="16sp"
+                        android:paddingLeft="8dp"
+                        android:drawableLeft="@drawable/ic_sport_others"
+                        android:textColor="#0c3855"
+                        android:fontFamily="@string/fontmedium"
+                        android:hint="Sport name"
+                        android:text="" />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/typeAndNumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="#0c3855"
+                    android:fontFamily="@string/fontmedium"
+                    android:layout_below="@+id/chooseSportNameLayout"
+                    android:layout_marginTop="24dp"
+                    android:text="TYPE &amp; NUMBER OF PLAYERS" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:id="@+id/typeAndNumberLayout"
+                    android:layout_below="@+id/typeAndNumber"
+                    android:layout_marginTop="16dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_weight="0.5"
+                        android:id="@+id/privacySpinnerLayout"
+                        android:background="@drawable/rounded_edittext">
+
+                    <Spinner
+                        android:id="@+id/privacySpinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/gradient_spinner"
+                        android:gravity="center"
+                        />
+                    </RelativeLayout>
+                    <ImageView
+                        android:layout_width="8dp"
+                        android:layout_height="8dp"
+                        android:id="@+id/imageView"
+                        android:alpha="0"/>
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_weight="0.6"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:background="@drawable/rounded_edittext">
+
+                        <ImageButton
+                            android:id="@+id/minusButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/ic_minus"
+                            android:gravity="center" />
+
+                        <TextView
+                            android:id="@+id/playersNumber"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:text="2" />
+
+                        <ImageButton
+                            android:id="@+id/plusButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/ic_plus" />
+                    </RelativeLayout>
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/privateText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:textSize="12sp"
+                    android:textColor="#d4498b"
+                    android:fontFamily="@string/fontmedium"
+                    android:layout_below="@+id/typeAndNumberLayout"
+                    android:layout_marginTop="0dp"
+                    android:text="This activity is set as Private and will not be visible in the Activity List.Invite your friends to Join this activity" />
+
+                <TextView
+                    android:id="@+id/dateAndTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="#0c3855"
+                    android:fontFamily="@string/fontmedium"
+                    android:layout_below="@+id/privateText"
+                    android:layout_marginTop="24dp"
+                    android:text="DATE &amp; TIME" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:id="@+id/layoutDateAndTime"
+                    android:layout_below="@+id/dateAndTime"
+                    android:layout_marginTop="16dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_weight="0.5"
+                        android:id="@+id/dateLayout"
+                        android:background="@drawable/rounded_edittext">
+                        <ImageView
+                            android:id="@+id/calendarImageView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="8dp"
+                            android:background="@drawable/ic_calendar"/>
+
+
+                        <TextView
+                            android:id="@+id/calendarTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:textSize="16dp"
+                            android:layout_toRightOf="@+id/calendarImageView"
+                            android:text="Date"
+                            android:fontFamily="@string/fontmedium"
+                            android:layout_centerVertical="true"
+                            android:textColor="#0c3855"/>
+
+
+
+                    </RelativeLayout>
+
+                    <ImageView
+                        android:layout_width="8dp"
+                        android:layout_height="8dp"
+                        android:id="@+id/imageView1"
+                        android:alpha="0"/>
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_weight="0.6"
+                        android:id="@+id/timeLayout"
+                        android:background="@drawable/rounded_edittext">
+                        <ImageView
+                            android:id="@+id/hourImageView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="8dp"
+                            android:background="@drawable/ic_calendar"/>
+
+                        <TextView
+                            android:id="@+id/hourTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:textSize="16dp"
+                            android:layout_toRightOf="@+id/hourImageView"
+                            android:text="Hour"
+                            android:fontFamily="@string/fontmedium"
+                            android:layout_centerVertical="true"
+                            android:textColor="#0c3855"/>
+
+
+
+                    </RelativeLayout>
+
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="#0c3855"
+                    android:fontFamily="@string/fontmedium"
+                    android:layout_below="@+id/layoutDateAndTime"
+                    android:layout_marginTop="24dp"
+                    android:text="LOCATION" />
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="16dp"
+                    android:background="#f7f9fc"
+                    android:layout_below="@+id/location"
+                    android:id="@+id/imageAboveMap"/>
+                <RelativeLayout
+                    android:id="@+id/mapLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/imageAboveMap">
+
+                    <include
+                        android:id="@+id/root"
+                        layout="@layout/selected_location_layout"
+                        android:layout_height="0dp"
+                        android:layout_width="match_parent"
+                        />
+
+
+
+
+                <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:map="http://schemas.android.com/apk/res-auto"
+                    android:name="com.google.android.gms.maps.MapFragment"
+                    android:id="@+id/map"
+                    android:layout_below="@+id/root"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    map:mapType="normal"
+                    map:liteMode="true"
+                    >
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Tap here to Select Location"
+                        android:textSize="14sp"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:textColor="#0c3855"
+                        android:id="@+id/tapHereTextView"
+                        android:fontFamily="@string/fontbold"/>
+
+                </fragment>
+
+
+
+
+
+                </RelativeLayout>
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="24dp"
+                    android:background="#f7f9fc"
+                    android:layout_below="@+id/mapLayout"
+                    android:id="@+id/imageBelowMap"/>
+                <LinearLayout
+                    android:id="@+id/descriptionLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/imageBelowMap"
+                    android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="#0c3855"
+                    android:fontFamily="@string/fontbold"
+                    android:text="DESCRIPTION" />
+                    <TextView
+                        android:id="@+id/optional"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:textColor="#660c3855"
+                        android:fontFamily="@string/fontbold"
+                        android:gravity="right"
+                        android:text="Optional" />
+
+                </LinearLayout>
+                
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:id="@+id/descriptionEditText"
+                    android:background="@drawable/rounded_edittext"
+                    android:layout_below="@+id/descriptionLayout"
+                    android:layout_marginTop="16dp"
+                    android:hint="Additional Info"
+                    android:drawableLeft="@drawable/ic_info"
+                    android:textSize="16sp"
+                    android:fontFamily="@string/fontmedium"
+                    android:textColor="#0c3855"
+                    android:paddingLeft="8dp"/>
+
+                <TextView
+                    android:id="@+id/inviteFriends"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:layout_below="@+id/descriptionEditText"
+                    android:textColor="#0c3855"
+                    android:fontFamily="@string/fontbold"
+                    android:layout_marginTop="24dp"
+                    android:text="INVITE FRIENDS" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:id="@+id/invitedFriendsLayout"
+                    android:layout_below="@+id/inviteFriends"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal">
+
+
+                    <ImageView
+                        android:id="@+id/invitedFriends0"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/ic_invite" />
+                    <ImageView
+                        android:id="@+id/invitedFriends1"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginLeft="8dp"
+                        android:visibility="invisible"
+                        android:background="@drawable/ic_invite" />
+                    <ImageView
+                        android:id="@+id/invitedFriends2"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginLeft="8dp"
+                        android:visibility="invisible"
+                        android:background="@drawable/ic_invite" />
+                    <TextView
+                        android:id="@+id/friendsNumber"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:textAlignment="center"
+                        android:paddingTop="14dp"
+                        android:textSize="14sp"
+                        android:textColor="#02b9ad"
+                        android:layout_marginLeft="8dp"
+                        android:visibility="invisible"
+                        android:layout_gravity="center"
+                        android:background="@drawable/round_textview"
+                        android:text="+3" />
+
+                    <ImageView
+                        android:id="@+id/invitedFriends4"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:visibility="invisible"
+                        android:layout_marginLeft="8dp"
+                        android:background="@drawable/ic_invite" />
+                </LinearLayout>
+
+
+                
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:id="@+id/createActivityButton"
+                    android:background="@drawable/pink_button_selector"
+                    android:text="CREATE ACTIVITY"
+                    android:textSize="14sp"
+                    android:fontFamily="@string/fontbold"
+                    android:textColor="#ffffff"
+                    android:layout_below="@+id/invitedFriendsLayout"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+
+
+
+                    />
+
+
+            </RelativeLayout>
+
+        </ScrollView>
+    </LinearLayout>
+
+</RelativeLayout>

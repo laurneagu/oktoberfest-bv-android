@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <tabs>
     <tab
-        id="@+id/tab_recents"
-        icon="@drawable/ic_recents"
+        id="@+id/tab_activities"
+        icon="@drawable/ic_bnav_activity_selected"
         title="Activities" />
     <tab
-        id="@+id/tab_favorites"
-        icon="@drawable/ic_favorites"
+        id="@+id/tab_coupons"
+        icon="@drawable/ic_bnav_prize_selected"
         title="Coupons" />
     <tab
-        id="@+id/tab_nearby"
-        icon="@drawable/ic_nearby"
+        id="@+id/tab_leaderboard"
+        icon="@drawable/ic_bnav_leaderboard_selected"
         title="Leaderboard"
         />
     <tab
         id="@+id/tab_friends"
-        icon="@drawable/ic_friends"
+        icon="@drawable/ic_bnav_chat_selected"
         title="Chat'Friends" />
     <tab
-        id="@+id/tab_food"
-        icon="@drawable/ic_restaurants"
+        id="@+id/tab_profile"
+        icon="@drawable/ic_bnav_user_selected"
         title="Profile" />
 </tabs>
