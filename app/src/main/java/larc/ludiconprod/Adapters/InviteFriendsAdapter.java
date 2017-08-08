@@ -7,6 +7,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.util.Base64;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +26,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import larc.ludiconprod.Activities.ActivitiesActivity;
 import larc.ludiconprod.Activities.InviteFriendsActivity;
 import larc.ludiconprod.Adapters.MainActivity.AroundMeAdapter;
+import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
 import larc.ludiconprod.Utils.Event;
 import larc.ludiconprod.Utils.Friend;
@@ -41,7 +44,7 @@ public class InviteFriendsAdapter  extends BaseAdapter implements ListAdapter {
 
     class ViewHolder {
 
-        ImageView friendProfileImage;
+        CircleImageView friendProfileImage;
         TextView friendName;
         TextView friendLevel;
         Button inviteButton;
@@ -97,7 +100,7 @@ public class InviteFriendsAdapter  extends BaseAdapter implements ListAdapter {
 
 
                 holder = new InviteFriendsAdapter.ViewHolder();
-                holder.friendProfileImage=(ImageView)view.findViewById(R.id.profileImageInvitedFriend);
+                holder.friendProfileImage=(CircleImageView)view.findViewById(R.id.profileImageInvitedFriend);
                 holder.friendName=(TextView)view.findViewById(R.id.friendName);
                 holder.friendLevel=(TextView)view.findViewById(R.id.friendLevel);
                 holder.inviteButton=(Button)view.findViewById(R.id.inviteFriendButton);
@@ -113,24 +116,92 @@ public class InviteFriendsAdapter  extends BaseAdapter implements ListAdapter {
                 ViewGroup.LayoutParams params = holder.friendLevel.getLayoutParams();
                 params.height =0;
                 holder.friendLevel.setLayoutParams(params);
-
                 holder.friendName.setText(currentFriend.userName);
+                holder.friendProfileImage.setImageResource(R.drawable.ic_invite);
+
 
                 holder.inviteButton.setVisibility(View.INVISIBLE);
 
                 holder.friendProfileImage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(context,"Click add offline friend",Toast.LENGTH_LONG).show();
+                        Friend friend=new Friend();
+                        friend.userName= Persistance.getInstance().getUserInfo(activity).lastName+"'s Friend";
+                        friend.offlineFriend=true;
+                        friend.profileImage="";
+                        InviteFriendsActivity.friendsList.add(1,friend);
+                        InviteFriendsActivity.numberOfOfflineFriends++;
+                        InviteFriendsActivity.inviteFriendsAdapter.notifyDataSetChanged();
                     }
                 });
 
-            }else{
+            }else if(currentFriend.offlineFriend){
+                ViewGroup.LayoutParams params = holder.friendLevel.getLayoutParams();
+                params.height =0;
+                holder.friendLevel.setLayoutParams(params);
+
+                if(currentFriend.userName.length() < 16) {
+                    holder.friendName.setText(currentFriend.userName);
+                }
+                else{
+                    String names[] =currentFriend.userName.split(" ");
+                    String displayName=names[0]+"\n";
+                    for(int i=1;i < names.length;i++){
+                        displayName=displayName+names[i];
+
+                    }
+                    holder.friendName.setText(displayName);
+                }
+                holder.friendProfileImage.setImageResource(R.drawable.ic_invite);
+
+                holder.inviteButton.setText("REMOVE");
+                holder.inviteButton.setTextColor(Color.parseColor("#ffffff"));
+                holder.inviteButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        InviteFriendsActivity.numberOfOfflineFriends--;
+                        InviteFriendsActivity.friendsList.remove(position);
+                        InviteFriendsActivity.inviteFriendsAdapter.notifyDataSetChanged();
+                    }
+                });
+
+            }
+
+
+
+            else if(!currentFriend.offlineFriend){
                 if(!currentFriend.profileImage.equals("")) {
                     Bitmap bitmap = decodeBase64(currentFriend.profileImage);
                     holder.friendProfileImage.setImageBitmap(bitmap);
                 }
-                holder.friendName.setText(currentFriend.userName);
+
+                ViewGroup.LayoutParams params = holder.friendLevel.getLayoutParams();
+                params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                holder.friendLevel.setLayoutParams(params);
+
+                if(!currentFriend.isInvited){
+                    holder.inviteButton.setBackgroundResource(R.drawable.green_button_selector);
+                    holder.inviteButton.setText("INVITE");
+                    holder.inviteButton.setTextColor(Color.parseColor("#ffffff"));
+
+                }else{
+                holder.inviteButton.setBackgroundResource(R.drawable.transparent_button);
+                holder.inviteButton.setText("INVITED");
+                holder.inviteButton.setTextColor(Color.parseColor("#660c3855"));
+                 }
+                holder.inviteButton.setVisibility(View.VISIBLE);
+                if(currentFriend.userName.length() < 16) {
+                    holder.friendName.setText(currentFriend.userName);
+                }
+                else{
+                    String names[] =currentFriend.userName.split(" ");
+                    String displayName=names[0]+"\n";
+                    for(int i=1;i < names.length;i++){
+                        displayName=displayName+names[i];
+
+                    }
+                    holder.friendName.setText(displayName);
+                }
                 holder.friendLevel.setText("Level "+String.valueOf(currentFriend.level));
                 holder.inviteButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -139,12 +210,12 @@ public class InviteFriendsAdapter  extends BaseAdapter implements ListAdapter {
                             holder.inviteButton.setBackgroundResource(R.drawable.green_button_selector);
                             holder.inviteButton.setText("INVITE");
                             holder.inviteButton.setTextColor(Color.parseColor("#ffffff"));
-                            currentFriend.isInvited=true;
+                            InviteFriendsActivity.friendsList.get(position).isInvited=false;
                         }else{
-                            holder.inviteButton.setBackgroundResource(R.drawable.green_button_selector);
+                            holder.inviteButton.setBackgroundResource(R.drawable.transparent_button);
                             holder.inviteButton.setText("INVITED");
                             holder.inviteButton.setTextColor(Color.parseColor("#660c3855"));
-                            currentFriend.isInvited=false;
+                            InviteFriendsActivity.friendsList.get(position).isInvited=true;
                         }
                     }
                 });

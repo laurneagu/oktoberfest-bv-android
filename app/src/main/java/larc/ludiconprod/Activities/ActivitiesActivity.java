@@ -83,8 +83,8 @@ public class ActivitiesActivity extends Fragment {
     TextView pressPlusButtonTextFieldMyActivity;
     ProgressBar progressBarMyEvents;
     ProgressBar progressBarAroundMe;
-    public static int NumberOfRefreshMyEvents=1;
-    public static int NumberOfRefreshAroundMe=1;
+    public static int NumberOfRefreshMyEvents=0;
+    public static int NumberOfRefreshAroundMe=0;
     ListView frlistView;
     Boolean isFirstTimeAroundMe=false;
     Boolean isFirstTimeMyEvents=false;
@@ -103,7 +103,6 @@ public class ActivitiesActivity extends Fragment {
         headers.put("authKey", Persistance.getInstance().getUserInfo(getActivity()).authKey);
 
         //set urlParams
-        TimeZone tz = TimeZone.getDefault();
         double longitude=0;
         double latitude=0;
         GPSTracker gps = new GPSTracker(getActivity().getApplicationContext(),  getActivity());
@@ -128,7 +127,6 @@ public class ActivitiesActivity extends Fragment {
                 userSport = userSport + Persistance.getInstance().getUserInfo(getActivity()).sports.get(i).code;
             }
         }
-        urlParams.put("timeZone",tz.getID());
         urlParams.put("userSports",userSport);
         //get Around Me Event
         HTTPResponseController.getInstance().getAroundMeEvent(params, headers, getActivity(),urlParams);
@@ -140,13 +138,11 @@ public class ActivitiesActivity extends Fragment {
         headers.put("authKey", Persistance.getInstance().getUserInfo(getActivity()).authKey);
 
         //set urlParams
-        TimeZone tz = TimeZone.getDefault();
 
         urlParams.put("userId",Persistance.getInstance().getUserInfo(getActivity()).id);
         urlParams.put("pageNumber",pageNumber);
 
 
-        urlParams.put("timeZone",tz.getID());
         //get Around Me Event
         HTTPResponseController.getInstance().getMyEvent(params, headers, getActivity(),urlParams);
     }
@@ -235,8 +231,8 @@ public class ActivitiesActivity extends Fragment {
 
 
 
-            NumberOfRefreshMyEvents=1;
-            NumberOfRefreshAroundMe=1;
+            NumberOfRefreshMyEvents=0;
+            NumberOfRefreshAroundMe=0;
 
 
 
@@ -316,7 +312,7 @@ return v;
                             public void onRefresh() {
                                 getAroundMeEvents("0");
                                 mSwipeRefreshLayout2.setRefreshing(false);
-                                NumberOfRefreshAroundMe = 1;
+                                NumberOfRefreshAroundMe = 0;
                                 aroundMeEventList.clear();
                             }
                         });
@@ -402,7 +398,7 @@ return v;
                 public void onRefresh() {
                     getMyEvents("0");
                     mSwipeRefreshLayout1.setRefreshing(false);
-                    NumberOfRefreshMyEvents=1;
+                    NumberOfRefreshMyEvents=0;
                     myEventList.clear();
                 }
             });

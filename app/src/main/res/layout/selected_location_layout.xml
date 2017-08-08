@@ -59,6 +59,23 @@
                         android:textSize="14sp"
                         android:textColor="#0c3855"
                         android:fontFamily="@string/fontmedium" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="0765146485"
+                        android:id="@+id/telefonNumber"
+                        android:textSize="14sp"
+                        android:textColor="#0c3855"
+                        android:fontFamily="@string/fontmedium" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="L-V:09.00-18.00 S:09.00:18:00 D:inchis"
+                        android:id="@+id/program"
+                        android:textSize="14sp"
+                        android:textColor="#0c3855"
+                        android:fontFamily="@string/fontmedium" />
+
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

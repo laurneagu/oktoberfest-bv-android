@@ -84,7 +84,7 @@
                         android:textColor="#0c3855"/>
 
                     <EditText
-                        android:id="@+id/editText"
+                        android:id="@+id/otherSportName"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
                         android:ems="10"
@@ -157,11 +157,12 @@
                             android:background="@drawable/ic_minus"
                             android:gravity="center" />
 
-                        <TextView
+                        <EditText
                             android:id="@+id/playersNumber"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center"
+                            android:background="@android:color/transparent"
                             android:layout_centerHorizontal="true"
                             android:layout_centerVertical="true"
                             android:text="2" />
@@ -400,19 +401,19 @@
                     android:orientation="horizontal">
 
 
-                    <ImageView
+                    <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/invitedFriends0"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:background="@drawable/ic_invite" />
-                    <ImageView
+                    <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/invitedFriends1"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:layout_marginLeft="8dp"
                         android:visibility="invisible"
                         android:background="@drawable/ic_invite" />
-                    <ImageView
+                    <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/invitedFriends2"
                         android:layout_width="48dp"
                         android:layout_height="48dp"

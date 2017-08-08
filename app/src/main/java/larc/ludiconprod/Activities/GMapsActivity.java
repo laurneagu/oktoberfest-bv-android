@@ -109,6 +109,7 @@ public class GMapsActivity extends FragmentActivity implements PlaceSelectionLis
             adapter=null;
             pager=null;
             context=null;
+            GMapsActivity.markerSelected=null;
             MyFragment.valueOfAuthorizedPlace=-1;
             myUnauthorizedMarker=null;
 
@@ -260,9 +261,9 @@ public class GMapsActivity extends FragmentActivity implements PlaceSelectionLis
                         try {
                             List<Address> addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
                             if (addresses.size() > 0) {
-                                if (addressName == null || addressName.equals("")) {
+
                                     addressName = addresses.get(0).getAddressLine(0);
-                                }
+
                             }
                         } catch (Exception exc) {
                             addressName = "Unknown";
@@ -290,6 +291,7 @@ public class GMapsActivity extends FragmentActivity implements PlaceSelectionLis
                                     break;
                             }
                         }
+                        MyFragment.valueOfAuthorizedPlace = -1;
                         markerSelected=myUnauthorizedMarker;
                         locationSelected=true;
 
@@ -317,7 +319,7 @@ public class GMapsActivity extends FragmentActivity implements PlaceSelectionLis
     public static void putMarkers(ArrayList<AuthorizedLocation> authLocation){
         PAGES=authLocation.size();
         try {
-            if (!isFirstTime) {
+            if (!isFirstTime && authLocation.size() > 0) {
                 adapter = new MyPagerAdapter(context, fragmentManager, authLocation);
                 pager.setAdapter(adapter);
                 pager.setPageTransformer(false, adapter);
@@ -339,7 +341,7 @@ public class GMapsActivity extends FragmentActivity implements PlaceSelectionLis
                 float offset = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, widthOfView + spaceBetweenViews, dM);
                 pager.setPageMargin((int) (-widthOfScreen + offset));
                 isFirstTime = true;
-            } else {
+            } else if(authLocation.size() > 0){
                 adapter.notifyDataSetChanged();
             }
 

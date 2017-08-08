@@ -175,9 +175,8 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
 
             // Set user event creator name and picture
             holder.creatorName.setText(currentEvent.creatorName);
-            if (!Persistance.getInstance().getUserInfo(activity).profileImage.equals("0")) {
-                System.out.println(Persistance.getInstance().getUserInfo(activity).profileImage + " poza");
-                Bitmap bitmap = decodeBase64(Persistance.getInstance().getUserInfo(activity).profileImage);
+            if (!currentEvent.creatorProfilePicture.equals("")) {
+                Bitmap bitmap = decodeBase64(currentEvent.creatorProfilePicture);
                 holder.profileImage.setImageBitmap(bitmap);
 
             }

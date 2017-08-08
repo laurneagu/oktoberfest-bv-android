@@ -34,13 +34,13 @@ public class Persistance {
         editor.commit();
     }
 
+
     public User getUserInfo(Activity activity){
         String json=null;
         SharedPreferences sharedPreferences = activity.getSharedPreferences(userDetailsString, 0);
         json = sharedPreferences.getString(userDetailsString, "0");
         Gson gson = new Gson();
         User user;
-        System.out.println(json);
         if(json.equals("0")){
             user=new User();
         }

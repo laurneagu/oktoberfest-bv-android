@@ -20,6 +20,8 @@ import java.util.HashMap;
 import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
+import larc.ludiconprod.User;
+import larc.ludiconprod.Utils.util.Sport;
 
 /**
  * Created by ancuta on 7/18/2017.
@@ -373,17 +375,41 @@ public class SportDetailsActivity extends Activity {
         savePreferincesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                User user=new User();
                 HashMap<String, String> params = new HashMap<String, String>();
                 params.put("userId", Persistance.getInstance().getUserInfo(SportDetailsActivity.this).id);
                 params.put("gender", getIntent().getStringExtra("gender"));
                 params.put("yearBorn", getIntent().getStringExtra("yearBorn"));
                 if (getIntent().getStringExtra("profileImage") != null) {
                     params.put("profileImage",getIntent().getStringExtra("profileImage"));
+                    user.profileImage=params.get("profileImage");
                 }
                 params.put("range", String.valueOf(progress));
                 for(int i=0;i<sports.size();i++){
                     params.put("sports["+i+"]",sports.get(i));
+                    Sport sport =new Sport(sports.get(i));
+                    user.sports.add(sport);
                 }
+
+
+                user.gender=params.get("gender");
+                user.age=Integer.valueOf(params.get("yearBorn"));
+                user.id= Persistance.getInstance().getUserInfo(SportDetailsActivity.this).id;
+                user.authKey=Persistance.getInstance().getUserInfo(SportDetailsActivity.this).authKey;
+                user.firstName=Persistance.getInstance().getUserInfo(SportDetailsActivity.this).firstName;
+                user.lastName=Persistance.getInstance().getUserInfo(SportDetailsActivity.this).lastName;
+                user.facebookId=Persistance.getInstance().getUserInfo(SportDetailsActivity.this).facebookId;
+                user.email=Persistance.getInstance().getUserInfo(SportDetailsActivity.this).email;
+                user.password=Persistance.getInstance().getUserInfo(SportDetailsActivity.this).password;
+                user.ludicoins=Persistance.getInstance().getUserInfo(SportDetailsActivity.this).ludicoins;
+
+
+
+
+
+
+                Persistance.getInstance().setUserInfo(SportDetailsActivity.this,user);
+
 
                  HashMap<String, String> headers = new HashMap<String, String>();
                  headers.put("authKey", Persistance.getInstance().getUserInfo(SportDetailsActivity.this).authKey);

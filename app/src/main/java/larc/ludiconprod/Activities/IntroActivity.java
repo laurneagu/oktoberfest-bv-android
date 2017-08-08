@@ -134,7 +134,7 @@ public class IntroActivity extends Activity {
             profileImage.setImageBitmap(image);
             profileImage.animate().alpha(1f).setDuration(1000);
         }
-        if(Persistance.getInstance().getUserInfo(this).id.equals("")){
+        if(Persistance.getInstance().getUserInfo(this).id == null){
             facebookButton.setVisibility(View.VISIBLE);
             loginButton.setVisibility(View.VISIBLE);
             registerButton.setVisibility(View.VISIBLE);
@@ -153,7 +153,8 @@ public class IntroActivity extends Activity {
             }
 
             public void onFinish() {
-                if(Persistance.getInstance().getUserInfo(IntroActivity.this).facebookId.equals("")){
+                System.out.println(Persistance.getInstance().getUserInfo(IntroActivity.this).facebookId+ " fbid");
+                if(Persistance.getInstance().getUserInfo(IntroActivity.this).facebookId != null && Persistance.getInstance().getUserInfo(IntroActivity.this).facebookId.equals("")){
                 goToActivity();
                }
                else if(!go){
@@ -165,7 +166,7 @@ public class IntroActivity extends Activity {
                             new GraphRequest.Callback() {
                                 public void onCompleted(GraphResponse response) {
                                     final ArrayList<String> friends=new ArrayList< String>();
-                                    JSONArray friendsList = null;
+                                    JSONArray friendsList ;
                                     try {
                                         friendsList = response.getJSONObject().getJSONArray("data");
                                         for (int l = 0; l < friendsList.length(); l++) {

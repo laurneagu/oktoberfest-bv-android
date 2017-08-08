@@ -24,11 +24,14 @@ import java.util.Date;
 import java.util.HashMap;
 
 import larc.ludiconprod.Activities.ActivitiesActivity;
+import larc.ludiconprod.Activities.CreateNewActivity;
 import larc.ludiconprod.Activities.GMapsActivity;
 import larc.ludiconprod.Activities.IntroActivity;
+import larc.ludiconprod.Activities.InviteFriendsActivity;
 import larc.ludiconprod.Activities.LoginActivity;
 import larc.ludiconprod.Activities.Main;
 import larc.ludiconprod.Activities.ProfileDetailsActivity;
+import larc.ludiconprod.Utils.Friend;
 import larc.ludiconprod.Utils.util.AuthorizedLocation;
 import larc.ludiconprod.Utils.util.Sport;
 import larc.ludiconprod.User;
@@ -130,10 +133,23 @@ public class HTTPResponseController {
 
                 }
                 else if(activity.getLocalClassName().toString().equals("Activities.SportDetailsActivity")){
+
+
                     Intent intent = new Intent(activity, Main.class);
                     activity.startActivity(intent);
+
                 }
 
+            }
+        };
+    }
+    private Response.Listener<JSONObject>  createEventSuccesListener() {
+        return new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                Intent intent =new Intent(activity,Main.class);
+                activity.startActivity(intent);
+                activity.finish();
             }
         };
     }
@@ -202,6 +218,7 @@ public class HTTPResponseController {
                         event.creatorLevel=jsonObject.getJSONArray("myEvents").getJSONObject(i).getInt("creatorLevel");
                         event.numberOfParticipants=jsonObject.getJSONArray("myEvents").getJSONObject(i).getInt("numberOfParticipants");
                         event.points=jsonObject.getJSONArray("myEvents").getJSONObject(i).getInt("points");
+                        event.creatorProfilePicture=jsonObject.getJSONArray("myEvents").getJSONObject(i).getString("creatorProfilePicture");
                         event.ludicoins=jsonObject.getJSONArray("myEvents").getJSONObject(i).getInt("ludicoins");
                         for(int j=0;j < jsonObject.getJSONArray("myEvents").getJSONObject(i).getJSONArray("participantsProfilePicture").length();j++){
                             event.participansProfilePicture.add(jsonObject.getJSONArray("myEvents").getJSONObject(i).getJSONArray("participantsProfilePicture").getString(j));
@@ -246,6 +263,32 @@ public class HTTPResponseController {
                         GMapsActivity.authLocation.add(authLocation);
                     }
                     GMapsActivity.putMarkers(GMapsActivity.authLocation);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+        };
+    }
+    private Response.Listener<JSONObject>  getFriendsSuccesListener(){
+        return new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                System.out.println(jsonObject +" friends");
+                try {
+                    for (int i = 0; i < jsonObject.getJSONArray("friends").length();i++ ) {
+                        Friend friend=new Friend();
+                        friend.userID = jsonObject.getJSONArray("friends").getJSONObject(i).getString("userId");
+                        friend.userName=jsonObject.getJSONArray("friends").getJSONObject(i).getString("userName");
+                        friend.profileImage=jsonObject.getJSONArray("friends").getJSONObject(i).getString("profileImage");
+                        friend.numberOfMutuals=jsonObject.getJSONArray("friends").getJSONObject(i).getInt("numberOfMutuals");
+                        friend.level=jsonObject.getJSONArray("friends").getJSONObject(i).getInt("level");
+                        friend.offlineFriend=false;
+                        friend.isInvited=false;
+
+                        InviteFriendsActivity.friendsList.add(InviteFriendsActivity.numberOfOfflineFriends+1,friend);
+                    }
+                    InviteFriendsActivity.inviteFriendsAdapter.notifyDataSetChanged();
                 }catch(Exception e){
                     e.printStackTrace();
                 }
@@ -323,6 +366,9 @@ public class HTTPResponseController {
             LoginManager.getInstance().logOut();
             Intent intent = new Intent(activity, IntroActivity.class);
             activity.startActivity(intent);
+        }else if(activity.getLocalClassName().toString().equals("Activities.CreateNewActivity")){
+            CreateNewActivity.createActivityButton.setClickable(true);
+
         }
     }
 
@@ -338,15 +384,14 @@ public class HTTPResponseController {
         setActivity(activity,params.get("email"),params.get("password"));
         RequestQueue requestQueue = Volley.newRequestQueue(activity);
         CustomRequest jsObjRequest = new CustomRequest(Request.Method.GET, prodServer+"api/events?userId="+urlParams.get("userId")+"&pageNumber="+urlParams.get("pageNumber")+"&userLatitude="+urlParams.get("userLatitude")+
-                "&userLongitude="+urlParams.get("userLongitude")+"&userRange="+urlParams.get("userRange")+"&userSports="+urlParams.get("userSports")+"&timeZone="+urlParams.get("timeZone"), params,headers,this.createAroundMeEventSuccesListener(), this.createRequestErrorListener());
+                "&userLongitude="+urlParams.get("userLongitude")+"&userRange="+urlParams.get("userRange")+"&userSports="+urlParams.get("userSports"), params,headers,this.createAroundMeEventSuccesListener(), this.createRequestErrorListener());
         requestQueue.add(jsObjRequest);
 
     }
     public void getMyEvent(HashMap<String,String> params, HashMap<String,String> headers, Activity activity,HashMap<String,String> urlParams){
         setActivity(activity,params.get("email"),params.get("password"));
         RequestQueue requestQueue = Volley.newRequestQueue(activity);
-        CustomRequest jsObjRequest = new CustomRequest(Request.Method.GET, prodServer+"api/events?userId="+urlParams.get("userId")+"&pageNumber="+urlParams.get("pageNumber")+
-                "&timeZone="+urlParams.get("timeZone"), params,headers,this.createMyEventSuccesListener(), this.createRequestErrorListener());
+        CustomRequest jsObjRequest = new CustomRequest(Request.Method.GET, prodServer+"api/events?userId="+urlParams.get("userId")+"&pageNumber="+urlParams.get("pageNumber"),params,headers,this.createMyEventSuccesListener(), this.createRequestErrorListener());
         requestQueue.add(jsObjRequest);
 
     }
@@ -364,6 +409,18 @@ public class HTTPResponseController {
         RequestQueue requestQueue = Volley.newRequestQueue(activity);
         CustomRequest jsObjRequest = new CustomRequest(Request.Method.GET, prodServer+"api/locations?latitudeNE="+urlParams.get("latitudeNE")+"&longitudeNE="+
                 urlParams.get("longitudeNE")+"&latitudeSW="+urlParams.get("latitudeSW")+"&longitudeSW="+urlParams.get("longitudeSW")+"&sportCode="+urlParams.get("sportCode"),params,headers,this.getLocationSuccesListener(), this.createRequestErrorListener());
+        requestQueue.add(jsObjRequest);
+    }
+    public void getFriends(HashMap<String,String> params, HashMap<String,String> headers, Activity activity,HashMap<String,String> urlParams){
+        setActivity(activity,params.get("email"),params.get("password"));
+        RequestQueue requestQueue = Volley.newRequestQueue(activity);
+        CustomRequest jsObjRequest = new CustomRequest(Request.Method.GET, prodServer+"api/friends?userId="+urlParams.get("userId")+"&pageNumber="+urlParams.get("pageNumber"),params,headers,this.getFriendsSuccesListener(), this.createRequestErrorListener());
+        requestQueue.add(jsObjRequest);
+    }
+    public void createEvent(HashMap<String,String> params, HashMap<String,String> headers, Activity activity){
+        setActivity(activity,params.get("email"),params.get("password"));
+        RequestQueue requestQueue = Volley.newRequestQueue(activity);
+        CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, prodServer+"api/event/",params,headers,this.createEventSuccesListener(), this.createRequestErrorListener());
         requestQueue.add(jsObjRequest);
     }
 }
