@@ -142,8 +142,7 @@ public class GMapsActivity extends FragmentActivity implements PlaceSelectionLis
 
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(GMapsActivity.this, CreateNewActivity.class);
-                    GMapsActivity.this.startActivity(intent);
+                    finish();
                 }
             });
 
@@ -312,7 +311,7 @@ public class GMapsActivity extends FragmentActivity implements PlaceSelectionLis
         urlParams.put("longitudeNE", String.valueOf(nE.longitude+0.2));
         urlParams.put("latitudeSW", String.valueOf(sW.latitude-0.2));
         urlParams.put("longitudeSW", String.valueOf(sW.longitude-0.2));
-        urlParams.put("sportCode","BAS");
+        urlParams.put("sportCode",getIntent().getStringExtra("sportCode"));
         HTTPResponseController.getInstance().getAuthorizeLocations(params, headers, GMapsActivity.this,urlParams);
     }
 
@@ -336,10 +335,11 @@ public class GMapsActivity extends FragmentActivity implements PlaceSelectionLis
                 // previous pages will be showed
 
                 int widthOfScreen = dM.widthPixels;
-                int widthOfView = 232; //in DP
-                int spaceBetweenViews = 8; // in DP
+                float lala=dM.xdpi;
+                int widthOfView = 240; //in DP
+                int spaceBetweenViews =16; // in DP
                 float offset = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, widthOfView + spaceBetweenViews, dM);
-                pager.setPageMargin((int) (-widthOfScreen + offset));
+                pager.setPageMargin((int) (0)); //for view on entire page,-witdhofScreen+offset for 3 custom vi
                 isFirstTime = true;
             } else if(authLocation.size() > 0){
                 adapter.notifyDataSetChanged();
@@ -399,8 +399,8 @@ public class GMapsActivity extends FragmentActivity implements PlaceSelectionLis
     }
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(GMapsActivity.this, CreateNewActivity.class);
-        GMapsActivity.this.startActivity(intent);
+
+        finish();
     }
 
 }

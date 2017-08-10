@@ -11,7 +11,9 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.text.Editable;
 import android.text.Layout;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -106,10 +108,40 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
     String sportCode="FOT";
     public int privacy=0;
     EditText otherSportName;
+    Spinner sportSpinner;
+    int numberOfTotalParticipants=0;
 
     public String getMonth(int month) {
         String date = new DateFormatSymbols().getMonths()[month - 1];
         return date.substring(0, 1).toUpperCase().concat(date.substring(1, 3));
+    }
+
+    public boolean checkConstraints(){
+            boolean isConstraintChecked=false;
+        if(sportSpinner.getSelectedItemPosition() == 9){
+            if(otherSportName.getText().length() == 0){
+                Toast.makeText(getApplicationContext(), "Please enter other sport name!", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        }else if(calendarTextView.getText().length() == 0){
+            Toast.makeText(getApplicationContext(), "Please enter a date!", Toast.LENGTH_SHORT).show();
+            return true;
+        }else if(hourTextView.getText().length() == 0){
+            Toast.makeText(getApplicationContext(), "Please enter a time!", Toast.LENGTH_SHORT).show();
+            return true;
+        }else if(GMapsActivity.markerSelected == null){
+            Toast.makeText(getApplicationContext(), "Please select a location!", Toast.LENGTH_SHORT).show();
+            return true;
+        }else if(Integer.valueOf(playersNumber.getText().toString()) < numberOfTotalParticipants+1){
+            Toast.makeText(getApplicationContext(), "Too much participants for this capacity!", Toast.LENGTH_SHORT).show();
+            return true;
+
+        }
+
+
+
+        return isConstraintChecked;
+
     }
 
     @Override
@@ -121,7 +153,7 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
         final Calendar myCalendar = Calendar.getInstance();
         privateText = (TextView) findViewById(R.id.privateText);
         otherSportLayout = (RelativeLayout) findViewById(R.id.chooseSportNameLayout);
-        final Spinner sportSpinner = (Spinner) findViewById(R.id.sportSpinner);
+        sportSpinner = (Spinner) findViewById(R.id.sportSpinner);
         dateLayout = (RelativeLayout) findViewById(R.id.dateLayout);
         timeLayout = (RelativeLayout) findViewById(R.id.timeLayout);
         calendarTextView = (TextView) findViewById(R.id.calendarTextView);
@@ -144,42 +176,43 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
         createActivityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(CreateNewActivity.this,"Creating...",Toast.LENGTH_LONG).show();
-                HashMap<String, String> params = new HashMap<String, String>();
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("authKey", Persistance.getInstance().getUserInfo(CreateNewActivity.this).authKey);
-                params.put("userId",Persistance.getInstance().getUserInfo(CreateNewActivity.this).id);
+                if(!checkConstraints()) {
+                    Toast.makeText(CreateNewActivity.this, "Creating...", Toast.LENGTH_LONG).show();
+                    HashMap<String, String> params = new HashMap<String, String>();
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put("authKey", Persistance.getInstance().getUserInfo(CreateNewActivity.this).authKey);
+                    params.put("userId", Persistance.getInstance().getUserInfo(CreateNewActivity.this).id);
 
-                Calendar calendar = myCalendar;
-                myCalendar.getTimeInMillis();
-                params.put("eventDate",String.valueOf(myCalendar.getTimeInMillis()/1000));
-                params.put("creationDate",String.valueOf( System.currentTimeMillis()/1000));
-                params.put("description",descriptionEditText.getText().toString());
-                params.put("latitude",String.valueOf(GMapsActivity.markerSelected.getPosition().latitude));
-                params.put("longitude",String.valueOf(GMapsActivity.markerSelected.getPosition().longitude));
-                if(!locationName.getText().toString().equals("Unauthorized location")) {
-                    params.put("placeName", locationName.getText().toString());
-                }
-                else{
-                    params.put("placeName", adress.getText().toString());
-                }
-                params.put("privacy",String.valueOf(privacy));
-                params.put("capacity",playersNumber.getText().toString());
-                params.put("sportCode",sportCode);
-                if(sportCode.equals("OTH")){
-                    params.put("otherSportName",otherSportName.getText().toString());
-                }
-                params.put("numberOfOffliners",String.valueOf(InviteFriendsActivity.numberOfOfflineFriends));
-                int counterOfInvitedFriends=0;
-                for(int i=0;i < InviteFriendsActivity.friendsList.size();i++){
-                    if(InviteFriendsActivity.friendsList.get(i).isInvited){
-                        params.put("invitedParticipants["+counterOfInvitedFriends+"]",InviteFriendsActivity.friendsList.get(i).userID);
-                        counterOfInvitedFriends++;
+                    Calendar calendar = myCalendar;
+                    myCalendar.getTimeInMillis();
+                    params.put("eventDate", String.valueOf(myCalendar.getTimeInMillis() / 1000));
+                    params.put("creationDate", String.valueOf(System.currentTimeMillis() / 1000));
+                    params.put("description", descriptionEditText.getText().toString());
+                    params.put("latitude", String.valueOf(GMapsActivity.markerSelected.getPosition().latitude));
+                    params.put("longitude", String.valueOf(GMapsActivity.markerSelected.getPosition().longitude));
+                    if (!locationName.getText().toString().equals("Unauthorized location")) {
+                        params.put("placeName", locationName.getText().toString());
+                    } else {
+                        params.put("placeName", adress.getText().toString());
                     }
-                }
+                    params.put("privacy", String.valueOf(privacy));
+                    params.put("capacity", playersNumber.getText().toString());
+                    params.put("sportCode", sportCode);
+                    if (sportCode.equals("OTH")) {
+                        params.put("otherSportName", otherSportName.getText().toString());
+                    }
+                    params.put("numberOfOffliners", String.valueOf(InviteFriendsActivity.numberOfOfflineFriends));
+                    int counterOfInvitedFriends = 0;
+                    for (int i = 0; i < InviteFriendsActivity.friendsList.size(); i++) {
+                        if (InviteFriendsActivity.friendsList.get(i).isInvited) {
+                            params.put("invitedParticipants[" + counterOfInvitedFriends + "]", InviteFriendsActivity.friendsList.get(i).userID);
+                            counterOfInvitedFriends++;
+                        }
+                    }
 
-                HTTPResponseController.getInstance().createEvent(params,headers,CreateNewActivity.this);
-                createActivityButton.setClickable(false);
+                    HTTPResponseController.getInstance().createEvent(params, headers, CreateNewActivity.this);
+                    createActivityButton.setEnabled(false);
+                }
             }
         });
 
@@ -207,6 +240,44 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        otherSportName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(otherSportName.getText().length() >=20){
+                    Toast.makeText(getApplicationContext(),"You have reached maximum lenght for this field!",Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        descriptionEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(descriptionEditText.getText().length() >=20){
+                    Toast.makeText(getApplicationContext(),"You have reached maximum lenght for this field!",Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
         CustomSpinner customAdapterSports = new CustomSpinner(getApplicationContext(), sportImages, sportNames);
         sportSpinner.setAdapter(customAdapterSports);
@@ -403,6 +474,7 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                         Intent goToNextActivity = new Intent(CreateNewActivity.this, GMapsActivity.class);
                         goToNextActivity.putExtra("latitude", String.valueOf(latitude));
                         goToNextActivity.putExtra("longitude", String.valueOf(longitude));
+                        goToNextActivity.putExtra("sportCode",sportCode);
                         startActivityForResult(goToNextActivity, ASK_COORDS);
                     }
                 });
@@ -639,7 +711,9 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
 
                     }
 
-                    if(numberOfOfflineFriends+countOfFriends == 1){
+                    numberOfTotalParticipants=numberOfOfflineFriends+countOfFriends;
+
+                    if(numberOfOfflineFriends+countOfFriends >= 1){
                         invitedFriends0.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -654,7 +728,8 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                                 startActivityForResult(goToNextActivity, ASK_FRIENDS);
                             }
                         });
-                    }else if(numberOfOfflineFriends+countOfFriends == 2){
+                    }
+                    if(numberOfOfflineFriends+countOfFriends >= 2){
                         invitedFriends1.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -670,7 +745,8 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                             }
                         });
 
-                    }else if(numberOfOfflineFriends+countOfFriends == 3){
+                    }
+                    if(numberOfOfflineFriends+countOfFriends >= 3){
                         invitedFriends2.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -688,7 +764,8 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                             }
                         });
 
-                    }else if(numberOfOfflineFriends+countOfFriends >= 4){
+                    }
+                    if(numberOfOfflineFriends+countOfFriends >= 4){
                         friendsNumber.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {

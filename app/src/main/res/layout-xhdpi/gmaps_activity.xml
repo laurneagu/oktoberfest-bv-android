@@ -6,31 +6,51 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/header"/>
-    <!--
-    <include layout="@layout/leftside_panel" />
-    -->
+    <include
+        android:id="@+id/tool_bar"
+        layout="@layout/header_login"
+        android:layout_height="56dp"
+        android:layout_width="match_parent"
+        />
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="56dp"
             tools:context="larc.ludiconprod.Activities.GMapsFullActivity">
 
-        <fragment
-            android:id="@+id/place_autocomplete_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment" />
 
+
+
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:id="@+id/selectLocationButton"
+            android:background="@drawable/pink_button_selector"
+            android:text="SELECT LOCATION"
+            android:textSize="14sp"
+            android:layout_alignParentBottom="true"
+            android:fontFamily="@string/fontbold"
+            android:textColor="#ffffff"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            />
+        <android.support.v4.view.ViewPager
+            android:id="@+id/locationListView"
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:layout_above="@+id/selectLocationButton"
+            android:overScrollMode="never" />
         <fragment xmlns:android="http://schemas.android.com/apk/res/android"
             android:name="com.google.android.gms.maps.MapFragment"
             android:id="@+id/map"
-            android:layout_below="@+id/place_autocomplete_fragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="fill_parent"
+            android:layout_above="@+id/locationListView"/>
 
-</RelativeLayout>
+
+    </RelativeLayout>
 
 </android.support.v4.widget.DrawerLayout>

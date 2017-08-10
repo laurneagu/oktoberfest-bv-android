@@ -63,7 +63,7 @@ public class IntroActivity extends Activity {
     Button registerButton;
     TextView infoTextView;
     TextView termsAndPrivacyPolicy;
-    ImageView profileImage;
+    static public ImageView profileImage;
     private ProfileTracker profileTracker;
     private CallbackManager callbackManager;
     private ProfilePictureView profilePictureView;
@@ -326,7 +326,7 @@ public class IntroActivity extends Activity {
         String lastName = profile.getLastName();
         String email = object.optString("email");
         String password = loginResult.getAccessToken().getUserId();
-        HashMap<String, String> params = new HashMap<String, String>();
+        final HashMap<String, String> params = new HashMap<String, String>();
         params.put("firstName", firstName);
         params.put("lastName", lastName);
         params.put("email", email);
@@ -335,23 +335,24 @@ public class IntroActivity extends Activity {
         for(int i=0;i<friends.size();i++){
             params.put("fbFriends["+i+"]",friends.get(i));
         }
-        HashMap<String, String> headers = new HashMap<String, String>();
+        final HashMap<String, String> headers = new HashMap<String, String>();
         headers.put("apiKey", "b0a83e90-4ee7-49b7-9200-fdc5af8c2d33");
-        HTTPResponseController.getInstance().returnResponse(params, headers, IntroActivity.this, "http://207.154.236.13/api/register/");
+
         Picasso.with(IntroActivity.this)
                 .load("https://graph.facebook.com/" + password + "/picture?type=large")
                 .into(new Target() {
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                         image = bitmap;
-                        profileImage.setImageBitmap(image);
+                       // profileImage.setImageBitmap(image);
                         String imageString = ProfileDetailsActivity.encodeToBase64(image, Bitmap.CompressFormat.JPEG, 100);
                         setImageForProfile(IntroActivity.this, imageString);
 
                         logo.animate().translationY(300f);
-                        profileImage.setAlpha(0.3f);
+                       // profileImage.setAlpha(0.3f);
                         logo.animate().translationY(-300f).setDuration(1000);
-                        profileImage.animate().alpha(1f).setDuration(1000);
+                        //profileImage.animate().alpha(1f).setDuration(1000);
+                        HTTPResponseController.getInstance().returnResponse(params, headers, IntroActivity.this, "http://207.154.236.13/api/register/");
 
                     }
 

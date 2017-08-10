@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_listview1"
+    android:background="#f7f9fc">
+
+
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="12dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/shadow_bottom_to_top"/>
+
+
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/layout1"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        >
+
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="1dp"
+            android:theme="@android:style/Widget.Holo.ProgressBar">
+
+
+            <ListView
+                android:id="@+id/events_listView1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="8.0dp"
+                android:paddingBottom="16dp"
+                android:paddingTop="16dp"
+                android:scrollbars="none" />
+
+
+
+        </android.support.v4.widget.SwipeRefreshLayout>
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingButton1"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="16dp"
+        android:clickable="true"
+        android:src="@drawable/ic_add"
+        android:visibility="visible"
+        app:backgroundTint="#d4498b" />
+
+    <ImageView
+        android:id="@+id/heartImageMyActivity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/noActivitiesTextFieldMyActivity"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:visibility="invisible"
+        android:background="@drawable/es_activity" />
+
+    <TextView
+        android:id="@+id/noActivitiesTextFieldMyActivity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:textSize="16sp"
+        android:textColor="#d4498b"
+        android:visibility="invisible"
+        android:fontFamily="@string/fontmedium"
+        android:text="No activities!" />
+
+    <TextView
+        android:id="@+id/pressPlusButtonTextFieldMyActivity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/noActivitiesTextFieldMyActivity"
+        android:layout_marginTop="10dp"
+        android:textSize="16sp"
+        android:fontFamily="@string/fontmedium"
+        android:textColor="#660c3855"
+        android:visibility="invisible"
+        android:layout_centerHorizontal="true"
+        android:text="Discover &#38; Join Activitiesto&#10;      or Create a new one&#10;by pressing the &#34;Plus Button&#34;" />
+    <ProgressBar
+        android:id="@+id/progressBarMyEvents"
+        style="@android:style/Widget.Holo.ProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="0"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="5dp" />
+
+
+
+</RelativeLayout>

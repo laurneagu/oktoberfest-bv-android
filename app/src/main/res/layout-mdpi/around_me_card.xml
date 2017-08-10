@@ -31,6 +31,8 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:orientation="horizontal">
+
+
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
@@ -41,22 +43,22 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:background="@drawable/ph_user" />
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="48dp"
-                    android:id="@+id/imageView"/>
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="48dp"
+                android:id="@+id/imageView"/>
                 <TextView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:background="@drawable/round_textview_green"
                     android:textSize="12sp"
                     android:text="12"
-                    android:id="@+id/creatorLevelMyActivity"
+                    android:id="@+id/creatorLevelAroundMe"
                     android:textColor="#ffffff"
                     android:layout_toRightOf="@id/imageView"
                     android:layout_alignBottom="@id/imageView"
                     android:textAlignment="center"
-                    android:paddingBottom="3dp"
                     android:paddingTop="3dp"
                     android:layout_marginBottom="4dp"
                     />
@@ -98,13 +100,13 @@
 
 
             <TextView
-            android:id="@+id/youGain"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textSize="14sp"
-            android:textColor="#0c3855"
-            android:text="You will gain" />
+                android:id="@+id/youGain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="14sp"
+                android:textColor="#0c3855"
+                android:text="You will gain" />
 
             <TextView
                 android:id="@+id/ludicoinsNumber"
@@ -282,7 +284,7 @@
                 android:paddingTop="8dp"
                 android:textSize="14sp"
                 android:textColor="#02b9ad"
-                android:visibility="invisible"
+                android:visibility="visible"
                 android:layout_gravity="center"
                 android:background="@drawable/round_textview"
                 android:text="+3" />
@@ -290,6 +292,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1">
+
+            <Button
+                android:id="@+id/joinButton"
+                android:layout_width="100dp"
+                android:layout_height="32dp"
+                android:background="@drawable/green_button_selector"
+                android:textSize="14sp"
+                android:layout_gravity="center"
+                android:textColor="#ffffff"
+                android:layout_marginRight="16dp"
+                android:layout_alignParentRight="true"
+                android:text="JOIN" />
             </RelativeLayout>
 
 

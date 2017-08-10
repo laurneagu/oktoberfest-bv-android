@@ -1,9 +1,18 @@
 package larc.ludiconprod.ViewPagerHelper;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -20,6 +30,7 @@ import larc.ludiconprod.Activities.GMapsActivity;
 import larc.ludiconprod.R;
 import larc.ludiconprod.Utils.util.AuthorizedLocation;
 
+import static com.facebook.FacebookSdk.getApplicationContext;
 import static larc.ludiconprod.Activities.GMapsActivity.authLocation;
 import static larc.ludiconprod.Activities.GMapsActivity.listOfMarkers;
 import static larc.ludiconprod.Activities.GMapsActivity.m_gmap;
@@ -47,6 +58,8 @@ public class MyFragment extends Fragment {
         b.putDouble("latitude",authorizedLocations.latitude);
         b.putDouble("longitude",authorizedLocations.longitude);
         b.putInt("authorizeLevel",authorizedLocations.authorizeLevel);
+        b.putString("schedule",authorizedLocations.schedule);
+        b.putString("phoneNumber",authorizedLocations.phoneNumber);
         return Fragment.instantiate(context, MyFragment.class.getName(), b);
     }
 
@@ -59,6 +72,38 @@ public class MyFragment extends Fragment {
 
         LinearLayout l = (LinearLayout)
                 inflater.inflate(R.layout.map_selection_location_card, container, false);
+
+        TextView schedule=(TextView)l.findViewById(R.id.schedule);
+        schedule.setText("");
+        TextView phoneNumber=(TextView) l.findViewById(R.id.phoneNumber);
+        phoneNumber.setText("");
+        //clear adapter
+
+        SpannableStringBuilder spanTxt = new SpannableStringBuilder("");
+        final String phoneNumbers[]=this.getArguments().getString("phoneNumber").split(",");
+        for(int i=0;i < phoneNumbers.length;i++) {
+            spanTxt.append(phoneNumbers[i]);
+            final int currentIndex=i;
+            spanTxt.setSpan(new ClickableSpan() {
+                @Override
+                public void onClick(View widget) {
+                    Intent intent = new Intent(Intent.ACTION_DIAL , Uri.parse("tel:" + phoneNumbers[currentIndex]));
+                    startActivity(intent);
+                }
+                @Override
+                public void updateDrawState(TextPaint ds) {
+                    super.updateDrawState(ds);
+                    ds.setUnderlineText(false);
+                }
+            }, spanTxt.length() - phoneNumbers[currentIndex].length(), spanTxt.length(), 0);
+            spanTxt.append(" ");
+            spanTxt.setSpan(new ForegroundColorSpan(Color.BLACK), spanTxt.length()-1, spanTxt.length(), 0);
+        }
+        phoneNumber.setMovementMethod(LinkMovementMethod.getInstance());
+        phoneNumber.setText(spanTxt, TextView.BufferType.SPANNABLE);
+
+        schedule.setText(this.getArguments().getString("schedule"));
+
 
         int pos = this.getArguments().getInt("pos");
         String location=this.getArguments().getString("locationName");

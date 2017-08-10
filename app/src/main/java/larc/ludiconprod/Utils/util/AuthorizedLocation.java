@@ -15,4 +15,6 @@ public class AuthorizedLocation {
     public String address;
     public String description;
     public String image;
+    public String schedule;
+    public String phoneNumber;
 }

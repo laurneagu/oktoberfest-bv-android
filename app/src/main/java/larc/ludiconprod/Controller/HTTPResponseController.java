@@ -3,7 +3,11 @@ package larc.ludiconprod.Controller;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.CountDownTimer;
 import android.os.Handler;
+import android.util.Base64;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -68,6 +72,30 @@ public class HTTPResponseController {
     String email;
     String eventid;
 
+    public static Bitmap decodeBase64(String input)
+    {
+        byte[] decodedBytes = Base64.decode(input, 0);
+        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+    }
+
+    public void animateProfileImage(){
+        SharedPreferences sharedPreferences = activity.getSharedPreferences("ProfileImage", 0);
+        String image=sharedPreferences.getString("ProfileImage", "0");
+        if(image != null && !image.equals("0")){
+            Bitmap bitmap =decodeBase64(image);
+            IntroActivity.profileImage.setImageBitmap(bitmap);
+            IntroActivity.profileImage.setAlpha(0.3f);
+            IntroActivity.profileImage.animate().alpha(1f).setDuration(1000);}
+       // }else if(!imageJson.equals("")){
+           // Bitmap bitmap =decodeBase64(imageJson);
+           // IntroActivity.profileImage.setImageBitmap(bitmap);
+
+       // }
+
+
+
+    }
+
     private Response.Listener<JSONObject>  createRequestSuccessListener(){
         return new Response.Listener<JSONObject>() {
             @Override
@@ -94,23 +122,51 @@ public class HTTPResponseController {
 
 
                         if(user.range.equals("0")){
-                            new Handler().postDelayed(new Runnable() {
+                           /* new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
                                     Intent intent = new Intent(activity, ProfileDetailsActivity.class);
                                     activity.startActivity(intent);
                                 }
-                            }, 5000);
+                            }, 5000);*/
 
-                        }
+                            new CountDownTimer(1100, 100) {
+                                @Override
+                                public void onTick(long l) {
+                                    animateProfileImage();
+                                }
+
+                                @Override
+                                public void onFinish() {
+                                    Intent intent = new Intent(activity, ProfileDetailsActivity.class);
+                                    activity.startActivity(intent);
+                                }
+                            }.start();
+                            }
+
+
+
                         else{
-                            new Handler().postDelayed(new Runnable() {
+                            /*new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
                                     Intent intent = new Intent(activity, Main.class);
                                     activity.startActivity(intent);
                                 }
-                            }, 5000);
+                            }, 5000);*/
+
+                            new CountDownTimer(1100, 100) {
+                                @Override
+                                public void onTick(long l) {
+                                    animateProfileImage();
+                                }
+
+                                @Override
+                                public void onFinish() {
+                                    Intent intent = new Intent(activity, Main.class);
+                                    activity.startActivity(intent);
+                                }
+                            }.start();
 
 
                         }
@@ -259,6 +315,8 @@ public class HTTPResponseController {
                         authLocation.description=jsonObject.getJSONArray("locations").getJSONObject(i).getString("description");
                         authLocation.address=jsonObject.getJSONArray("locations").getJSONObject(i).getString("address");
                         authLocation.image=jsonObject.getJSONArray("locations").getJSONObject(i).getString("image");
+                        authLocation.schedule=jsonObject.getJSONArray("locations").getJSONObject(i).getString("schedule");
+                        authLocation.phoneNumber=jsonObject.getJSONArray("locations").getJSONObject(i).getString("phoneNumber");
 
                         GMapsActivity.authLocation.add(authLocation);
                     }
@@ -308,8 +366,8 @@ public class HTTPResponseController {
                             aroundMeEventList.remove(i);
                         }
                     }
-                    //adapter notifydatssetchanged
                     fradapter.notifyDataSetChanged();
+                    Toast.makeText(activity,"Join was successful!",Toast.LENGTH_SHORT).show();
 
                 }catch(Exception e){
                     e.printStackTrace();
@@ -367,7 +425,7 @@ public class HTTPResponseController {
             Intent intent = new Intent(activity, IntroActivity.class);
             activity.startActivity(intent);
         }else if(activity.getLocalClassName().toString().equals("Activities.CreateNewActivity")){
-            CreateNewActivity.createActivityButton.setClickable(true);
+            CreateNewActivity.createActivityButton.setEnabled(true);
 
         }
     }

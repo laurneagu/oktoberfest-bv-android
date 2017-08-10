@@ -67,4 +67,9 @@ public class Main extends FragmentActivity{
         //BottomBarTab nearby = bottomBar.getTabWithId(R.id.tab_nearby);
         //nearby.setBadgeCount(5);
     }
+    @Override
+    public void onBackPressed() {
+        finish();
+        System.exit(0);
+    }
 }

@@ -35,6 +35,7 @@ import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import larc.ludiconprod.Activities.ActivitiesActivity;
+import larc.ludiconprod.Activities.ActivityDetailsActivity;
 import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
 import larc.ludiconprod.Utils.Event;
@@ -154,6 +155,10 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
             holder.friends1.setVisibility(View.INVISIBLE);
             holder.friends2.setVisibility(View.INVISIBLE);
             holder.friendsNumber.setVisibility(View.INVISIBLE);
+            holder.profileImage.setImageResource(R.drawable.ph_user);
+            holder.friends0.setImageResource(R.drawable.ph_user);
+            holder.friends1.setImageResource(R.drawable.ph_user);
+            holder.friends2.setImageResource(R.drawable.ph_user);
 
             // Set name and picture for the first user of the event
             view.setBackgroundColor(Color.parseColor("#FFFFFF"));
@@ -164,11 +169,11 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    currView.setBackgroundColor(Color.parseColor("#D3D3D3"));
+                    currView.setBackgroundColor(Color.parseColor("#f5f5f5"));
 
-                    //Intent intent = new Intent(currView.getContext(), EventDetails.class);
+                    Intent intent = new Intent(currView.getContext(), ActivityDetailsActivity.class);
                     //intent.putExtra("eventUid", currentEvent.id);
-                    // activity.startActivity(intent);
+                    activity.startActivity(intent);
                     Toast.makeText(context, "Go to EventDetails", Toast.LENGTH_LONG).show();
                 }
             });

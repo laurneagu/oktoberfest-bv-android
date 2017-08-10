@@ -256,8 +256,8 @@ return v;
         progressBarAroundMe.setAlpha(0f);
         noActivitiesTextFieldAroundMe=(TextView)v.findViewById(R.id.noActivitiesTextFieldAroundMe);
         pressPlusButtonTextFieldAroundMe=(TextView)v.findViewById(R.id.pressPlusButtonTextFieldAroundMe);
-        final FloatingActionButton createNewActivityFloatingButton = (FloatingActionButton) v.findViewById(R.id.floatingButton2);
-        createNewActivityFloatingButton.setOnClickListener(new View.OnClickListener() {
+        final FloatingActionButton createNewActivityFloatingButtonAroundMe = (FloatingActionButton) v.findViewById(R.id.floatingButton2);
+        createNewActivityFloatingButtonAroundMe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), CreateNewActivity.class);
@@ -279,6 +279,11 @@ return v;
             heartImageAroundMe.setVisibility(View.VISIBLE);
             noActivitiesTextFieldAroundMe.setVisibility(View.VISIBLE);
             pressPlusButtonTextFieldAroundMe.setVisibility(View.VISIBLE);
+        }
+        else{
+            heartImageAroundMe.setVisibility(View.INVISIBLE);
+            noActivitiesTextFieldAroundMe.setVisibility(View.INVISIBLE);
+            pressPlusButtonTextFieldAroundMe.setVisibility(View.INVISIBLE);
         }
         frlistView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -336,11 +341,12 @@ return v;
         progressBarMyEvents=(ProgressBar)v.findViewById(R.id.progressBarMyEvents);
         progressBarMyEvents.setIndeterminate(true);
         progressBarMyEvents.setAlpha(0f);
-        final FloatingActionButton cloudoflistview2 = (FloatingActionButton) v.findViewById(R.id.floatingButton1);
-        cloudoflistview2.setOnClickListener(new View.OnClickListener() {
+        final FloatingActionButton createNewActivityFloatingButtonMyActivity = (FloatingActionButton) v.findViewById(R.id.floatingButton1);
+        createNewActivityFloatingButtonMyActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(),"You click create new activity!!",Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getActivity(), CreateNewActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -364,7 +370,6 @@ return v;
             noActivitiesTextFieldMyActivity.setVisibility(View.INVISIBLE);
             pressPlusButtonTextFieldMyActivity.setVisibility(View.INVISIBLE);
         }
-        mylistView.smoothScrollToPosition(5);
         mylistView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(final View v, MotionEvent event) {
@@ -406,4 +411,6 @@ return v;
         }
         isFirstTimeMyEvents=true;
     }
+
+
 }

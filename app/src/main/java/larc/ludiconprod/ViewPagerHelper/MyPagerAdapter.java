@@ -14,7 +14,7 @@ import larc.ludiconprod.R;
 import larc.ludiconprod.Utils.util.AuthorizedLocation;
 
 public class MyPagerAdapter extends FragmentStatePagerAdapter implements ViewPager.PageTransformer {
-    public final static float BIG_SCALE = 1.1f;
+    public final static float BIG_SCALE = 1f;
     public final static float SMALL_SCALE = 0.7f;
     public final static float DIFF_SCALE = BIG_SCALE - SMALL_SCALE;
 
