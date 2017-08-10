@@ -65,7 +65,7 @@ public class RankingsNewActivity extends Fragment {
 
     Toolbar toolbar;
     ViewPager pager;
-    ViewPagerAdapter adapter;
+    EditViewPagerAdapter adapter;
     SlidingTabLayout tabs;
     CharSequence Titles[] = {"Friends", "Local"};
     int Numboftabs = 2;
@@ -104,8 +104,8 @@ public class RankingsNewActivity extends Fragment {
             headerMessage = (TextView) v.findViewById(R.id.hello_message_activity);
             headerMessage.setText("FOOTBALL");
 
-            // Creating The ViewPagerAdapter and Passing Fragment Manager, Titles fot the Tabs and Number Of Tabs.
-            adapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager(), Titles, Numboftabs);
+            // Creating The EditViewPagerAdapter and Passing Fragment Manager, Titles fot the Tabs and Number Of Tabs.
+            adapter = new EditViewPagerAdapter(getActivity().getSupportFragmentManager(), Titles, Numboftabs);
 
             // Assigning ViewPager View and setting the adapter
             pager = (ViewPager) v.findViewById(R.id.pager);
