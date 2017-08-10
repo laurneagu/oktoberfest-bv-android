@@ -10,7 +10,9 @@ import android.view.View;
 
 import java.util.ArrayList;
 
+import larc.ludiconprod.Adapters.EditProfile.EditActivitiesAdapter;
 import larc.ludiconprod.Adapters.EditProfile.EditInfoAdapter;
+import larc.ludiconprod.Adapters.MainActivity.MyAdapter;
 import larc.ludiconprod.R;
 import larc.ludiconprod.Utils.Event;
 import larc.ludiconprod.Utils.MyProfileUtils.EditViewPagerAdapter;
@@ -30,6 +32,8 @@ public class EditProfileActivity extends AppCompatActivity {
     private SlidingTabLayout tabs;
     private ArrayList<Event> activities = new  ArrayList<>();
     private EditInfoAdapter infoAdapter;
+    private EditActivitiesAdapter myAdapter;
+    private ArrayList<Event> myEventList;
 
     @Nullable
     @Override
@@ -38,13 +42,15 @@ public class EditProfileActivity extends AppCompatActivity {
         super.setContentView(R.layout.edit_profile_activity);
 
         try {
+
+
             this.adapter = new EditViewPagerAdapter(getSupportFragmentManager(), EditProfileActivity.TITLES, tabsNumber);
 
-            pager = (ViewPager) v.findViewById(R.id.editPager);
+            pager = (ViewPager) findViewById(R.id.editPager);
             pager.setAdapter(adapter);
 
             // Assiging the Sliding Tab Layout View
-            tabs = (SlidingTabLayout) v.findViewById(R.id.editTabs);
+            tabs = (SlidingTabLayout) findViewById(R.id.editTabs);
             tabs.setDistributeEvenly(false); // To make the Tabs Fixed set this true, This makes the tabs Space Evenly in Available width
 
             // Setting Custom Color for the Scroll bar indicator of the Tab View
@@ -58,7 +64,7 @@ public class EditProfileActivity extends AppCompatActivity {
             // Setting the ViewPager For the SlidingTabsLayout
             tabs.setViewPager(pager);
 
-            //activitiesAdapter = new EditActivitiesAdapter(activities, getActivity().getApplicationContext(), getActivity(), getResources(), this);
+            myAdapter = new EditActivitiesAdapter(myEventList, this.getApplicationContext(), this, getResources(), this);
 
 
             //infoAdapter = new EditInfoAdapter(getActivity().getApplicationContext(), getActivity(), getResources(), this);
