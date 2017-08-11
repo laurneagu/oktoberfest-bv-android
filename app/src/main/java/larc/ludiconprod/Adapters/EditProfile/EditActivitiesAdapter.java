@@ -1,33 +1,21 @@
-
-package larc.ludiconprod.Adapters.MainActivity;
+package larc.ludiconprod.Adapters.EditProfile;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
-
-import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -36,28 +24,14 @@ import java.util.Date;
 import de.hdodenhof.circleimageview.CircleImageView;
 import larc.ludiconprod.Activities.ActivitiesActivity;
 import larc.ludiconprod.Activities.ActivityDetailsActivity;
-import larc.ludiconprod.Controller.Persistance;
+import larc.ludiconprod.Activities.EditProfileActivity;
+import larc.ludiconprod.Adapters.MainActivity.MyAdapter;
 import larc.ludiconprod.R;
 import larc.ludiconprod.Utils.Event;
 import larc.ludiconprod.Utils.General;
 import larc.ludiconprod.Utils.util.Sport;
 
-
-
-
-
-
-public class MyAdapter extends BaseAdapter implements ListAdapter {
-    public static Bitmap decodeBase64(String input)
-    {
-        byte[] decodedBytes = Base64.decode(input, 0);
-        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
-    }
-    public static String getMonth(int month) {
-        String date=new DateFormatSymbols().getMonths()[month-1];
-        return date.substring(0,1).toUpperCase().concat(date.substring(1,3));
-    }
-
+public class EditActivitiesAdapter extends BaseAdapter implements ListAdapter {
     public class ViewHolder {
 
         public CircleImageView profileImage;
@@ -81,10 +55,10 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
     private Context context;
     private Activity activity;
     private Resources resources;
-    private ActivitiesActivity fragment;
+    private EditProfileActivity fragment;
     final ListView listView;
 
-    public MyAdapter(ArrayList<Event> list, Context context, Activity activity, Resources resources, ActivitiesActivity fragment) {
+    public EditActivitiesAdapter(ArrayList<Event> list, Context context, Activity activity, Resources resources, EditProfileActivity fragment) {
         this.list = list;
         this.context = context;
         this.activity = activity;
@@ -93,6 +67,7 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
 
         this.listView = (ListView) activity.findViewById(R.id.events_listView1); // era v.
     }
+
 
     public void setListOfEvents(ArrayList<Event> newList){
         this.list = newList;
@@ -118,7 +93,7 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
     public View getView(final int position, View convertView, ViewGroup parent) {
         View view = convertView;
         if(list.size() > 0) {
-            MyAdapter.ViewHolder holder;
+            EditActivitiesAdapter.ViewHolder holder;
 
             final Event currentEvent = list.get(position);
 
@@ -128,7 +103,7 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
                 view = inflater.inflate(R.layout.my_activity_card, null);
 
 
-                holder = new MyAdapter.ViewHolder();
+                holder = new EditActivitiesAdapter.ViewHolder();
                 holder.profileImage = (CircleImageView) view.findViewById(R.id.profileImage);
                 holder.creatorName = (TextView) view.findViewById(R.id.creatorName);
                 holder.sportName = (TextView) view.findViewById(R.id.sportName);
@@ -147,7 +122,7 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
 
                 view.setTag(holder);
             } else {
-                holder = (MyAdapter.ViewHolder) view.getTag();
+                holder = (EditActivitiesAdapter.ViewHolder) view.getTag();
             }
 
             // Clean up layout
@@ -172,7 +147,7 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
                     currView.setBackgroundColor(Color.parseColor("#f5f5f5"));
 
                     Intent intent = new Intent(currView.getContext(), ActivityDetailsActivity.class);
-                    intent.putExtra("eventId", currentEvent.id);
+                    //intent.putExtra("eventUid", currentEvent.id);
                     activity.startActivity(intent);
                     Toast.makeText(context, "Go to EventDetails", Toast.LENGTH_LONG).show();
                 }
@@ -181,7 +156,7 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
             // Set user event creator name and picture
             holder.creatorName.setText(currentEvent.creatorName);
             if (!currentEvent.creatorProfilePicture.equals("")) {
-                Bitmap bitmap = decodeBase64(currentEvent.creatorProfilePicture);
+                Bitmap bitmap = MyAdapter.decodeBase64(currentEvent.creatorProfilePicture);
                 holder.profileImage.setImageBitmap(bitmap);
 
             }
@@ -234,13 +209,13 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
             }
             for (int i = 0; i < currentEvent.participansProfilePicture.size(); i++) {
                 if (!currentEvent.participansProfilePicture.get(i).equals("") && counter == 0) {
-                    Bitmap bitmap = decodeBase64(currentEvent.participansProfilePicture.get(i));
+                    Bitmap bitmap = MyAdapter.decodeBase64(currentEvent.participansProfilePicture.get(i));
                     holder.friends0.setImageBitmap(bitmap);
                 } else if (!currentEvent.participansProfilePicture.get(i).equals("") && counter == 1) {
-                    Bitmap bitmap = decodeBase64(currentEvent.participansProfilePicture.get(i));
+                    Bitmap bitmap = MyAdapter.decodeBase64(currentEvent.participansProfilePicture.get(i));
                     holder.friends1.setImageBitmap(bitmap);
                 } else if (!currentEvent.participansProfilePicture.get(i).equals("") && counter == 2) {
-                    Bitmap bitmap = decodeBase64(currentEvent.participansProfilePicture.get(i));
+                    Bitmap bitmap = MyAdapter.decodeBase64(currentEvent.participansProfilePicture.get(i));
                     holder.friends2.setImageBitmap(bitmap);
                 }
             }
@@ -303,12 +278,11 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
             } else if (Integer.parseInt(stringDate[1]) - 1 == todayMonth && Integer.parseInt(stringDate[2]) - 1 == todayDay) {
                 date = "Tomorrow, " + stringDateAndTime[1].substring(0, 5);
             } else {
-                date = getMonth(Integer.parseInt(stringDate[1])) + " " + stringDate[2] + ", " + stringDateAndTime[1].substring(0, 5);
+                date = MyAdapter.getMonth(Integer.parseInt(stringDate[1])) + " " + stringDate[2] + ", " + stringDateAndTime[1].substring(0, 5);
             }
             holder.eventDate.setText(date);
 
         }
         return view;
     }
-    }
-
+}
