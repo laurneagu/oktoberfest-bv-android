@@ -1,11 +1,242 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--Specs level bar-->
+<!--More specs-->
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/settings"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Settings" />
+        android:layout_height="56dp"
+        android:textColor="@color/tab_text_color"
+        android:background="#FFFFFF"
+        android:text="Settings"
+        android:textSize="20sp"/>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="12dp"
+        android:background="@drawable/shadow_top_to_bottom"
+        android:layout_below="@+id/settings"/>
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        android:fillViewport="true"
+        android:layout_below="@+id/settings">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/imgProfilePicture"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_centerHorizontal="true"
+                    android:clickable="false"
+                    android:src="@drawable/com_facebook_profile_picture_blank_portrait" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@string/fontmedium"
+                android:textSize="18sp"
+                android:textColor="@color/pink"
+                android:text="Florin Bogdan"/>
+
+            <ProgressBar
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:progress="25"
+                android:indeterminate="false"
+                android:layout_marginTop="16dp"
+                android:foreground="@color/pink"
+                android:progressDrawable="@drawable/blueprogress"
+                android:paddingLeft="32dp"
+                android:paddingRight="32dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginTop="8dp">
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:fontFamily="@string/fontmedium"
+                    android:text="23.567"/>
+                <ImageView
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:src="@drawable/ic_points_small"/>
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:text="to next level"
+                    android:fontFamily="@string/fontmedium"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_height="60dp"
+                android:layout_width="match_parent"
+                android:background="#ffffff"
+                android:orientation="horizontal">
+                <LinearLayout
+                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:background="#ffffff"
+                    android:orientation="horizontal"
+                    android:layout_weight="1">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_ludicoins"/>
+                    <LinearLayout
+                        android:layout_height="match_parent"
+                        android:layout_width="match_parent"
+                        android:background="#ffffff"
+                        android:orientation="vertical"
+                        android:gravity="center">
+                        <TextView
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:text="12"
+                            android:fontFamily="@string/fontmedium"
+                            android:textSize="16sp"/>
+                        <TextView
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:text="Level"
+                            android:fontFamily="@string/fontmedium"
+                            android:textSize="12sp"/>
+                    </LinearLayout>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_height="match_parent"
+                    android:layout_width="1dp"
+                    android:background="#400c3855"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"/>
+                <LinearLayout
+                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:background="#ffffff"
+                    android:orientation="horizontal"
+                    android:layout_weight="1">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_user_points"/>
+                    <LinearLayout
+                        android:layout_height="match_parent"
+                        android:layout_width="match_parent"
+                        android:background="#ffffff"
+                        android:orientation="vertical"
+                        android:gravity="center">
+                        <TextView
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:text="12"
+                            android:fontFamily="@string/fontmedium"
+                            android:textSize="16sp"/>
+                        <TextView
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:text="Points"
+                            android:fontFamily="@string/fontmedium"
+                            android:textSize="12sp"/>
+                    </LinearLayout>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_height="match_parent"
+                    android:layout_width="1dp"
+                    android:background="#400c3855"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"/>
+                <LinearLayout
+                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:background="#ffffff"
+                    android:orientation="horizontal"
+                    android:layout_weight="1">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_user_position"/>
+                    <LinearLayout
+                        android:layout_height="match_parent"
+                        android:layout_width="match_parent"
+                        android:background="#ffffff"
+                        android:orientation="vertical"
+                        android:gravity="center">
+                        <TextView
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:text="12"
+                            android:fontFamily="@string/fontmedium"
+                            android:textSize="16sp"/>
+                        <TextView
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:text="Position"
+                            android:fontFamily="@string/fontmedium"
+                            android:textSize="12sp"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+            <RelativeLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginTop="24dp">
+                <TextView
+                    android:id="@+id/profilePracticeSportsLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="PRACTICED SPORTS"
+                    android:fontFamily="@string/fontbold"
+                    android:textSize="14sp"
+                    android:gravity="left"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="2/12"
+                    android:fontFamily="@string/fontmedium"
+                    android:textSize="14sp"
+                    android:gravity="right"/>
+            </RelativeLayout>
+            <HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:scrollbars="none"
+                android:fillViewport="true">
+                <LinearLayout
+                    android:id="@+id/profileSports"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                </LinearLayout>
+            </HorizontalScrollView>
+
+        </LinearLayout>
+    </ScrollView>
 </RelativeLayout>

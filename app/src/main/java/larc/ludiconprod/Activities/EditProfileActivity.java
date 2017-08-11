@@ -23,7 +23,7 @@ import larc.ludiconprod.Utils.ui.SlidingTabLayout;
  */
 
 public class EditProfileActivity extends AppCompatActivity {
-    private static final CharSequence TITLES[] = {"MY ACTIVITIES", "INFO DETAILS"};
+    private static final CharSequence TITLES[] = {"SPORT DETAILS", "INFO DETAILS"};
     private int tabsNumber = 2;
     private Context mContext;
     private View v;

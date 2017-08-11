@@ -111,7 +111,7 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
     Spinner sportSpinner;
     int numberOfTotalParticipants=0;
 
-    public String getMonth(int month) {
+    public static String getMonth(int month) {
         String date = new DateFormatSymbols().getMonths()[month - 1];
         return date.substring(0, 1).toUpperCase().concat(date.substring(1, 3));
     }

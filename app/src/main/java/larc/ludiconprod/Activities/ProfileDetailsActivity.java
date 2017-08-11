@@ -152,9 +152,7 @@ public class ProfileDetailsActivity extends Activity {
         if(male.isChecked()){
             male.setBackgroundResource(R.drawable.toggle_male);
             male.setTextColor(Color.parseColor("#ffffff"));
-
-        }
-        else{
+        } else{
             female.setBackgroundResource(R.drawable.toggle_female);
             male.setTextColor(Color.parseColor("#ffffff"));
         }
@@ -167,7 +165,6 @@ public class ProfileDetailsActivity extends Activity {
                     male.setTextColor(Color.parseColor("#ffffff"));
                     female.setTextColor(Color.parseColor("#1A0c3855"));
                     sex=0;
-
                 }
                 else{
                     female.setBackgroundResource(R.drawable.toggle_female);
