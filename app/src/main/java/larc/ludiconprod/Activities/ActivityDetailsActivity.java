@@ -308,34 +308,19 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
         if(eventDetails.listOfParticipants.size()+(eventDetails.numberOfParticipants-eventDetails.listOfParticipants.size()-1) >= 1){
 
             participant0.setVisibility(View.VISIBLE);
-            if(eventDetails.creatorId.equals(Persistance.getInstance().getUserInfo(this).id)){
-                deleteImageView0.setVisibility(View.VISIBLE);
-                deleteImageView0.setEnabled(true);
-            }
         }
         if(eventDetails.listOfParticipants.size()+(eventDetails.numberOfParticipants-eventDetails.listOfParticipants.size()-1) >= 2 ){
 
             participant1.setVisibility(View.VISIBLE);
-            if(eventDetails.creatorId.equals(Persistance.getInstance().getUserInfo(this).id)){
-                deleteImageView1.setVisibility(View.VISIBLE);
-                deleteImageView1.setEnabled(true);
-            }
         }
         if(eventDetails.listOfParticipants.size()+(eventDetails.numberOfParticipants-eventDetails.listOfParticipants.size()-1) >= 3 ){
 
             participant2.setVisibility(View.VISIBLE);
-            if(eventDetails.creatorId.equals(Persistance.getInstance().getUserInfo(this).id)){
-                deleteImageView2.setVisibility(View.VISIBLE);
-                deleteImageView2.setEnabled(true);
-            }
         }
         if(eventDetails.listOfParticipants.size()+(eventDetails.numberOfParticipants-eventDetails.listOfParticipants.size()-1) >= 4 ){
 
             participant3.setVisibility(View.VISIBLE);
-            if(eventDetails.creatorId.equals(Persistance.getInstance().getUserInfo(this).id)){
-                deleteImageView3.setVisibility(View.VISIBLE);
-                deleteImageView3.setEnabled(true);
-            }
+
         }
 
         if(eventDetails.numberOfParticipants > 5){
