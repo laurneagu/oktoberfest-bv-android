@@ -54,6 +54,7 @@
                         android:layout_height="48dp"
                         android:layout_marginBottom="16dp"
                         android:layout_marginRight="16dp"
+                        android:id="@+id/creatorImageProfile"
                         android:background="@drawable/ph_user"/>
 
                     <LinearLayout
@@ -74,6 +75,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Will play Football"
+                            android:id="@+id/sportPlayed"
                             android:textColor="#400c3855"
                             android:textSize="14sp"
                             android:fontFamily="@string/fontmedium"/>
@@ -175,21 +177,23 @@
                     />
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="0dp"
                     android:layout_below="@+id/playerNumber"
                     android:id="@+id/imageProfileParticipantsLayout"
-                    android:layout_marginTop="16dp"
+
                     android:orientation="horizontal">
 
                     <RelativeLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp">
 
 
                         <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
                             android:id="@+id/participant0"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
+                            android:visibility="invisible"
                             android:background="@drawable/ph_user" />
                         <ImageView
                             android:layout_width="35dp"
@@ -201,6 +205,7 @@
                             android:background="@drawable/round_textview_green"
                             android:textSize="12sp"
                             android:text="12"
+                            android:visibility="invisible"
                             android:id="@+id/participantLevel0"
                             android:textColor="#ffffff"
                             android:layout_toRightOf="@id/imageView"
@@ -213,6 +218,7 @@
                             android:id="@+id/deleteImageView0"
                             android:layout_width="15dp"
                             android:layout_height="15dp"
+                            android:visibility="invisible"
                             android:layout_marginTop="4dp"
                             android:layout_toRightOf="@id/imageView"
                             android:background="@drawable/ic_user_kick" />
@@ -220,13 +226,15 @@
                     <RelativeLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp">
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="16dp">
 
 
                         <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
                             android:id="@+id/participant1"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
+                            android:visibility="invisible"
                             android:background="@drawable/ph_user" />
                         <ImageView
                             android:layout_width="35dp"
@@ -238,6 +246,7 @@
                             android:background="@drawable/round_textview_green"
                             android:textSize="12sp"
                             android:text="12"
+                            android:visibility="invisible"
                             android:id="@+id/participantLevel1"
                             android:textColor="#ffffff"
                             android:layout_toRightOf="@id/imageView1"
@@ -251,19 +260,22 @@
                             android:layout_width="15dp"
                             android:layout_height="15dp"
                             android:layout_marginTop="4dp"
+                            android:visibility="invisible"
                             android:layout_toRightOf="@id/imageView1"
                             android:background="@drawable/ic_user_kick" />
                     </RelativeLayout>
                     <RelativeLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp">
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="16dp">
 
 
                         <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
                             android:id="@+id/participant2"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
+                            android:visibility="invisible"
                             android:background="@drawable/ph_user" />
                         <ImageView
                             android:layout_width="35dp"
@@ -275,6 +287,7 @@
                             android:background="@drawable/round_textview_green"
                             android:textSize="12sp"
                             android:text="12"
+                            android:visibility="invisible"
                             android:id="@+id/participantLevel2"
                             android:textColor="#ffffff"
                             android:layout_toRightOf="@id/imageView2"
@@ -287,6 +300,7 @@
                             android:id="@+id/deleteImageView2"
                             android:layout_width="15dp"
                             android:layout_height="15dp"
+                            android:visibility="invisible"
                             android:layout_marginTop="4dp"
                             android:layout_toRightOf="@id/imageView2"
                             android:background="@drawable/ic_user_kick" />
@@ -294,13 +308,15 @@
                     <RelativeLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp">
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="16dp">
 
 
                         <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
                             android:id="@+id/participant3"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
+                            android:visibility="invisible"
                             android:background="@drawable/ph_user" />
                         <ImageView
                             android:layout_width="35dp"
@@ -311,6 +327,7 @@
                             android:layout_height="15dp"
                             android:background="@drawable/round_textview_green"
                             android:textSize="12sp"
+                            android:visibility="invisible"
                             android:text="12"
                             android:id="@+id/participantLevel3"
                             android:textColor="#ffffff"
@@ -324,6 +341,7 @@
                             android:id="@+id/deleteImageView3"
                             android:layout_width="15dp"
                             android:layout_height="15dp"
+                            android:visibility="invisible"
                             android:layout_marginTop="4dp"
                             android:layout_toRightOf="@id/imageView3"
                             android:background="@drawable/ic_user_kick" />
@@ -335,9 +353,11 @@
                         android:layout_height="48dp"
                         android:layout_marginLeft="8dp"
                         android:id="@+id/allParticipants"
+                        android:visibility="invisible"
                         android:textColor="#d4498b"
                         android:text="ALL"
                         android:textSize="14dp"
+                        android:layout_marginTop="16dp"
                         android:textAlignment="center"
                         android:fontFamily="@string/fontbold"
                         android:paddingTop="15dp"

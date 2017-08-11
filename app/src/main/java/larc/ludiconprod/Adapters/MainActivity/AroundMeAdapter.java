@@ -175,10 +175,18 @@ public class AroundMeAdapter extends BaseAdapter implements ListAdapter {
                     @Override
                     public void onClick(View v) {
                         currView.setBackgroundColor(Color.parseColor("#f5f5f5"));
+                        //getEventDetails
 
-                        Intent intent = new Intent(currView.getContext(), ActivityDetailsActivity.class);
-                        intent.putExtra("eventId", currentEvent.id);
-                        activity.startActivity(intent);
+                        HashMap<String, String> params = new HashMap<String, String>();
+                        HashMap<String, String> headers = new HashMap<String, String>();
+                        HashMap<String, String> urlParams = new HashMap<String, String>();
+                        headers.put("authKey", Persistance.getInstance().getUserInfo(activity).authKey);
+
+                        //set urlParams
+
+                        urlParams.put("eventId",currentEvent.id);
+                        urlParams.put("userId",Persistance.getInstance().getUserInfo(activity).id);
+                        HTTPResponseController.getInstance().getEventDetails(params, headers, activity,urlParams);
                     }
                 });
 
@@ -320,7 +328,7 @@ public class AroundMeAdapter extends BaseAdapter implements ListAdapter {
                         params.put("eventId", currentEvent.id);
                         params.put("userId", Persistance.getInstance().getUserInfo(activity).id);
                         HTTPResponseController.getInstance().joinEvent(params, headers, currentEvent.id);
-                        holder.joinButton.setClickable(false);
+                        holder.joinButton.setEnabled(false);
 
                     }
                 });

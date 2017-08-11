@@ -10,10 +10,13 @@ public class EventDetails {
     public int eventDate;
     public String description;
     public String placeName;
-    public int latitude;
-    public int longitude;
+    public String placeAdress;
+    public String authorizeLevel;
+    public String companyImage;
+    public double latitude;
+    public double longitude;
     public String placeId;
-    public boolean isAuthorized;
+    public int isAuthorized;
     public String sportName;
     public String otherSportName;
     public int capacity;
@@ -24,6 +27,6 @@ public class EventDetails {
     public int creatorLevel;
     public String creatorId;
     public String creatorProfilePicture;
-    public boolean isParticipant;
+    public int isParticipant;
     public ArrayList<Friend> listOfParticipants=new ArrayList<Friend>();
 }

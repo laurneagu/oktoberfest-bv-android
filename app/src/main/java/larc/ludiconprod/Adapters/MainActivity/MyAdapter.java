@@ -32,10 +32,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import larc.ludiconprod.Activities.ActivitiesActivity;
 import larc.ludiconprod.Activities.ActivityDetailsActivity;
+import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
 import larc.ludiconprod.Utils.Event;
@@ -170,11 +172,20 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
                 @Override
                 public void onClick(View v) {
                     currView.setBackgroundColor(Color.parseColor("#f5f5f5"));
+                    //getEventDetails
 
-                    Intent intent = new Intent(currView.getContext(), ActivityDetailsActivity.class);
-                    intent.putExtra("eventId", currentEvent.id);
-                    activity.startActivity(intent);
-                    Toast.makeText(context, "Go to EventDetails", Toast.LENGTH_LONG).show();
+                    HashMap<String, String> params = new HashMap<String, String>();
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    HashMap<String, String> urlParams = new HashMap<String, String>();
+                    headers.put("authKey", Persistance.getInstance().getUserInfo(activity).authKey);
+
+                    //set urlParams
+
+                    urlParams.put("eventId",currentEvent.id);
+                    urlParams.put("userId",Persistance.getInstance().getUserInfo(activity).id);
+                    HTTPResponseController.getInstance().getEventDetails(params, headers, activity,urlParams);
+
+
                 }
             });
 
