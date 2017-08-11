@@ -35,6 +35,7 @@ import larc.ludiconprod.Activities.InviteFriendsActivity;
 import larc.ludiconprod.Activities.LoginActivity;
 import larc.ludiconprod.Activities.Main;
 import larc.ludiconprod.Activities.ProfileDetailsActivity;
+import larc.ludiconprod.Utils.EventDetails;
 import larc.ludiconprod.Utils.Friend;
 import larc.ludiconprod.Utils.util.AuthorizedLocation;
 import larc.ludiconprod.Utils.util.Sport;
@@ -354,6 +355,46 @@ public class HTTPResponseController {
             }
         };
     }
+    private Response.Listener<JSONObject>  getEventDetailsSuccesListener(){
+        return new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                System.out.println(jsonObject +" eventDetails");
+                try {
+                    EventDetails eventDetails=new EventDetails();
+                    eventDetails.eventDate=jsonObject.getInt("eventDate");
+                    eventDetails.description=jsonObject.getString("description");
+                    eventDetails.placeName=jsonObject.getJSONObject("location").getString("placeName");
+                    eventDetails.latitude=jsonObject.getJSONObject("location").getInt("latitude");
+                    eventDetails.longitude=jsonObject.getJSONObject("location").getInt("longitude");
+                    eventDetails.placeId=jsonObject.getJSONObject("location").getString("placeId");
+                    eventDetails.isAuthorized=jsonObject.getJSONObject("location").getBoolean("isAuthorized");
+                    eventDetails.sportName=jsonObject.getString("sportName");
+                    eventDetails.otherSportName=jsonObject.getString("otherSportName");
+                    eventDetails.capacity=jsonObject.getInt("capacity");
+                    eventDetails.numberOfParticipants=jsonObject.getInt("numberOfParticipants");
+                    eventDetails.points=jsonObject.getInt("points");
+                    eventDetails.ludicoins=jsonObject.getInt("ludicoins");
+                    eventDetails.creatorName=jsonObject.getString("creatorName");
+                    eventDetails.creatorLevel=jsonObject.getInt("creatorLevel");
+                    eventDetails.creatorId=jsonObject.getString("creatorId");
+                    eventDetails.creatorProfilePicture=jsonObject.getString("creatorProfilePicture");
+                    for(int i=0;i < jsonObject.getJSONArray("participants").length();i++){
+                        Friend friend=new Friend();
+                        friend.userID=jsonObject.getJSONArray("participants").getJSONObject(i).getString("id");
+                        friend.userName=jsonObject.getJSONArray("participants").getJSONObject(i).getString("name");
+                        friend.profileImage=jsonObject.getJSONArray("participants").getJSONObject(i).getString("profilePicture");
+                        friend.level=jsonObject.getJSONArray("participants").getJSONObject(i).getInt("level");
+                    }
+
+
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+        };
+    }
     private Response.Listener<JSONObject>  createJoinEventSuccesListener(){
         return new Response.Listener<JSONObject>() {
             @Override
@@ -481,4 +522,11 @@ public class HTTPResponseController {
         CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, prodServer+"api/event/",params,headers,this.createEventSuccesListener(), this.createRequestErrorListener());
         requestQueue.add(jsObjRequest);
     }
+    public void getEventDetails(HashMap<String,String> params, HashMap<String,String> headers, Activity activity,HashMap<String,String> urlParams){
+        setActivity(activity,params.get("email"),params.get("password"));
+        RequestQueue requestQueue = Volley.newRequestQueue(activity);
+        CustomRequest jsObjRequest = new CustomRequest(Request.Method.GET, prodServer+"api/event?eventId="+urlParams.get("eventId")+"&userId="+urlParams.get("userId"),params,headers,this.getEventDetailsSuccesListener(), this.createRequestErrorListener());
+        requestQueue.add(jsObjRequest);
+    }
+
 }

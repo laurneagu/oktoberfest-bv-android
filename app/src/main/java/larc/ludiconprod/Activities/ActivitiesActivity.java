@@ -89,8 +89,6 @@ public class ActivitiesActivity extends Fragment {
     Boolean isFirstTimeAroundMe=false;
     Boolean isFirstTimeMyEvents=false;
 
-    final ArrayList<String> favoriteSports = new ArrayList<>();
-    private final ArrayList<Event> myEventsList = new ArrayList<>();
 
     public ActivitiesActivity(){
         currentFragment=this;

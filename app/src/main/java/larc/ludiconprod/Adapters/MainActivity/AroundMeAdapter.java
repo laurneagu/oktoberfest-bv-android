@@ -177,8 +177,8 @@ public class AroundMeAdapter extends BaseAdapter implements ListAdapter {
                         currView.setBackgroundColor(Color.parseColor("#f5f5f5"));
 
                         Intent intent = new Intent(currView.getContext(), ActivityDetailsActivity.class);
-                        //intent.putExtra("eventUid", currentEvent.id);
-                         activity.startActivity(intent);
+                        intent.putExtra("eventId", currentEvent.id);
+                        activity.startActivity(intent);
                     }
                 });
 

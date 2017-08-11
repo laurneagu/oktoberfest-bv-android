@@ -172,7 +172,7 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
                     currView.setBackgroundColor(Color.parseColor("#f5f5f5"));
 
                     Intent intent = new Intent(currView.getContext(), ActivityDetailsActivity.class);
-                    //intent.putExtra("eventUid", currentEvent.id);
+                    intent.putExtra("eventId", currentEvent.id);
                     activity.startActivity(intent);
                     Toast.makeText(context, "Go to EventDetails", Toast.LENGTH_LONG).show();
                 }
