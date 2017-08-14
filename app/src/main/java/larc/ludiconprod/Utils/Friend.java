@@ -13,4 +13,5 @@ public class Friend {
     public int level;
     public boolean offlineFriend=false;
     public boolean isInvited=false;
+    public int isAlreadyInvited=0;
 }

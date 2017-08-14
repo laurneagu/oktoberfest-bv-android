@@ -121,6 +121,7 @@ public class InviteFriendsAdapter  extends BaseAdapter implements ListAdapter {
 
 
                 holder.inviteButton.setVisibility(View.INVISIBLE);
+                holder.inviteButton.setEnabled(true);
 
                 holder.friendProfileImage.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -155,6 +156,9 @@ public class InviteFriendsAdapter  extends BaseAdapter implements ListAdapter {
                 holder.friendProfileImage.setImageResource(R.drawable.ic_invite);
 
                 holder.inviteButton.setText("REMOVE");
+                holder.inviteButton.setBackgroundResource(R.drawable.green_button_selector);
+                holder.inviteButton.setVisibility(View.VISIBLE);
+                holder.inviteButton.setEnabled(true);
                 holder.inviteButton.setTextColor(Color.parseColor("#ffffff"));
                 holder.inviteButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -178,18 +182,26 @@ public class InviteFriendsAdapter  extends BaseAdapter implements ListAdapter {
                 ViewGroup.LayoutParams params = holder.friendLevel.getLayoutParams();
                 params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 holder.friendLevel.setLayoutParams(params);
+                if(currentFriend.isAlreadyInvited == 1){
+                    holder.inviteButton.setVisibility(View.INVISIBLE);
+                    holder.inviteButton.setEnabled(false);
 
-                if(!currentFriend.isInvited){
+                }
+                else if(!currentFriend.isInvited){
                     holder.inviteButton.setBackgroundResource(R.drawable.green_button_selector);
                     holder.inviteButton.setText("INVITE");
+                    holder.inviteButton.setEnabled(true);
+                    holder.inviteButton.setVisibility(View.VISIBLE);
                     holder.inviteButton.setTextColor(Color.parseColor("#ffffff"));
 
                 }else{
-                holder.inviteButton.setBackgroundResource(R.drawable.transparent_button);
-                holder.inviteButton.setText("INVITED");
-                holder.inviteButton.setTextColor(Color.parseColor("#660c3855"));
+                    holder.inviteButton.setBackgroundResource(R.drawable.transparent_button);
+                    holder.inviteButton.setText("INVITED");
+                    holder.inviteButton.setEnabled(true);
+                    holder.inviteButton.setVisibility(View.VISIBLE);
+                    holder.inviteButton.setTextColor(Color.parseColor("#660c3855"));
                  }
-                holder.inviteButton.setVisibility(View.VISIBLE);
+
                 if(currentFriend.userName.length() < 16) {
                     holder.friendName.setText(currentFriend.userName);
                 }

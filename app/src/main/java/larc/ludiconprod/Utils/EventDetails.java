@@ -22,6 +22,7 @@ public class EventDetails {
     public int capacity;
     public int numberOfParticipants;
     public int points;
+    public int privacy;
     public int ludicoins;
     public String creatorName;
     public int creatorLevel;

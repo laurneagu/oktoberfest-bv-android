@@ -55,6 +55,8 @@ import larc.ludiconprod.Adapters.CustomSpinner;
 import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
+import larc.ludiconprod.Utils.EventDetails;
+import larc.ludiconprod.Utils.Friend;
 import larc.ludiconprod.Utils.General;
 import larc.ludiconprod.Utils.Location.GPSTracker;
 import larc.ludiconprod.ViewPagerHelper.MyFragment;
@@ -110,6 +112,7 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
     EditText otherSportName;
     Spinner sportSpinner;
     int numberOfTotalParticipants=0;
+    EventDetails eventDetails;
 
     public static String getMonth(int month) {
         String date = new DateFormatSymbols().getMonths()[month - 1];
@@ -173,44 +176,109 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
         invitedFriends4 = (ImageView) findViewById(R.id.invitedFriends4);
         createActivityButton=(Button)findViewById(R.id.createActivityButton);
         descriptionEditText=(EditText) findViewById(R.id.descriptionEditText);
+        eventDetails=new EventDetails();
+
+        //check if is a Create or Edit
+
+
+
+
         createActivityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(!checkConstraints()) {
-                    Toast.makeText(CreateNewActivity.this, "Creating...", Toast.LENGTH_LONG).show();
-                    HashMap<String, String> params = new HashMap<String, String>();
-                    HashMap<String, String> headers = new HashMap<String, String>();
-                    headers.put("authKey", Persistance.getInstance().getUserInfo(CreateNewActivity.this).authKey);
-                    params.put("userId", Persistance.getInstance().getUserInfo(CreateNewActivity.this).id);
+                    if(!getIntent().getBooleanExtra("isEdit",false)) {
+                        Toast.makeText(CreateNewActivity.this, "Creating...", Toast.LENGTH_LONG).show();
+                        HashMap<String, String> params = new HashMap<String, String>();
+                        HashMap<String, String> headers = new HashMap<String, String>();
+                        headers.put("authKey", Persistance.getInstance().getUserInfo(CreateNewActivity.this).authKey);
+                        params.put("userId", Persistance.getInstance().getUserInfo(CreateNewActivity.this).id);
 
-                    Calendar calendar = myCalendar;
-                    myCalendar.getTimeInMillis();
-                    params.put("eventDate", String.valueOf(myCalendar.getTimeInMillis() / 1000));
-                    params.put("creationDate", String.valueOf(System.currentTimeMillis() / 1000));
-                    params.put("description", descriptionEditText.getText().toString());
-                    params.put("latitude", String.valueOf(GMapsActivity.markerSelected.getPosition().latitude));
-                    params.put("longitude", String.valueOf(GMapsActivity.markerSelected.getPosition().longitude));
-                    if (!locationName.getText().toString().equals("Unauthorized location")) {
-                        params.put("placeName", locationName.getText().toString());
-                    } else {
-                        params.put("placeName", adress.getText().toString());
-                    }
-                    params.put("privacy", String.valueOf(privacy));
-                    params.put("capacity", playersNumber.getText().toString());
-                    params.put("sportCode", sportCode);
-                    if (sportCode.equals("OTH")) {
-                        params.put("otherSportName", otherSportName.getText().toString());
-                    }
-                    params.put("numberOfOffliners", String.valueOf(InviteFriendsActivity.numberOfOfflineFriends));
-                    int counterOfInvitedFriends = 0;
-                    for (int i = 0; i < InviteFriendsActivity.friendsList.size(); i++) {
-                        if (InviteFriendsActivity.friendsList.get(i).isInvited) {
-                            params.put("invitedParticipants[" + counterOfInvitedFriends + "]", InviteFriendsActivity.friendsList.get(i).userID);
-                            counterOfInvitedFriends++;
+
+                        Calendar calendar = myCalendar;
+                        myCalendar.getTimeInMillis();
+                        params.put("eventDate", String.valueOf(myCalendar.getTimeInMillis() / 1000));
+                        params.put("creationDate", String.valueOf(System.currentTimeMillis() / 1000));
+                        params.put("description", descriptionEditText.getText().toString());
+                        params.put("latitude", String.valueOf(GMapsActivity.markerSelected.getPosition().latitude));
+                        params.put("longitude", String.valueOf(GMapsActivity.markerSelected.getPosition().longitude));
+                        if (!locationName.getText().toString().equals("Unauthorized location")) {
+                            params.put("placeName", locationName.getText().toString());
+                        } else {
+                            params.put("placeName", adress.getText().toString());
                         }
+                        params.put("privacy", String.valueOf(privacy));
+                        params.put("capacity", playersNumber.getText().toString());
+                        params.put("sportCode", sportCode);
+                        if (sportCode.equals("OTH")) {
+                            params.put("otherSportName", otherSportName.getText().toString());
+                        }
+                        params.put("numberOfOffliners", String.valueOf(InviteFriendsActivity.numberOfOfflineFriends));
+                        int counterOfInvitedFriends = 0;
+                        for (int i = 0; i < InviteFriendsActivity.friendsList.size(); i++) {
+                            if (InviteFriendsActivity.friendsList.get(i).isInvited) {
+                                params.put("invitedParticipants[" + counterOfInvitedFriends + "]", InviteFriendsActivity.friendsList.get(i).userID);
+                                counterOfInvitedFriends++;
+                            }
+                        }
+                        HTTPResponseController.getInstance().createEvent(params, headers, CreateNewActivity.this);
+
+                    }
+                    else{
+                        Toast.makeText(CreateNewActivity.this, "Saving...", Toast.LENGTH_LONG).show();
+                        HashMap<String, String> params = new HashMap<String, String>();
+                        HashMap<String, String> headers = new HashMap<String, String>();
+                        headers.put("authKey", Persistance.getInstance().getUserInfo(CreateNewActivity.this).authKey);
+                        params.put("userId", Persistance.getInstance().getUserInfo(CreateNewActivity.this).id);
+                        params.put("eventId",getIntent().getStringExtra("eventId"));
+
+
+                        Calendar calendar = myCalendar;
+                        myCalendar.getTimeInMillis();
+                        if(eventDetails.eventDate < myCalendar.getTimeInMillis() / 1000) {
+                            params.put("eventDate", String.valueOf(myCalendar.getTimeInMillis() / 1000));
+                        }
+                        if(!eventDetails.description.equals(descriptionEditText.getText().toString())) {
+                            params.put("description", descriptionEditText.getText().toString());
+                        }
+                        if(eventDetails.latitude != GMapsActivity.markerSelected.getPosition().latitude || eventDetails.longitude != GMapsActivity.markerSelected.getPosition().longitude) {
+                            params.put("latitude", String.valueOf(GMapsActivity.markerSelected.getPosition().latitude));
+                            params.put("longitude", String.valueOf(GMapsActivity.markerSelected.getPosition().longitude));
+                            if (!locationName.getText().toString().equals("Unauthorized location")) {
+                                params.put("placeName", locationName.getText().toString());
+                            } else {
+                                params.put("placeName", adress.getText().toString());
+                            }
+                        }
+                        if(eventDetails.privacy != privacy) {
+                            params.put("privacy", String.valueOf(privacy));
+                        }
+                        if(eventDetails.capacity != Integer.valueOf(playersNumber.getText().toString())) {
+                            params.put("capacity", playersNumber.getText().toString());
+                        }
+                        if(!eventDetails.sportName.equals(sportCode)) {
+                            params.put("sportCode", sportCode);
+                            if (sportCode.equals("OTH")) {
+                                params.put("otherSportName", otherSportName.getText().toString());
+                            }
+                        }
+                        if(InviteFriendsActivity.numberOfOfflineFriends != 0) {
+                            params.put("numberOfOffliners", String.valueOf(InviteFriendsActivity.numberOfOfflineFriends));
+                        }
+                        int counterOfInvitedFriends = 0;
+                        if(InviteFriendsActivity.friendsList.size() > 0) {
+                            for (int i = 0; i < InviteFriendsActivity.friendsList.size(); i++) {
+                                if (InviteFriendsActivity.friendsList.get(i).isInvited) {
+                                    params.put("invitedParticipants[" + counterOfInvitedFriends + "]", InviteFriendsActivity.friendsList.get(i).userID);
+                                    counterOfInvitedFriends++;
+                                }
+                            }
+                        }
+                        HTTPResponseController.getInstance().createEvent(params, headers, CreateNewActivity.this);
                     }
 
-                    HTTPResponseController.getInstance().createEvent(params, headers, CreateNewActivity.this);
+
+
                     createActivityButton.setEnabled(false);
                 }
             }
@@ -219,8 +287,16 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
         invitedFriends0.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent goToNextActivity = new Intent(CreateNewActivity.this, InviteFriendsActivity.class);
-                startActivityForResult(goToNextActivity, ASK_FRIENDS);
+                if(!getIntent().getBooleanExtra("isEdit",false)) {
+                    Intent goToNextActivity = new Intent(CreateNewActivity.this, InviteFriendsActivity.class);
+                    startActivityForResult(goToNextActivity, ASK_FRIENDS);
+                }
+                else{
+                    Intent goToNextActivity = new Intent(CreateNewActivity.this, InviteFriendsActivity.class);
+                    goToNextActivity.putExtra("isEdit",true);
+                    goToNextActivity.putExtra("eventId",getIntent().getStringExtra("eventId"));
+                    startActivityForResult(goToNextActivity, ASK_FRIENDS);
+                }
             }
         });
 
@@ -230,8 +306,12 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
         InviteFriendsActivity.inviteFriendsAdapter=null;
         InviteFriendsActivity.isFirstTimeInviteFriends=false;
 
-
-        titleText.setText("Create Activity");
+        if(!getIntent().getBooleanExtra("isEdit",false)) {
+            titleText.setText("Create Activity");
+        }
+        else{
+            titleText.setText("Edit Activity");
+        }
         Typeface typeFace = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Medium.ttf");
         Typeface typeFaceBold = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.ttf");
 
@@ -268,7 +348,7 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(descriptionEditText.getText().length() >=20){
+                if(descriptionEditText.getText().length() >=100){
                     Toast.makeText(getApplicationContext(),"You have reached maximum lenght for this field!",Toast.LENGTH_SHORT).show();
                 }
             }
@@ -437,6 +517,315 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                 }
             }
         });
+
+        if(getIntent().getBooleanExtra("isEdit",false)){
+            Bundle b=getIntent().getExtras();
+
+            eventDetails.eventDate=b.getInt("eventDate");
+            eventDetails.description=b.getString("description");
+            eventDetails.placeName=b.getString("placeName");
+            eventDetails.latitude=b.getDouble("latitude");
+            eventDetails.longitude=b.getDouble("longitude");
+            eventDetails.placeId=b.getString("placeId");
+            eventDetails.isAuthorized=b.getInt("isAuthorized");
+            eventDetails.placeAdress=b.getString("placeAdress");
+            eventDetails.authorizeLevel=b.getString("authorizelevel");
+            eventDetails.companyImage=b.getString("placeImage");
+            eventDetails.sportName=b.getString("sportName");
+            eventDetails.otherSportName=b.getString("otherSportName");
+            eventDetails.capacity=b.getInt("capacity");
+            eventDetails.numberOfParticipants=b.getInt("numberOfParticipants");
+            eventDetails.points=b.getInt("points");
+            eventDetails.isParticipant=b.getInt("isParticipant");
+            eventDetails.ludicoins=b.getInt("ludicoins");
+            eventDetails.privacy=b.getInt("privacy");
+            eventDetails.creatorName=b.getString("creatorName");
+            eventDetails.creatorLevel=b.getInt("creatorLevel");
+            eventDetails.creatorId=b.getString("creatorId");
+            eventDetails.creatorProfilePicture=b.getString("creatorProfilePicture");
+            for(int i=0;i < b.getStringArrayList("participantsId").size();i++){
+                Friend friend=new Friend();
+                friend.userID=b.getStringArrayList("participantsId").get(i);
+                friend.userName=b.getStringArrayList("participantsName").get(i);
+                friend.profileImage=b.getStringArrayList("participantsProfileImage").get(i);
+                friend.level=b.getIntegerArrayList("participantsLevel").get(i);
+                eventDetails.listOfParticipants.add(friend);
+            }
+
+            createActivityButton.setText("SAVE CHANGES");
+
+            //set custom data for edit
+
+            switch (eventDetails.sportName){
+                case "FOT":sportSpinner.setSelection(0);
+                    break;
+                case "BAS":sportSpinner.setSelection(1);
+                    break;
+                case "VOL":sportSpinner.setSelection(2);
+                    break;
+                case "JOG":sportSpinner.setSelection(3);
+                    break;
+                case "GYM":sportSpinner.setSelection(4);
+                    break;
+                case "CYC":sportSpinner.setSelection(5);
+                    break;
+                case "TEN":sportSpinner.setSelection(6);
+                    break;
+                case "PIN":sportSpinner.setSelection(7);
+                    break;
+                case "SQU":sportSpinner.setSelection(8);
+                    break;
+                case "OTH":sportSpinner.setSelection(9);
+                    otherSportName.setText(eventDetails.otherSportName);
+                    otherSportName.setSelection(eventDetails.otherSportName.length());
+                    break;
+            }
+
+            if(eventDetails.privacy == 0){
+                privacySpinner.setSelection(0);
+            }
+            else{
+                privacySpinner.setSelection(1);
+            }
+            playersNumber.setText(String.valueOf(eventDetails.capacity));
+
+            Calendar editCalendar=Calendar.getInstance();;
+            editCalendar.setTimeInMillis((long)eventDetails.eventDate*1000);
+
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            String displayDate = formatter.format(editCalendar.getTime());
+            String[] stringDate = displayDate.split("-");
+            String data= stringDate[2] + " " + getMonth(Integer.parseInt(stringDate[1])) + " " + stringDate[0];
+            calendarTextView.setText(data);
+
+            SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+            String displayTime = format.format(editCalendar.getTime());
+            hourTextView.setText(displayTime);
+
+
+            View selected_location_layout = findViewById(R.id.root);
+            ViewGroup.LayoutParams params = selected_location_layout.getLayoutParams();
+            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            selected_location_layout.setLayoutParams(params);
+
+
+            ImageView companyImage = (ImageView) findViewById(R.id.companyImage);
+
+            if (!eventDetails.companyImage.equals("")) {
+                Bitmap bitmap = decodeBase64(eventDetails.companyImage);
+                companyImage.setImageBitmap(bitmap);
+            }
+            locationName = (TextView) findViewById(R.id.locationName);
+            locationName.setText(eventDetails.placeName);
+
+            adress = (TextView) findViewById(R.id.adress);
+            adress.setText(eventDetails.placeAdress);
+
+            TextView ludicoinsNumber = (TextView) findViewById(R.id.ludicoinsNumber);
+            TextView pointsNumber = (TextView) findViewById(R.id.pointsNumber);
+
+            if (!eventDetails.authorizeLevel.equals("")) {
+                ludicoinsNumber.setText("+"+String.valueOf(eventDetails.ludicoins));
+                pointsNumber.setText("+"+String.valueOf(eventDetails.points));
+            } else {
+                ludicoinsNumber.setText(String.valueOf(-1));
+                pointsNumber.setText(String.valueOf(-1));
+            }
+
+            descriptionEditText.setText(eventDetails.description);
+            int countOfFriends = 0;
+
+            for(int i=0;i<eventDetails.listOfParticipants.size();i++) {
+
+                if (countOfFriends == 0) {
+                    if (!eventDetails.listOfParticipants.get(i).profileImage.equals("")) {
+                        Bitmap bitmap = decodeBase64(eventDetails.listOfParticipants.get(i).profileImage);
+                        invitedFriends0.setImageBitmap(bitmap);
+                    }
+                    countOfFriends++;
+                    invitedFriends0.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                        }
+                    });
+
+                    invitedFriends1.setVisibility(View.VISIBLE);
+                    invitedFriends1.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent goToNextActivity = new Intent(CreateNewActivity.this, InviteFriendsActivity.class);
+                            goToNextActivity.putExtra("isEdit",true);
+                            goToNextActivity.putExtra("eventId",getIntent().getStringExtra("eventId"));
+                            startActivityForResult(goToNextActivity, ASK_FRIENDS);
+                        }
+                    });
+                } else if (countOfFriends == 1) {
+                    if (!eventDetails.listOfParticipants.get(i).profileImage.equals("")) {
+                        Bitmap bitmap = decodeBase64(eventDetails.listOfParticipants.get(i).profileImage);
+
+                        invitedFriends1.setImageBitmap(bitmap);
+                    }
+                    countOfFriends++;
+                    invitedFriends1.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                        }
+                    });
+                    invitedFriends2.setVisibility(View.VISIBLE);
+                    invitedFriends2.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent goToNextActivity = new Intent(CreateNewActivity.this, InviteFriendsActivity.class);
+                            goToNextActivity.putExtra("isEdit",true);
+                            goToNextActivity.putExtra("eventId",getIntent().getStringExtra("eventId"));
+                            startActivityForResult(goToNextActivity, ASK_FRIENDS);
+                        }
+                    });
+                } else if (countOfFriends == 2) {
+                    if (!eventDetails.listOfParticipants.get(i).profileImage.equals("")) {
+                        Bitmap bitmap = decodeBase64(eventDetails.listOfParticipants.get(i).profileImage);
+
+                        invitedFriends2.setImageBitmap(bitmap);
+                    }
+                    countOfFriends++;
+                    invitedFriends2.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                        }
+                    });
+                    friendsNumber.setVisibility(View.VISIBLE);
+                    friendsNumber.setText("");
+                    friendsNumber.setBackgroundResource(R.drawable.ic_invite);
+                    friendsNumber.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent goToNextActivity = new Intent(CreateNewActivity.this, InviteFriendsActivity.class);
+                            goToNextActivity.putExtra("isEdit",true);
+                            goToNextActivity.putExtra("eventId",getIntent().getStringExtra("eventId"));
+                            startActivityForResult(goToNextActivity, ASK_FRIENDS);
+                        }
+                    });
+
+                } else if (countOfFriends > 2) {
+                    friendsNumber.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                        }
+                    });
+                    countOfFriends++;
+                    invitedFriends4.setVisibility(View.VISIBLE);
+                    invitedFriends4.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent goToNextActivity = new Intent(CreateNewActivity.this, InviteFriendsActivity.class);
+                            goToNextActivity.putExtra("isEdit",true);
+                            goToNextActivity.putExtra("eventId",getIntent().getStringExtra("eventId"));
+                            startActivityForResult(goToNextActivity, ASK_FRIENDS);
+                        }
+                    });
+
+
+                }
+            }
+
+            numberOfTotalParticipants=eventDetails.numberOfParticipants-1-eventDetails.listOfParticipants.size()+countOfFriends;
+
+            if(numberOfTotalParticipants >= 1){
+                invitedFriends0.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                });
+                invitedFriends1.setVisibility(View.VISIBLE);
+                invitedFriends1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent goToNextActivity = new Intent(CreateNewActivity.this, InviteFriendsActivity.class);
+                        goToNextActivity.putExtra("isEdit",true);
+                        goToNextActivity.putExtra("eventId",getIntent().getStringExtra("eventId"));
+                        startActivityForResult(goToNextActivity, ASK_FRIENDS);
+                    }
+                });
+            }
+            if(numberOfTotalParticipants >= 2){
+                invitedFriends1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                });
+                invitedFriends2.setVisibility(View.VISIBLE);
+                invitedFriends2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent goToNextActivity = new Intent(CreateNewActivity.this, InviteFriendsActivity.class);
+                        goToNextActivity.putExtra("isEdit",true);
+                        goToNextActivity.putExtra("eventId",getIntent().getStringExtra("eventId"));
+                        startActivityForResult(goToNextActivity, ASK_FRIENDS);
+                    }
+                });
+
+            }
+            if(numberOfTotalParticipants >= 3){
+                invitedFriends2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                });
+                friendsNumber.setVisibility(View.VISIBLE);
+                friendsNumber.setText("");
+                friendsNumber.setBackgroundResource(R.drawable.ic_invite);
+                friendsNumber.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent goToNextActivity = new Intent(CreateNewActivity.this, InviteFriendsActivity.class);
+                        goToNextActivity.putExtra("isEdit",true);
+                        goToNextActivity.putExtra("eventId",getIntent().getStringExtra("eventId"));
+                        startActivityForResult(goToNextActivity, ASK_FRIENDS);
+                    }
+                });
+
+            }
+            if(numberOfTotalParticipants >= 4){
+                friendsNumber.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                });
+                friendsNumber.setText("+"+String.valueOf(numberOfTotalParticipants-3));
+                friendsNumber.setBackgroundResource(R.drawable.round_textview);
+                invitedFriends4.setVisibility(View.VISIBLE);
+                invitedFriends4.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent goToNextActivity = new Intent(CreateNewActivity.this, InviteFriendsActivity.class);
+                        goToNextActivity.putExtra("isEdit",true);
+                        goToNextActivity.putExtra("eventId",getIntent().getStringExtra("eventId"));
+                        startActivityForResult(goToNextActivity, ASK_FRIENDS);
+                    }
+                });
+
+
+
+            }
+
+
+
+
+
+
+
+
+
+
+
+        }
     }
 
 
@@ -464,18 +853,72 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
             gps.stopUsingGPS();
         }
 
+
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 15));
+                if(!getIntent().getBooleanExtra("isEdit",false)) {
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 15));
+                }else {
+
+                    tapHereTextView.setText("");
+                    LatLng latLng = new LatLng(eventDetails.latitude, eventDetails.longitude);
+
+
+                    if (!eventDetails.authorizeLevel.equals("")) {
+
+                        switch (Integer.valueOf(eventDetails.authorizeLevel)) {
+
+                            case 0:
+                                GMapsActivity.markerSelected=m_gmap.addMarker(new MarkerOptions()
+                                        .position(latLng)
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_1_selected)));
+                                break;
+                            case 1:
+                                GMapsActivity.markerSelected=m_gmap.addMarker(new MarkerOptions()
+                                        .position(latLng)
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_2_selected)));
+                                break;
+                            case 2:
+                                GMapsActivity.markerSelected=m_gmap.addMarker(new MarkerOptions()
+                                        .position(latLng)
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_3_selected)));
+                                break;
+
+                            case 3:
+                                GMapsActivity.markerSelected=m_gmap.addMarker(new MarkerOptions()
+                                        .position(latLng)
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_4_selected)));
+                                break;
+
+
+                        }
+                    } else {
+                        GMapsActivity.markerSelected=m_gmap.addMarker(new MarkerOptions()
+                                .position(latLng)
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_1_selected)));
+
+                    }
+                    m_gmap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                }
+
+
                 googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                     @Override
                     public void onMapClick(LatLng latLng) {
-                        Intent goToNextActivity = new Intent(CreateNewActivity.this, GMapsActivity.class);
-                        goToNextActivity.putExtra("latitude", String.valueOf(latitude));
-                        goToNextActivity.putExtra("longitude", String.valueOf(longitude));
-                        goToNextActivity.putExtra("sportCode",sportCode);
-                        startActivityForResult(goToNextActivity, ASK_COORDS);
+                        if(!getIntent().getBooleanExtra("isEdit",false)) {
+                            Intent goToNextActivity = new Intent(CreateNewActivity.this, GMapsActivity.class);
+                            goToNextActivity.putExtra("latitude", String.valueOf(latitude));
+                            goToNextActivity.putExtra("longitude", String.valueOf(longitude));
+                            goToNextActivity.putExtra("sportCode", sportCode);
+                            startActivityForResult(goToNextActivity, ASK_COORDS);
+                        }else{
+                            Intent goToNextActivity = new Intent(CreateNewActivity.this, GMapsActivity.class);
+                            goToNextActivity.putExtra("latitude", String.valueOf(eventDetails.latitude));
+                            goToNextActivity.putExtra("longitude", String.valueOf(eventDetails.longitude));
+                            goToNextActivity.putExtra("sportCode", sportCode);
+                            startActivityForResult(goToNextActivity, ASK_COORDS);
+                        }
                     }
                 });
             }

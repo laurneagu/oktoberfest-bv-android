@@ -114,7 +114,7 @@ public class IntroActivity extends Activity {
 
 
         facebookButton=(LoginButton) findViewById(R.id.facebookButton);
-       // facebookButton.setLoginBehavior(LoginBehavior.NATIVE_WITH_FALLBACK); facebookButton.setLoginBehavior(LoginBehavior.NATIVE_ONLY); facebookButton.setLoginBehavior(LoginBehavior.WEB_ONLY);
+        facebookButton.setLoginBehavior(LoginBehavior.NATIVE_WITH_FALLBACK); facebookButton.setLoginBehavior(LoginBehavior.NATIVE_ONLY); facebookButton.setLoginBehavior(LoginBehavior.WEB_ONLY);
         facebookButton.setTypeface(typeFace);
         facebookButton.setReadPermissions(Arrays.asList("public_profile, email, user_friends"));
         loginButton=(Button) findViewById(R.id.loginButton);

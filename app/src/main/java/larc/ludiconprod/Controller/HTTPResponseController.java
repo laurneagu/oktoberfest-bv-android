@@ -399,6 +399,32 @@ public class HTTPResponseController {
             }
         };
     }
+    private Response.Listener<JSONObject>  getInvitedFriendsSuccesListener(){
+        return new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                System.out.println(jsonObject +" invitedfriends");
+                try {
+                    for (int i = 0; i < jsonObject.getJSONArray("friends").length();i++ ) {
+                        Friend friend=new Friend();
+                        friend.userID = jsonObject.getJSONArray("friends").getJSONObject(i).getString("userID");
+                        friend.userName=jsonObject.getJSONArray("friends").getJSONObject(i).getString("userName");
+                        friend.profileImage=jsonObject.getJSONArray("friends").getJSONObject(i).getString("profilePicture");
+                        friend.level=jsonObject.getJSONArray("friends").getJSONObject(i).getInt("level");
+                        friend.isAlreadyInvited=jsonObject.getJSONArray("friends").getJSONObject(i).getInt("isInvited");
+                        friend.offlineFriend=false;
+                        friend.isInvited=false;
+
+                        InviteFriendsActivity.friendsList.add(InviteFriendsActivity.numberOfOfflineFriends+1,friend);
+                    }
+                    InviteFriendsActivity.inviteFriendsAdapter.notifyDataSetChanged();
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+        };
+    }
     private Response.Listener<JSONObject>  getEventDetailsSuccesListener(){
         return new Response.Listener<JSONObject>() {
             @Override
@@ -406,33 +432,6 @@ public class HTTPResponseController {
                 Bundle b=new Bundle();
                 System.out.println(jsonObject +" eventDetails");
                 try {
-                    /*EventDetails eventDetails=new EventDetails();
-                    eventDetails.eventDate=jsonObject.getInt("eventDate");
-                    eventDetails.description=jsonObject.getString("description");
-                    eventDetails.placeName=jsonObject.getJSONObject("location").getString("placeName");
-                    eventDetails.latitude=jsonObject.getJSONObject("location").getInt("latitude");
-                    eventDetails.longitude=jsonObject.getJSONObject("location").getInt("longitude");
-                    eventDetails.placeId=jsonObject.getJSONObject("location").getString("placeId");
-                    eventDetails.isAuthorized=jsonObject.getJSONObject("location").getBoolean("isAuthorized");
-                    eventDetails.sportName=jsonObject.getString("sportName");
-                    eventDetails.otherSportName=jsonObject.getString("otherSportName");
-                    eventDetails.capacity=jsonObject.getInt("capacity");
-                    eventDetails.numberOfParticipants=jsonObject.getInt("numberOfParticipants");
-                    eventDetails.points=jsonObject.getInt("points");
-                    eventDetails.ludicoins=jsonObject.getInt("ludicoins");
-                    eventDetails.creatorName=jsonObject.getString("creatorName");
-                    eventDetails.creatorLevel=jsonObject.getInt("creatorLevel");
-                    eventDetails.creatorId=jsonObject.getString("creatorId");
-                    eventDetails.creatorProfilePicture=jsonObject.getString("creatorProfilePicture");
-                    for(int i=0;i < jsonObject.getJSONArray("participants").length();i++){
-                        Friend friend=new Friend();
-                        friend.userID=jsonObject.getJSONArray("participants").getJSONObject(i).getString("id");
-                        friend.userName=jsonObject.getJSONArray("participants").getJSONObject(i).getString("name");
-                        friend.profileImage=jsonObject.getJSONArray("participants").getJSONObject(i).getString("profilePicture");
-                        friend.level=jsonObject.getJSONArray("participants").getJSONObject(i).getInt("level");
-                    }
-                    */
-
                     b.putInt("eventDate",jsonObject.getInt("eventDate"));
                     b.putString("description",jsonObject.getString("description"));
                     b.putString("placeName",jsonObject.getJSONObject("location").getString("placeName"));
@@ -444,11 +443,16 @@ public class HTTPResponseController {
                     b.putInt("isAuthorized",jsonObject.getJSONObject("location").getInt("isAuthorized"));
                     b.putString("authorizelevel",jsonObject.getJSONObject("location").getString("authorizelevel"));
                     b.putString("sportName",jsonObject.getString("sportName"));
-                    b.putString("otherSportName",jsonObject.getString("otherSportName"));
+                    if(jsonObject.getString("sportName").equals("OTH")) {
+                        b.putString("otherSportName", jsonObject.getString("otherSportName"));
+                    }else{
+                        b.putString("otherSportName", "");
+                    }
                     b.putInt("capacity",jsonObject.getInt("capacity"));
                     b.putInt("numberOfParticipants",jsonObject.getInt("numberOfParticipants"));
                     b.putInt("points",jsonObject.getInt("points"));
                     b.putInt("ludicoins",jsonObject.getInt("ludicoins"));
+                    b.putInt("privacy",jsonObject.getInt("privacy"));
                     b.putString("creatorName",jsonObject.getString("creatorName"));
                     b.putInt("creatorLevel",jsonObject.getInt("creatorLevel"));
                     b.putString("creatorId",jsonObject.getString("creatorId"));
@@ -635,6 +639,13 @@ public class HTTPResponseController {
         setActivity(activity,params.get("email"),params.get("password"));
         RequestQueue requestQueue = Volley.newRequestQueue(activity);
         CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, prodServer+"api/cancelEvent",params,headers,this.cancelEventSuccesListener(), this.createRequestErrorListener());
+        requestQueue.add(jsObjRequest);
+    }
+
+    public void getInvitedFriends(HashMap<String,String> params, HashMap<String,String> headers, Activity activity,HashMap<String,String> urlParams){
+        setActivity(activity,params.get("email"),params.get("password"));
+        RequestQueue requestQueue = Volley.newRequestQueue(activity);
+        CustomRequest jsObjRequest = new CustomRequest(Request.Method.GET, prodServer+"api/friendsInvite?userId="+urlParams.get("userId")+"&eventId="+urlParams.get("eventId")+"&pageNumber="+urlParams.get("pageNumber"),params,headers,this.getInvitedFriendsSuccesListener(), this.createRequestErrorListener());
         requestQueue.add(jsObjRequest);
     }
 

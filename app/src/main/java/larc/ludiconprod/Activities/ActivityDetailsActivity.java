@@ -140,7 +140,7 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
 
 
         //getDataToDisplayFromIntent
-        Bundle b;
+        final Bundle b;
         b=getIntent().getExtras();
         final EventDetails eventDetails=new EventDetails();
         eventDetails.eventDate=b.getInt("eventDate");
@@ -158,6 +158,7 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
         eventDetails.capacity=b.getInt("capacity");
         eventDetails.numberOfParticipants=b.getInt("numberOfParticipants");
         eventDetails.points=b.getInt("points");
+        eventDetails.privacy=b.getInt("privacy");
         eventDetails.isParticipant=b.getInt("isParticipant");
         eventDetails.ludicoins=b.getInt("ludicoins");
         eventDetails.creatorName=b.getString("creatorName");
@@ -463,6 +464,19 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
                 }
             });
 
+        }
+        if(eventDetails.creatorId.equals(Persistance.getInstance().getUserInfo(this).id)){
+            final String eventid=b.getString("eventId");
+            editEventButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent=new Intent(ActivityDetailsActivity.this,CreateNewActivity.class);
+                    intent.putExtra("isEdit",true);
+                    intent.putExtra("eventId",eventid);
+                    intent.putExtras(b);
+                    startActivity(intent);
+                }
+            });
         }
 
         switch (sport.code) {

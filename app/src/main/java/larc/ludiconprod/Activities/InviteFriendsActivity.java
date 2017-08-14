@@ -55,11 +55,17 @@ public class InviteFriendsActivity extends Activity {
 
 
 
-        if(!isFirstTimeInviteFriends) {
+        if(!isFirstTimeInviteFriends && !getIntent().getBooleanExtra("isEdit",false)) {
             Friend friend=new Friend();
             friend.userName="Add Offline Friend";
             friendsList.add(friend);
             getFriends("0");
+            inviteFriendsAdapter = new InviteFriendsAdapter(friendsList, this, this, getResources(), this);
+        }else if(!isFirstTimeInviteFriends && getIntent().getBooleanExtra("isEdit",false)) {
+            Friend friend = new Friend();
+            friend.userName = "Add Offline Friend";
+            friendsList.add(friend);
+            getInvitedFriends("0");
             inviteFriendsAdapter = new InviteFriendsAdapter(friendsList, this, this, getResources(), this);
         }else{
             friendsListView.setAdapter(inviteFriendsAdapter);
@@ -98,6 +104,18 @@ public class InviteFriendsActivity extends Activity {
         urlParams.put("pageNumber",pageNumber);
 
         HTTPResponseController.getInstance().getFriends(params, headers,InviteFriendsActivity.this,urlParams);
+    }
+    public void getInvitedFriends(String pageNumber){
+
+        HashMap<String, String> params = new HashMap<String, String>();
+        HashMap<String, String> headers = new HashMap<String, String>();
+        HashMap<String, String> urlParams = new HashMap<String, String>();
+        headers.put("authKey", Persistance.getInstance().getUserInfo(InviteFriendsActivity.this).authKey);
+        urlParams.put("eventId",getIntent().getStringExtra("eventId"));
+        urlParams.put("userId",Persistance.getInstance().getUserInfo(InviteFriendsActivity.this).id);
+        urlParams.put("pageNumber",pageNumber);
+
+        HTTPResponseController.getInstance().getInvitedFriends(params, headers,InviteFriendsActivity.this,urlParams);
     }
 
     @Override
