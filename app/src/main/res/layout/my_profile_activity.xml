@@ -52,6 +52,7 @@
             </RelativeLayout>
 
             <TextView
+                android:id="@+id/profileName"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:gravity="center"
@@ -62,7 +63,7 @@
                 android:text="Florin Bogdan"/>
 
             <ProgressBar
-                android:layout_width="match_parent"
+                android:layout_width="220dp"
                 android:layout_height="8dp"
                 style="@android:style/Widget.ProgressBar.Horizontal"
                 android:progress="25"
@@ -70,8 +71,7 @@
                 android:layout_marginTop="16dp"
                 android:foreground="@color/pink"
                 android:progressDrawable="@drawable/blueprogress"
-                android:paddingLeft="32dp"
-                android:paddingRight="32dp"/>
+                android:layout_gravity="center"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -117,6 +117,7 @@
                         android:orientation="vertical"
                         android:gravity="center">
                         <TextView
+                            android:id="@+id/profileLevel"
                             android:layout_height="wrap_content"
                             android:layout_width="match_parent"
                             android:text="12"
@@ -153,6 +154,7 @@
                         android:orientation="vertical"
                         android:gravity="center">
                         <TextView
+                            android:id="@+id/profilePoints"
                             android:layout_height="wrap_content"
                             android:layout_width="match_parent"
                             android:text="12"
@@ -189,6 +191,7 @@
                         android:orientation="vertical"
                         android:gravity="center">
                         <TextView
+                            android:id="@+id/profilePosition"
                             android:layout_height="wrap_content"
                             android:layout_width="match_parent"
                             android:text="12"
