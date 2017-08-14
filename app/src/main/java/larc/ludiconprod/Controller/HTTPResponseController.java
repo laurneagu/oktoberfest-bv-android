@@ -637,5 +637,10 @@ public class HTTPResponseController {
         CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, prodServer+"api/cancelEvent",params,headers,this.cancelEventSuccesListener(), this.createRequestErrorListener());
         requestQueue.add(jsObjRequest);
     }
-
+    // E bine asta?
+    public void updateUser(HashMap<String,String> params, HashMap<String,String> headers, Activity activity) {
+        RequestQueue requestQueue = Volley.newRequestQueue(activity);
+        CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, prodServer + "api/user", params,headers,this.createRequestSuccessListener(), this.createRequestErrorListener());
+        requestQueue.add(jsObjRequest);
+    }
 }

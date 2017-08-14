@@ -3,16 +3,21 @@ package larc.ludiconprod.Activities;
 import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -49,6 +54,9 @@ public class MyProfileActivity extends Fragment {
         try {
             super.onCreate(savedInstanceState);
 
+            TextView sportsCount = (TextView) v.findViewById(R.id.profilePracticeSportsCountLabel);
+            Log.d("Sports count", "" + sportsCount);
+
             final User user = Persistance.getInstance().getUserInfo(super.getActivity());
 
             this.settings = (Button) v.findViewById(R.id.settings);
@@ -63,6 +71,16 @@ public class MyProfileActivity extends Fragment {
                     startActivity(intent);
                 }
             });
+
+            TextView name = (TextView) v.findViewById(R.id.profileName);
+            TextView level = (TextView) v.findViewById(R.id.profileLevel);
+            TextView points = (TextView) v.findViewById(R.id.profilePoints);
+            TextView position = (TextView) v.findViewById(R.id.profilePosition);
+
+            name.setText(user.firstName + " " + user.lastName);
+            level.setText("" + user.level);
+            //points.setText(user.points);
+            //position.setText(user);
 
             final ArrayList<String> sportCodes = new ArrayList<>();
             for (Sport s : user.sports) {
@@ -82,16 +100,29 @@ public class MyProfileActivity extends Fragment {
                     return s.compareTo(t1);
                 }
             });
-            Log.i("Image added size", "" + allSportCodes.size());
-            for (String sc : allSportCodes) {
+
+            sportsCount.setText(sportCodes.size() + "/" + allSportCodes.size());
+            Resources r = mContext.getResources();
+            int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, r.getDisplayMetrics());
+
+            for (int i = 0; i < allSportCodes.size(); ++i) {
+                String sc = allSportCodes.get(i);
                 sportImage = new ImageView(getContext());
                 //sportImage.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 //sportImage.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 sportImage.setImageResource(this.findSportImageResource(sc));
                 if (!sportCodes.contains(sc)) {
-                    sportImage.setAlpha(0.5f);
+                    sportImage.setAlpha(0.4f);
                 }
-                sportsLayout.addView(sportImage);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+                if (i == allSportCodes.size() - 1) {
+                    lp.setMargins(0, 0, 0, 0);
+                } else {
+                    lp.setMargins(0, 0, px, 0);
+                }
+
+                sportsLayout.addView(sportImage, lp);
             }
         } catch (Exception e) {
             e.printStackTrace();
