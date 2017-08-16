@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -23,9 +25,11 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.TreeMap;
 
+import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
 import larc.ludiconprod.User;
@@ -54,23 +58,58 @@ public class MyProfileActivity extends Fragment {
         try {
             super.onCreate(savedInstanceState);
 
+            //this.requestInfo();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        this.requestInfo();
+    }
+
+    private void requestInfo() {
+        View tv = v.findViewById(R.id.profileContent);
+        tv.setAlpha(0);
+        tv = v.findViewById(R.id.profileProgressBar);
+        tv.setAlpha(1);
+
+        User u = Persistance.getInstance().getUserInfo(super.getActivity());
+        EditProfileActivity.user.authKey = u.authKey;
+        EditProfileActivity.user.id = u.id;
+        HashMap<String, String> params = new HashMap<>();
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("authKey", u.authKey);
+        HTTPResponseController.getInstance().getUserProfile(params, headers, u.id, this);
+    }
+
+    public void printInfo(User u) {
+        try {
+            final User user = u;
+
+            TextView toNextLevel = (TextView) v.findViewById(R.id.profileToNextLevel);
+            toNextLevel.setText("" + u.pointsToNextLevel);
             TextView sportsCount = (TextView) v.findViewById(R.id.profilePracticeSportsCountLabel);
-            Log.d("Sports count", "" + sportsCount);
-
-            final User user = Persistance.getInstance().getUserInfo(super.getActivity());
-
             this.settings = (Button) v.findViewById(R.id.settings);
             this.settings.setOnClickListener(new View.OnClickListener(){
 
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(mContext, EditProfileActivity.class);
-                    intent.putExtra("gender", user.gender);
-                    intent.putExtra("lastName", user.firstName);
-                    intent.putExtra("firstName", user.lastName);
                     startActivity(intent);
                 }
             });
+
+            ImageView image = (ImageView) v.findViewById(R.id.profileImage);
+            if (u.profileImage != null && !u.profileImage.isEmpty()) {
+                Bitmap im = IntroActivity.decodeBase64(u.profileImage);
+                image.setImageBitmap(im);
+            }
 
             TextView name = (TextView) v.findViewById(R.id.profileName);
             TextView level = (TextView) v.findViewById(R.id.profileLevel);
@@ -79,8 +118,11 @@ public class MyProfileActivity extends Fragment {
 
             name.setText(user.firstName + " " + user.lastName);
             level.setText("" + user.level);
-            //points.setText(user.points);
-            //position.setText(user);
+            points.setText("" + u.points);
+            position.setText("" + u.position);
+
+            ProgressBar levelBar = (ProgressBar) v.findViewById(R.id.profileLevelBar);
+            levelBar.setProgress(u.points * levelBar.getMax() / u.pointsOfNextLevel );
 
             final ArrayList<String> sportCodes = new ArrayList<>();
             for (Sport s : user.sports) {
@@ -105,11 +147,11 @@ public class MyProfileActivity extends Fragment {
             Resources r = mContext.getResources();
             int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, r.getDisplayMetrics());
 
+            sportsLayout.removeAllViews();
             for (int i = 0; i < allSportCodes.size(); ++i) {
                 String sc = allSportCodes.get(i);
                 sportImage = new ImageView(getContext());
-                //sportImage.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                //sportImage.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
+
                 sportImage.setImageResource(this.findSportImageResource(sc));
                 if (!sportCodes.contains(sc)) {
                     sportImage.setAlpha(0.4f);
@@ -124,11 +166,14 @@ public class MyProfileActivity extends Fragment {
 
                 sportsLayout.addView(sportImage, lp);
             }
+
+            View tv = v.findViewById(R.id.profileContent);
+            tv.setAlpha(1);
+            tv = v.findViewById(R.id.profileProgressBar);
+            tv.setAlpha(0);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        return v;
     }
 
     private int findSportImageResource(String sportCode) {

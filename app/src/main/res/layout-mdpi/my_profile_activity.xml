@@ -21,12 +21,14 @@
         android:layout_below="@+id/settings"/>
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/profileContent"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="none"
         android:fillViewport="true"
-        android:layout_below="@+id/settings">
+        android:layout_below="@+id/settings"
+        android:alpha="0">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -42,7 +44,7 @@
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     xmlns:app="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/imgProfilePicture"
+                    android:id="@+id/profileImage"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:layout_centerHorizontal="true"
@@ -63,10 +65,12 @@
                 android:text="Florin Bogdan"/>
 
             <ProgressBar
+                android:id="@+id/profileLevelBar"
                 android:layout_width="220dp"
                 android:layout_height="8dp"
                 style="@android:style/Widget.ProgressBar.Horizontal"
-                android:progress="25"
+                android:progress="250"
+                android:max="1000"
                 android:indeterminate="false"
                 android:layout_marginTop="16dp"
                 android:foreground="@color/pink"
@@ -80,6 +84,7 @@
                 android:gravity="center"
                 android:layout_marginTop="8dp">
                 <TextView
+                    android:id="@+id/profileToNextLevel"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:fontFamily="@string/fontmedium"
@@ -243,4 +248,13 @@
 
         </LinearLayout>
     </ScrollView>
+    <ProgressBar
+        android:id="@+id/profileProgressBar"
+        style="@android:style/Widget.Holo.ProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="56dp"
+        android:indeterminate="true"/>
 </RelativeLayout>

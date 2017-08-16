@@ -127,7 +127,7 @@ public class ProfileDetailsActivity extends Activity {
             }
             else if(getIntent().getStringExtra("gender").equals("1")){
                 female.setChecked(true);
-                male.setTextColor(Color.parseColor("#ffffff"));
+                female.setTextColor(Color.parseColor("#ffffff"));
             }
         }
         age.addTextChangedListener(new TextWatcher() {

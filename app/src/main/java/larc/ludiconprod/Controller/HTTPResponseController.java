@@ -8,7 +8,9 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.util.Base64;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -17,25 +19,30 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.facebook.login.LoginManager;
+import com.google.gson.JsonArray;
 
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
 import larc.ludiconprod.Activities.ActivitiesActivity;
 import larc.ludiconprod.Activities.ActivityDetailsActivity;
 import larc.ludiconprod.Activities.CreateNewActivity;
+import larc.ludiconprod.Activities.EditProfileActivity;
 import larc.ludiconprod.Activities.GMapsActivity;
 import larc.ludiconprod.Activities.IntroActivity;
 import larc.ludiconprod.Activities.InviteFriendsActivity;
 import larc.ludiconprod.Activities.LoginActivity;
 import larc.ludiconprod.Activities.Main;
+import larc.ludiconprod.Activities.MyProfileActivity;
 import larc.ludiconprod.Activities.ProfileDetailsActivity;
 import larc.ludiconprod.Utils.EventDetails;
 import larc.ludiconprod.Utils.Friend;
@@ -542,6 +549,54 @@ public class HTTPResponseController {
         };
     }
 
+    private Response.Listener<JSONObject> createGetProfileListener(final Fragment fragment) {
+        return new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                try {
+                    User u = EditProfileActivity.user;
+
+                    u.email = jsonObject.getString("email");
+                    u.firstName = jsonObject.getString("firstName");
+                    u.lastName = jsonObject.getString("lastName");
+                    u.gender = jsonObject.getString("gender");
+                    u.ludicoins = Integer.parseInt(jsonObject.getString("ludicoins"));
+                    u.level = Integer.parseInt(jsonObject.getString("level"));
+                    u.points = Integer.parseInt(jsonObject.getString("points"));
+                    u.pointsToNextLevel = Integer.parseInt(jsonObject.getString("pointsToNextLevel"));
+                    u.pointsOfNextLevel = Integer.parseInt(jsonObject.getString("pointsOfNextLevel"));
+                    u.position = Integer.parseInt(jsonObject.getString("position"));
+                    u.range = jsonObject.getString("range");
+                    u.age = Calendar.getInstance().get(Calendar.YEAR) - Integer.parseInt(jsonObject.getString("yearBorn"));
+
+                    JSONArray sports = jsonObject.getJSONArray("sports");
+                    u.sports.clear();
+                    for (int i = 0; i < sports.length(); ++i) {
+                        u.sports.add(new Sport(sports.getString(i)));
+                    }
+
+                    MyProfileActivity mpa = (MyProfileActivity) fragment;
+                    mpa.printInfo(u);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+    }
+
+    private  Response.ErrorListener createErrorListener() {
+        return new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                String json = error.getMessage();
+                json = trimMessage(json, "error");
+                if(json != null) {
+                    displayMessage(json);
+                }
+            }
+        };
+    }
+
     public void setActivity(Activity activity, String email, String password){
         this.activity=activity;
         this.email=email;
@@ -553,7 +608,7 @@ public class HTTPResponseController {
         this.userId=userId;
     }
 
-    public void displayMessage(String toastString){
+    public void displayMessage(String toastString) {
         Toast.makeText(activity, toastString, Toast.LENGTH_LONG).show();
         if(activity.getLocalClassName().toString().equals("Activities.IntroActivity")){
             SharedPreferences settings = activity.getSharedPreferences("UserDetails",activity.MODE_PRIVATE);
@@ -650,9 +705,18 @@ public class HTTPResponseController {
     }
 
     public void updateUser(HashMap<String,String> params, HashMap<String,String> headers, Activity activity) {
-               RequestQueue requestQueue = Volley.newRequestQueue(activity);
-               CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, prodServer + "api/user", params,headers,this.createRequestSuccessListener(), this.createRequestErrorListener());
-               requestQueue.add(jsObjRequest);
-            }
-
+       RequestQueue requestQueue = Volley.newRequestQueue(activity);
+       CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, prodServer + "api/user", params, headers, new Response.Listener<JSONObject>() {
+           @Override
+           public void onResponse(JSONObject response) {
+               Log.d("User response", response.toString());
+           }
+       }, this.createErrorListener());
+       requestQueue.add(jsObjRequest);
+    }
+    public void getUserProfile(HashMap<String,String> params, HashMap<String,String> headers, String id, Fragment fragment) {
+        RequestQueue requestQueue = Volley.newRequestQueue(activity);
+        CustomRequest jsObjRequest = new CustomRequest(Request.Method.GET, prodServer + "api/user?userId=" + id, params, headers, this.createGetProfileListener(fragment), this.createErrorListener());
+        requestQueue.add(jsObjRequest);
+    }
 }

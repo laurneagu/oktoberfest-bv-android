@@ -2,7 +2,9 @@ package larc.ludiconprod.Activities;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
@@ -10,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +24,7 @@ import larc.ludiconprod.Adapters.EditProfile.EditActivitiesAdapter;
 import larc.ludiconprod.Adapters.EditProfile.EditInfoAdapter;
 import larc.ludiconprod.Adapters.MainActivity.MyAdapter;
 import larc.ludiconprod.Controller.HTTPResponseController;
+import larc.ludiconprod.Controller.ImagePicker;
 import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
 import larc.ludiconprod.User;
@@ -34,6 +38,8 @@ import larc.ludiconprod.Utils.util.Sport;
  */
 
 public class EditProfileActivity extends AppCompatActivity implements View.OnClickListener {
+    public static final int PICK_IMAGE_ID = 0xab55;
+
     private static final CharSequence TITLES[] = {"SPORT DETAILS", "INFO DETAILS"};
     private int tabsNumber = 2;
     private Context mContext;
@@ -55,6 +61,10 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     private EditText repeatPassword;
     private ArrayList<String> sports = new ArrayList<>();
     private SeekBar range;
+    private ImageView image;
+    private String b64i;
+
+    public static final User user = new User();
 
     @Nullable
     @Override
@@ -98,12 +108,13 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         Log.d("Changed", ""  + firstName.getText() + range.getProgress() + sex + sports);
 
         User old = Persistance.getInstance().getUserInfo(this);
-
-        User user = old;
+;
+        User user = new User();
+        user.id = old.id;
+        user.authKey = old.authKey;
         user.gender = "" + this.sex;
-        //user.age=Integer.valueOf(params.get("yearBorn"));
-        user.firstName = this.firstName.toString();
-        user.lastName = this.lastName.toString();
+        user.firstName = this.firstName.getText().toString();
+        user.lastName = this.lastName.getText().toString();
         user.range = 1 + this.range.getProgress() + "";
 
         /*user.id= old.id;
@@ -131,9 +142,12 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         params.put("gender", user.gender);
         params.put("lastName", user.firstName);
         params.put("firstName", user.lastName);
+        params.put("yearBorn", this.date.getText().toString());
         params.put("range", user.range);
-        //params.put("yearBorn", "" + user.age);
-        //params.put("yearBorn", getIntent().getStringExtra("yearBorn"));
+        params.put("profileImage", user.profileImage);
+
+        Log.d("Pi", user.profileImage);
+
         user.sports.clear();
         for(int i = 0; i < sports.size(); ++i){
             params.put("sports[" + i + "]", sports.get(i));
@@ -141,13 +155,30 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             user.sports.add(sport);
         }
 
-        Persistance.getInstance().setUserInfo(this, user);
-
         HashMap<String, String> headers = new HashMap<>();
         headers.put("authKey", old.authKey);
-        HTTPResponseController.getInstance().updateUser(params, headers, this);
+        //HTTPResponseController.getInstance().updateUser(params, headers, this);
 
         Log.d("Update sent", "Sent!!!");
+
+        Intent intent = new Intent(mContext, MyProfileActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch(requestCode) {
+            case EditProfileActivity.PICK_IMAGE_ID:
+                Bitmap bitmap = ImagePicker.getImageFromResult(this, resultCode, data);
+                if(bitmap != null) {
+                    image.setImageBitmap(bitmap);
+                    b64i = ProfileDetailsActivity.encodeToBase64(bitmap, Bitmap.CompressFormat.JPEG, 50);
+                }
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
+                break;
+        }
     }
 
     public int getSex() {
@@ -216,5 +247,14 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
 
     public void setRange(SeekBar range) {
         this.range = range;
+    }
+
+
+    public ImageView getImage() {
+        return image;
+    }
+
+    public void setImage(ImageView image) {
+        this.image = image;
     }
 }

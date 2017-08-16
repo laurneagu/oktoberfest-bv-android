@@ -18,7 +18,8 @@
         android:layout_height="match_parent"
         android:background="#f7f9fc"
         android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp">
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="64dp">
 
         <TextView
             android:layout_width="match_parent"
@@ -240,17 +241,19 @@
                 android:textColor="@color/pink"
                 android:gravity="center"
                 />
-
-        <Button
-            android:id="@+id/saveChangesButton2"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="SAVE PREFERENCES"
-            android:layout_marginBottom="16dp"
-            android:layout_alignParentBottom="true"
-            android:textColor="#ffffff"
-            android:textSize="14sp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/pink_button_selector"/>
     </LinearLayout>
+
+    <Button
+        android:id="@+id/saveChangesButton2"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="SAVE PREFERENCES"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_alignParentBottom="true"
+        android:textColor="#ffffff"
+        android:textSize="14sp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/pink_button_selector"/>
 </RelativeLayout>
