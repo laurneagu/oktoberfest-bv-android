@@ -649,4 +649,10 @@ public class HTTPResponseController {
         requestQueue.add(jsObjRequest);
     }
 
+    public void updateUser(HashMap<String,String> params, HashMap<String,String> headers, Activity activity) {
+               RequestQueue requestQueue = Volley.newRequestQueue(activity);
+               CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, prodServer + "api/user", params,headers,this.createRequestSuccessListener(), this.createRequestErrorListener());
+               requestQueue.add(jsObjRequest);
+            }
+
 }
