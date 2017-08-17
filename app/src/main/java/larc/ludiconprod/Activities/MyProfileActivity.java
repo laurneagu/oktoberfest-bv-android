@@ -33,6 +33,7 @@ import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
 import larc.ludiconprod.User;
+import larc.ludiconprod.Utils.GlobalResources;
 import larc.ludiconprod.Utils.util.Sport;
 
 /**
@@ -80,8 +81,15 @@ public class MyProfileActivity extends Fragment {
         tv.setAlpha(1);
 
         User u = Persistance.getInstance().getUserInfo(super.getActivity());
-        EditProfileActivity.user.authKey = u.authKey;
-        EditProfileActivity.user.id = u.id;
+
+        User set = new User();
+
+
+        set.authKey = u.authKey;
+        set.id = u.id;
+
+        Persistance.getInstance().setProfileInfo(super.getActivity(), set);
+
         HashMap<String, String> params = new HashMap<>();
         HashMap<String, String> headers = new HashMap<>();
         headers.put("authKey", u.authKey);
@@ -90,8 +98,6 @@ public class MyProfileActivity extends Fragment {
 
     public void printInfo(User u) {
         try {
-            final User user = u;
-
             TextView toNextLevel = (TextView) v.findViewById(R.id.profileToNextLevel);
             toNextLevel.setText("" + u.pointsToNextLevel);
             TextView sportsCount = (TextView) v.findViewById(R.id.profilePracticeSportsCountLabel);
@@ -116,8 +122,8 @@ public class MyProfileActivity extends Fragment {
             TextView points = (TextView) v.findViewById(R.id.profilePoints);
             TextView position = (TextView) v.findViewById(R.id.profilePosition);
 
-            name.setText(user.firstName + " " + user.lastName);
-            level.setText("" + user.level);
+            name.setText(u.firstName + " " + u.lastName);
+            level.setText("" + u.level);
             points.setText("" + u.points);
             position.setText("" + u.position);
 
@@ -125,7 +131,7 @@ public class MyProfileActivity extends Fragment {
             levelBar.setProgress(u.points * levelBar.getMax() / u.pointsOfNextLevel );
 
             final ArrayList<String> sportCodes = new ArrayList<>();
-            for (Sport s : user.sports) {
+            for (Sport s : u.sports) {
                 sportCodes.add(s.code);
             }
 

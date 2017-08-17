@@ -32,10 +32,13 @@ import java.util.Calendar;
 import larc.ludiconprod.Activities.CreateNewActivity;
 import larc.ludiconprod.Activities.EditProfileActivity;
 import larc.ludiconprod.Activities.IntroActivity;
+import larc.ludiconprod.Activities.MyProfileActivity;
 import larc.ludiconprod.Activities.ProfileDetailsActivity;
 import larc.ludiconprod.Controller.ImagePicker;
+import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
 import larc.ludiconprod.User;
+import larc.ludiconprod.Utils.GlobalResources;
 
 import static android.R.color.transparent;
 
@@ -57,7 +60,7 @@ public class EditProfileTab2 extends Fragment {
 
         try {
             final EditProfileActivity epa = (EditProfileActivity) super.getActivity();
-            User u = epa.user;
+            User u = Persistance.getInstance().getProfileInfo(super.getActivity());
 
             EditText firstName = (EditText) v.findViewById(R.id.editFirstName);
             EditText lastName = (EditText) v.findViewById(R.id.editLastName);
@@ -151,6 +154,7 @@ public class EditProfileTab2 extends Fragment {
             editChoosePhoto.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
                     Intent chooseImageIntent = ImagePicker.getPickImageIntent(getActivity());
                     startActivityForResult(chooseImageIntent, EditProfileActivity.PICK_IMAGE_ID);
                 }

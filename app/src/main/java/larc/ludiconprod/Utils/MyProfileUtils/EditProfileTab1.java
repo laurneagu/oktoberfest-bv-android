@@ -17,9 +17,11 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import larc.ludiconprod.Activities.EditProfileActivity;
+import larc.ludiconprod.Activities.MyProfileActivity;
 import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
 import larc.ludiconprod.User;
+import larc.ludiconprod.Utils.GlobalResources;
 import larc.ludiconprod.Utils.util.Sport;
 
 public class EditProfileTab1 extends Fragment implements View.OnClickListener, SeekBar.OnSeekBarChangeListener {
@@ -38,7 +40,7 @@ public class EditProfileTab1 extends Fragment implements View.OnClickListener, S
         try {
             EditProfileActivity epa = (EditProfileActivity) getActivity();
 
-            User u = epa.user;
+            User u = Persistance.getInstance().getProfileInfo(super.getActivity());
             SeekBar seekBar = (SeekBar) v.findViewById(R.id.editRangeBar);
             seekBar.setOnSeekBarChangeListener(this);
             Button save = (Button) v.findViewById(R.id.saveChangesButton2);

@@ -46,6 +46,7 @@ import larc.ludiconprod.Activities.MyProfileActivity;
 import larc.ludiconprod.Activities.ProfileDetailsActivity;
 import larc.ludiconprod.Utils.EventDetails;
 import larc.ludiconprod.Utils.Friend;
+import larc.ludiconprod.Utils.GlobalResources;
 import larc.ludiconprod.Utils.util.AuthorizedLocation;
 import larc.ludiconprod.Utils.util.Sport;
 import larc.ludiconprod.User;
@@ -554,7 +555,7 @@ public class HTTPResponseController {
             @Override
             public void onResponse(JSONObject jsonObject) {
                 try {
-                    User u = EditProfileActivity.user;
+                    User u = Persistance.getInstance().getProfileInfo(fragment.getActivity());
 
                     u.email = jsonObject.getString("email");
                     u.firstName = jsonObject.getString("firstName");
@@ -568,6 +569,7 @@ public class HTTPResponseController {
                     u.position = Integer.parseInt(jsonObject.getString("position"));
                     u.range = jsonObject.getString("range");
                     u.age = Calendar.getInstance().get(Calendar.YEAR) - Integer.parseInt(jsonObject.getString("yearBorn"));
+                    u.profileImage = jsonObject.getString("profileImage");
 
                     JSONArray sports = jsonObject.getJSONArray("sports");
                     u.sports.clear();
@@ -576,6 +578,7 @@ public class HTTPResponseController {
                     }
 
                     MyProfileActivity mpa = (MyProfileActivity) fragment;
+                    Persistance.getInstance().setProfileInfo(fragment.getActivity(), u);
                     mpa.printInfo(u);
                 } catch (JSONException e) {
                     e.printStackTrace();
