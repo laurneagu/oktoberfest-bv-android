@@ -1,13 +1,10 @@
 package larc.ludiconprod.Utils.MyProfileUtils;
 
-import android.app.Activity;
-import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
@@ -16,9 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -26,19 +21,14 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import larc.ludiconprod.Activities.CreateNewActivity;
 import larc.ludiconprod.Activities.EditProfileActivity;
 import larc.ludiconprod.Activities.IntroActivity;
-import larc.ludiconprod.Activities.MyProfileActivity;
-import larc.ludiconprod.Activities.ProfileDetailsActivity;
 import larc.ludiconprod.Controller.ImagePicker;
 import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
 import larc.ludiconprod.User;
-import larc.ludiconprod.Utils.GlobalResources;
 
 import static android.R.color.transparent;
 
@@ -145,7 +135,11 @@ public class EditProfileTab2 extends Fragment {
                 @Override
                 public void onClick(View view) {
                     ViewGroup.LayoutParams params = passwordLayout.getLayoutParams();
-                    params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                    if (params.height == 0) {
+                        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                    } else {
+                        params.height = 0;
+                    }
                     passwordLayout.setLayoutParams(params);
                 }
             });
@@ -154,7 +148,6 @@ public class EditProfileTab2 extends Fragment {
             editChoosePhoto.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    epa.changeProfile();
                     Intent chooseImageIntent = ImagePicker.getPickImageIntent(getActivity());
                     startActivityForResult(chooseImageIntent, EditProfileActivity.PICK_IMAGE_ID);
                 }

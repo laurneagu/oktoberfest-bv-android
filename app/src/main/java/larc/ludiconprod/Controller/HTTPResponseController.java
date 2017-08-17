@@ -19,24 +19,20 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.facebook.login.LoginManager;
-import com.google.gson.JsonArray;
 
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 
 import larc.ludiconprod.Activities.ActivitiesActivity;
 import larc.ludiconprod.Activities.ActivityDetailsActivity;
 import larc.ludiconprod.Activities.CreateNewActivity;
-import larc.ludiconprod.Activities.EditProfileActivity;
 import larc.ludiconprod.Activities.GMapsActivity;
 import larc.ludiconprod.Activities.IntroActivity;
 import larc.ludiconprod.Activities.InviteFriendsActivity;
@@ -44,9 +40,7 @@ import larc.ludiconprod.Activities.LoginActivity;
 import larc.ludiconprod.Activities.Main;
 import larc.ludiconprod.Activities.MyProfileActivity;
 import larc.ludiconprod.Activities.ProfileDetailsActivity;
-import larc.ludiconprod.Utils.EventDetails;
 import larc.ludiconprod.Utils.Friend;
-import larc.ludiconprod.Utils.GlobalResources;
 import larc.ludiconprod.Utils.util.AuthorizedLocation;
 import larc.ludiconprod.Utils.util.Sport;
 import larc.ludiconprod.User;
@@ -54,7 +48,6 @@ import larc.ludiconprod.Utils.Event;
 
 import static larc.ludiconprod.Activities.ActivitiesActivity.aroundMeEventList;
 import static larc.ludiconprod.Activities.ActivitiesActivity.fradapter;
-import static larc.ludiconprod.Activities.ActivitiesActivity.myAdapter;
 import static larc.ludiconprod.Activities.ActivitiesActivity.myEventList;
 
 /**
@@ -718,8 +711,19 @@ public class HTTPResponseController {
        requestQueue.add(jsObjRequest);
     }
     public void getUserProfile(HashMap<String,String> params, HashMap<String,String> headers, String id, Fragment fragment) {
-        RequestQueue requestQueue = Volley.newRequestQueue(activity);
+        RequestQueue requestQueue = Volley.newRequestQueue(fragment.getActivity());
         CustomRequest jsObjRequest = new CustomRequest(Request.Method.GET, prodServer + "api/user?userId=" + id, params, headers, this.createGetProfileListener(fragment), this.createErrorListener());
+        requestQueue.add(jsObjRequest);
+    }
+
+    public void changePassword(HashMap<String,String> params, HashMap<String,String> headers, Activity activity) {
+        RequestQueue requestQueue = Volley.newRequestQueue(activity);
+        CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, prodServer + "api/changePassword", params, headers, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("Change Password response", response.toString());
+            }
+        }, this.createErrorListener());
         requestQueue.add(jsObjRequest);
     }
 }

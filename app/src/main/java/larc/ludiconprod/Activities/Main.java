@@ -32,6 +32,11 @@ public class Main extends FragmentActivity{
             chatPersistence.setChatNotificationStatus(this, "0");
         }
 
+        int sel = super.getIntent().getIntExtra("Tab", -1);
+        if (sel != -1) {
+            bottomBar.setDefaultTab(sel);
+        }
+
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {

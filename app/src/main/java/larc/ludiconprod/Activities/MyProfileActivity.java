@@ -1,14 +1,13 @@
 package larc.ludiconprod.Activities;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,21 +18,15 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Set;
-import java.util.TreeMap;
 
 import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
 import larc.ludiconprod.User;
-import larc.ludiconprod.Utils.GlobalResources;
 import larc.ludiconprod.Utils.util.Sport;
 
 /**
@@ -44,7 +37,7 @@ public class MyProfileActivity extends Fragment {
 
     protected Context mContext;
     protected View v;
-    protected Button settings;
+    protected ImageView settings;
 
     public MyProfileActivity() {
 
@@ -59,7 +52,17 @@ public class MyProfileActivity extends Fragment {
         try {
             super.onCreate(savedInstanceState);
 
-            //this.requestInfo();
+            Button logout = (Button) v.findViewById(R.id.profileLogout);
+            logout.setOnClickListener(new View.OnClickListener(){
+
+                @Override
+                public void onClick(View view) {
+                    Persistance.getInstance().deleteUserProfileInfo(getActivity());
+                    getActivity().finish();
+                    Intent intent = new Intent(mContext, IntroActivity.class);
+                    startActivity(intent);
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -84,7 +87,6 @@ public class MyProfileActivity extends Fragment {
 
         User set = new User();
 
-
         set.authKey = u.authKey;
         set.id = u.id;
 
@@ -101,7 +103,7 @@ public class MyProfileActivity extends Fragment {
             TextView toNextLevel = (TextView) v.findViewById(R.id.profileToNextLevel);
             toNextLevel.setText("" + u.pointsToNextLevel);
             TextView sportsCount = (TextView) v.findViewById(R.id.profilePracticeSportsCountLabel);
-            this.settings = (Button) v.findViewById(R.id.settings);
+            this.settings = (ImageView) v.findViewById(R.id.settings);
             this.settings.setOnClickListener(new View.OnClickListener(){
 
                 @Override
@@ -121,11 +123,13 @@ public class MyProfileActivity extends Fragment {
             TextView level = (TextView) v.findViewById(R.id.profileLevel);
             TextView points = (TextView) v.findViewById(R.id.profilePoints);
             TextView position = (TextView) v.findViewById(R.id.profilePosition);
+            TextView ludiconis = (TextView) v.findViewById(R.id.profileLudicoins);
 
             name.setText(u.firstName + " " + u.lastName);
             level.setText("" + u.level);
             points.setText("" + u.points);
             position.setText("" + u.position);
+            ludiconis.setText("" + u.ludicoins);
 
             ProgressBar levelBar = (ProgressBar) v.findViewById(R.id.profileLevelBar);
             levelBar.setProgress(u.points * levelBar.getMax() / u.pointsOfNextLevel );

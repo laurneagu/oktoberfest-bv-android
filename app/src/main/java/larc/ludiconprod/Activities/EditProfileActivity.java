@@ -1,36 +1,37 @@
 package larc.ludiconprod.Activities;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
 import larc.ludiconprod.Adapters.EditProfile.EditActivitiesAdapter;
 import larc.ludiconprod.Adapters.EditProfile.EditInfoAdapter;
-import larc.ludiconprod.Adapters.MainActivity.MyAdapter;
 import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.ImagePicker;
 import larc.ludiconprod.Controller.Persistance;
+import larc.ludiconprod.PasswordEncryptor;
 import larc.ludiconprod.R;
 import larc.ludiconprod.User;
 import larc.ludiconprod.Utils.Event;
-import larc.ludiconprod.Utils.GlobalResources;
 import larc.ludiconprod.Utils.MyProfileUtils.EditViewPagerAdapter;
 import larc.ludiconprod.Utils.ui.SlidingTabLayout;
 import larc.ludiconprod.Utils.util.Sport;
@@ -68,9 +69,18 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        super.setContentView(R.layout.edit_profile_activity);
 
         try {
+            ActionBar actionBar = getSupportActionBar();
+            actionBar.hide();
+
+            super.setContentView(R.layout.edit_profile_activity);
+
+            ImageButton backButton=(ImageButton) findViewById(R.id.backButton);
+            backButton.setBackgroundResource(R.drawable.ic_nav_up);
+            TextView titleText=(TextView) findViewById(R.id.titleText);
+            titleText.setText("Edit profile");
+
             this.adapter = new EditViewPagerAdapter(getSupportFragmentManager(), EditProfileActivity.TITLES, tabsNumber);
 
             pager = (ViewPager) findViewById(R.id.editPager);
@@ -93,9 +103,14 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
 
             myAdapter = new EditActivitiesAdapter(myEventList, this.getApplicationContext(), this, getResources(), this);
 
-
-            //infoAdapter = new EditInfoAdapter(getActivity().getApplicationContext(), getActivity(), getResources(), this);
-
+            backButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(EditProfileActivity.this, Main.class);
+                    intent.putExtra("Tab", R.id.tab_profile);
+                    startActivity(intent);
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -130,19 +145,34 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         user.authKey = old.authKey;
         user.gender = "" + this.sex;
         user.firstName = this.firstName.getText().toString();
+
+        if (user.firstName.isEmpty()) {
+            Toast.makeText(this, "Enter your first name!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         user.lastName = this.lastName.getText().toString();
+        if (user.lastName.isEmpty()) {
+            Toast.makeText(this, "Enter your last name!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         user.range = 1 + this.range.getProgress() + "";
         user.profileImage = old.profileImage;
 
-        /*user.id= old.id;
-        user.authKey=old.authKey;
-        user.facebookId=old.facebookId;
-        user.email=old.email;
-        user.password=old.password;
-        user.ludicoins=old.ludicoins;*/
+        try {
+            int year = Integer.parseInt(this.date.getText().toString());
+            if (year > Calendar.getInstance().get(Calendar.YEAR)) {
+                throw new NumberFormatException();
+            }
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Invalid year provided!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
 
         if (this.newPassword.getText().length() > 0 || this.oldPassword.getText().length() > 0 || this.repeatPassword.getText().length() > 0) {
-            if (!this.newPassword.getText().equals(this.oldPassword.getText())) {
+            if (!this.newPassword.getText().toString().equals(this.oldPassword.getText().toString())) {
                 Toast.makeText(this, "Passwords do not match!", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -151,7 +181,21 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                 Toast.makeText(this, "Wrong password!", Toast.LENGTH_SHORT).show();
                 return;
             }
-            user.password = this.newPassword.toString();
+            String pass = this.newPassword.toString();
+
+            try {
+                pass = PasswordEncryptor.generateSHA255FromString(pass);
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+                return;
+            }
+
+            HashMap<String, String> params = new HashMap<>();
+            HashMap<String, String> headers = new HashMap<>();
+            headers.put("authKey", old.authKey);
+            HTTPResponseController.getInstance().changePassword(params, headers, this);
+
+            Log.d("Update password", "Sending!!!");
         }
 
         HashMap<String, String> params = new HashMap<>();
@@ -177,6 +221,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         Log.d("Update sent", "Sent!!!");
 
         Intent intent = new Intent(this, Main.class);
+        intent.putExtra("Tab", R.id.tab_profile);
         startActivity(intent);
     }
 

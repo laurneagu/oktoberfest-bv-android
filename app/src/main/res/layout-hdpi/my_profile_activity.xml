@@ -3,22 +3,65 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_marginBottom="64dp">
 
-    <Button
-        android:id="@+id/settings"
+    <RelativeLayout
+        android:id="@+id/myProfileTop"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:textColor="@color/tab_text_color"
-        android:background="#FFFFFF"
-        android:text="Settings"
-        android:textSize="20sp"/>
+        android:background="#FFFFFF">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="@color/tab_text_color"
+
+            android:text="My profile"
+            android:textSize="20sp"
+            android:gravity="center|left"
+            android:layout_marginLeft="16dp"
+            android:layout_alignParentLeft="true"
+            android:fontFamily="@string/fontbold"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_alignParentRight="true">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/round_textview"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_ludicoins"/>
+                <TextView
+                    android:id="@+id/profileLudicoins"
+                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:text="\?"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    android:fontFamily="@string/fontmedium"
+                    android:layout_marginRight="8dp"/>
+            </LinearLayout>
+            <ImageView
+                android:id="@+id/settings"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_edit_profile"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"/>
+        </LinearLayout>
+    </RelativeLayout>
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="12dp"
         android:background="@drawable/shadow_top_to_bottom"
-        android:layout_below="@+id/settings"/>
+        android:layout_below="@+id/myProfileTop"/>
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/profileContent"
@@ -27,8 +70,8 @@
         android:layout_height="match_parent"
         android:scrollbars="none"
         android:fillViewport="true"
-        android:layout_below="@+id/settings"
-        android:alpha="0">
+        android:layout_below="@+id/myProfileTop"
+        android:alpha="1">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -246,6 +289,7 @@
                 </LinearLayout>
             </HorizontalScrollView>
 
+
         </LinearLayout>
     </ScrollView>
     <ProgressBar
@@ -257,4 +301,18 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="56dp"
         android:indeterminate="true"/>
+
+    <Button
+        android:id="@+id/profileLogout"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="LOGOUT"
+        android:layout_alignParentBottom="true"
+        android:textColor="#ffffff"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:textSize="14sp"
+        android:background="@drawable/pink_button_selector"/>
 </RelativeLayout>

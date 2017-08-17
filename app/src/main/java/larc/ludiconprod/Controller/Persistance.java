@@ -70,4 +70,13 @@ public class Persistance {
         }
         return user;
     }
+
+    public void deleteUserProfileInfo(Activity activity) {
+        SharedPreferences.Editor editor = activity.getSharedPreferences(this.profileDetailsString, 0).edit();
+        editor.clear();
+        editor.commit();
+        editor = activity.getSharedPreferences(this.userDetailsString, 0).edit();
+        editor.clear();
+        editor.commit();
+    }
 }

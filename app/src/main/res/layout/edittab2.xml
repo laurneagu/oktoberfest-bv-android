@@ -202,7 +202,7 @@
                     android:layout_marginTop="8dp"
                     android:inputType="textPassword"
                     android:background="@drawable/rounded_edittext"
-                    android:hint="Password"
+                    android:hint="Retype Password"
                     android:layout_below="@+id/newPassword"/>
             </RelativeLayout>
 
