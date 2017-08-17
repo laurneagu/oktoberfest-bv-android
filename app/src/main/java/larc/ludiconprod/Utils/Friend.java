@@ -14,4 +14,6 @@ public class Friend {
     public boolean offlineFriend=false;
     public boolean isInvited=false;
     public int isAlreadyInvited=0;
+    public boolean isOfflineParticipant=false;
+    public int numberOfOffliners=-1;
 }

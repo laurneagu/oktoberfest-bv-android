@@ -70,6 +70,8 @@ public class ActivitiesActivity extends Fragment {
     private View v;
     boolean addedSwipeAroundMe = false;
     boolean addedSwipeMyActivity = false;
+    static public boolean getFirstPageAroundMe=true;
+    static public boolean getFirstPageMyActivity=true;
     static public AroundMeAdapter fradapter;
     static public MyAdapter myAdapter;
     static public ActivitiesActivity currentFragment;
@@ -85,7 +87,8 @@ public class ActivitiesActivity extends Fragment {
     ProgressBar progressBarAroundMe;
     public static int NumberOfRefreshMyEvents=0;
     public static int NumberOfRefreshAroundMe=0;
-    ListView frlistView;
+    public static ListView frlistView;
+    public static ListView mylistView;
     Boolean isFirstTimeAroundMe=false;
     Boolean isFirstTimeMyEvents=false;
 
@@ -157,8 +160,6 @@ public class ActivitiesActivity extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mContext = inflater.getContext();
         v = inflater.inflate(R.layout.activities_acitivity, container, false);
-        myEventList.clear();
-        aroundMeEventList.clear();
 /*
         if(locationChecker == null) locationChecker = LocationChecker.getInstance();
         locationChecker.setContext(mContext);
@@ -218,19 +219,17 @@ public class ActivitiesActivity extends Fragment {
 
 
             }*/
-            getAroundMeEvents("0");
-            getMyEvents("0");
+                getAroundMeEvents("0");
+                getMyEvents("0");
 
-            myAdapter = new MyAdapter(myEventList, getActivity().getApplicationContext(), getActivity(), getResources(), currentFragment);
-
-
-            fradapter = new AroundMeAdapter(aroundMeEventList, getActivity().getApplicationContext(), getActivity(), getResources(), currentFragment);
+                myAdapter = new MyAdapter(myEventList, getActivity().getApplicationContext(), getActivity(), getResources(), currentFragment);
 
 
+                fradapter = new AroundMeAdapter(aroundMeEventList, getActivity().getApplicationContext(), getActivity(), getResources(), currentFragment);
 
 
-            NumberOfRefreshMyEvents=0;
-            NumberOfRefreshAroundMe=0;
+                NumberOfRefreshMyEvents = 0;
+                NumberOfRefreshAroundMe = 0;
 
 
 
@@ -283,40 +282,41 @@ return v;
             noActivitiesTextFieldAroundMe.setVisibility(View.INVISIBLE);
             pressPlusButtonTextFieldAroundMe.setVisibility(View.INVISIBLE);
         }
-        frlistView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(final View v, MotionEvent event) {
-                if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
-                    if (v != null)  {
+        if(frlistView != null) {
+            frlistView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(final View v, MotionEvent event) {
+                    if (v != null && frlistView.getChildCount() > 0) {
+                     if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
+                         if (frlistView.getLastVisiblePosition() == frlistView.getAdapter().getCount() - 1 &&
+                                    frlistView.getChildAt(frlistView.getChildCount() - 1).getBottom() <= frlistView.getHeight()) {
 
-                        if (frlistView.getLastVisiblePosition() == frlistView.getAdapter().getCount() - 1 &&
-                                frlistView.getChildAt(frlistView.getChildCount() - 1).getBottom() <= frlistView.getHeight()) {
+                                // mSwipeRefreshLayout1.setRefreshing(true);
+                                progressBarAroundMe.setAlpha(1f);
 
-                            // mSwipeRefreshLayout1.setRefreshing(true);
-                            progressBarAroundMe.setAlpha(1f);
+                                //(new Handler()).postDelayed(new Runnable() {
+                                    ////@Override
+                                   // public void run() {
+                                        getAroundMeEvents(String.valueOf(NumberOfRefreshAroundMe));
+                                   // }
+                               // }, 1000);
 
-                            (new Handler()).postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    getAroundMeEvents(String.valueOf(NumberOfRefreshAroundMe));
-                                }
-                            }, 1000);
-
+                            }
                         }
                     }
+                    return false;
                 }
-                return false;
-            }
-        });
+            });
+        }
 
                     if (!addedSwipeAroundMe) {
                         mSwipeRefreshLayout2.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                             @Override
                             public void onRefresh() {
                                 getAroundMeEvents("0");
+                                getFirstPageAroundMe=true;
                                 mSwipeRefreshLayout2.setRefreshing(false);
                                 NumberOfRefreshAroundMe = 0;
-                                aroundMeEventList.clear();
                             }
                         });
                         addedSwipeAroundMe = true;
@@ -332,7 +332,7 @@ return v;
         // mSwipeRefreshLayout2.setEnabled(false);
         // mSwipeRefreshLayout2.setFocusable(false);
         myAdapter.notifyDataSetChanged();
-        final ListView mylistView = (ListView) v.findViewById(R.id.events_listView1);
+        mylistView = (ListView) v.findViewById(R.id.events_listView1);
         heartImageMyActivity=(ImageView) v.findViewById(R.id.heartImageMyActivity);
         noActivitiesTextFieldMyActivity=(TextView)v.findViewById(R.id.noActivitiesTextFieldMyActivity);
         pressPlusButtonTextFieldMyActivity=(TextView)v.findViewById(R.id.pressPlusButtonTextFieldMyActivity);
@@ -368,41 +368,38 @@ return v;
             noActivitiesTextFieldMyActivity.setVisibility(View.INVISIBLE);
             pressPlusButtonTextFieldMyActivity.setVisibility(View.INVISIBLE);
         }
-        mylistView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(final View v, MotionEvent event) {
-                if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
-                    if (v != null) {
+        if(mylistView != null) {
+            mylistView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(final View v, MotionEvent event) {
+                    if (v != null && mylistView.getChildCount() > 0) {
+                        if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
 
-                        if (mylistView.getLastVisiblePosition() == mylistView.getAdapter().getCount() - 1 &&
-                                mylistView.getChildAt(mylistView.getChildCount() - 1).getBottom() <= mylistView.getHeight()) {
 
-                            // mSwipeRefreshLayout1.setRefreshing(true);
-                            progressBarMyEvents.setAlpha(1f);
+                            if (mylistView.getLastVisiblePosition() == mylistView.getAdapter().getCount() - 1 &&
+                                    mylistView.getChildAt(mylistView.getChildCount() - 1).getBottom() <= mylistView.getHeight()) {
 
-                            (new Handler()).postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    getMyEvents(String.valueOf(NumberOfRefreshMyEvents));
-                                    progressBarMyEvents.setAlpha(0f);
-                                }
-                            }, 1000);
+                                // mSwipeRefreshLayout1.setRefreshing(true);
+                                progressBarMyEvents.setAlpha(1f);
+                                getMyEvents(String.valueOf(NumberOfRefreshMyEvents));
 
+
+                            }
                         }
                     }
+                    return false;
                 }
-                return false;
-            }
-        });
+            });
+        }
 
         if (!addedSwipeMyActivity) {
             mSwipeRefreshLayout1.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
                     getMyEvents("0");
+                    getFirstPageMyActivity=true;
                     mSwipeRefreshLayout1.setRefreshing(false);
                     NumberOfRefreshMyEvents=0;
-                    myEventList.clear();
                 }
             });
             addedSwipeMyActivity = true;

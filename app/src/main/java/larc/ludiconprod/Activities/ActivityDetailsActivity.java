@@ -79,10 +79,13 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
     Button joinOrUnjoinButton;
     ImageView backgroundImage;
     GoogleMap m_gmap;
+    public static boolean ifFirstTimeGetParticipants=false;
     double latitude;
     double longitude;
     int isAuthorizedPlace;
     int authorizedLevel;
+    LinearLayout chatAndInviteLayout;
+    static public String eventID=null;
 
     public static Bitmap decodeBase64(String input)
     {
@@ -94,10 +97,29 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
         return date.substring(0,1).toUpperCase().concat(date.substring(1,3));
     }
 
+    public void getParticipants(String pageNumber,Bundle b,EventDetails eventDetails){
+        HashMap<String, String> params = new HashMap<String, String>();
+        HashMap<String, String> headers = new HashMap<String, String>();
+        HashMap<String, String> urlParams = new HashMap<String, String>();
+        headers.put("authKey", Persistance.getInstance().getUserInfo(ActivityDetailsActivity.this).authKey);
+        final String eventid=b.getString("eventId");
+        eventID=eventid;
+        urlParams.put("eventId",eventid);
+        urlParams.put("userId", Persistance.getInstance().getUserInfo(ActivityDetailsActivity.this).id);
+        urlParams.put("pageNumber",pageNumber);
+        HTTPResponseController.getInstance().getParticipants(params, headers,ActivityDetailsActivity.this,urlParams);
+    }
+
 
 
     @Override
     public void onCreate(Bundle savedInstance){
+
+        ifFirstTimeGetParticipants=false;
+        InviteFriendsActivity.isFirstTimeInviteFriends=false;
+        eventID=null;
+        InviteFriendsActivity.participantList.clear();
+        InviteFriendsActivity.friendsList.clear();
         super.onCreate(savedInstance);
         setContentView(R.layout.activity_details_activity);
         backButton=(ImageButton) findViewById(R.id.backButton);
@@ -110,6 +132,7 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
         ludicoinsNumber=(TextView)findViewById(R.id.ludicoinsNumber);
         pointsNumber=(TextView)findViewById(R.id.pointsNumber);
         playerNumber=(TextView)findViewById(R.id.playerNumber);
+        chatAndInviteLayout=(LinearLayout)findViewById(R.id.chatAndInviteLayout);
         imageProfileParticipantsLayout=(LinearLayout)findViewById(R.id.imageProfileParticipantsLayout);
         participant0=(CircleImageView)findViewById(R.id.participant0);
         participant1=(CircleImageView)findViewById(R.id.participant1);
@@ -137,6 +160,13 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
         deleteOrCancelEventButton=(Button)findViewById(R.id.deleteOrCancelEventButton);
         joinOrUnjoinButton=(Button)findViewById(R.id.joinOrUnjoinButton);
         backgroundImage=(ImageView)findViewById(R.id.backgroundImage);
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
 
         //getDataToDisplayFromIntent
@@ -328,6 +358,25 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
             allParticipants.setVisibility(View.VISIBLE);
         }
 
+        allParticipants.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(!ifFirstTimeGetParticipants) {
+                    getParticipants("0", b, eventDetails);
+
+                }
+                else{
+                    Intent intent =new Intent(ActivityDetailsActivity.this,InviteFriendsActivity.class);
+                    intent.putExtra("isParticipant",true);
+                    intent.putExtra("isEdit",false);
+                    InviteFriendsActivity.isFirstTimeInviteFriends=false;
+                    startActivity(intent);
+                }
+
+            }
+        });
+
         groupChatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -337,7 +386,14 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
         inviteFriendsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getApplicationContext(),"You clicked INVITE FRIENDS button!",Toast.LENGTH_SHORT).show();
+                Intent goToNextActivity = new Intent(ActivityDetailsActivity.this, InviteFriendsActivity.class);
+                InviteFriendsActivity.friendsList.clear();
+                InviteFriendsActivity.numberOfOfflineFriends=0;
+                goToNextActivity.putExtra("isEdit",true);
+                goToNextActivity.putExtra("isCustomInvite",true);
+                goToNextActivity.putExtra("eventId",eventID);
+                goToNextActivity.putExtra("eventId",getIntent().getStringExtra("eventId"));
+                startActivity(goToNextActivity);
             }
         });
 
@@ -449,6 +505,10 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
             editEventButton.setVisibility(View.INVISIBLE);
             joinOrUnjoinButton.setVisibility(View.VISIBLE);
             joinOrUnjoinButton.setText("JOIN");
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams)chatAndInviteLayout.getLayoutParams();
+            params.height = 0; params.topMargin = 0;
+            chatAndInviteLayout.setLayoutParams(params);
+
             final String eventid=b.getString("eventId");
             //call join api method
             joinOrUnjoinButton.setOnClickListener(new View.OnClickListener() {
@@ -471,7 +531,9 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
                 @Override
                 public void onClick(View view) {
                     Intent intent=new Intent(ActivityDetailsActivity.this,CreateNewActivity.class);
+                    intent.putExtra("isParticipant",false);
                     intent.putExtra("isEdit",true);
+                    InviteFriendsActivity.isFirstTimeInviteFriends=false;
                     intent.putExtra("eventId",eventid);
                     intent.putExtras(b);
                     startActivity(intent);

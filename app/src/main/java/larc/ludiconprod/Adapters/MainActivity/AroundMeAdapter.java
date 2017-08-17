@@ -47,6 +47,8 @@ import larc.ludiconprod.Utils.Event;
 import larc.ludiconprod.Utils.General;
 import larc.ludiconprod.Utils.util.Sport;
 
+import static larc.ludiconprod.Activities.ActivitiesActivity.frlistView;
+
 
 public class AroundMeAdapter extends BaseAdapter implements ListAdapter {
 
@@ -101,6 +103,7 @@ public class AroundMeAdapter extends BaseAdapter implements ListAdapter {
         this.list = newList;
         this.notifyDataSetChanged();
     }
+
 
     @Override
         public int getCount() {
@@ -201,10 +204,6 @@ public class AroundMeAdapter extends BaseAdapter implements ListAdapter {
                 // Redirect to user profile on picture tap
                 holder.profileImage.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
-                        //Intent intent = new Intent(currView.getContext(), ProfileActivity.class);
-                        // intent.putExtra("uid", currentEvent.creator);
-                        //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        // activity.startActivity(intent);
                         Toast.makeText(context, "Go to ProfileDetails", Toast.LENGTH_LONG).show();
                     }
                 });

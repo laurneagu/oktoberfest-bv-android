@@ -100,7 +100,10 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
         this.list = newList;
         this.notifyDataSetChanged();
     }
-
+    @Override
+    public boolean areAllItemsEnabled() {
+        return false;
+    }
     @Override
     public int getCount() {
         return list.size();
@@ -181,7 +184,10 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
 
                     //set urlParams
 
+
+
                     urlParams.put("eventId",currentEvent.id);
+                    System.out.println(currentEvent.id+"eventId");
                     urlParams.put("userId",Persistance.getInstance().getUserInfo(activity).id);
                     HTTPResponseController.getInstance().getEventDetails(params, headers, activity,urlParams);
 

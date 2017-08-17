@@ -43,9 +43,11 @@ import larc.ludiconprod.Utils.util.AuthorizedLocation;
 import larc.ludiconprod.Utils.util.Sport;
 import larc.ludiconprod.User;
 import larc.ludiconprod.Utils.Event;
-
 import static larc.ludiconprod.Activities.ActivitiesActivity.aroundMeEventList;
 import static larc.ludiconprod.Activities.ActivitiesActivity.fradapter;
+import static larc.ludiconprod.Activities.ActivitiesActivity.frlistView;
+import static larc.ludiconprod.Activities.ActivitiesActivity.getFirstPageAroundMe;
+import static larc.ludiconprod.Activities.ActivitiesActivity.getFirstPageMyActivity;
 import static larc.ludiconprod.Activities.ActivitiesActivity.myAdapter;
 import static larc.ludiconprod.Activities.ActivitiesActivity.myEventList;
 
@@ -76,6 +78,7 @@ public class HTTPResponseController {
     String eventid;
     boolean deleteAnotherUser=false;
     String userId;
+    int position;
 
 
     public static Bitmap decodeBase64(String input)
@@ -128,13 +131,6 @@ public class HTTPResponseController {
 
 
                         if(user.range.equals("0")){
-                           /* new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Intent intent = new Intent(activity, ProfileDetailsActivity.class);
-                                    activity.startActivity(intent);
-                                }
-                            }, 5000);*/
 
                             new CountDownTimer(1100, 100) {
                                 @Override
@@ -146,6 +142,7 @@ public class HTTPResponseController {
                                 public void onFinish() {
                                     Intent intent = new Intent(activity, ProfileDetailsActivity.class);
                                     activity.startActivity(intent);
+                                    activity.finish();
                                 }
                             }.start();
                             }
@@ -171,6 +168,7 @@ public class HTTPResponseController {
                                 public void onFinish() {
                                     Intent intent = new Intent(activity, Main.class);
                                     activity.startActivity(intent);
+                                    activity.finish();
                                 }
                             }.start();
 
@@ -209,9 +207,23 @@ public class HTTPResponseController {
         return new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
-                Intent intent =new Intent(activity,Main.class);
-                activity.startActivity(intent);
-                activity.finish();
+                if(activity.getLocalClassName().toString().equals("Activities.InviteFriendsActivity")){
+                    HashMap<String, String> params = new HashMap<String, String>();
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    HashMap<String, String> urlParams = new HashMap<String, String>();
+                    headers.put("authKey", Persistance.getInstance().getUserInfo(activity).authKey);
+
+                    //set urlParams
+
+                    urlParams.put("eventId",eventid);
+                    urlParams.put("userId",Persistance.getInstance().getUserInfo(activity).id);
+                    HTTPResponseController.getInstance().getEventDetails(params, headers, activity,urlParams);
+
+                }else {
+                    Intent intent = new Intent(activity, Main.class);
+                    activity.startActivity(intent);
+                    activity.finish();
+                }
             }
         };
     }
@@ -242,6 +254,34 @@ public class HTTPResponseController {
             }
         };
     }
+    private Response.Listener<JSONObject>  kickUserSuccesListener() {
+        return new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                    Toast.makeText(activity, "You exclude that user!", Toast.LENGTH_SHORT).show();
+                    for(int i=InviteFriendsActivity.participantList.size()-1;i >= 0 ;i-- ) {
+                        if(InviteFriendsActivity.participantList.get(i).userID.equals(userId)) {
+                            InviteFriendsActivity.participantList.remove(i);
+                        }
+                    }
+                    InviteFriendsActivity.inviteFriendsAdapter.notifyDataSetChanged();
+
+
+            }
+        };
+    }
+    private Response.Listener<JSONObject>  removeOfflineSuccesListener() {
+        return new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                Toast.makeText(activity, "You exclude that user offline!", Toast.LENGTH_SHORT).show();
+                InviteFriendsActivity.participantList.remove(position);
+                InviteFriendsActivity.inviteFriendsAdapter.notifyDataSetChanged();
+
+
+            }
+        };
+    }
     private Response.Listener<JSONObject>  cancelEventSuccesListener() {
         return new Response.Listener<JSONObject>() {
             @Override
@@ -260,6 +300,9 @@ public class HTTPResponseController {
             @Override
             public void onResponse(JSONObject jsonObject) {
                 System.out.println(jsonObject+" ceva");
+                if(getFirstPageAroundMe){
+                    aroundMeEventList.clear();
+                }
                 try {
                     for (int i = 0; i < jsonObject.getJSONArray("aroundMe").length();i++ ){
                         Event event=new Event();
@@ -285,11 +328,13 @@ public class HTTPResponseController {
                         System.out.println(event.id+" eventid:"+i+"  "+  event.numberOfParticipants + " profilepicture"+ jsonObject.getJSONArray("aroundMe").getJSONObject(i).getJSONArray("participantsProfilePicture").length() );
                         aroundMeEventList.add(event);
 
+
                     }
                     ActivitiesActivity.currentFragment.updateListOfEventsAroundMe(false);
                     if(jsonObject.getJSONArray("aroundMe").length() >= 1){
                         ActivitiesActivity.NumberOfRefreshAroundMe++;
                     }
+                    getFirstPageAroundMe=false;
                 }catch(Exception e){
                     e.printStackTrace();
                 }
@@ -303,6 +348,9 @@ public class HTTPResponseController {
             @Override
             public void onResponse(JSONObject jsonObject) {
                 System.out.println(jsonObject+" myevent");
+                    if(getFirstPageMyActivity){
+                        myEventList.clear();
+                    }
                 try {
                     for (int i = 0; i < jsonObject.getJSONArray("myEvents").length();i++ ){
                         Event event=new Event();
@@ -329,11 +377,10 @@ public class HTTPResponseController {
 
                     }
                     ActivitiesActivity.currentFragment.updateListOfMyEvents(false);
-                    //adapter notifydatssetchanged
-                   // myAdapter.notifyDataSetChanged();
                     if(jsonObject.getJSONArray("myEvents").length() >= 1){
                         ActivitiesActivity.NumberOfRefreshMyEvents++;
                     }
+                    getFirstPageMyActivity=false;
                 }catch(Exception e){
                     e.printStackTrace();
                 }
@@ -399,12 +446,61 @@ public class HTTPResponseController {
             }
         };
     }
+
+    private Response.Listener<JSONObject>  getParticipantsSuccesListener(){
+        return new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                System.out.println(jsonObject +" participants");
+                try {
+                    for (int i = 0; i < jsonObject.getJSONArray("participants").length();i++ ) {
+                        Friend friend=new Friend();
+                        friend.userID = jsonObject.getJSONArray("participants").getJSONObject(i).getString("userId");
+                        friend.userName=jsonObject.getJSONArray("participants").getJSONObject(i).getString("userName");
+                        friend.profileImage=jsonObject.getJSONArray("participants").getJSONObject(i).getString("profilePicture");
+                        friend.level=jsonObject.getJSONArray("participants").getJSONObject(i).getInt("level");
+                        friend.numberOfOffliners=jsonObject.getJSONArray("participants").getJSONObject(i).getInt("numberOfOffliners");
+                        friend.offlineFriend=false;
+                        friend.isInvited=false;
+
+                        InviteFriendsActivity.participantList.add(friend);
+                        for(int j=0;j < friend.numberOfOffliners;j++){
+                            Friend offlineFriend=new Friend();
+                            offlineFriend.userName= friend.userName+"'s Friend";
+                            offlineFriend.offlineFriend=true;
+                            offlineFriend.profileImage="";
+                            offlineFriend.isOfflineParticipant=true;
+                            offlineFriend.userID=friend.userID;
+                            InviteFriendsActivity.participantList.add(offlineFriend);
+                        }
+                    }
+
+                    if(!ActivityDetailsActivity.ifFirstTimeGetParticipants){
+                        Intent intent =new Intent(activity,InviteFriendsActivity.class);
+                        intent.putExtra("isParticipant",true);
+                        intent.putExtra("isEdit",false);
+                        InviteFriendsActivity.isFirstTimeInviteFriends=false;
+                        activity.startActivity(intent);
+                    }else {
+                        InviteFriendsActivity.inviteFriendsAdapter.notifyDataSetChanged();
+                    }
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+        };
+    }
     private Response.Listener<JSONObject>  getInvitedFriendsSuccesListener(){
         return new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
                 System.out.println(jsonObject +" invitedfriends");
                 try {
+
+
+
+
                     for (int i = 0; i < jsonObject.getJSONArray("friends").length();i++ ) {
                         Friend friend=new Friend();
                         friend.userID = jsonObject.getJSONArray("friends").getJSONObject(i).getString("userID");
@@ -417,6 +513,15 @@ public class HTTPResponseController {
 
                         InviteFriendsActivity.friendsList.add(InviteFriendsActivity.numberOfOfflineFriends+1,friend);
                     }
+
+                    for(int i = 0; i < jsonObject.getInt("offlineFriendsCount");i++ ){
+                        Friend friend=new Friend();
+                        friend.userName=Persistance.getInstance().getUserInfo(activity).lastName+"'s Friend";
+                        InviteFriendsActivity.numberOfOfflineFriends++;
+                        InviteFriendsActivity.friendsList.add(1,friend);
+                        friend.offlineFriend=true;
+                    }
+
                     InviteFriendsActivity.inviteFriendsAdapter.notifyDataSetChanged();
                 }catch(Exception e){
                     e.printStackTrace();
@@ -547,8 +652,9 @@ public class HTTPResponseController {
         this.email=email;
         this.password=password;
     }
-    public void setEventId(String eventId,boolean deleteAnotherUser,String userId){
+    public void setEventId(String eventId,boolean deleteAnotherUser,String userId,int position){
         this.eventid=eventId;
+        this.position=position;
         this.deleteAnotherUser=deleteAnotherUser;
         this.userId=userId;
     }
@@ -614,15 +720,16 @@ public class HTTPResponseController {
         CustomRequest jsObjRequest = new CustomRequest(Request.Method.GET, prodServer+"api/friends?userId="+urlParams.get("userId")+"&pageNumber="+urlParams.get("pageNumber"),params,headers,this.getFriendsSuccesListener(), this.createRequestErrorListener());
         requestQueue.add(jsObjRequest);
     }
-    public void createEvent(HashMap<String,String> params, HashMap<String,String> headers, Activity activity){
+    public void createEvent(HashMap<String,String> params, HashMap<String,String> headers, Activity activity,String eventid){
         setActivity(activity,params.get("email"),params.get("password"));
+        setEventId(eventid,false,null,0);
         RequestQueue requestQueue = Volley.newRequestQueue(activity);
         CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, prodServer+"api/event/",params,headers,this.createEventSuccesListener(), this.createRequestErrorListener());
         requestQueue.add(jsObjRequest);
     }
     public void getEventDetails(HashMap<String,String> params, HashMap<String,String> headers, Activity activity,HashMap<String,String> urlParams){
         setActivity(activity,params.get("email"),params.get("password"));
-        setEventId(urlParams.get("eventId"),false,"");
+        setEventId(urlParams.get("eventId"),false,"",-1);
         RequestQueue requestQueue = Volley.newRequestQueue(activity);
         CustomRequest jsObjRequest = new CustomRequest(Request.Method.GET, prodServer+"api/event?eventId="+urlParams.get("eventId")+"&userId="+urlParams.get("userId"),params,headers,this.getEventDetailsSuccesListener(), this.createRequestErrorListener());
         requestQueue.add(jsObjRequest);
@@ -630,7 +737,7 @@ public class HTTPResponseController {
 
     public void leaveEvent(HashMap<String,String> params, HashMap<String,String> headers, Activity activity,boolean deleteAnotherUser){
         setActivity(activity,params.get("email"),params.get("password"));
-        setEventId(params.get("eventId"),deleteAnotherUser,params.get("userId"));
+        setEventId(params.get("eventId"),deleteAnotherUser,params.get("userId"),-1);
         RequestQueue requestQueue = Volley.newRequestQueue(activity);
         CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, prodServer+"api/leaveEvent",params,headers,this.leaveEventSuccesListener(), this.createRequestErrorListener());
         requestQueue.add(jsObjRequest);
@@ -654,5 +761,27 @@ public class HTTPResponseController {
                CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, prodServer + "api/user", params,headers,this.createRequestSuccessListener(), this.createRequestErrorListener());
                requestQueue.add(jsObjRequest);
             }
+
+    public void getParticipants(HashMap<String,String> params, HashMap<String,String> headers, Activity activity,HashMap<String,String> urlParams){
+        setActivity(activity,params.get("email"),params.get("password"));
+        RequestQueue requestQueue = Volley.newRequestQueue(activity);
+        CustomRequest jsObjRequest = new CustomRequest(Request.Method.GET, prodServer+"api/eventParticipants?eventId="+urlParams.get("eventId")+"&userId="+urlParams.get("userId")+"&pageNumber="+urlParams.get("pageNumber"),params,headers,this.getParticipantsSuccesListener(), this.createRequestErrorListener());
+        requestQueue.add(jsObjRequest);
+    }
+
+    public void kickUser(HashMap<String,String> params, HashMap<String,String> headers, Activity activity,int position){
+        setActivity(activity,params.get("email"),params.get("password"));
+        setEventId(params.get("eventId"),deleteAnotherUser,params.get("userId"),position);
+        RequestQueue requestQueue = Volley.newRequestQueue(activity);
+        CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, prodServer+"api/leaveEvent",params,headers,this.kickUserSuccesListener(), this.createRequestErrorListener());
+        requestQueue.add(jsObjRequest);
+    }
+    public void removeOffline(HashMap<String,String> params, HashMap<String,String> headers, Activity activity,int position){
+        setActivity(activity,params.get("email"),params.get("password"));
+        setEventId(params.get("eventId"),deleteAnotherUser,params.get("userId"),position);
+        RequestQueue requestQueue = Volley.newRequestQueue(activity);
+        CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, prodServer+"api/updateOfflineFriends/",params,headers,this.removeOfflineSuccesListener(), this.createRequestErrorListener());
+        requestQueue.add(jsObjRequest);
+    }
 
 }

@@ -21,11 +21,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import larc.ludiconprod.Activities.ActivitiesActivity;
+import larc.ludiconprod.Activities.ActivityDetailsActivity;
 import larc.ludiconprod.Activities.InviteFriendsActivity;
 import larc.ludiconprod.Adapters.MainActivity.AroundMeAdapter;
+import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
 import larc.ludiconprod.Utils.Event;
@@ -112,7 +115,60 @@ public class InviteFriendsAdapter  extends BaseAdapter implements ListAdapter {
             view.setBackgroundColor(Color.parseColor("#f7f9fc"));
 
             final View currView = view;
-            if(position == 0){
+            if(currentFriend.numberOfOffliners != -1){
+                if(!currentFriend.profileImage.equals("")) {
+                    Bitmap bitmap = decodeBase64(currentFriend.profileImage);
+                    holder.friendProfileImage.setImageBitmap(bitmap);
+                }
+                ViewGroup.LayoutParams params = holder.friendLevel.getLayoutParams();
+                params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                holder.friendLevel.setLayoutParams(params);
+                if(currentFriend.userName.length() < 16) {
+                    holder.friendName.setText(currentFriend.userName);
+                }
+                else{
+                    String names[] =currentFriend.userName.split(" ");
+                    String displayName=names[0]+"\n";
+                    for(int i=1;i < names.length;i++){
+                        displayName=displayName+names[i];
+
+                    }
+                    holder.friendName.setText(displayName);
+                }
+
+                if(!currentFriend.userID.equals(Persistance.getInstance().getUserInfo(activity).id) && Persistance.getInstance().getUserInfo(activity).id.equals(InviteFriendsActivity.participantList.get(0).userID)) {
+
+                    holder.inviteButton.setText("REMOVE");
+                    holder.inviteButton.setBackgroundResource(R.drawable.green_button_selector);
+                    holder.inviteButton.setVisibility(View.VISIBLE);
+                    holder.inviteButton.setEnabled(true);
+                    holder.inviteButton.setTextColor(Color.parseColor("#ffffff"));
+                    holder.inviteButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            HashMap<String, String> params = new HashMap<String, String>();
+                            HashMap<String, String> headers = new HashMap<String, String>();
+                            headers.put("authKey", Persistance.getInstance().getUserInfo(activity).authKey);
+
+                            //set urlParams
+
+                            params.put("eventId", ActivityDetailsActivity.eventID);
+                            params.put("userId",currentFriend.userID);
+
+                            HTTPResponseController.getInstance().kickUser(params,headers,activity,position);
+
+                        }
+                    });
+                }
+                else{
+                    holder.inviteButton.setVisibility(View.INVISIBLE);
+                    holder.inviteButton.setEnabled(false);
+                }
+
+
+
+            }
+            else if(position == 0){
                 ViewGroup.LayoutParams params = holder.friendLevel.getLayoutParams();
                 params.height =0;
                 holder.friendLevel.setLayoutParams(params);
@@ -160,12 +216,38 @@ public class InviteFriendsAdapter  extends BaseAdapter implements ListAdapter {
                 holder.inviteButton.setVisibility(View.VISIBLE);
                 holder.inviteButton.setEnabled(true);
                 holder.inviteButton.setTextColor(Color.parseColor("#ffffff"));
+                if(currentFriend.isOfflineParticipant && !Persistance.getInstance().getUserInfo(activity).id.equals(InviteFriendsActivity.participantList.get(0).userID)){
+                    holder.inviteButton.setVisibility(View.INVISIBLE);
+                    holder.inviteButton.setEnabled(false);
+                }
                 holder.inviteButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        if(!currentFriend.isOfflineParticipant){
                         InviteFriendsActivity.numberOfOfflineFriends--;
                         InviteFriendsActivity.friendsList.remove(position);
                         InviteFriendsActivity.inviteFriendsAdapter.notifyDataSetChanged();
+                        }
+                        else {
+                            HashMap<String, String> params = new HashMap<String, String>();
+                            HashMap<String, String> headers = new HashMap<String, String>();
+                            headers.put("authKey", Persistance.getInstance().getUserInfo(activity).authKey);
+
+                            //set urlParams
+
+                            params.put("eventId", ActivityDetailsActivity.eventID);
+                            params.put("userId",currentFriend.userID);
+                            int numberOfOfflineFriends=-1;
+                            for(int i=0;i < InviteFriendsActivity.participantList.size();i++){
+                                if(InviteFriendsActivity.participantList.get(i).userID.equals(currentFriend.userID)){
+                                    numberOfOfflineFriends++;
+                                }
+                            }
+                            params.put("numberOfOffliners",String.valueOf(1));
+                            params.put("action","0");
+
+                            HTTPResponseController.getInstance().removeOffline(params,headers,activity,position);
+                        }
                     }
                 });
 

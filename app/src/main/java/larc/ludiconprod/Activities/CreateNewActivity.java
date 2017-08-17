@@ -221,7 +221,7 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                                 counterOfInvitedFriends++;
                             }
                         }
-                        HTTPResponseController.getInstance().createEvent(params, headers, CreateNewActivity.this);
+                        HTTPResponseController.getInstance().createEvent(params, headers, CreateNewActivity.this,null);
 
                     }
                     else{
@@ -274,7 +274,7 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                                 }
                             }
                         }
-                        HTTPResponseController.getInstance().createEvent(params, headers, CreateNewActivity.this);
+                        HTTPResponseController.getInstance().createEvent(params, headers, CreateNewActivity.this,null);
                     }
 
 
