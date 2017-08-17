@@ -154,7 +154,7 @@ public class EditProfileTab2 extends Fragment {
             editChoosePhoto.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    epa.changeProfile();
                     Intent chooseImageIntent = ImagePicker.getPickImageIntent(getActivity());
                     startActivityForResult(chooseImageIntent, EditProfileActivity.PICK_IMAGE_ID);
                 }

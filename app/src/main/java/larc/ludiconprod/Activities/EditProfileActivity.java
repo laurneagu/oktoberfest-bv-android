@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import larc.ludiconprod.Adapters.EditProfile.EditActivitiesAdapter;
@@ -100,12 +101,30 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
+    public void changeProfile() {
+        User old = Persistance.getInstance().getProfileInfo(this);
+
+        old.gender = "" + this.sex;
+        old.firstName = this.firstName.getText().toString();
+        old.lastName = this.lastName.getText().toString();
+        old.range = 1 + this.range.getProgress() + "";
+        old.age = Calendar.getInstance().get(Calendar.YEAR) - Integer.parseInt(this.date.getText().toString());
+
+        old.sports.clear();
+        for(int i = 0; i < sports.size(); ++i){
+            Sport sport = new Sport(sports.get(i));
+            old.sports.add(sport);
+        }
+
+        Persistance.getInstance().setProfileInfo(this, old);
+    }
+
     @Override
     public void onClick(View view) {
         Log.d("Changed", ""  + firstName.getText() + range.getProgress() + sex + sports);
 
         User old = Persistance.getInstance().getProfileInfo(this);
-;
+
         User user = new User();
         user.id = old.id;
         user.authKey = old.authKey;
