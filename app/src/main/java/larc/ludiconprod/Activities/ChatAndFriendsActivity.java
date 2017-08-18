@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,13 +75,13 @@ public class ChatAndFriendsActivity extends Fragment {
             tabs.setViewPager(pager);
 
 
-            DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(getActivity()).id).child("chats");
+            DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("users").child("5979c0e6742a8").child("chats");
             firebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
 
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot chats : dataSnapshot.getChildren()) {
-                            Chat chat = new Chat();
+                            final Chat chat = new Chat();
                             chat.chatId = chats.getKey();
                             if (chats.hasChild("event_id")) {
                                 chat.eventId = chats.child("event_id").getValue().toString();
@@ -98,21 +99,33 @@ public class ChatAndFriendsActivity extends Fragment {
                             chat.participantName=names;
 
                             chat.lastMessageTime = Integer.valueOf(chats.child("last_message_date").getValue().toString());
-                            String lastMessage=chats.getRef().child("messages").orderByKey().limitToLast(1).getRef().getKey().toString();
-                            //chat.lastMessage=chats.child("messages").child(lastMessage).child("message").getValue().toString();
-                            chatList.add(chat);
+                            DatabaseReference lastMessageRef=chats.child("messages").getRef();
+                            Query  lastMessage=lastMessageRef.orderByKey().limitToLast(1);
+                            lastMessage.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot child: dataSnapshot.getChildren()) {
+                                        chat.lastMessage= child.child("message").getValue().toString();
+                                    }
+                                    chatList.add(chat);
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+
                         }
-                        System.out.println(chatList.toArray().toString());
+
 
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-                    System.out.println("eu");
                 }
             });
 
-            System.out.println("eu");
 
 
 
