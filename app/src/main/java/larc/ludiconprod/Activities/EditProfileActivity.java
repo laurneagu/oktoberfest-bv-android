@@ -183,7 +183,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                 Toast.makeText(this, "Enter a new password!", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (pass.length() >= 7) {
+            if (pass.length() < 7) {
                 Toast.makeText(this, "Password must have minimum 7 characters!", Toast.LENGTH_SHORT).show();
                 return;
             }
