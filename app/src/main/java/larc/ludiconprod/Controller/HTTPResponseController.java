@@ -64,6 +64,7 @@ import static larc.ludiconprod.Activities.ActivitiesActivity.myEventList;
 public class HTTPResponseController {
 
     String prodServer ="http://207.154.236.13/";
+    public static final String firebaseRefference="https://ludicon-chat-cf900.firebaseio.com/";
     public static final String API_KEY = "b0a83e90-4ee7-49b7-9200-fdc5af8c2d33";
 
     private static HTTPResponseController instance = null;

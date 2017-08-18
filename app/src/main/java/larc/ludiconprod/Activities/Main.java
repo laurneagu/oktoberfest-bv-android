@@ -48,11 +48,11 @@ public class Main extends FragmentActivity{
                     MyProfileActivity myProfileActivity = new MyProfileActivity();
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.frame, myProfileActivity).commit();
-                }/*else if(tabId == R.id.tab_nearby){
-                    RankingsNewActivity rankings=new RankingsNewActivity();
+                }else if(tabId == R.id.tab_friends){
+                    ChatAndFriendsActivity chatFriends=new ChatAndFriendsActivity();
                     getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.frame,rankings).commit();
-                }else if(tabId==R.id.tab_food){
+                            .replace(R.id.frame,chatFriends).commit();
+                }/*else if(tabId==R.id.tab_food){
                     SettingsActivity settings=new SettingsActivity();
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.frame,settings).commit();

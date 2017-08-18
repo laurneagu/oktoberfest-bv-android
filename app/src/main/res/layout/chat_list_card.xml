@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#f7f9fc"
+    android:id="@+id/chatListLayout">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@drawable/ic_user"
+        android:id="@+id/chatParticipantImage"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_toRightOf="@+id/chatParticipantImage"
+        android:layout_marginLeft="16dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Daniel Grigore"
+                android:textSize="18dp"
+                android:textColor="#d4498b"
+                android:fontFamily="@string/fontmedium"
+                android:id="@+id/participantName"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="2 min ago"
+                android:textSize="14dp"
+                android:gravity="right"
+                android:textColor="#400c3855"
+                android:fontFamily="@string/fontmedium"
+                android:id="@+id/timeElapsed"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Hey there,I was really impressed by\nyour latest gameplay,let's..."
+            android:textSize="14dp"
+            android:layout_marginTop="8dp"
+            android:textColor="#0c3855"
+            android:fontFamily="@string/fontbold"
+            android:id="@+id/lastMessage"/>
+
+
+    </LinearLayout>
+
+</RelativeLayout>

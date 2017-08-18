@@ -165,6 +165,9 @@ public class ActivitiesActivity extends Fragment {
         locationChecker.setContext(mContext);
         */
 
+        myEventList.clear();
+        aroundMeEventList.clear();
+
         try {
             super.onCreate(savedInstanceState);
 

@@ -306,13 +306,13 @@
         android:id="@+id/profileLogout"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:text="LOGOUT"
         android:layout_alignParentBottom="true"
-        android:textColor="#ffffff"
         android:layout_marginBottom="16dp"
-        android:layout_marginTop="8dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:textSize="14sp"
-        android:background="@drawable/pink_button_selector"/>
+        android:layout_marginTop="8dp"
+        android:background="@drawable/pink_button_selector"
+        android:text="LOGOUT"
+        android:textColor="#ffffff"
+        android:textSize="14sp" />
 </RelativeLayout>

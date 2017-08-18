@@ -35,7 +35,7 @@ public class RegisterActivity extends FragmentActivity {
 
     public boolean passwordValidate(String password, String repeatPassword){
         boolean validity=false;
-        if(!password.equals(repeatPassword) || password.length() < 6){
+        if(!password.equals(repeatPassword) || password.length() < 7){
 
             validity=true;
         }
