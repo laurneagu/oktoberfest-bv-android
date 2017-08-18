@@ -1,6 +1,7 @@
 package larc.ludiconprod.Controller;
 
 import android.app.Activity;
+import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.Base64;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -19,12 +21,14 @@ import com.android.volley.toolbox.Volley;
 import com.facebook.login.LoginManager;
 
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -36,7 +40,9 @@ import larc.ludiconprod.Activities.IntroActivity;
 import larc.ludiconprod.Activities.InviteFriendsActivity;
 import larc.ludiconprod.Activities.LoginActivity;
 import larc.ludiconprod.Activities.Main;
+import larc.ludiconprod.Activities.MyProfileActivity;
 import larc.ludiconprod.Activities.ProfileDetailsActivity;
+import larc.ludiconprod.Activities.ResetPasswordFinalActivity;
 import larc.ludiconprod.Utils.EventDetails;
 import larc.ludiconprod.Utils.Friend;
 import larc.ludiconprod.Utils.util.AuthorizedLocation;
@@ -58,6 +64,7 @@ import static larc.ludiconprod.Activities.ActivitiesActivity.myEventList;
 public class HTTPResponseController {
 
     String prodServer ="http://207.154.236.13/";
+    public static final String API_KEY = "b0a83e90-4ee7-49b7-9200-fdc5af8c2d33";
 
     private static HTTPResponseController instance = null;
 
@@ -79,6 +86,7 @@ public class HTTPResponseController {
     boolean deleteAnotherUser=false;
     String userId;
     int position;
+    Activity oldActivity;
 
 
     public static Bitmap decodeBase64(String input)
@@ -580,6 +588,11 @@ public class HTTPResponseController {
                     b.putString("eventId",eventid);
 
 
+                    if(activity.getLocalClassName().toString().equals("Activities.ActivityDetailsActivity")) {
+                        oldActivity.finish();
+                    }
+
+
                     Intent intent = new Intent(activity, ActivityDetailsActivity.class);
 
                     intent.putExtras(b);
@@ -593,20 +606,72 @@ public class HTTPResponseController {
             }
         };
     }
+    private Response.Listener<JSONObject> createGetProfileListener(final Fragment fragment) {
+        return new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                try {
+                    User u = Persistance.getInstance().getProfileInfo(fragment.getActivity());
+
+                    u.email = jsonObject.getString("email");
+                    u.firstName = jsonObject.getString("firstName");
+                    u.lastName = jsonObject.getString("lastName");
+                    u.gender = jsonObject.getString("gender");
+                    u.ludicoins = Integer.parseInt(jsonObject.getString("ludicoins"));
+                    u.level = Integer.parseInt(jsonObject.getString("level"));
+                    u.points = Integer.parseInt(jsonObject.getString("points"));
+                    u.pointsToNextLevel = Integer.parseInt(jsonObject.getString("pointsToNextLevel"));
+                    u.pointsOfNextLevel = Integer.parseInt(jsonObject.getString("pointsOfNextLevel"));
+                    u.position = Integer.parseInt(jsonObject.getString("position"));
+                    u.range = jsonObject.getString("range");
+                    u.age = Calendar.getInstance().get(Calendar.YEAR) - Integer.parseInt(jsonObject.getString("yearBorn"));
+                    u.profileImage = jsonObject.getString("profileImage");
+
+                    JSONArray sports = jsonObject.getJSONArray("sports");
+                    u.sports.clear();
+                    for (int i = 0; i < sports.length(); ++i) {
+                        u.sports.add(new Sport(sports.getString(i)));
+                    }
+
+                    MyProfileActivity mpa = (MyProfileActivity) fragment;
+                    Persistance.getInstance().setProfileInfo(fragment.getActivity(), u);
+                    mpa.printInfo(u);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+    }
+
     private Response.Listener<JSONObject>  createJoinEventSuccesListener(){
         return new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
                 try {
-                    myEventList.clear();
-                    ActivitiesActivity.currentFragment.getMyEvents("0");
-                    for(int i=0;i < aroundMeEventList.size();i++){
-                        if(aroundMeEventList.get(i).id.equals(eventid)){
-                            aroundMeEventList.remove(i);
+                    if(activity.getLocalClassName().toString().equals("Activities.ActivityDetailsActivity")){
+                        Toast.makeText(activity, "You join this event successfull!", Toast.LENGTH_SHORT).show();
+                        HashMap<String, String> params = new HashMap<String, String>();
+                        HashMap<String, String> headers = new HashMap<String, String>();
+                        HashMap<String, String> urlParams = new HashMap<String, String>();
+                        headers.put("authKey", Persistance.getInstance().getUserInfo(activity).authKey);
+
+                        //set urlParams
+
+                        urlParams.put("eventId",eventid);
+                        urlParams.put("userId",Persistance.getInstance().getUserInfo(activity).id);
+                        HTTPResponseController.getInstance().getEventDetails(params, headers, activity,urlParams);
+                        oldActivity=activity;
+                    }else {
+                        myEventList.clear();
+                        ActivitiesActivity.currentFragment.getMyEvents("0");
+                        for (int i = 0; i < aroundMeEventList.size(); i++) {
+                            if (aroundMeEventList.get(i).id.equals(eventid)) {
+                                aroundMeEventList.remove(i);
+                            }
                         }
+                        fradapter.notifyDataSetChanged();
+                        Toast.makeText(activity, "Join was successful!", Toast.LENGTH_SHORT).show();
                     }
-                    fradapter.notifyDataSetChanged();
-                    Toast.makeText(activity,"Join was successful!",Toast.LENGTH_SHORT).show();
 
                 }catch(Exception e){
                     e.printStackTrace();
@@ -644,6 +709,18 @@ public class HTTPResponseController {
 
             }
 
+        };
+    }
+    private  Response.ErrorListener createErrorListener() {
+        return new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                String json = error.getMessage();
+                json = trimMessage(json, "error");
+                if(json != null) {
+                    displayMessage(json);
+                }
+            }
         };
     }
 
@@ -698,7 +775,7 @@ public class HTTPResponseController {
         requestQueue.add(jsObjRequest);
 
     }
-    public void joinEvent(HashMap<String,String> params, HashMap<String,String> headers,String eventId){
+    public void joinEvent(Activity activity,HashMap<String,String> params, HashMap<String,String> headers,String eventId){
         setActivity(activity,params.get("email"),params.get("password"));
         eventid=eventId;
         RequestQueue requestQueue = Volley.newRequestQueue(activity);
@@ -784,4 +861,37 @@ public class HTTPResponseController {
         requestQueue.add(jsObjRequest);
     }
 
+    public void changePassword(HashMap<String,String> params, HashMap<String,String> headers, Activity activity) {
+        RequestQueue requestQueue = Volley.newRequestQueue(activity);
+        CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, prodServer + "api/changePassword", params, headers, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("ChangePassword response", response.toString());
+            }
+        }, this.createErrorListener());
+        requestQueue.add(jsObjRequest);
+    }
+    public void getUserProfile(HashMap<String,String> params, HashMap<String,String> headers, String id, Fragment fragment) {
+        RequestQueue requestQueue = Volley.newRequestQueue(fragment.getActivity());
+        CustomRequest jsObjRequest = new CustomRequest(Request.Method.GET, prodServer + "api/user?userId=" + id, params, headers, this.createGetProfileListener(fragment), this.createErrorListener());
+        requestQueue.add(jsObjRequest);
+    }
+
+    public void resetPassword(HashMap<String, String> params, HashMap<String, String> headers, final Activity activity) {
+        RequestQueue requestQueue = Volley.newRequestQueue(activity);
+
+        Response.Listener<JSONObject> success = new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Intent intent = new Intent(activity, ResetPasswordFinalActivity.class);
+                activity.startActivity(intent);
+                activity.finish();
+            }
+        };
+
+        CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, prodServer + "api/resetEmailPassword", params, headers, success, this.createErrorListener());
+        requestQueue.add(jsObjRequest);
+    }
 }
+
+

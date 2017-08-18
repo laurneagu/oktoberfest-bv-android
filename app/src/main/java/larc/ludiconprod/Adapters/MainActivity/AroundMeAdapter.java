@@ -326,7 +326,7 @@ public class AroundMeAdapter extends BaseAdapter implements ListAdapter {
                         headers.put("authKey", Persistance.getInstance().getUserInfo(activity).authKey);
                         params.put("eventId", currentEvent.id);
                         params.put("userId", Persistance.getInstance().getUserInfo(activity).id);
-                        HTTPResponseController.getInstance().joinEvent(params, headers, currentEvent.id);
+                        HTTPResponseController.getInstance().joinEvent(activity,params, headers, currentEvent.id);
                         holder.joinButton.setEnabled(false);
 
                     }

@@ -519,7 +519,7 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
                     headers.put("authKey", Persistance.getInstance().getUserInfo(ActivityDetailsActivity.this).authKey);
                     params.put("eventId",eventid);
                     params.put("userId", Persistance.getInstance().getUserInfo(ActivityDetailsActivity.this).id);
-                    HTTPResponseController.getInstance().joinEvent(params, headers,eventid);
+                    HTTPResponseController.getInstance().joinEvent(ActivityDetailsActivity.this,params, headers,eventid);
                     joinOrUnjoinButton.setEnabled(false);
                 }
             });
