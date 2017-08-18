@@ -8,6 +8,33 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <!--<LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#FFFFFF">
+        <ImageView
+            android:id="@+id/editBack"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_nav_up"
+            android:layout_marginLeft="8dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Edit profile"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:layout_marginLeft="32dp"
+            android:fontFamily="@string/fontbold"
+            android:textStyle="bold"/>
+    </LinearLayout>-->
+        <include
+            android:id="@+id/tool_bar"
+            layout="@layout/header_login"
+            android:layout_height="56dp"
+            android:layout_width="match_parent"
+            />
+
         <larc.ludiconprod.Utils.ui.SlidingTabLayout
             android:id="@+id/editTabs"
             android:layout_width="match_parent"

@@ -38,7 +38,7 @@ public class EditProfileTab1 extends Fragment implements View.OnClickListener, S
         try {
             EditProfileActivity epa = (EditProfileActivity) getActivity();
 
-            User u = Persistance.getInstance().getUserInfo(super.getActivity());
+            User u = Persistance.getInstance().getProfileInfo(super.getActivity());
             SeekBar seekBar = (SeekBar) v.findViewById(R.id.editRangeBar);
             seekBar.setOnSeekBarChangeListener(this);
             Button save = (Button) v.findViewById(R.id.saveChangesButton2);

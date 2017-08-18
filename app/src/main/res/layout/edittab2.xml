@@ -18,7 +18,8 @@
         android:fillViewport="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="72dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -38,22 +39,19 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp">
 
-                <ImageView
+                <RelativeLayout
                     android:id="@+id/imageView"
                     android:layout_width="35dp"
-                    android:layout_height="110dp"
+                    android:layout_height="10dp"
                     android:layout_centerHorizontal="true"
-                    android:alpha="0"
-                    android:src="@drawable/com_facebook_button_send_background"
-                    />
+                    android:alpha="0"/>
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     xmlns:app="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/imgProfilePicture"
+                    android:id="@+id/editImage"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="10dp"
                     android:clickable="false"
                     android:src="@drawable/com_facebook_profile_picture_blank_portrait" />
 
@@ -61,10 +59,10 @@
                     xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:id="@+id/chooseAPhoto"
+                    android:id="@+id/editChoosePhoto"
                     android:clickable="true"
                     android:layout_toRightOf="@+id/imageView"
-                    android:src="@color/com_facebook_blue"
+                    android:src="@drawable/ic_image_edit"
                     android:layout_marginTop="70dp"/>
             </RelativeLayout>
 
@@ -142,18 +140,18 @@
                         android:text="Female"
                         android:textColor="#1A0c3855" />
             </RadioGroup>
-            <TextView
+            <EditText
                 android:id="@+id/editDate"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:drawableLeft="@drawable/ic_calendar"
                 android:ems="10"
-                android:paddingLeft="15dp"
                 android:textSize="16sp"
+                android:paddingLeft="15dp"
                 android:layout_marginTop="8dp"
+                android:inputType="numberDecimal"
                 android:background="@drawable/rounded_edittext"
-                android:hint="Birth Date"
-                android:gravity="center_vertical"/>
+                android:hint="Year born"/>
 
             <Button
                 android:id="@+id/editPasswordButton"
@@ -204,20 +202,25 @@
                     android:layout_marginTop="8dp"
                     android:inputType="textPassword"
                     android:background="@drawable/rounded_edittext"
-                    android:hint="Password"
+                    android:hint="Retype Password"
                     android:layout_below="@+id/newPassword"/>
             </RelativeLayout>
-            <Button
-                android:id="@+id/saveChangesButton"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:text="SAVE CHANGES"
-                android:textSize="14sp"
-                android:textColor="#ffffff"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/pink_button_selector"
-                android:layout_marginBottom="6dp"/>
+
         </LinearLayout>
     </LinearLayout>
     </ScrollView>
+
+    <Button
+        android:id="@+id/saveChangesButton"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="SAVE CHANGES"
+        android:textSize="14sp"
+        android:textColor="#ffffff"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/pink_button_selector"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="16dp"/>
 </RelativeLayout>

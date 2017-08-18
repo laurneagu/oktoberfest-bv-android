@@ -50,4 +50,33 @@ public class Persistance {
         return user;
     }
 
+    public void setProfileInfo(Activity activity, User user) {
+        SharedPreferences.Editor editor = activity.getSharedPreferences(this.profileDetailsString, 0).edit();
+        Gson gson = new Gson();
+        editor.putString(this.profileDetailsString, gson.toJson(user));
+        editor.commit();
+    }
+
+    public User getProfileInfo(Activity activity){
+        SharedPreferences sharedPreferences = activity.getSharedPreferences(this.profileDetailsString, 0);
+        String json = sharedPreferences.getString(this.profileDetailsString, "0");
+        Gson gson = new Gson();
+        User user;
+        if(json.equals("0")){
+            user=new User();
+        }
+        else {
+            user = gson.fromJson(json, User.class);
+        }
+        return user;
+    }
+
+    public void deleteUserProfileInfo(Activity activity) {
+        SharedPreferences.Editor editor = activity.getSharedPreferences(this.profileDetailsString, 0).edit();
+        editor.clear();
+        editor.commit();
+        editor = activity.getSharedPreferences(this.userDetailsString, 0).edit();
+        editor.clear();
+        editor.commit();
+    }
 }

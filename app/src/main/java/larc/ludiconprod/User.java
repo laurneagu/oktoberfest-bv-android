@@ -9,20 +9,25 @@ import larc.ludiconprod.Utils.util.Sport;
  */
 
 public class User {
-    public  String authKey;
-    public  String id;
-    public  String firstName;
-    public  String gender;
-    public  String facebookId;
-    public  String lastName;
-    public  int ludicoins;
+    public String authKey;
+    public String id;
     public  String email;
-    public  String password;
+    public String firstName;
+    public String lastName;
+    public String gender;
+    public String facebookId;
+    public int ludicoins;
+    public int points;
+    public int pointsToNextLevel;
+    public int pointsOfNextLevel;
+    public int position;
+    public String password;
     public  int level;
     public  int age;
     public  String profileImage;
     public  String range;
     public  ArrayList<Sport> sports=new ArrayList<Sport>();
+
 /*
     public User(){
         this.authKey="";
