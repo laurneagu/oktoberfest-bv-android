@@ -170,7 +170,6 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             return;
         }
 
-
         if (this.newPassword.getText().length() > 0 || this.oldPassword.getText().length() > 0 || this.repeatPassword.getText().length() > 0) {
             if (!this.newPassword.getText().toString().equals(this.repeatPassword.getText().toString())) {
                 Toast.makeText(this, "Passwords do not match!", Toast.LENGTH_SHORT).show();
@@ -179,6 +178,19 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
 
             String pass = this.newPassword.toString();
 			String oldPass = this.oldPassword.toString();
+
+            if (pass.isEmpty()) {
+                Toast.makeText(this, "Enter a new password!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (pass.length() >= 7) {
+                Toast.makeText(this, "Password must have minimum 7 characters!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (oldPass.isEmpty()) {
+                Toast.makeText(this, "Enter the old password!", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             try {
                 pass = PasswordEncryptor.generateSHA255FromString(pass);
