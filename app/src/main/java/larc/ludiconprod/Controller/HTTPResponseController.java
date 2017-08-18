@@ -34,6 +34,7 @@ import java.util.HashMap;
 
 import larc.ludiconprod.Activities.ActivitiesActivity;
 import larc.ludiconprod.Activities.ActivityDetailsActivity;
+import larc.ludiconprod.Activities.CouponsActivity;
 import larc.ludiconprod.Activities.CreateNewActivity;
 import larc.ludiconprod.Activities.GMapsActivity;
 import larc.ludiconprod.Activities.IntroActivity;
@@ -43,6 +44,7 @@ import larc.ludiconprod.Activities.Main;
 import larc.ludiconprod.Activities.MyProfileActivity;
 import larc.ludiconprod.Activities.ProfileDetailsActivity;
 import larc.ludiconprod.Activities.ResetPasswordFinalActivity;
+import larc.ludiconprod.Utils.Coupon;
 import larc.ludiconprod.Utils.EventDetails;
 import larc.ludiconprod.Utils.Friend;
 import larc.ludiconprod.Utils.util.AuthorizedLocation;
@@ -891,6 +893,44 @@ public class HTTPResponseController {
 
         CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, prodServer + "api/resetEmailPassword", params, headers, success, this.createErrorListener());
         requestQueue.add(jsObjRequest);
+    }
+
+    public void getCoupons(String params, HashMap<String, String> headers, final Fragment activity) {
+        Response.Listener<JSONObject> success = new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("Coupons", response.toString());
+
+                try {
+                    JSONArray coupons = response.getJSONArray("coupons");
+
+                    CouponsActivity ca = (CouponsActivity) activity;
+
+                    Coupon c;
+                    for (int i = 0; i < coupons.length(); ++i) {
+                        JSONObject o = coupons.getJSONObject(i);
+                        c = new Coupon();
+                        c.couponBlockId = o.getString("couponBlockId");
+                        c.title = o.getString("title");
+                        c.description = o.getString("description");
+                        c.expiryDate = Integer.parseInt(o.getString("expiryDate"));
+                        c.numberOfCoupons = Integer.parseInt(o.getString("numberOfCoupons"));
+                        c.ludicoins = Integer.parseInt(o.getString("ludicoins"));
+
+                        ca.coupons.add(c);
+                    }
+
+                    ca.updateCouponsList();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        Log.d("Auth", headers.get("authKey"));
+        RequestQueue requestQueue = Volley.newRequestQueue(activity.getActivity());
+        CustomRequest request = new CustomRequest(Request.Method.GET, prodServer + "api/coupons?" + params, new HashMap<String, String>(), headers, success, this.createErrorListener());
+        requestQueue.add(request);
     }
 }
 

@@ -48,6 +48,10 @@ public class Main extends FragmentActivity{
                     MyProfileActivity myProfileActivity = new MyProfileActivity();
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.frame, myProfileActivity).commit();
+                } else if (tabId == R.id.tab_coupons) {
+                    CouponsActivity coupons = new CouponsActivity();
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.frame, coupons).commit();
                 }/*else if(tabId == R.id.tab_nearby){
                     RankingsNewActivity rankings=new RankingsNewActivity();
                     getSupportFragmentManager().beginTransaction()

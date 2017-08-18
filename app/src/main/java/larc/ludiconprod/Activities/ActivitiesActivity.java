@@ -94,7 +94,7 @@ public class ActivitiesActivity extends Fragment {
 
 
     public ActivitiesActivity(){
-        currentFragment=this;
+        currentFragment = this;
     }
 
     public void getAroundMeEvents(String pageNumber){

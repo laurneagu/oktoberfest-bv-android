@@ -57,7 +57,7 @@ public class AroundMeAdapter extends BaseAdapter implements ListAdapter {
         byte[] decodedBytes = Base64.decode(input, 0);
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
-    public String getMonth(int month) {
+    public static String getMonth(int month) {
         String date=new DateFormatSymbols().getMonths()[month-1];
         return date.substring(0,1).toUpperCase().concat(date.substring(1,3));
     }

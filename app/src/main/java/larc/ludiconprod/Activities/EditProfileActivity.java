@@ -49,10 +49,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     private EditViewPagerAdapter adapter;
     private ViewPager pager;
     private SlidingTabLayout tabs;
-    private ArrayList<Event> activities = new  ArrayList<>();
-    private EditInfoAdapter infoAdapter;
     private EditActivitiesAdapter myAdapter;
-    private ArrayList<Event> myEventList;
 
     private int sex = 0;
     private EditText firstName;
@@ -101,7 +98,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             // Setting the ViewPager For the SlidingTabsLayout
             tabs.setViewPager(pager);
 
-            myAdapter = new EditActivitiesAdapter(myEventList, this.getApplicationContext(), this, getResources(), this);
+            //this.myAdapter = new EditActivitiesAdapter(null, this.getApplicationContext(), this, getResources(), this);
 
             backButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -176,8 +173,8 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                 return;
             }
 
-            String pass = this.newPassword.toString();
-			String oldPass = this.oldPassword.toString();
+            String pass = this.newPassword.getText().toString();
+			String oldPass = this.oldPassword.getText().toString();
 
             if (pass.isEmpty()) {
                 Toast.makeText(this, "Enter a new password!", Toast.LENGTH_SHORT).show();
