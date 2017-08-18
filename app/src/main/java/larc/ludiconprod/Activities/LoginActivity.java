@@ -158,7 +158,7 @@ public class LoginActivity extends Activity {
                         params.put("email", email.getText().toString());
                         params.put("password", PasswordEncryptor.generateSHA255FromString(password.getText().toString()));//PasswordEncryptor.generateSHA255FromString(password.getText().toString()));
                         HashMap<String, String> headers = new HashMap<String, String>();
-                        headers.put("apiKey", "b0a83e90-4ee7-49b7-9200-fdc5af8c2d33");
+                        headers.put("apiKey", HTTPResponseController.API_KEY);
                        // headers.put("Content-Type","application/json;charset=utf-8");
                         HTTPResponseController.getInstance().returnResponse(params, headers, LoginActivity.this, "http://207.154.236.13/api/login/");
                         progressBar.setIndeterminate(true);

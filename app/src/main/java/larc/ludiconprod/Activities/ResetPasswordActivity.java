@@ -15,6 +15,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.HashMap;
+
+import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.R;
 
 
@@ -84,8 +87,7 @@ public class ResetPasswordActivity extends Activity {
             @Override
             public void onClick(View view) {
                 if(!checkFieldsConstraints()) {
-                    Intent intent = new Intent(getApplicationContext(), ResetPasswordFinalActivity.class);
-                    startActivity(intent);
+                    resetPassword();
                 }
                 else{
                     Toast.makeText(ResetPasswordActivity.this,"Please provide email.", Toast.LENGTH_LONG).show();
@@ -93,5 +95,13 @@ public class ResetPasswordActivity extends Activity {
             }
         });
 
+    }
+
+    private void resetPassword() {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("email", this.email.getText().toString());
+        HashMap<String, String> head = new HashMap<>();
+        head.put("apiKey", HTTPResponseController.API_KEY);
+        HTTPResponseController.getInstance().resetPassword(params, head, this);
     }
 }

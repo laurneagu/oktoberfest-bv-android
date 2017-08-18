@@ -172,25 +172,26 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
 
 
         if (this.newPassword.getText().length() > 0 || this.oldPassword.getText().length() > 0 || this.repeatPassword.getText().length() > 0) {
-            if (!this.newPassword.getText().toString().equals(this.oldPassword.getText().toString())) {
+            if (!this.newPassword.getText().toString().equals(this.repeatPassword.getText().toString())) {
                 Toast.makeText(this, "Passwords do not match!", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            if (!this.oldPassword.toString().equals(user.password)) {
-                Toast.makeText(this, "Wrong password!", Toast.LENGTH_SHORT).show();
-                return;
-            }
             String pass = this.newPassword.toString();
+			String oldPass = this.oldPassword.toString();
 
             try {
                 pass = PasswordEncryptor.generateSHA255FromString(pass);
+                oldPass = PasswordEncryptor.generateSHA255FromString(oldPass);
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
                 return;
             }
 
             HashMap<String, String> params = new HashMap<>();
+			params.put("userId", old.id);
+			params.put("oldPassword", oldPass);
+			params.put("newPassword", pass);
             HashMap<String, String> headers = new HashMap<>();
             headers.put("authKey", old.authKey);
             HTTPResponseController.getInstance().changePassword(params, headers, this);

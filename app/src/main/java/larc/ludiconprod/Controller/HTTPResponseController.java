@@ -40,6 +40,7 @@ import larc.ludiconprod.Activities.LoginActivity;
 import larc.ludiconprod.Activities.Main;
 import larc.ludiconprod.Activities.MyProfileActivity;
 import larc.ludiconprod.Activities.ProfileDetailsActivity;
+import larc.ludiconprod.Activities.ResetPasswordFinalActivity;
 import larc.ludiconprod.Utils.Friend;
 import larc.ludiconprod.Utils.util.AuthorizedLocation;
 import larc.ludiconprod.Utils.util.Sport;
@@ -56,6 +57,7 @@ import static larc.ludiconprod.Activities.ActivitiesActivity.myEventList;
 
 public class HTTPResponseController {
 
+    public static final String API_KEY = "b0a83e90-4ee7-49b7-9200-fdc5af8c2d33";
     String prodServer ="http://207.154.236.13/";
 
     private static HTTPResponseController instance = null;
@@ -721,9 +723,25 @@ public class HTTPResponseController {
         CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, prodServer + "api/changePassword", params, headers, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.d("Change Password response", response.toString());
+                Log.d("ChangePassword response", response.toString());
             }
         }, this.createErrorListener());
+        requestQueue.add(jsObjRequest);
+    }
+
+    public void resetPassword(HashMap<String, String> params, HashMap<String, String> headers, final Activity activity) {
+        RequestQueue requestQueue = Volley.newRequestQueue(activity);
+
+        Response.Listener<JSONObject> success = new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Intent intent = new Intent(activity, ResetPasswordFinalActivity.class);
+                activity.startActivity(intent);
+                activity.finish();
+            }
+        };
+
+        CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, prodServer + "api/resetEmailPassword", params, headers, success, this.createErrorListener());
         requestQueue.add(jsObjRequest);
     }
 }
