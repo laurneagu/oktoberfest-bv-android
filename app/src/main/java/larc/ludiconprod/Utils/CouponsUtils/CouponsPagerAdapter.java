@@ -28,22 +28,19 @@ public class CouponsPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
 
-        if(position == 0) // if the position is 0 we are returning the First tab
-        {
-            if (!t1){
+        if(position == 0) { // if the position is 0 we are returning the First tab
+            if (!this.t1) {
                 editProfileTab1 = new CouponsTab1();
                 t1 = true;
             }
             return editProfileTab1;
         } else {
-            if(!t2) {
+            if(!this.t2) {
                 editProfileTab2 = new CouponsTab2();
                 t2 = true;
             }
             return editProfileTab2;
         }
-
-
     }
 
     // This method return the titles for the Tabs in the Tab Strip

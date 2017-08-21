@@ -1,27 +1,35 @@
 {
   "project_info": {
-    "project_number": "886936686044",
-    "firebase_url": "https://ludicon.firebaseio.com",
-    "project_id": "firebase-ludicon",
-    "storage_bucket": "firebase-ludicon.appspot.com"
+    "project_number": "908610097058",
+    "firebase_url": "https://ludicon-chat-cf900.firebaseio.com",
+    "project_id": "ludicon-chat-cf900",
+    "storage_bucket": "ludicon-chat-cf900.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:886936686044:android:2f40334f1f676c21",
+        "mobilesdk_app_id": "1:908610097058:android:84851f281483d72c",
         "android_client_info": {
           "package_name": "larc.ludiconprod"
         }
       },
       "oauth_client": [
         {
-          "client_id": "886936686044-3jdht8qsnffe5pi2qb6mqtcm2nesha0s.apps.googleusercontent.com",
+          "client_id": "908610097058-62l91cf0ht702a40v9pcdqv88ftuegii.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "larc.ludiconprod",
+            "certificate_hash": "e54baf4a47008126cd4858b08cf38873e70aa4f5"
+          }
+        },
+        {
+          "client_id": "908610097058-o63n0i5tqflfeft93rsg7skv95tknot1.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDWlOprYmSxitza5Mz-p1Mc1cFhRheTpho"
+          "current_key": "AIzaSyDfBgG8p4nzkUQ5TlxjsTGJbKbIxqKGhX4"
         }
       ],
       "services": {
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "908610097058-o63n0i5tqflfeft93rsg7skv95tknot1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

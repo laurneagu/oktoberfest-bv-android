@@ -123,19 +123,18 @@ public class AroundMeAdapter extends BaseAdapter implements ListAdapter {
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
             View view = convertView;
-                    if(list.size() > 0) {
+            if(list.size() > 0) {
 
-                        final ViewHolder holder;
+                final ViewHolder holder;
 
-                        final Event currentEvent = list.get(position);
+                final Event currentEvent = list.get(position);
 
-                        // Initialize the view
-                        if (view == null) {
-                            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                            view = inflater.inflate(R.layout.around_me_card, null);
+                // Initialize the view
+                if (view == null) {
+                    LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    view = inflater.inflate(R.layout.around_me_card, null);
 
-
-                            holder = new ViewHolder();
+                    holder = new ViewHolder();
                     holder.profileImage = (CircleImageView) view.findViewById(R.id.profileImage);
                     holder.creatorName = (TextView) view.findViewById(R.id.creatorName);
                     holder.sportName = (TextView) view.findViewById(R.id.sportName);
@@ -158,14 +157,14 @@ public class AroundMeAdapter extends BaseAdapter implements ListAdapter {
                 }
 
                 // Clean up layout
-                        holder.friends0.setVisibility(View.INVISIBLE);
-                        holder.friends1.setVisibility(View.INVISIBLE);
-                        holder.friends2.setVisibility(View.INVISIBLE);
-                        holder.friendsNumber.setVisibility(View.INVISIBLE);
-                        holder.profileImage.setImageResource(R.drawable.ph_user);
-                        holder.friends0.setImageResource(R.drawable.ph_user);
-                        holder.friends1.setImageResource(R.drawable.ph_user);
-                        holder.friends2.setImageResource(R.drawable.ph_user);
+                holder.friends0.setVisibility(View.INVISIBLE);
+                holder.friends1.setVisibility(View.INVISIBLE);
+                holder.friends2.setVisibility(View.INVISIBLE);
+                holder.friendsNumber.setVisibility(View.INVISIBLE);
+                holder.profileImage.setImageResource(R.drawable.ph_user);
+                holder.friends0.setImageResource(R.drawable.ph_user);
+                holder.friends1.setImageResource(R.drawable.ph_user);
+                holder.friends2.setImageResource(R.drawable.ph_user);
 
 
                         // Set name and picture for the first user of the event
@@ -286,11 +285,9 @@ public class AroundMeAdapter extends BaseAdapter implements ListAdapter {
                     case "OTH":
                         holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_others);
                         break;
-
                 }
 
                 holder.creatorLevelAroundMe.setText(String.valueOf(currentEvent.creatorLevel));
-
 
                 // Event details set message for date and time
                 Calendar c = Calendar.getInstance();

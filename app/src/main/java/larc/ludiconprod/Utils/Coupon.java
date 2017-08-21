@@ -9,13 +9,14 @@ import java.io.Serializable;
 public class Coupon implements Serializable {
 
     public String couponBlockId;
+    public String companyPicture;
     public String title;
     public String description;
     public String companyName;
-    public int expiryDate;
+    public long expiryDate;
     public int numberOfCoupons;
     public int ludicoins;
-    public Integer discountCode;
+    public String discountCode;
 
     public Coupon() {
 

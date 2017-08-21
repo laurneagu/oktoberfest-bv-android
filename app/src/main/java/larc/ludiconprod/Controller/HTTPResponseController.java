@@ -66,6 +66,7 @@ import static larc.ludiconprod.Activities.ActivitiesActivity.myEventList;
 public class HTTPResponseController {
 
     String prodServer ="http://207.154.236.13/";
+    public static final String firebaseRefference="https://ludicon-chat-cf900.firebaseio.com/";
     public static final String API_KEY = "b0a83e90-4ee7-49b7-9200-fdc5af8c2d33";
 
     private static HTTPResponseController instance = null;
@@ -718,6 +719,7 @@ public class HTTPResponseController {
             @Override
             public void onErrorResponse(VolleyError error) {
                 String json = error.getMessage();
+
                 json = trimMessage(json, "error");
                 if(json != null) {
                     displayMessage(json);
@@ -750,7 +752,6 @@ public class HTTPResponseController {
             activity.startActivity(intent);
         }else if(activity.getLocalClassName().toString().equals("Activities.CreateNewActivity")){
             CreateNewActivity.createActivityButton.setEnabled(true);
-
         }
     }
 
@@ -899,7 +900,6 @@ public class HTTPResponseController {
         Response.Listener<JSONObject> success = new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.d("Coupons", response.toString());
 
                 try {
                     JSONArray coupons = response.getJSONArray("coupons");
@@ -913,9 +913,11 @@ public class HTTPResponseController {
                         c.couponBlockId = o.getString("couponBlockId");
                         c.title = o.getString("title");
                         c.description = o.getString("description");
-                        c.expiryDate = Integer.parseInt(o.getString("expiryDate"));
+                        c.expiryDate = Long.parseLong(o.getString("expiryDate"));
                         c.numberOfCoupons = Integer.parseInt(o.getString("numberOfCoupons"));
                         c.ludicoins = Integer.parseInt(o.getString("ludicoins"));
+                        c.companyPicture = o.getString("companyPicture");
+                        c.companyName = o.getString("companyName");
 
                         ca.coupons.add(c);
                     }
@@ -927,11 +929,74 @@ public class HTTPResponseController {
             }
         };
 
-        Log.d("Auth", headers.get("authKey"));
         RequestQueue requestQueue = Volley.newRequestQueue(activity.getActivity());
         CustomRequest request = new CustomRequest(Request.Method.GET, prodServer + "api/coupons?" + params, new HashMap<String, String>(), headers, success, this.createErrorListener());
         requestQueue.add(request);
     }
+
+    public void getMyCoupons(String params, HashMap<String, String> headers, final Fragment activity) {
+        Response.Listener<JSONObject> success = new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONArray coupons = response.getJSONArray("coupons");
+
+                    CouponsActivity ca = (CouponsActivity) activity;
+
+                    Coupon c;
+                    for (int i = 0; i < coupons.length(); ++i) {
+                        JSONObject o = coupons.getJSONObject(i);
+                        c = new Coupon();
+                        c.couponBlockId = o.getString("couponBlockId");
+                        c.title = o.getString("title");
+                        c.description = o.getString("description");
+                        c.expiryDate = Long.parseLong(o.getString("expiryDate"));
+                        c.numberOfCoupons = Integer.parseInt(o.getString("numberOfCoupons"));
+                        c.ludicoins = Integer.parseInt(o.getString("ludicoins"));
+                        c.companyPicture = o.getString("companyPicture");
+                        c.companyName = o.getString("companyName");
+                        c.discountCode = o.getString("discountCode");
+
+                        ca.myCoupons.add(c);
+                    }
+
+                    ca.updateMyCouponsList();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(activity.getActivity());
+        CustomRequest request = new CustomRequest(Request.Method.GET, prodServer + "api/coupons?" + params, new HashMap<String, String>(), headers, success, this.createErrorListener());
+        requestQueue.add(request);
+    }
+
+    public void redeemCoupon(HashMap<String, String> params, HashMap<String, String> headers, final Fragment fragment) {
+        Response.Listener<JSONObject> success = new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    Toast.makeText(activity, "" + response, Toast.LENGTH_SHORT).show();
+
+                    CouponsActivity ca = (CouponsActivity) fragment;
+                    ca.coupons.clear();
+                    ca.getCoupons("0");
+                    ca.firstPageCoupons = true;
+                    ca.numberOfRefreshCoupons = 0;
+
+                    ca.myCoupons.clear();
+                    ca.getMyCoupons("0");
+                    ca.firstPageMyCoupons = true;
+                    ca.numberOfRefreshMyCoupons = 0;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(activity);
+        CustomRequest request = new CustomRequest(Request.Method.POST, prodServer + "api/redeemCoupon", params,  headers, success, this.createErrorListener());
+        requestQueue.add(request);
+    }
 }
-
-

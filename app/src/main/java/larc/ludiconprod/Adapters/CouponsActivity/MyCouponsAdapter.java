@@ -3,16 +3,27 @@ package larc.ludiconprod.Adapters.CouponsActivity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
 
-import larc.ludiconprod.Activities.ActivitiesActivity;
 import larc.ludiconprod.Activities.CouponsActivity;
+import larc.ludiconprod.Adapters.MainActivity.MyAdapter;
+import larc.ludiconprod.Controller.HTTPResponseController;
+import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
 import larc.ludiconprod.Utils.Coupon;
 
@@ -36,7 +47,7 @@ public class MyCouponsAdapter extends BaseAdapter implements ListAdapter {
         this.resources = resources;
         this.fragment = fragment;
 
-        this.listView = (ListView) activity.findViewById(R.id.myCouponsList);
+        this.listView = (ListView) activity.findViewById(R.id.couponsList);
     }
 
     @Override
@@ -56,6 +67,64 @@ public class MyCouponsAdapter extends BaseAdapter implements ListAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
+        if (list.size() > 0) {
+            final CouponsAdapter.ViewHolder holder;
+
+            final Coupon currentCoupon = list.get(i);
+
+            // Initialize the view
+            if (view == null) {
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.my_coupon_card, null);
+
+                holder = new CouponsAdapter.ViewHolder();
+                holder.locationImage = (ImageView) view.findViewById(R.id.locationImage);
+                holder.title = (TextView) view.findViewById(R.id.title);
+                holder.location = (TextView) view.findViewById(R.id.location);
+                holder.description = (TextView) view.findViewById(R.id.description);
+                holder.validDate = (TextView) view.findViewById(R.id.validDate);
+                holder.ludicoinsCode = (TextView) view.findViewById(R.id.discountCode);
+                view.setTag(holder);
+            } else {
+                holder = (CouponsAdapter.ViewHolder) view.getTag();
+            }
+
+            view.setBackgroundColor(Color.parseColor("#FFFFFF"));
+
+            final View currView = view;
+
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    currView.setBackgroundColor(Color.parseColor("#f5f5f5"));
+
+                    HashMap<String, String> params = new HashMap<String, String>();
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    HashMap<String, String> urlParams = new HashMap<String, String>();
+                    headers.put("apiKey", HTTPResponseController.API_KEY);
+
+                    urlParams.put("eventId", currentCoupon.couponBlockId);
+                    urlParams.put("couponBlockId", Persistance.getInstance().getUserInfo(activity).id);
+                    //HTTPResponseController.getInstance().getEventDetails(params, headers, activity,urlParams);
+                }
+            });
+
+            holder.title.setText(currentCoupon.title);
+            if (!currentCoupon.companyPicture.equals("")) {
+                Bitmap bitmap = MyAdapter.decodeBase64(currentCoupon.companyPicture);
+                holder.locationImage.setImageBitmap(bitmap);
+            }
+
+            holder.location.setText(currentCoupon.companyName);
+            holder.title.setText(currentCoupon.title);
+            holder.ludicoinsCode.setText("Discount code: " + currentCoupon.discountCode);
+            holder.description.setText(currentCoupon.description);
+
+            Date date = new Date(currentCoupon.expiryDate * 1000);
+            SimpleDateFormat fmt = new SimpleDateFormat("dd MMMM yyyy", Locale.ENGLISH);
+            holder.validDate.setText("Valid till " + fmt.format(date));
+        }
+
         return view;
     }
 }

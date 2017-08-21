@@ -1,4 +1,4 @@
-package larc.ludiconprod.Utils.CouponsUtils;
+package larc.ludiconprod.Utils.ChatAndFriends;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,20 +10,17 @@ import android.view.ViewGroup;
 import larc.ludiconprod.R;
 
 /**
- * Created by alex_ on 18.08.2017.
+ * Created by ancuta on 8/18/2017.
  */
 
-public class CouponsTab1 extends Fragment {
+public class ChatAndFriendTab2 extends Fragment {
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.couponstab1, container, false);
-
-        try {
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        View v =inflater.inflate(R.layout.friend_tab,container,false);
 
         return v;
     }
+
+
 }
