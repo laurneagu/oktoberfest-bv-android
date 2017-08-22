@@ -122,6 +122,7 @@ public class CouponsActivity extends Fragment {
 
         TextView noCoupons = (TextView)v.findViewById(R.id.noCoupons);
         TextView discoverActivities = (TextView) v.findViewById(R.id.noCouponsText);
+        Button noMyCouponsButton = (Button) v.findViewById(R.id.noCouponsButton);
 
         if (!this.firstTimeCoupons) {
             listView.setAdapter(this.couponsAdapter);
@@ -130,10 +131,23 @@ public class CouponsActivity extends Fragment {
             heartImage.setVisibility(View.VISIBLE);
             noCoupons.setVisibility(View.VISIBLE);
             discoverActivities.setVisibility(View.VISIBLE);
+            noMyCouponsButton.setVisibility(View.VISIBLE);
+            noMyCouponsButton.setEnabled(true);
+            noMyCouponsButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    /*Intent intent = new Intent(getActivity(), Main.class);
+                    intent.putExtra("Tab", R.id.tab_activities);
+                    startActivity(intent);*/
+                    Main mainFr = (Main) getActivity();
+                    mainFr.bottomBar.setDefaultTab(R.id.tab_activities);
+                }
+            });
         } else {
             heartImage.setVisibility(View.INVISIBLE);
             noCoupons.setVisibility(View.INVISIBLE);
             discoverActivities.setVisibility(View.INVISIBLE);
+            noMyCouponsButton.setEnabled(false);
         }
 
         if(listView != null) {
@@ -182,6 +196,7 @@ public class CouponsActivity extends Fragment {
 
         TextView noCoupons = (TextView)v.findViewById(R.id.noMyCoupons);
         TextView discoverActivities = (TextView) v.findViewById(R.id.noMyCouponsText);
+        Button noMyCouponsButton = (Button) v.findViewById(R.id.noMyCouponsButton);
 
         if (!this.firstTimeMyCoupons) {
             listView.setAdapter(this.myCouponsAdapter);
@@ -190,10 +205,20 @@ public class CouponsActivity extends Fragment {
             heartImage.setVisibility(View.VISIBLE);
             noCoupons.setVisibility(View.VISIBLE);
             discoverActivities.setVisibility(View.VISIBLE);
+            noMyCouponsButton.setVisibility(View.VISIBLE);
+            noMyCouponsButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    pager.setCurrentItem(0);
+                }
+            });
+            noMyCouponsButton.setEnabled(true);
         } else {
             heartImage.setVisibility(View.INVISIBLE);
             noCoupons.setVisibility(View.INVISIBLE);
             discoverActivities.setVisibility(View.INVISIBLE);
+            noMyCouponsButton.setVisibility(View.INVISIBLE);
+            noMyCouponsButton.setEnabled(false);
         }
 
         if(listView != null) {

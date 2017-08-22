@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/couponsRelativeLayout"
@@ -12,10 +13,11 @@
         android:layout_alignParentRight="true"
         android:layout_alignBottom="@+id/aroundMeCardLayout"
         android:background="@drawable/bg_coupon"
-        android:id="@+id/imageViewBackground"/>
+        android:id="@+id/imageViewBackground"
+        android:layout_above="@+id/couponGetIt"/>
 
     <LinearLayout
-        android:id="@+id/couponsCardLayout"
+        android:id="@+id/dataL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -54,7 +56,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
-                    android:textColor="#1573ba"
+                    android:textColor="#02b9ad"
                     android:text="Smart Football Club" />
             </LinearLayout>
 
@@ -62,6 +64,7 @@
 
         <TextView
             android:id="@+id/description"
+            android:textColor="#1573ba"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -76,40 +79,45 @@
             android:layout_marginTop="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
             android:textColor="#400c3855"
             android:text="Valid till 20 July 2017"/>
 
-        <LinearLayout
-            android:id="@+id/couponGetIt"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginTop="16dp"
-            android:background="#1573ba"
-            android:gravity="center"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="GET IN NOW! only "
-                android:textSize="14sp"
-                android:fontFamily="@string/fontbold"
-                android:textColor="#ffffff"/>
-            <TextView
-                android:id="@+id/ludicoins"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="25 "
-                android:textSize="14sp"
-                android:fontFamily="@string/fontmedium"
-                android:textColor="#fcb851"/>
+    </LinearLayout>
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_ludicoins_small"
-                android:textColor="#fcb851"/>
+    <LinearLayout
+        android:id="@+id/couponGetIt"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
 
-        </LinearLayout>
+        android:background="#02b9ad"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_below="@+id/dataL">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="GET IN NOW! only "
+            android:textSize="14sp"
+            android:fontFamily="@string/fontbold"
+            android:textColor="#ffffff"/>
+
+        <TextView
+            android:id="@+id/ludicoins"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="25 "
+            android:textSize="14sp"
+            android:fontFamily="@string/fontmedium"
+            android:textColor="#fcb851"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_ludicoins_small"
+            android:textColor="#fcb851"/>
 
     </LinearLayout>
+
 </RelativeLayout>

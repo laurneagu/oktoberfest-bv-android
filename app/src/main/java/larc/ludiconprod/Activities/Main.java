@@ -14,13 +14,15 @@ import larc.ludiconprod.R;
 
 
 public class Main extends FragmentActivity{
+    BottomBar bottomBar;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_five_tabs);
 
         // Initialize bottom bar
-        final BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+        this.bottomBar = (BottomBar) findViewById(R.id.bottomBar);
 
         // Go to chat list activity when notification is thrown
         ChatPersistence chatPersistence = ChatPersistence.getInstance();

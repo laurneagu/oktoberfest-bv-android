@@ -91,24 +91,6 @@ public class MyCouponsAdapter extends BaseAdapter implements ListAdapter {
 
             view.setBackgroundColor(Color.parseColor("#FFFFFF"));
 
-            final View currView = view;
-
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    currView.setBackgroundColor(Color.parseColor("#f5f5f5"));
-
-                    HashMap<String, String> params = new HashMap<String, String>();
-                    HashMap<String, String> headers = new HashMap<String, String>();
-                    HashMap<String, String> urlParams = new HashMap<String, String>();
-                    headers.put("apiKey", HTTPResponseController.API_KEY);
-
-                    urlParams.put("eventId", currentCoupon.couponBlockId);
-                    urlParams.put("couponBlockId", Persistance.getInstance().getUserInfo(activity).id);
-                    //HTTPResponseController.getInstance().getEventDetails(params, headers, activity,urlParams);
-                }
-            });
-
             holder.title.setText(currentCoupon.title);
             if (!currentCoupon.companyPicture.equals("")) {
                 Bitmap bitmap = MyAdapter.decodeBase64(currentCoupon.companyPicture);
