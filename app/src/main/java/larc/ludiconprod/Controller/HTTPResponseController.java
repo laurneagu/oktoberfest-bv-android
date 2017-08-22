@@ -13,6 +13,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -705,9 +706,13 @@ public class HTTPResponseController {
         return new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                String json = error.getMessage();
-                json = trimMessage(json, "error");
-                if(json != null) displayMessage(json);
+                try {
+                    String json = error.getMessage();
+                    json = trimMessage(json, "error");
+                    if (json != null) displayMessage(json);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
 
 
             }
@@ -768,7 +773,10 @@ public class HTTPResponseController {
         RequestQueue requestQueue = Volley.newRequestQueue(activity);
         CustomRequest jsObjRequest = new CustomRequest(Request.Method.GET, prodServer+"api/events?userId="+urlParams.get("userId")+"&pageNumber="+urlParams.get("pageNumber")+"&userLatitude="+urlParams.get("userLatitude")+
                 "&userLongitude="+urlParams.get("userLongitude")+"&userRange="+urlParams.get("userRange")+"&userSports="+urlParams.get("userSports"), params,headers,this.createAroundMeEventSuccesListener(), this.createRequestErrorListener());
+
+
         requestQueue.add(jsObjRequest);
+
 
     }
     public void getMyEvent(HashMap<String,String> params, HashMap<String,String> headers, Activity activity,HashMap<String,String> urlParams){

@@ -37,6 +37,7 @@ public class Persistance {
 
     public User getUserInfo(Activity activity){
         String json=null;
+        System.out.println(activity + "activity");
         SharedPreferences sharedPreferences = activity.getSharedPreferences(userDetailsString, 0);
         json = sharedPreferences.getString(userDetailsString, "0");
         Gson gson = new Gson();

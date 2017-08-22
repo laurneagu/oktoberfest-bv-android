@@ -76,8 +76,19 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/chatImage"
         android:background="@drawable/es_chat"
         android:layout_above="@+id/noConversationTV"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="16dp"/>
+
+    <ProgressBar
+        android:id="@+id/progressBarChats"
+        style="@android:style/Widget.Holo.ProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="0"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="5dp" />
 </RelativeLayout>
