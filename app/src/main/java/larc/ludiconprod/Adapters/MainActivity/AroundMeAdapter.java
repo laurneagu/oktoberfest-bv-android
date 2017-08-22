@@ -40,6 +40,7 @@ import java.util.Map;
 import de.hdodenhof.circleimageview.CircleImageView;
 import larc.ludiconprod.Activities.ActivitiesActivity;
 import larc.ludiconprod.Activities.ActivityDetailsActivity;
+import larc.ludiconprod.Activities.UserProfileActivity;
 import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
@@ -203,7 +204,9 @@ public class AroundMeAdapter extends BaseAdapter implements ListAdapter {
                 // Redirect to user profile on picture tap
                 holder.profileImage.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
-                        Toast.makeText(context, "Go to ProfileDetails", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(activity, UserProfileActivity.class);
+                        intent.putExtra("UserId", currentEvent.creatorId);
+                        activity.startActivity(intent);
                     }
                 });
 

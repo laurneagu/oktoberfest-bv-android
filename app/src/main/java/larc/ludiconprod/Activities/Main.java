@@ -14,7 +14,7 @@ import larc.ludiconprod.R;
 
 
 public class Main extends FragmentActivity{
-    BottomBar bottomBar;
+    public BottomBar bottomBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

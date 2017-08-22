@@ -2,6 +2,7 @@ package larc.ludiconprod.Adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -27,6 +28,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import larc.ludiconprod.Activities.ActivitiesActivity;
 import larc.ludiconprod.Activities.ActivityDetailsActivity;
 import larc.ludiconprod.Activities.InviteFriendsActivity;
+import larc.ludiconprod.Activities.UserProfileActivity;
 import larc.ludiconprod.Adapters.MainActivity.AroundMeAdapter;
 import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
@@ -315,7 +317,16 @@ public class InviteFriendsAdapter  extends BaseAdapter implements ListAdapter {
                 });
             }
 
-
+            if (!currentFriend.offlineFriend) {
+                holder.friendProfileImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(activity, UserProfileActivity.class);
+                        intent.putExtra("UserId", currentFriend.userID);
+                        activity.startActivity(intent);
+                    }
+                });
+            }
         }
         return view;
 

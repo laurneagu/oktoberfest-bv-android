@@ -18,7 +18,14 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.android.volley.Response;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -33,7 +40,7 @@ import larc.ludiconprod.Utils.util.Sport;
  * Created by alex_ on 10.08.2017.
  */
 
-public class MyProfileActivity extends Fragment {
+public class MyProfileActivity extends Fragment implements Response.Listener<JSONObject> {
 
     protected Context mContext;
     protected View v;
@@ -95,7 +102,7 @@ public class MyProfileActivity extends Fragment {
         HashMap<String, String> params = new HashMap<>();
         HashMap<String, String> headers = new HashMap<>();
         headers.put("authKey", u.authKey);
-        HTTPResponseController.getInstance().getUserProfile(params, headers, u.id, this);
+        HTTPResponseController.getInstance().getUserProfile(params, headers, u.id, this.getActivity(), this);
     }
 
     public void printInfo(User u) {
@@ -186,7 +193,7 @@ public class MyProfileActivity extends Fragment {
         }
     }
 
-    private int findSportImageResource(String sportCode) {
+    public static int findSportImageResource(String sportCode) {
         switch (sportCode){
             case "BAS":
                 return R.drawable.ic_sport_basketball_large;
@@ -208,6 +215,39 @@ public class MyProfileActivity extends Fragment {
                 return R.drawable.ic_sport_voleyball_large;
             default:
                 return R.drawable.ic_sport_others_large;
+        }
+    }
+
+    @Override
+    public void onResponse(JSONObject jsonObject) {
+        try {
+            User u = Persistance.getInstance().getProfileInfo(this.getActivity());
+
+            u.email = jsonObject.getString("email");
+            u.firstName = jsonObject.getString("firstName");
+            u.lastName = jsonObject.getString("lastName");
+            u.gender = jsonObject.getString("gender");
+            u.ludicoins = Integer.parseInt(jsonObject.getString("ludicoins"));
+            u.level = Integer.parseInt(jsonObject.getString("level"));
+            u.points = Integer.parseInt(jsonObject.getString("points"));
+            u.pointsToNextLevel = Integer.parseInt(jsonObject.getString("pointsToNextLevel"));
+            u.pointsOfNextLevel = Integer.parseInt(jsonObject.getString("pointsOfNextLevel"));
+            u.position = Integer.parseInt(jsonObject.getString("position"));
+            u.range = jsonObject.getString("range");
+            u.age = Calendar.getInstance().get(Calendar.YEAR) - Integer.parseInt(jsonObject.getString("yearBorn"));
+            u.profileImage = jsonObject.getString("profileImage");
+
+            JSONArray sports = jsonObject.getJSONArray("sports");
+            u.sports.clear();
+            for (int i = 0; i < sports.length(); ++i) {
+                u.sports.add(new Sport(sports.getString(i)));
+            }
+
+            MyProfileActivity mpa = (MyProfileActivity) this;
+            Persistance.getInstance().setProfileInfo(this.getActivity(), u);
+            mpa.printInfo(u);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 }

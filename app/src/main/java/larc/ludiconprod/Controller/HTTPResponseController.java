@@ -1,6 +1,7 @@
 package larc.ludiconprod.Controller;
 
 import android.app.Activity;
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -45,6 +46,7 @@ import larc.ludiconprod.Activities.Main;
 import larc.ludiconprod.Activities.MyProfileActivity;
 import larc.ludiconprod.Activities.ProfileDetailsActivity;
 import larc.ludiconprod.Activities.ResetPasswordFinalActivity;
+import larc.ludiconprod.Activities.UserProfileActivity;
 import larc.ludiconprod.Utils.Coupon;
 import larc.ludiconprod.Utils.EventDetails;
 import larc.ludiconprod.Utils.Friend;
@@ -610,7 +612,7 @@ public class HTTPResponseController {
             }
         };
     }
-    private Response.Listener<JSONObject> createGetProfileListener(final Fragment fragment) {
+    /*private Response.Listener<JSONObject> createGetProfileListener(final Fragment fragment) {
         return new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
@@ -645,7 +647,7 @@ public class HTTPResponseController {
                 }
             }
         };
-    }
+    }*/
 
     private Response.Listener<JSONObject>  createJoinEventSuccesListener(){
         return new Response.Listener<JSONObject>() {
@@ -882,9 +884,9 @@ public class HTTPResponseController {
         }, this.createErrorListener());
         requestQueue.add(jsObjRequest);
     }
-    public void getUserProfile(HashMap<String,String> params, HashMap<String,String> headers, String id, Fragment fragment) {
-        RequestQueue requestQueue = Volley.newRequestQueue(fragment.getActivity());
-        CustomRequest jsObjRequest = new CustomRequest(Request.Method.GET, prodServer + "api/user?userId=" + id, params, headers, this.createGetProfileListener(fragment), this.createErrorListener());
+    public void getUserProfile(HashMap<String,String> params, HashMap<String,String> headers, String id, Activity activity, Response.Listener<JSONObject> listener) {
+        RequestQueue requestQueue = Volley.newRequestQueue(activity);
+        CustomRequest jsObjRequest = new CustomRequest(Request.Method.GET, prodServer + "api/user?userId=" + id, params, headers, (Response.Listener<JSONObject>) listener, this.createErrorListener());
         requestQueue.add(jsObjRequest);
     }
 
@@ -1005,6 +1007,26 @@ public class HTTPResponseController {
 
         RequestQueue requestQueue = Volley.newRequestQueue(activity);
         CustomRequest request = new CustomRequest(Request.Method.POST, prodServer + "api/redeemCoupon", params,  headers, success, this.createErrorListener());
+        requestQueue.add(request);
+    }
+
+    public void friendRequest(final HashMap<String, String> params, HashMap<String, String> headers, final Activity activity) {
+        Response.Listener<JSONObject> success = new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Toast.makeText(activity, "" + response, Toast.LENGTH_SHORT).show();
+
+                UserProfileActivity upa = (UserProfileActivity) activity;
+                if (params.get("action").equals("1")) {
+                    upa.friendAdded();
+                } else {
+                    upa.friendRemoved();
+                }
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(activity);
+        CustomRequest request = new CustomRequest(Request.Method.POST, prodServer + "api/friend", params,  headers, success, this.createErrorListener());
         requestQueue.add(request);
     }
 }

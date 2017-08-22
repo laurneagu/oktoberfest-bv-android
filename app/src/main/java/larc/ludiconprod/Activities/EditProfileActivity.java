@@ -233,6 +233,8 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         Intent intent = new Intent(this, Main.class);
         intent.putExtra("Tab", R.id.tab_profile);
         startActivity(intent);
+
+        //Add to Persistance.getInstance().getUserInfo()
     }
 
     @Override

@@ -580,7 +580,14 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
             authorizedLevel=Integer.valueOf(eventDetails.authorizeLevel);
         }
 
-
+        this.creatorImageProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ActivityDetailsActivity.this, UserProfileActivity.class);
+                intent.putExtra("UserId", eventDetails.creatorId);
+                startActivity(intent);
+            }
+        });
 
 
 
