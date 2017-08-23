@@ -64,6 +64,7 @@ public class ChatAndFriendsActivity extends Fragment {
     int numberOfTotalChatsArrived;
     Boolean isLastPage=false;
     Boolean addedSwipe=false;
+    public static Boolean isOnChatPage=true;
 
     public ChatAndFriendsActivity() {
         currentFragment=this;
@@ -75,6 +76,8 @@ public class ChatAndFriendsActivity extends Fragment {
         mContext = inflater.getContext();
         v = inflater.inflate(R.layout.chat_and_friends_activity, container, false);
         activity=getActivity();
+        threadsList.clear();
+        isOnChatPage=true;
         try {
 
             super.onCreate(savedInstanceState);
@@ -108,7 +111,7 @@ public class ChatAndFriendsActivity extends Fragment {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
-                    if (dataSnapshot.hasChild("last_message_date") && isFirstTimeSetChat) {
+                    if (dataSnapshot.hasChild("last_message_date") && isFirstTimeSetChat && isOnChatPage) {
                         final Chat chat = new Chat();
                         chat.chatId = dataSnapshot.getKey();
                         if (dataSnapshot.hasChild("event_id")) {
@@ -150,13 +153,16 @@ public class ChatAndFriendsActivity extends Fragment {
 
                 @Override
                 public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                    if (dataSnapshot.hasChild("last_message_date")) {
+                    if (dataSnapshot.hasChild("last_message_date")&& isOnChatPage) {
                         for(int i=0;i < chatList.size();i++){
                             if(dataSnapshot.getKey().equalsIgnoreCase(chatList.get(i).chatId)){
-                                chatList.remove(i);
-                                threadsList.get(i).cancel();
-                                threadsList.remove(i);
-                                break;
+                                    chatList.remove(i);
+                                if(chatList.size() > 0) {
+                                    threadsList.get(i).cancel();
+                                    threadsList.remove(i);
+                                    break;
+                                }
+
                             }
 
                         }
@@ -342,7 +348,7 @@ public class ChatAndFriendsActivity extends Fragment {
                                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                                     chat.lastMessage = child.child("message").getValue().toString();
                                 }
-                                if(counterOfChats > 0) {
+                                if(counterOfChats > 0 || numberOfTotalChatsArrived < 4) {
                                     chatList.add(0, chat);
                                     setAdapter();
                                     counterOfChats++;
