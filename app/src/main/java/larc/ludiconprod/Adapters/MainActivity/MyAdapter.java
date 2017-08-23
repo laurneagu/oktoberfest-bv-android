@@ -45,19 +45,15 @@ import larc.ludiconprod.Utils.General;
 import larc.ludiconprod.Utils.util.Sport;
 
 
-
-
-
-
 public class MyAdapter extends BaseAdapter implements ListAdapter {
-    public static Bitmap decodeBase64(String input)
-    {
+    public static Bitmap decodeBase64(String input) {
         byte[] decodedBytes = Base64.decode(input, 0);
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
+
     public static String getMonth(int month) {
-        String date=new DateFormatSymbols().getMonths()[month-1];
-        return date.substring(0,1).toUpperCase().concat(date.substring(1,3));
+        String date = new DateFormatSymbols().getMonths()[month - 1];
+        return date.substring(0, 1).toUpperCase().concat(date.substring(1, 3));
     }
 
     public class ViewHolder {
@@ -96,14 +92,16 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
         this.listView = (ListView) activity.findViewById(R.id.events_listView1); // era v.
     }
 
-    public void setListOfEvents(ArrayList<Event> newList){
+    public void setListOfEvents(ArrayList<Event> newList) {
         this.list = newList;
         this.notifyDataSetChanged();
     }
+
     @Override
     public boolean areAllItemsEnabled() {
         return false;
     }
+
     @Override
     public int getCount() {
         return list.size();
@@ -122,7 +120,7 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         View view = convertView;
-        if(list.size() > 0) {
+        if (list.size() > 0) {
             MyAdapter.ViewHolder holder;
 
             final Event currentEvent = list.get(position);
@@ -147,7 +145,7 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
                 holder.friends2 = (CircleImageView) view.findViewById(R.id.friends2);
                 holder.friendsNumber = (TextView) view.findViewById(R.id.friendsNumber);
                 holder.imageViewBackground = (ImageView) view.findViewById(R.id.imageViewBackground);
-                holder.creatorLevelMyActivity=(TextView)view.findViewById(R.id.creatorLevelMyActivity);
+                holder.creatorLevelMyActivity = (TextView) view.findViewById(R.id.creatorLevelMyActivity);
 
 
                 view.setTag(holder);
@@ -185,11 +183,10 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
                     //set urlParams
 
 
-
-                    urlParams.put("eventId",currentEvent.id);
-                    System.out.println(currentEvent.id+"eventId");
-                    urlParams.put("userId",Persistance.getInstance().getUserInfo(activity).id);
-                    HTTPResponseController.getInstance().getEventDetails(params, headers, activity,urlParams);
+                    urlParams.put("eventId", currentEvent.id);
+                    System.out.println(currentEvent.id + "eventId");
+                    urlParams.put("userId", Persistance.getInstance().getUserInfo(activity).id);
+                    HTTPResponseController.getInstance().getEventDetails(params, headers, activity, urlParams);
 
 
                 }
@@ -224,7 +221,10 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
                     currentEvent.sportCode.equalsIgnoreCase("GYM") || currentEvent.sportCode.equalsIgnoreCase("CYC"))
                 weWillPlayString = "Will go to " + sport.sportName;
             else
-                weWillPlayString = "Will play " + sport.sportName;
+                if (currentEvent.sportCode.equalsIgnoreCase("OTH")) {
+                    weWillPlayString = "Will play " + currentEvent.otherSportName;
+                } else
+                    weWillPlayString = "Will play " + sport.sportName;
 
             holder.sportName.setText(weWillPlayString);
 
@@ -253,46 +253,48 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
                 if (!currentEvent.participansProfilePicture.get(i).equals("") && counter == 0) {
                     Bitmap bitmap = decodeBase64(currentEvent.participansProfilePicture.get(i));
                     holder.friends0.setImageBitmap(bitmap);
-                } else if (!currentEvent.participansProfilePicture.get(i).equals("") && counter == 1) {
-                    Bitmap bitmap = decodeBase64(currentEvent.participansProfilePicture.get(i));
-                    holder.friends1.setImageBitmap(bitmap);
-                } else if (!currentEvent.participansProfilePicture.get(i).equals("") && counter == 2) {
-                    Bitmap bitmap = decodeBase64(currentEvent.participansProfilePicture.get(i));
-                    holder.friends2.setImageBitmap(bitmap);
-                }
+                } else
+                    if (!currentEvent.participansProfilePicture.get(i).equals("") && counter == 1) {
+                        Bitmap bitmap = decodeBase64(currentEvent.participansProfilePicture.get(i));
+                        holder.friends1.setImageBitmap(bitmap);
+                    } else
+                        if (!currentEvent.participansProfilePicture.get(i).equals("") && counter == 2) {
+                            Bitmap bitmap = decodeBase64(currentEvent.participansProfilePicture.get(i));
+                            holder.friends2.setImageBitmap(bitmap);
+                        }
             }
 
             switch (currentEvent.sportCode) {
-                case "FOT":
-                    holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_football);
-                    break;
-                case "BAS":
-                    holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_basketball);
-                    break;
-                case "VOL":
-                    holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_volleyball);
-                    break;
-                case "JOG":
-                    holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_jogging);
-                    break;
-                case "GYM":
-                    holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_gym);
-                    break;
-                case "CYC":
-                    holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_cycling);
-                    break;
-                case "TEN":
-                    holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_tennis);
-                    break;
-                case "PIN":
-                    holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_pingpong);
-                    break;
-                case "SQU":
-                    holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_squash);
-                    break;
-                case "OTH":
-                    holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_others);
-                    break;
+            case "FOT":
+                holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_football);
+                break;
+            case "BAS":
+                holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_basketball);
+                break;
+            case "VOL":
+                holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_volleyball);
+                break;
+            case "JOG":
+                holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_jogging);
+                break;
+            case "GYM":
+                holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_gym);
+                break;
+            case "CYC":
+                holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_cycling);
+                break;
+            case "TEN":
+                holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_tennis);
+                break;
+            case "PIN":
+                holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_pingpong);
+                break;
+            case "SQU":
+                holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_squash);
+                break;
+            case "OTH":
+                holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_others);
+                break;
 
             }
 
@@ -317,15 +319,16 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
             String date = "";
             if (Integer.parseInt(stringDate[1]) - 1 == todayMonth && Integer.parseInt(stringDate[2]) == todayDay) {
                 date = "Today, " + stringDateAndTime[1].substring(0, 5);
-            } else if (Integer.parseInt(stringDate[1]) - 1 == todayMonth && Integer.parseInt(stringDate[2]) - 1 == todayDay) {
-                date = "Tomorrow, " + stringDateAndTime[1].substring(0, 5);
-            } else {
-                date = getMonth(Integer.parseInt(stringDate[1])) + " " + stringDate[2] + ", " + stringDateAndTime[1].substring(0, 5);
-            }
+            } else
+                if (Integer.parseInt(stringDate[1]) - 1 == todayMonth && Integer.parseInt(stringDate[2]) - 1 == todayDay) {
+                    date = "Tomorrow, " + stringDateAndTime[1].substring(0, 5);
+                } else {
+                    date = getMonth(Integer.parseInt(stringDate[1])) + " " + stringDate[2] + ", " + stringDateAndTime[1].substring(0, 5);
+                }
             holder.eventDate.setText(date);
 
         }
         return view;
     }
-    }
+}
 

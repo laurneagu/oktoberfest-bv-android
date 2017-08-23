@@ -13,6 +13,7 @@ public class Event {
     public String eventDate;
     public String placeName;
     public String sportCode;
+    public String otherSportName;
     public int capacity;
     public String creatorName;
     public int creatorLevel;
@@ -21,6 +22,6 @@ public class Event {
     public int numberOfParticipants;
     public int points;
     public int ludicoins;
-    public ArrayList<String> participansProfilePicture=new ArrayList<String>();
+    public ArrayList<String> participansProfilePicture = new ArrayList<String>();
 
 }
