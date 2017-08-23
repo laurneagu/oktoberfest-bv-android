@@ -5,28 +5,6 @@
     android:layout_height="match_parent"
     android:paddingBottom="56dp">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <larc.ludiconprod.Utils.ui.SlidingTabLayout
-            android:id="@+id/couponsTabs"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:textColor="@color/tab_text_color"
-            android:background="#FFFFFF"/>
-
-        <android.support.v4.view.ViewPager
-            android:id="@+id/couponsPager"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textColor="@color/tab_text_color">
-
-        </android.support.v4.view.ViewPager>
-    </LinearLayout>
-
     <android.support.v4.widget.DrawerLayout
         android:id="@+id/drawer"
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -36,11 +14,52 @@
         android:layout_height="match_parent"
         tools:context=".Activities.Main">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp">
+                <larc.ludiconprod.Utils.ui.SlidingTabLayout
+                    android:id="@+id/couponsTabs"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/tab_text_color"
+                    android:background="#FFFFFF"
+                    android:layout_alignParentLeft="true"/>
+                <ImageView
+                    android:id="@+id/filterShow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_filter"
+                    android:layout_marginRight="16dp"
+                    android:layout_alignParentRight="true"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/leaderTop"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="@drawable/bg_leaderboard_header">
+            </RelativeLayout>
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/couponsPager"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/tab_text_color">
+
+            </android.support.v4.view.ViewPager>
+        </LinearLayout>
         <RelativeLayout
             android:id="@+id/rightFilter"
             android:layout_height="match_parent"
             android:layout_width="match_parent"
-            android:layout_gravity="end e">
+            android:layout_gravity="end"
+            android:background="#ffffff">
 
             <RelativeLayout
                 android:id="@+id/filterTop"
@@ -81,7 +100,8 @@
                 android:layout_below="@id/filterTop"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginBottom="120dp">
                 <RadioGroup
                     android:checkedButton="@+id/general"
                     android:id="@+id/filterSwich"
@@ -121,12 +141,12 @@
                 <ScrollView
                     android:layout_height="match_parent"
                     android:layout_width="match_parent"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="48dp">
+                    android:layout_marginTop="16dp">
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
                         <RadioGroup
+                            android:id="@+id/sports"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent">
                             <RadioButton
@@ -144,7 +164,6 @@
                                 app:layout_row="0"
                                 app:layout_gravity="fill"
                                 android:layout_marginBottom="4dp"
-                                android:layout_marginRight="4dp"
                                 app:layout_columnWeight="1"
                                 app:layout_rowWeight="1"/>
                             <RadioButton
@@ -159,7 +178,6 @@
                                 android:drawableRight="@drawable/ic_check"
                                 android:button="@null"
                                 android:layout_marginBottom="4dp"
-                                android:layout_marginLeft="4dp"
                                 app:layout_column="1"
                                 app:layout_row="0"
                                 app:layout_gravity="fill"
@@ -177,7 +195,6 @@
                                 android:drawableRight="@drawable/ic_check"
                                 android:button="@null"
                                 android:layout_marginBottom="4dp"
-                                android:layout_marginRight="4dp"
                                 app:layout_column="0"
                                 app:layout_row="1"
                                 app:layout_gravity="fill"
@@ -195,7 +212,6 @@
                                 android:drawableRight="@drawable/ic_check"
                                 android:button="@null"
                                 android:layout_marginBottom="4dp"
-                                android:layout_marginLeft="4dp"
                                 app:layout_column="1"
                                 app:layout_row="1"
                                 app:layout_gravity="fill"
@@ -213,7 +229,6 @@
                                 android:drawableRight="@drawable/ic_check"
                                 android:button="@null"
                                 android:layout_marginBottom="4dp"
-                                android:layout_marginRight="4dp"
                                 app:layout_column="0"
                                 app:layout_row="2"
                                 app:layout_gravity="fill"
@@ -231,7 +246,6 @@
                                 android:drawableRight="@drawable/ic_check"
                                 android:button="@null"
                                 android:layout_marginBottom="4dp"
-                                android:layout_marginLeft="4dp"
                                 app:layout_column="1"
                                 app:layout_row="2"
                                 app:layout_gravity="fill"
@@ -249,7 +263,6 @@
                                 android:drawableRight="@drawable/ic_check"
                                 android:button="@null"
                                 android:layout_marginBottom="4dp"
-                                android:layout_marginRight="4dp"
                                 app:layout_column="0"
                                 app:layout_row="3"
                                 app:layout_gravity="fill"
@@ -267,7 +280,6 @@
                                 android:drawableRight="@drawable/ic_check"
                                 android:button="@null"
                                 android:layout_marginBottom="4dp"
-                                android:layout_marginLeft="4dp"
                                 app:layout_column="1"
                                 app:layout_row="3"
                                 app:layout_gravity="fill"
@@ -285,7 +297,6 @@
                                 android:drawableRight="@drawable/ic_check"
                                 android:button="@null"
                                 android:layout_marginBottom="4dp"
-                                android:layout_marginRight="4dp"
                                 app:layout_column="0"
                                 app:layout_row="4"
                                 app:layout_gravity="fill"
@@ -302,8 +313,6 @@
                                 android:drawableLeft="@drawable/ic_sport_others"
                                 android:drawableRight="@drawable/ic_check"
                                 android:button="@null"
-                                android:layout_marginBottom="4dp"
-                                android:layout_marginLeft="4dp"
                                 app:layout_column="1"
                                 app:layout_row="4"
                                 app:layout_gravity="fill"
@@ -312,16 +321,19 @@
                         </RadioGroup>
                     </LinearLayout>
                 </ScrollView>
-                <Button
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:text="APPLY"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:textColor="#ffffff"
-                    android:textSize="14sp"
-                    android:background="@drawable/pink_button_selector"/>
             </LinearLayout>
+            <Button
+                android:id="@+id/filterApply"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="APPLY"
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:textColor="#ffffff"
+                android:textSize="14sp"
+                android:background="@drawable/pink_button_selector"
+                android:layout_alignParentBottom="true"/>
         </RelativeLayout>
     </android.support.v4.widget.DrawerLayout>
 </RelativeLayout>

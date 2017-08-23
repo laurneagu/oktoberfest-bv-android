@@ -8,23 +8,38 @@ import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import java.util.Set;
+import java.util.TreeMap;
+
 import larc.ludiconprod.R;
+import larc.ludiconprod.Utils.CouponsUtils.CouponsPagerAdapter;
+import larc.ludiconprod.Utils.LeaderboardUtils.LeaderboardPagerAdapter;
+import larc.ludiconprod.Utils.ui.SlidingTabLayout;
 
 import static android.R.color.transparent;
 
-public class LeaderboardActivity extends Fragment {
+public class LeaderboardActivity extends Fragment implements RadioGroup.OnCheckedChangeListener, View.OnClickListener {
+
+    private TreeMap<Integer, String> codes = new TreeMap<>();
+    private TreeMap<Integer, Integer> compoundDrawables = new TreeMap<>();
+    private int tabsNumber = 3;
+    private static final String[] TITLES = {"THIS MONTH", "3 MONTHS", "ALL TIME"};
 
     View v;
     Context mContext;
     DrawerLayout mDrawer;
-    View dLeft, dRight;
+    View dRight;
+    LeaderboardPagerAdapter adapter;
+    ViewPager pager;
 
     @Nullable
     @Override
@@ -35,15 +50,32 @@ public class LeaderboardActivity extends Fragment {
         try {
             super.onCreate(savedInstanceState);
 
-            mDrawer = (DrawerLayout) v.findViewById(R.id.drawer);
-            dRight = v.findViewById(R.id.right);
+            this.adapter = new LeaderboardPagerAdapter(this.getFragmentManager(), LeaderboardActivity.TITLES, this.tabsNumber);
 
-            /*v.findViewById(R.id.filterButton).setOnClickListener(new View.OnClickListener() {
+            pager = (ViewPager) v.findViewById(R.id.couponsPager);
+            pager.setAdapter(adapter);
+
+            SlidingTabLayout tabs = (SlidingTabLayout) v.findViewById(R.id.couponsTabs);
+            tabs.setDistributeEvenly(false);
+
+            tabs.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
+                @Override
+                public int getIndicatorColor(int position) {
+                    return getResources().getColor(R.color.tabsScrollColor);
+                }
+            });
+
+            tabs.setViewPager(pager);
+
+            mDrawer = (DrawerLayout) v.findViewById(R.id.drawer);
+            dRight = v.findViewById(R.id.rightFilter);
+
+            v.findViewById(R.id.filterShow).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     mDrawer.openDrawer(dRight);
                 }
-            });*/
+            });
 
             RadioGroup filterSwich = (RadioGroup) v.findViewById(R.id.filterSwich);
             final RadioButton general =  (RadioButton) v.findViewById(R.id.general);
@@ -68,9 +100,89 @@ public class LeaderboardActivity extends Fragment {
                     }
                 }
             });
+
+            codes.put(R.id.filterFootball, "FOT");
+            codes.put(R.id.filterBasketball, "BAS");
+            codes.put(R.id.filterVolleyball, "VOL");
+            codes.put(R.id.filterJogging, "JOG");
+            codes.put(R.id.filterGym, "GYM");
+            codes.put(R.id.filterCycling, "CYC");
+            codes.put(R.id.filterTennis, "TEN");
+            codes.put(R.id.filterPingPong, "PIN");
+            codes.put(R.id.filterSquash, "SQU");
+            codes.put(R.id.filterOthers, "OTH");
+
+            TreeMap<Integer, Integer> cd = this.compoundDrawables;
+            cd.put(R.id.filterFootball, R.drawable.ic_sport_football);
+            cd.put(R.id.filterBasketball, R.drawable.ic_sport_basketball);
+            cd.put(R.id.filterVolleyball, R.drawable.ic_sport_voleyball);
+            cd.put(R.id.filterJogging, R.drawable.ic_sport_jogging);
+            cd.put(R.id.filterGym, R.drawable.ic_sport_gym);
+            cd.put(R.id.filterCycling, R.drawable.ic_sport_cycling);
+            cd.put(R.id.filterTennis, R.drawable.ic_sport_tennis);
+            cd.put(R.id.filterPingPong, R.drawable.ic_sport_pingpong);
+            cd.put(R.id.filterSquash, R.drawable.ic_sport_squash);
+            cd.put(R.id.filterOthers, R.drawable.ic_sport_others);
+
+            final RadioGroup sports = (RadioGroup) v.findViewById(R.id.sports);
+            sports.setOnCheckedChangeListener(this);
+
+            Set<Integer> codesKeys = this.codes.keySet();
+            for (Integer id : codesKeys) {
+                RadioButton rb = (RadioButton) sports.findViewById(id);
+                rb.setOnClickListener(this);
+            }
+
+            this.deselectAll(sports);
+
+            v.findViewById(R.id.clearFilters).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    deselectAll(sports);
+                }
+            });
+            v.findViewById(R.id.filterApply).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mDrawer.closeDrawer(dRight);
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
         return v;
+    }
+
+    private void deselectAll(RadioGroup group) {
+        Set<Integer> codesKeys = this.codes.keySet();
+
+        for (Integer id : codesKeys) {
+            RadioButton rb = (RadioButton) group.findViewById(id);
+            Integer compoundDrawable = this.compoundDrawables.get(id);
+            rb.setAlpha(0.4f);
+            rb.setSelected(false);
+            rb.setCompoundDrawablesWithIntrinsicBounds(compoundDrawable, 0, 0, 0);
+        }
+    }
+
+    @Override
+    public void onCheckedChanged(RadioGroup group, int checkedId) {
+        this.deselectAll(group);
+    }
+
+    @Override
+    public void onClick(View view) {
+        RadioButton rb = (RadioButton) view;
+        String code = this.codes.get(view.getId());
+        Integer compoundDrawable = this.compoundDrawables.get(view.getId());
+        if(rb.isSelected()) {
+            rb.setSelected(false);
+            rb.setAlpha(0.4f);
+            rb.setCompoundDrawablesWithIntrinsicBounds(compoundDrawable,0,0,0);
+        } else {
+            rb.setAlpha(1f);
+            rb.setSelected(true);
+            rb.setCompoundDrawablesWithIntrinsicBounds(compoundDrawable,0,R.drawable.ic_check,0);
+        }
     }
 }
