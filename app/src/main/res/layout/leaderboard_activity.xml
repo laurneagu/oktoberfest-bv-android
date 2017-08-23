@@ -40,7 +40,7 @@
             android:id="@+id/rightFilter"
             android:layout_height="match_parent"
             android:layout_width="match_parent"
-            android:layout_gravity="end">
+            android:layout_gravity="end e">
 
             <RelativeLayout
                 android:id="@+id/filterTop"
@@ -121,7 +121,8 @@
                 <ScrollView
                     android:layout_height="match_parent"
                     android:layout_width="match_parent"
-                    android:layout_marginTop="16dp">
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="48dp">
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
@@ -311,6 +312,15 @@
                         </RadioGroup>
                     </LinearLayout>
                 </ScrollView>
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text="APPLY"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:textColor="#ffffff"
+                    android:textSize="14sp"
+                    android:background="@drawable/pink_button_selector"/>
             </LinearLayout>
         </RelativeLayout>
     </android.support.v4.widget.DrawerLayout>
