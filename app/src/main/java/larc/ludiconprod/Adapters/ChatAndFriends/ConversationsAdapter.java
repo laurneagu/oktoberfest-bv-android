@@ -2,9 +2,11 @@ package larc.ludiconprod.Adapters.ChatAndFriends;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.CountDownTimer;
 import android.util.Base64;
 import android.view.LayoutInflater;
@@ -22,6 +24,7 @@ import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import larc.ludiconprod.Activities.ActivitiesActivity;
+import larc.ludiconprod.Activities.ChatActivity;
 import larc.ludiconprod.Activities.ChatAndFriendsActivity;
 import larc.ludiconprod.Adapters.MainActivity.AroundMeAdapter;
 import larc.ludiconprod.R;
@@ -128,12 +131,24 @@ public class ConversationsAdapter extends BaseAdapter implements ListAdapter {
                 holder.participantName.setText(currentChat.participantName.substring(0, currentChat.participantName.length() - 1));
             }
             holder.lastMessage.setText(currentChat.lastMessage);
-
-
-
-
-
             final View currView = view;
+
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent=new Intent(activity, ChatActivity.class);
+                    intent.putExtra("chatId",currentChat.chatId);
+                    activity.startActivity(intent);
+                    ChatAndFriendsActivity.isOnChatPage=false;
+                    activity.finish();
+                }
+            });
+
+
+
+
+
+
 
         }
 

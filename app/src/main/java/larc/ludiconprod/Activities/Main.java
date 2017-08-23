@@ -38,6 +38,9 @@ public class Main extends FragmentActivity{
         if (sel != -1) {
             bottomBar.setDefaultTab(sel);
         }
+        if(getIntent().getBooleanExtra("setChatTab",false)){
+            bottomBar.setDefaultTab(R.id.tab_friends);
+        }
 
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
