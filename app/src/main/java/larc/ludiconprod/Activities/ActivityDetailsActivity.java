@@ -500,7 +500,7 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
                 }
             });
 
-        }else if(!eventDetails.creatorId.equals(Persistance.getInstance().getUserInfo(this).id) && eventDetails.isParticipant == 0){
+        } else if (!eventDetails.creatorId.equals(Persistance.getInstance().getUserInfo(this).id) && eventDetails.isParticipant == 0){
             deleteOrCancelEventButton.setVisibility(View.INVISIBLE);
             editEventButton.setVisibility(View.INVISIBLE);
             joinOrUnjoinButton.setVisibility(View.VISIBLE);
@@ -572,7 +572,6 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
             case "OTH":
                 backgroundImage.setBackgroundResource(R.drawable.bg_sport_others);
                 break;
-
         }
 
         isAuthorizedPlace=eventDetails.isAuthorized;

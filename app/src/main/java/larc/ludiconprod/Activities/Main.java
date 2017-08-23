@@ -54,7 +54,11 @@ public class Main extends FragmentActivity{
                     CouponsActivity coupons = new CouponsActivity();
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.frame, coupons).commit();
-                }else if(tabId == R.id.tab_friends){
+                } else if (tabId == R.id.tab_leaderboard) {
+                    LeaderboardActivity leaderboard = new LeaderboardActivity();
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.frame, leaderboard).commit();
+                } else if(tabId == R.id.tab_friends){
                     ChatAndFriendsActivity chatFriends=new ChatAndFriendsActivity();
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.frame,chatFriends).commit();

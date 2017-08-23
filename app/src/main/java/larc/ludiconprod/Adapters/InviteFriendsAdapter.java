@@ -253,11 +253,7 @@ public class InviteFriendsAdapter  extends BaseAdapter implements ListAdapter {
                     }
                 });
 
-            }
-
-
-
-            else if(!currentFriend.offlineFriend){
+            } else if (!currentFriend.offlineFriend){
                 if(!currentFriend.profileImage.equals("")) {
                     Bitmap bitmap = decodeBase64(currentFriend.profileImage);
                     holder.friendProfileImage.setImageBitmap(bitmap);
