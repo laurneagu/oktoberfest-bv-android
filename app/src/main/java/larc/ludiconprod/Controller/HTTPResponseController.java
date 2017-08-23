@@ -600,7 +600,7 @@ public class HTTPResponseController {
 
 
                     Intent intent = new Intent(activity, ActivityDetailsActivity.class);
-
+                    intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     intent.putExtras(b);
                     activity.startActivity(intent);
 
