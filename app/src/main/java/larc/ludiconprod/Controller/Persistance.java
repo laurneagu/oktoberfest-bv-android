@@ -3,6 +3,7 @@ package larc.ludiconprod.Controller;
 import android.app.Activity;
 import android.content.SharedPreferences;
 
+import com.facebook.login.LoginManager;
 import com.google.gson.Gson;
 
 import larc.ludiconprod.User;
@@ -18,15 +19,16 @@ public class Persistance {
     }
 
     public static Persistance getInstance() {
-        if(instance == null) {
+        if (instance == null) {
             instance = new Persistance();
         }
         return instance;
     }
-    private final String userDetailsString = "UserDetails";
-    private final String profileDetailsString="ProfileDetails";
 
-    public void setUserInfo(Activity activity, User user){
+    private final String userDetailsString = "UserDetails";
+    private final String profileDetailsString = "ProfileDetails";
+
+    public void setUserInfo(Activity activity, User user) {
 
         SharedPreferences.Editor editor = activity.getSharedPreferences(userDetailsString, 0).edit();
         Gson gson = new Gson();
@@ -35,17 +37,16 @@ public class Persistance {
     }
 
 
-    public User getUserInfo(Activity activity){
-        String json=null;
+    public User getUserInfo(Activity activity) {
+        String json = null;
         System.out.println(activity + "activity");
         SharedPreferences sharedPreferences = activity.getSharedPreferences(userDetailsString, 0);
         json = sharedPreferences.getString(userDetailsString, "0");
         Gson gson = new Gson();
         User user;
-        if(json.equals("0")){
-            user=new User();
-        }
-        else {
+        if (json.equals("0")) {
+            user = new User();
+        } else {
             user = gson.fromJson(json, User.class);
         }
         return user;
@@ -58,15 +59,14 @@ public class Persistance {
         editor.commit();
     }
 
-    public User getProfileInfo(Activity activity){
+    public User getProfileInfo(Activity activity) {
         SharedPreferences sharedPreferences = activity.getSharedPreferences(this.profileDetailsString, 0);
         String json = sharedPreferences.getString(this.profileDetailsString, "0");
         Gson gson = new Gson();
         User user;
-        if(json.equals("0")){
-            user=new User();
-        }
-        else {
+        if (json.equals("0")) {
+            user = new User();
+        } else {
             user = gson.fromJson(json, User.class);
         }
         return user;
@@ -79,5 +79,6 @@ public class Persistance {
         editor = activity.getSharedPreferences(this.userDetailsString, 0).edit();
         editor.clear();
         editor.commit();
+        LoginManager.getInstance().logOut();
     }
 }

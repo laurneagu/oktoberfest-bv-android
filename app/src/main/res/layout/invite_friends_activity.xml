@@ -40,14 +40,14 @@
         android:id="@+id/saveInvitedFriends"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_marginTop="16dp"
         android:text="SAVE CHANGES"
         android:textSize="14dp"
         android:fontFamily="@string/fontbold"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="17dp"
         android:layout_marginRight="16dp"
         android:layout_marginLeft="16dp"
         android:textColor="#ffffff"
         android:background="@drawable/green_button_selector"
-        android:layout_alignParentBottom="true"/>
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"/>
 </RelativeLayout>

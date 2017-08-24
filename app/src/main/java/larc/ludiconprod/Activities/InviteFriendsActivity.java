@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,24 +31,25 @@ import larc.ludiconprod.Utils.Friend;
 public class InviteFriendsActivity extends Activity {
 
     static public InviteFriendsAdapter inviteFriendsAdapter;
-    static public ArrayList<Friend> friendsList=new ArrayList<Friend>();
-    static public ArrayList<Friend> participantList=new ArrayList<Friend>();
-    static public int numberOfOfflineFriends=0;
-    static public Boolean isFirstTimeInviteFriends=false;
+    static public ArrayList<Friend> friendsList = new ArrayList<Friend>();
+    static public ArrayList<Friend> participantList = new ArrayList<Friend>();
+    static public int numberOfOfflineFriends = 0;
+    static public Boolean isFirstTimeInviteFriends = false;
     Button saveInvitedFriends;
     ListView friendsListView;
     ImageButton backButton;
 
     private View v;
+
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         setContentView(R.layout.invite_friends_activity);
-        backButton=(ImageButton) findViewById(R.id.backButton);
+        backButton = (ImageButton) findViewById(R.id.backButton);
         backButton.setBackgroundResource(R.drawable.ic_nav_up);
-        TextView titleText=(TextView) findViewById(R.id.titleText);
+        TextView titleText = (TextView) findViewById(R.id.titleText);
         friendsListView = (ListView) findViewById(R.id.inviteFriendsListView);
-        saveInvitedFriends=(Button)findViewById(R.id.saveInvitedFriends);
+        saveInvitedFriends = (Button) findViewById(R.id.saveInvitedFriends);
         titleText.setText("Invite Friends");
 
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -58,25 +61,25 @@ public class InviteFriendsActivity extends Activity {
             }
         });
 
-        if(getIntent().getBooleanExtra("isCustomInvite",false)){
+        if (getIntent().getBooleanExtra("isCustomInvite", false)) {
             saveInvitedFriends.setVisibility(View.VISIBLE);
             saveInvitedFriends.setEnabled(true);
             saveInvitedFriends.setClickable(true);
-            isFirstTimeInviteFriends=false;
+            isFirstTimeInviteFriends = false;
             saveInvitedFriends.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(InviteFriendsActivity.this, "Inviting friends...", Toast.LENGTH_LONG).show();
+                    Toast.makeText(InviteFriendsActivity.this, "Inviting friends...", Toast.LENGTH_SHORT).show();
                     HashMap<String, String> params = new HashMap<String, String>();
                     HashMap<String, String> headers = new HashMap<String, String>();
                     headers.put("authKey", Persistance.getInstance().getUserInfo(InviteFriendsActivity.this).authKey);
                     params.put("userId", Persistance.getInstance().getUserInfo(InviteFriendsActivity.this).id);
-                    params.put("eventId",getIntent().getStringExtra("eventId"));
+                    params.put("eventId", getIntent().getStringExtra("eventId"));
                     int counterOfInvitedFriends = 0;
-                    if(InviteFriendsActivity.numberOfOfflineFriends != 0) {
+                    if (InviteFriendsActivity.numberOfOfflineFriends != 0) {
                         params.put("numberOfOffliners", String.valueOf(InviteFriendsActivity.numberOfOfflineFriends));
                     }
-                    if(InviteFriendsActivity.friendsList.size() > 0) {
+                    if (InviteFriendsActivity.friendsList.size() > 0) {
                         for (int i = 0; i < InviteFriendsActivity.friendsList.size(); i++) {
                             if (InviteFriendsActivity.friendsList.get(i).isInvited) {
                                 params.put("invitedParticipants[" + counterOfInvitedFriends + "]", InviteFriendsActivity.friendsList.get(i).userID);
@@ -84,15 +87,18 @@ public class InviteFriendsActivity extends Activity {
                             }
                         }
                     }
-                    HTTPResponseController.getInstance().createEvent(params, headers, InviteFriendsActivity.this,getIntent().getStringExtra("eventId"));
+                    HTTPResponseController.getInstance().createEvent(params, headers, InviteFriendsActivity.this, getIntent().getStringExtra("eventId"));
                     saveInvitedFriends.setEnabled(false);
+                    ActivityDetailsActivity.activity.finish();
+                    finish();
 
                 }
             });
-        }
-        else{
+        } else {
             ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) saveInvitedFriends.getLayoutParams();
-            params.height = 0; params.bottomMargin = 0; params.topMargin = 0;
+            params.height = 0;
+            params.bottomMargin = 0;
+            params.topMargin = 0;
             saveInvitedFriends.setLayoutParams(params);
             saveInvitedFriends.setVisibility(View.INVISIBLE);
             saveInvitedFriends.setEnabled(false);
@@ -100,29 +106,29 @@ public class InviteFriendsActivity extends Activity {
         }
 
 
-
-
-
-        if(!isFirstTimeInviteFriends && !getIntent().getBooleanExtra("isEdit",false) && !getIntent().getBooleanExtra("isParticipant",false)) {
-            Friend friend=new Friend();
-            friend.userName="Add Offline Friend";
-            friendsList.add(friend);
-            getFriends("0");
-            inviteFriendsAdapter = new InviteFriendsAdapter(friendsList, this, this, getResources(), this);
-        }else if(!isFirstTimeInviteFriends && getIntent().getBooleanExtra("isEdit",false) && !getIntent().getBooleanExtra("isParticipant",false) ) {
+        if (!isFirstTimeInviteFriends && !getIntent().getBooleanExtra("isEdit", false) && !getIntent().getBooleanExtra("isParticipant", false)) {
             Friend friend = new Friend();
             friend.userName = "Add Offline Friend";
             friendsList.add(friend);
-            getInvitedFriends("0");
+            getFriends("0");
             inviteFriendsAdapter = new InviteFriendsAdapter(friendsList, this, this, getResources(), this);
-        }else if(!isFirstTimeInviteFriends && getIntent().getBooleanExtra("isParticipant",false)) {
-        inviteFriendsAdapter = new InviteFriendsAdapter(participantList, this, this, getResources(), this);
-            ActivityDetailsActivity.ifFirstTimeGetParticipants=true;
+        } else
+            if (!isFirstTimeInviteFriends && getIntent().getBooleanExtra("isEdit", false) && !getIntent().getBooleanExtra("isParticipant", false)) {
+                Friend friend = new Friend();
+                friend.userName = "Add Offline Friend";
+                friendsList.add(friend);
+                getInvitedFriends("0");
+                inviteFriendsAdapter = new InviteFriendsAdapter(friendsList, this, this, getResources(), this);
+            } else
+                if (!isFirstTimeInviteFriends && getIntent().getBooleanExtra("isParticipant", false)) {
+                    inviteFriendsAdapter = new InviteFriendsAdapter(participantList, this, this, getResources(), this);
+                    ActivityDetailsActivity.ifFirstTimeGetParticipants = true;
+                    titleText.setText("Participants");
 
-        }else {
-            friendsListView.setAdapter(inviteFriendsAdapter);
+                } else {
+                    friendsListView.setAdapter(inviteFriendsAdapter);
 
-        }
+                }
 
         updateListOfFriends();
 
@@ -133,8 +139,7 @@ public class InviteFriendsActivity extends Activity {
 
 
         if (!isFirstTimeInviteFriends) {
-
-            isFirstTimeInviteFriends=true;
+            isFirstTimeInviteFriends = true;
             friendsListView.setAdapter(inviteFriendsAdapter);
         }
 
@@ -147,28 +152,29 @@ public class InviteFriendsActivity extends Activity {
     }
 
 
-    public void getFriends(String pageNumber){
+    public void getFriends(String pageNumber) {
 
         HashMap<String, String> params = new HashMap<String, String>();
         HashMap<String, String> headers = new HashMap<String, String>();
         HashMap<String, String> urlParams = new HashMap<String, String>();
         headers.put("authKey", Persistance.getInstance().getUserInfo(InviteFriendsActivity.this).authKey);
-        urlParams.put("userId",Persistance.getInstance().getUserInfo(InviteFriendsActivity.this).id);
-        urlParams.put("pageNumber",pageNumber);
+        urlParams.put("userId", Persistance.getInstance().getUserInfo(InviteFriendsActivity.this).id);
+        urlParams.put("pageNumber", pageNumber);
 
-        HTTPResponseController.getInstance().getFriends(params, headers,InviteFriendsActivity.this,urlParams);
+        HTTPResponseController.getInstance().getFriends(params, headers, InviteFriendsActivity.this, urlParams);
     }
-    public void getInvitedFriends(String pageNumber){
+
+    public void getInvitedFriends(String pageNumber) {
 
         HashMap<String, String> params = new HashMap<String, String>();
         HashMap<String, String> headers = new HashMap<String, String>();
         HashMap<String, String> urlParams = new HashMap<String, String>();
         headers.put("authKey", Persistance.getInstance().getUserInfo(InviteFriendsActivity.this).authKey);
-        urlParams.put("eventId",getIntent().getStringExtra("eventId"));
-        urlParams.put("userId",Persistance.getInstance().getUserInfo(InviteFriendsActivity.this).id);
-        urlParams.put("pageNumber",pageNumber);
+        urlParams.put("eventId", getIntent().getStringExtra("eventId"));
+        urlParams.put("userId", Persistance.getInstance().getUserInfo(InviteFriendsActivity.this).id);
+        urlParams.put("pageNumber", pageNumber);
 
-        HTTPResponseController.getInstance().getInvitedFriends(params, headers,InviteFriendsActivity.this,urlParams);
+        HTTPResponseController.getInstance().getInvitedFriends(params, headers, InviteFriendsActivity.this, urlParams);
     }
 
     @Override

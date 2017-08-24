@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/aroundMeCardRelativeLayout"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:orientation="vertical" android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/aroundMeCardRelativeLayout"
 
     >
     <ImageView
@@ -36,11 +36,11 @@
                 android:layout_height="wrap_content">
 
 
-            <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/profileImage"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="@drawable/ph_user" />
+                <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                              android:id="@+id/profileImage"
+                                                              android:layout_width="48dp"
+                                                              android:layout_height="48dp"
+                                                              android:background="@drawable/ph_user" />
                 <ImageView
                     android:layout_width="30dp"
                     android:layout_height="48dp"
@@ -98,13 +98,13 @@
 
 
             <TextView
-            android:id="@+id/youGain"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textSize="14sp"
-            android:textColor="#0c3855"
-            android:text="You will gain" />
+                android:id="@+id/youGain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="14sp"
+                android:textColor="#0c3855"
+                android:text="You will gain" />
 
             <TextView
                 android:id="@+id/ludicoinsNumber"
@@ -295,5 +295,15 @@
 
         </LinearLayout>
     </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/cardProgressBar"
+        style="@android:style/Widget.Holo.ProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="56dp"
+        android:indeterminate="true"/>
 
 </RelativeLayout>

@@ -1,7 +1,6 @@
 package larc.ludiconprod.Controller;
 
 import android.app.Activity;
-import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,7 +13,6 @@ import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -27,11 +25,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 
 import larc.ludiconprod.Activities.ActivitiesActivity;
@@ -43,12 +38,12 @@ import larc.ludiconprod.Activities.IntroActivity;
 import larc.ludiconprod.Activities.InviteFriendsActivity;
 import larc.ludiconprod.Activities.LoginActivity;
 import larc.ludiconprod.Activities.Main;
-import larc.ludiconprod.Activities.MyProfileActivity;
 import larc.ludiconprod.Activities.ProfileDetailsActivity;
 import larc.ludiconprod.Activities.ResetPasswordFinalActivity;
 import larc.ludiconprod.Activities.UserProfileActivity;
+import larc.ludiconprod.Adapters.MainActivity.AroundMeAdapter;
+import larc.ludiconprod.Adapters.MainActivity.MyAdapter;
 import larc.ludiconprod.Utils.Coupon;
-import larc.ludiconprod.Utils.EventDetails;
 import larc.ludiconprod.Utils.Friend;
 import larc.ludiconprod.Utils.util.AuthorizedLocation;
 import larc.ludiconprod.Utils.util.Sport;
@@ -57,10 +52,8 @@ import larc.ludiconprod.Utils.Event;
 
 import static larc.ludiconprod.Activities.ActivitiesActivity.aroundMeEventList;
 import static larc.ludiconprod.Activities.ActivitiesActivity.fradapter;
-import static larc.ludiconprod.Activities.ActivitiesActivity.frlistView;
 import static larc.ludiconprod.Activities.ActivitiesActivity.getFirstPageAroundMe;
 import static larc.ludiconprod.Activities.ActivitiesActivity.getFirstPageMyActivity;
-import static larc.ludiconprod.Activities.ActivitiesActivity.myAdapter;
 import static larc.ludiconprod.Activities.ActivitiesActivity.myEventList;
 
 /**
@@ -607,12 +600,11 @@ public class HTTPResponseController {
                         oldActivity.finish();
                     }
 
-
+                    //HERE
                     Intent intent = new Intent(activity, ActivityDetailsActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    //intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     intent.putExtras(b);
                     activity.startActivity(intent);
-
 
                 } catch (Exception e) {
                     e.printStackTrace();

@@ -32,6 +32,8 @@ import java.util.Date;
 import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import larc.ludiconprod.Adapters.MainActivity.AroundMeAdapter;
+import larc.ludiconprod.Adapters.MainActivity.MyAdapter;
 import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
@@ -86,6 +88,7 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
     int authorizedLevel;
     LinearLayout chatAndInviteLayout;
     static public String eventID = null;
+    static ActivityDetailsActivity activity;
 
     public static Bitmap decodeBase64(String input) {
         byte[] decodedBytes = Base64.decode(input, 0);
@@ -120,6 +123,7 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
         InviteFriendsActivity.participantList.clear();
         InviteFriendsActivity.friendsList.clear();
         super.onCreate(savedInstance);
+        activity = this;
         setContentView(R.layout.activity_details_activity);
         backButton = (ImageButton) findViewById(R.id.backButton);
         backButton.setBackgroundResource(R.drawable.ic_nav_up);
@@ -593,6 +597,15 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
                 startActivity(intent);
             }
         });
+
+        //CLOSE PROGRESS BAR FROM LISTVIEW
+
+        if (AroundMeAdapter.progressBarCard != null) {
+            AroundMeAdapter.progressBarCard.setAlpha(0);
+        }
+        if (MyAdapter.progressBarCard != null) {
+            MyAdapter.progressBarCard.setAlpha(0);
+        }
 
 
     }

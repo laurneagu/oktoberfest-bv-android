@@ -20,6 +20,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,6 +73,7 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
         public TextView friendsNumber;
         public ImageView imageViewBackground;
         public TextView creatorLevelMyActivity;
+        public ProgressBar progressBar;
 
     }
 
@@ -81,6 +83,7 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
     private Resources resources;
     private ActivitiesActivity fragment;
     final ListView listView;
+    public static ProgressBar progressBarCard;
 
     public MyAdapter(ArrayList<Event> list, Context context, Activity activity, Resources resources, ActivitiesActivity fragment) {
         this.list = list;
@@ -121,7 +124,7 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
     public View getView(final int position, View convertView, ViewGroup parent) {
         View view = convertView;
         if (list.size() > 0) {
-            MyAdapter.ViewHolder holder;
+            final ViewHolder holder;
 
             final Event currentEvent = list.get(position);
 
@@ -146,6 +149,8 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
                 holder.friendsNumber = (TextView) view.findViewById(R.id.friendsNumber);
                 holder.imageViewBackground = (ImageView) view.findViewById(R.id.imageViewBackground);
                 holder.creatorLevelMyActivity = (TextView) view.findViewById(R.id.creatorLevelMyActivity);
+                holder.progressBar = (ProgressBar) view.findViewById(R.id.cardProgressBar);
+                holder.progressBar.setAlpha(0);
 
 
                 view.setTag(holder);
@@ -173,8 +178,9 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
                 @Override
                 public void onClick(View v) {
                     currView.setBackgroundColor(Color.parseColor("#f5f5f5"));
-                    //getEventDetails
-
+                    //getEventDetails & show progress bar when loading data
+                    holder.progressBar.setAlpha(1);
+                    progressBarCard = holder.progressBar;
                     HashMap<String, String> params = new HashMap<String, String>();
                     HashMap<String, String> headers = new HashMap<String, String>();
                     HashMap<String, String> urlParams = new HashMap<String, String>();

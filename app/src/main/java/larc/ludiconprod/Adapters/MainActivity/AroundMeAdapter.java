@@ -7,8 +7,6 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,18 +14,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
 
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
@@ -35,11 +25,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import larc.ludiconprod.Activities.ActivitiesActivity;
-import larc.ludiconprod.Activities.ActivityDetailsActivity;
 import larc.ludiconprod.Activities.UserProfileActivity;
 import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
@@ -47,8 +35,6 @@ import larc.ludiconprod.R;
 import larc.ludiconprod.Utils.Event;
 import larc.ludiconprod.Utils.General;
 import larc.ludiconprod.Utils.util.Sport;
-
-import static larc.ludiconprod.Activities.ActivitiesActivity.frlistView;
 
 
 public class AroundMeAdapter extends BaseAdapter implements ListAdapter {
@@ -80,6 +66,7 @@ public class AroundMeAdapter extends BaseAdapter implements ListAdapter {
         Button joinButton;
         ImageView imageViewBackground;
         TextView creatorLevelAroundMe;
+        ProgressBar progressBar;
 
     }
 
@@ -89,6 +76,7 @@ public class AroundMeAdapter extends BaseAdapter implements ListAdapter {
     private Resources resources;
     private ActivitiesActivity fragment;
     final ListView listView;
+    public static ProgressBar progressBarCard;
 
     public AroundMeAdapter(ArrayList<Event> list, Context context, Activity activity, Resources resources, ActivitiesActivity fragment) {
         this.list = list;
@@ -151,6 +139,8 @@ public class AroundMeAdapter extends BaseAdapter implements ListAdapter {
                 holder.joinButton = (Button) view.findViewById(R.id.joinButton);
                 holder.imageViewBackground = (ImageView) view.findViewById(R.id.imageViewBackground);
                 holder.creatorLevelAroundMe = (TextView) view.findViewById(R.id.creatorLevelAroundMe);
+                holder.progressBar = (ProgressBar) view.findViewById(R.id.cardProgressBar);
+                holder.progressBar.setAlpha(0);
 
                 view.setTag(holder);
             } else {
@@ -178,8 +168,9 @@ public class AroundMeAdapter extends BaseAdapter implements ListAdapter {
                 @Override
                 public void onClick(View v) {
                     currView.setBackgroundColor(Color.parseColor("#f5f5f5"));
-                    //getEventDetails
-
+                    //getEventDetails & show progress bar when loading data
+                    holder.progressBar.setAlpha(1);
+                    progressBarCard = holder.progressBar;
                     HashMap<String, String> params = new HashMap<String, String>();
                     HashMap<String, String> headers = new HashMap<String, String>();
                     HashMap<String, String> urlParams = new HashMap<String, String>();
