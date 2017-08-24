@@ -92,6 +92,7 @@ public class ActivitiesActivity extends Fragment {
     public static ListView mylistView;
     Boolean isFirstTimeAroundMe = false;
     Boolean isFirstTimeMyEvents = false;
+    public static ProgressBar v1;
 
 
     public ActivitiesActivity() {
@@ -99,6 +100,7 @@ public class ActivitiesActivity extends Fragment {
     }
 
     public void getAroundMeEvents(String pageNumber) {
+        v1 = (ProgressBar) v.findViewById(R.id.activityProgressBar);
         HashMap<String, String> params = new HashMap<String, String>();
         HashMap<String, String> headers = new HashMap<String, String>();
         HashMap<String, String> urlParams = new HashMap<String, String>();
@@ -134,6 +136,7 @@ public class ActivitiesActivity extends Fragment {
     }
 
     public void getMyEvents(String pageNumber) {
+
         HashMap<String, String> params = new HashMap<String, String>();
         HashMap<String, String> headers = new HashMap<String, String>();
         HashMap<String, String> urlParams = new HashMap<String, String>();
@@ -161,6 +164,7 @@ public class ActivitiesActivity extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mContext = inflater.getContext();
         v = inflater.inflate(R.layout.activities_acitivity, container, false);
+        v1 = (ProgressBar) v.findViewById(R.id.activityProgressBar);
 /*
         if(locationChecker == null) locationChecker = LocationChecker.getInstance();
         locationChecker.setContext(mContext);

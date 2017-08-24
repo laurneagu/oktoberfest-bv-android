@@ -355,7 +355,7 @@ public class HTTPResponseController {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
+                ActivitiesActivity.v1.setAlpha(0);
             }
         };
     }

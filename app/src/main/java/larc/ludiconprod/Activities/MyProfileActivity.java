@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,11 +61,12 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
             super.onCreate(savedInstanceState);
 
             Button logout = (Button) v.findViewById(R.id.profileLogout);
-            logout.setOnClickListener(new View.OnClickListener(){
+            logout.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View view) {
                     Persistance.getInstance().deleteUserProfileInfo(getActivity());
+                    Log.v("logout", "am dat logout");
                     getActivity().finish();
                     Intent intent = new Intent(mContext, IntroActivity.class);
                     startActivity(intent);
@@ -111,7 +113,7 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
             toNextLevel.setText("" + u.pointsToNextLevel);
             TextView sportsCount = (TextView) v.findViewById(R.id.profilePracticeSportsCountLabel);
             this.settings = (ImageView) v.findViewById(R.id.settings);
-            this.settings.setOnClickListener(new View.OnClickListener(){
+            this.settings.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View view) {
@@ -139,7 +141,7 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
             ludiconis.setText("" + u.ludicoins);
 
             ProgressBar levelBar = (ProgressBar) v.findViewById(R.id.profileLevelBar);
-            levelBar.setProgress(u.points * levelBar.getMax() / u.pointsOfNextLevel );
+            levelBar.setProgress(u.points * levelBar.getMax() / u.pointsOfNextLevel);
 
             final ArrayList<String> sportCodes = new ArrayList<>();
             for (Sport s : u.sports) {
@@ -194,27 +196,27 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
     }
 
     public static int findSportImageResource(String sportCode) {
-        switch (sportCode){
-            case "BAS":
-                return R.drawable.ic_sport_basketball_large;
-            case "CYC":
-                return R.drawable.ic_sport_cycling_large;
-            case "FOT":
-                return R.drawable.ic_sport_football_large;
-            case "GYM":
-                return R.drawable.ic_sport_gym_large;
-            case "JOG":
-                return R.drawable.ic_sport_jogging_large;
-            case "PIN":
-                return R.drawable.ic_sport_pingpong_large;
-            case "SQU":
-                return R.drawable.ic_sport_squash_large;
-            case "TEN":
-                return R.drawable.ic_sport_tennis_large;
-            case "VOL":
-                return R.drawable.ic_sport_voleyball_large;
-            default:
-                return R.drawable.ic_sport_others_large;
+        switch (sportCode) {
+        case "BAS":
+            return R.drawable.ic_sport_basketball_large;
+        case "CYC":
+            return R.drawable.ic_sport_cycling_large;
+        case "FOT":
+            return R.drawable.ic_sport_football_large;
+        case "GYM":
+            return R.drawable.ic_sport_gym_large;
+        case "JOG":
+            return R.drawable.ic_sport_jogging_large;
+        case "PIN":
+            return R.drawable.ic_sport_pingpong_large;
+        case "SQU":
+            return R.drawable.ic_sport_squash_large;
+        case "TEN":
+            return R.drawable.ic_sport_tennis_large;
+        case "VOL":
+            return R.drawable.ic_sport_voleyball_large;
+        default:
+            return R.drawable.ic_sport_others_large;
         }
     }
 

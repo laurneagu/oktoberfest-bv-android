@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -57,7 +58,7 @@ import larc.ludiconprod.User;
  */
 
 public class IntroActivity extends Activity {
-    int i=0;
+    int i = 0;
 
     Button loginButton;
     Button registerButton;
@@ -68,7 +69,7 @@ public class IntroActivity extends Activity {
     private CallbackManager callbackManager;
     private ProfilePictureView profilePictureView;
     ImageView logo;
-    Boolean go=false;
+    Boolean go = false;
     Bitmap image;
     Profile profile;
     JSONObject jsonObject;
@@ -76,8 +77,8 @@ public class IntroActivity extends Activity {
     LoginButton facebookButton;
 
 
-    public void goToActivity(){
-        if(!go) {
+    public void goToActivity() {
+        if (!go) {
             HashMap<String, String> params = new HashMap<String, String>();
             params.put("email", Persistance.getInstance().getUserInfo(IntroActivity.this).email);
             params.put("password", Persistance.getInstance().getUserInfo(IntroActivity.this).password);
@@ -86,13 +87,13 @@ public class IntroActivity extends Activity {
             HTTPResponseController.getInstance().returnResponse(params, headers, IntroActivity.this, "http://207.154.236.13/api/login/");
         }
     }
-    public static Bitmap decodeBase64(String input)
-    {
+
+    public static Bitmap decodeBase64(String input) {
         byte[] decodedBytes = Base64.decode(input, 0);
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
 
-    public void setImageForProfile(Activity activity, String image){
+    public void setImageForProfile(Activity activity, String image) {
 
         SharedPreferences.Editor editor = activity.getSharedPreferences("ProfileImage", 0).edit();
         editor.putString("ProfileImage", image);
@@ -107,34 +108,36 @@ public class IntroActivity extends Activity {
 
 
         setContentView(R.layout.intro_activity);
-        logo=(ImageView) findViewById(R.id.logo);
+        logo = (ImageView) findViewById(R.id.logo);
         logo.setImageResource(R.drawable.logo);
         // set font
-        Typeface typeFace= Typeface.createFromAsset(getAssets(),"fonts/Quicksand-Bold.ttf");
+        Typeface typeFace = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.ttf");
 
 
-        facebookButton=(LoginButton) findViewById(R.id.facebookButton);
-        facebookButton.setLoginBehavior(LoginBehavior.NATIVE_WITH_FALLBACK); facebookButton.setLoginBehavior(LoginBehavior.NATIVE_ONLY); facebookButton.setLoginBehavior(LoginBehavior.WEB_ONLY);
+        facebookButton = (LoginButton) findViewById(R.id.facebookButton);
+        /*facebookButton.setLoginBehavior(LoginBehavior.NATIVE_WITH_FALLBACK);
+        facebookButton.setLoginBehavior(LoginBehavior.NATIVE_ONLY);*/
+        facebookButton.setLoginBehavior(LoginBehavior.WEB_ONLY);
         facebookButton.setTypeface(typeFace);
         facebookButton.setReadPermissions(Arrays.asList("public_profile, email, user_friends"));
-        loginButton=(Button) findViewById(R.id.loginButton);
+        loginButton = (Button) findViewById(R.id.loginButton);
         loginButton.setTypeface(typeFace);
-        termsAndPrivacyPolicy=(TextView) findViewById(R.id.termsAndPrivacyPolicy);
+        termsAndPrivacyPolicy = (TextView) findViewById(R.id.termsAndPrivacyPolicy);
 
 
-        registerButton=(Button) findViewById(R.id.registerButton);
+        registerButton = (Button) findViewById(R.id.registerButton);
         registerButton.setTypeface(typeFace);
-        infoTextView=(TextView) findViewById(R.id.textView);
-        profileImage=(ImageView) findViewById(R.id.profileImage) ;
+        infoTextView = (TextView) findViewById(R.id.textView);
+        profileImage = (ImageView) findViewById(R.id.profileImage);
         logo.animate().translationY(-300f).setDuration(1000);
         callbackManager = CallbackManager.Factory.create();
-        if(Persistance.getInstance().getUserInfo(this).profileImage != null){
+        if (Persistance.getInstance().getUserInfo(this).profileImage != null) {
             Bitmap image;
-            image=decodeBase64(Persistance.getInstance().getUserInfo(this).profileImage);
+            image = decodeBase64(Persistance.getInstance().getUserInfo(this).profileImage);
             profileImage.setImageBitmap(image);
             profileImage.animate().alpha(1f).setDuration(1000);
         }
-        if(Persistance.getInstance().getUserInfo(this).id == null){
+        if (Persistance.getInstance().getUserInfo(this).id == null) {
             facebookButton.setVisibility(View.VISIBLE);
             loginButton.setVisibility(View.VISIBLE);
             registerButton.setVisibility(View.VISIBLE);
@@ -144,7 +147,7 @@ public class IntroActivity extends Activity {
             loginButton.animate().alpha(1f).setDuration(1000);
             registerButton.animate().alpha(1f).setDuration(1000);
             infoTextView.animate().alpha(1f).setDuration(1000);
-            go=true;
+            go = true;
         }
         facebookLogin();
         new CountDownTimer(1500, 1000) {
@@ -153,60 +156,56 @@ public class IntroActivity extends Activity {
             }
 
             public void onFinish() {
-                System.out.println(Persistance.getInstance().getUserInfo(IntroActivity.this).facebookId+ " fbid");
-                if(Persistance.getInstance().getUserInfo(IntroActivity.this).facebookId != null && Persistance.getInstance().getUserInfo(IntroActivity.this).facebookId.equals("")){
-                goToActivity();
-               }
-               else if(!go){
-                    new GraphRequest(
-                            AccessToken.getCurrentAccessToken(),
-                            "/me/friends",
-                            null,
-                            HttpMethod.GET,
-                            new GraphRequest.Callback() {
-                                public void onCompleted(GraphResponse response) {
-                                    final ArrayList<String> friends=new ArrayList< String>();
-                                    JSONArray friendsList ;
-                                    try {
-                                        friendsList = response.getJSONObject().getJSONArray("data");
-                                        for (int l = 0; l < friendsList.length(); l++) {
-                                            friends.add(friendsList.getJSONObject(l).getString("id"));
+                System.out.println(Persistance.getInstance().getUserInfo(IntroActivity.this).facebookId + " fbid");
+                if (Persistance.getInstance().getUserInfo(IntroActivity.this).facebookId != null && Persistance.getInstance().getUserInfo(IntroActivity.this).facebookId.equals("")) {
+                    goToActivity();
+                } else
+                    if (!go) {
+                        new GraphRequest(
+                                AccessToken.getCurrentAccessToken(),
+                                "/me/friends",
+                                null,
+                                HttpMethod.GET,
+                                new GraphRequest.Callback() {
+                                    public void onCompleted(GraphResponse response) {
+                                        final ArrayList<String> friends = new ArrayList<String>();
+                                        JSONArray friendsList;
+                                        try {
+                                            friendsList = response.getJSONObject().getJSONArray("data");
+                                            for (int l = 0; l < friendsList.length(); l++) {
+                                                friends.add(friendsList.getJSONObject(l).getString("id"));
+                                            }
+
+                                            String firstName = Persistance.getInstance().getUserInfo(IntroActivity.this).firstName;
+                                            String lastName = Persistance.getInstance().getUserInfo(IntroActivity.this).lastName;
+                                            String email = Persistance.getInstance().getUserInfo(IntroActivity.this).email;
+                                            String password = Persistance.getInstance().getUserInfo(IntroActivity.this).password;
+                                            HashMap<String, String> params = new HashMap<String, String>();
+                                            params.put("firstName", firstName);
+                                            params.put("lastName", lastName);
+                                            params.put("email", email);
+                                            params.put("password", password);
+                                            params.put("isCustom", "1");
+                                            for (int i = 0; i < friends.size(); i++) {
+                                                params.put("fbFriends[" + i + "]", friends.get(i));
+                                            }
+                                            HashMap<String, String> headers = new HashMap<String, String>();
+                                            headers.put("apiKey", "b0a83e90-4ee7-49b7-9200-fdc5af8c2d33");
+                                            HTTPResponseController.getInstance().returnResponse(params, headers, IntroActivity.this, "http://207.154.236.13/api/register/");
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
                                         }
 
-                                        String firstName = Persistance.getInstance().getUserInfo(IntroActivity.this).firstName;
-                                        String lastName = Persistance.getInstance().getUserInfo(IntroActivity.this).lastName;
-                                        String email = Persistance.getInstance().getUserInfo(IntroActivity.this).email;
-                                        String password =Persistance.getInstance().getUserInfo(IntroActivity.this).password;
-                                        HashMap<String, String> params = new HashMap<String, String>();
-                                        params.put("firstName", firstName);
-                                        params.put("lastName", lastName);
-                                        params.put("email", email);
-                                        params.put("password", password);
-                                        params.put("isCustom", "1");
-                                        for(int i=0;i<friends.size();i++){
-                                            params.put("fbFriends["+i+"]",friends.get(i));
-                                        }
-                                        HashMap<String, String> headers = new HashMap<String, String>();
-                                        headers.put("apiKey", "b0a83e90-4ee7-49b7-9200-fdc5af8c2d33");
-                                        HTTPResponseController.getInstance().returnResponse(params, headers, IntroActivity.this, "http://207.154.236.13/api/register/");
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
+
                                     }
-
-
-
                                 }
-                            }
-                    ).executeAsync();
-                }
+                        ).executeAsync();
+                    }
             }
         }.start();
 
 
-
-
-
-        loginButton.setOnClickListener(new View.OnClickListener(){
+        loginButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
@@ -214,7 +213,7 @@ public class IntroActivity extends Activity {
                 startActivity(intent);
             }
         });
-        registerButton.setOnClickListener(new View.OnClickListener(){
+        registerButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
@@ -224,12 +223,10 @@ public class IntroActivity extends Activity {
         });
 
 
-
-
-
     }
+
     public ArrayList<String> updateFriends() {
-        final ArrayList<String> friends=new ArrayList< String>();
+        final ArrayList<String> friends = new ArrayList<String>();
 
         new GraphRequest(
                 AccessToken.getCurrentAccessToken(),
@@ -247,7 +244,7 @@ public class IntroActivity extends Activity {
 
 
                             }
-                            setupProfile(friends,jsonObject,loginRslt,facebookButton);
+                            setupProfile(friends, jsonObject, loginRslt, facebookButton);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -258,6 +255,7 @@ public class IntroActivity extends Activity {
 
         return friends;
     }
+
     public void facebookLogin() {
         facebookButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             private ProfileTracker mProfileTracker;
@@ -274,7 +272,6 @@ public class IntroActivity extends Activity {
 
                                 jsonObject = object;
                                 loginRslt = loginResult;
-
 
 
                                 if (Profile.getCurrentProfile() == null) {
@@ -321,7 +318,7 @@ public class IntroActivity extends Activity {
         });
     }
 
-    public void setupProfile(ArrayList<String> friends,JSONObject object,LoginResult loginResult,LoginButton facebookButton){
+    public void setupProfile(ArrayList<String> friends, JSONObject object, LoginResult loginResult, LoginButton facebookButton) {
         String firstName = profile.getFirstName();
         String lastName = profile.getLastName();
         String email = object.optString("email");
@@ -332,8 +329,8 @@ public class IntroActivity extends Activity {
         params.put("email", email);
         params.put("password", password);
         params.put("isCustom", "1");
-        for(int i=0;i<friends.size();i++){
-            params.put("fbFriends["+i+"]",friends.get(i));
+        for (int i = 0; i < friends.size(); i++) {
+            params.put("fbFriends[" + i + "]", friends.get(i));
         }
         final HashMap<String, String> headers = new HashMap<String, String>();
         headers.put("apiKey", "b0a83e90-4ee7-49b7-9200-fdc5af8c2d33");
@@ -344,12 +341,12 @@ public class IntroActivity extends Activity {
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                         image = bitmap;
-                       // profileImage.setImageBitmap(image);
+                        // profileImage.setImageBitmap(image);
                         String imageString = ProfileDetailsActivity.encodeToBase64(image, Bitmap.CompressFormat.JPEG, 100);
                         setImageForProfile(IntroActivity.this, imageString);
 
                         logo.animate().translationY(300f);
-                       // profileImage.setAlpha(0.3f);
+                        // profileImage.setAlpha(0.3f);
                         logo.animate().translationY(-300f).setDuration(1000);
                         //profileImage.animate().alpha(1f).setDuration(1000);
                         HTTPResponseController.getInstance().returnResponse(params, headers, IntroActivity.this, "http://207.154.236.13/api/register/");

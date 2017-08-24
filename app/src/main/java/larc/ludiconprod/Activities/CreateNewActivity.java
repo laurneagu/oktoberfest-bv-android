@@ -69,7 +69,7 @@ import static larc.ludiconprod.Activities.InviteFriendsActivity.numberOfOfflineF
  * Created by ancuta on 7/31/2017.
  */
 
-public class CreateNewActivity extends Activity implements AdapterView.OnItemSelectedListener,OnMapReadyCallback {
+public class CreateNewActivity extends Activity implements AdapterView.OnItemSelectedListener, OnMapReadyCallback {
 
     String[] sportNames = {"Football", "Basketball", "Volleyball", "Jogging", "Gym", "Cycling", "Tennis", "Ping Pong", "Squash", "Others"};
     String[] sportCodes = {"FOT", "BAS", "VOL", "JOG", "GYM", "CYC", "TEN", "PIN", "SQU", "OTH"};
@@ -103,15 +103,15 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
     static public int ASK_COORDS_DONE = 1001;
     static public int ASK_FRIENDS = 500;
     static public int ASK_FRIENDS_DONE = 501;
-    public int maxNumberOfParticipants=9999;
+    public int maxNumberOfParticipants = 9999;
     EditText descriptionEditText;
     TextView locationName;
     TextView adress;
-    String sportCode="FOT";
-    public int privacy=0;
+    String sportCode = "FOT";
+    public int privacy = 0;
     EditText otherSportName;
     Spinner sportSpinner;
-    int numberOfTotalParticipants=0;
+    int numberOfTotalParticipants = 0;
     EventDetails eventDetails;
 
     public static String getMonth(int month) {
@@ -119,28 +119,31 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
         return date.substring(0, 1).toUpperCase().concat(date.substring(1, 3));
     }
 
-    public boolean checkConstraints(){
-            boolean isConstraintChecked=false;
-        if(sportSpinner.getSelectedItemPosition() == 9){
-            if(otherSportName.getText().length() == 0){
+    public boolean checkConstraints() {
+        boolean isConstraintChecked = false;
+        if (sportSpinner.getSelectedItemPosition() == 9) {
+            if (otherSportName.getText().length() == 0) {
                 Toast.makeText(getApplicationContext(), "Please enter other sport name!", Toast.LENGTH_SHORT).show();
                 return true;
             }
-        }else if(calendarTextView.getText().length() == 0){
+        }
+        if (calendarTextView.getText().length() == 0) {
             Toast.makeText(getApplicationContext(), "Please enter a date!", Toast.LENGTH_SHORT).show();
             return true;
-        }else if(hourTextView.getText().length() == 0){
-            Toast.makeText(getApplicationContext(), "Please enter a time!", Toast.LENGTH_SHORT).show();
-            return true;
-        }else if(GMapsActivity.markerSelected == null){
-            Toast.makeText(getApplicationContext(), "Please select a location!", Toast.LENGTH_SHORT).show();
-            return true;
-        }else if(Integer.valueOf(playersNumber.getText().toString()) < numberOfTotalParticipants+1){
-            Toast.makeText(getApplicationContext(), "Too much participants for this capacity!", Toast.LENGTH_SHORT).show();
-            return true;
+        } else
+            if (hourTextView.getText().length() == 0) {
+                Toast.makeText(getApplicationContext(), "Please enter a time!", Toast.LENGTH_SHORT).show();
+                return true;
+            } else
+                if (GMapsActivity.markerSelected == null) {
+                    Toast.makeText(getApplicationContext(), "Please select a location!", Toast.LENGTH_SHORT).show();
+                    return true;
+                } else
+                    if (Integer.valueOf(playersNumber.getText().toString()) < numberOfTotalParticipants + 1) {
+                        Toast.makeText(getApplicationContext(), "Too much participants for this capacity!", Toast.LENGTH_SHORT).show();
+                        return true;
 
-        }
-
+                    }
 
 
         return isConstraintChecked;
@@ -166,7 +169,7 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
         minusButton = (ImageView) findViewById(R.id.minusButton);
         plusButton = (ImageView) findViewById(R.id.plusButton);
         playersNumber = (EditText) findViewById(R.id.playersNumber);
-        otherSportName=(EditText)findViewById(R.id.otherSportName);
+        otherSportName = (EditText) findViewById(R.id.otherSportName);
         TextView titleText = (TextView) findViewById(R.id.titleText);
         tapHereTextView = (TextView) findViewById(R.id.tapHereTextView);
         invitedFriends0 = (CircleImageView) findViewById(R.id.invitedFriends0);
@@ -174,20 +177,18 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
         invitedFriends2 = (CircleImageView) findViewById(R.id.invitedFriends2);
         friendsNumber = (TextView) findViewById(R.id.friendsNumber);
         invitedFriends4 = (ImageView) findViewById(R.id.invitedFriends4);
-        createActivityButton=(Button)findViewById(R.id.createActivityButton);
-        descriptionEditText=(EditText) findViewById(R.id.descriptionEditText);
-        eventDetails=new EventDetails();
+        createActivityButton = (Button) findViewById(R.id.createActivityButton);
+        descriptionEditText = (EditText) findViewById(R.id.descriptionEditText);
+        eventDetails = new EventDetails();
 
         //check if is a Create or Edit
-
-
 
 
         createActivityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!checkConstraints()) {
-                    if(!getIntent().getBooleanExtra("isEdit",false)) {
+                if (!checkConstraints()) {
+                    if (!getIntent().getBooleanExtra("isEdit", false)) {
                         Toast.makeText(CreateNewActivity.this, "Creating...", Toast.LENGTH_LONG).show();
                         HashMap<String, String> params = new HashMap<String, String>();
                         HashMap<String, String> headers = new HashMap<String, String>();
@@ -221,27 +222,26 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                                 counterOfInvitedFriends++;
                             }
                         }
-                        HTTPResponseController.getInstance().createEvent(params, headers, CreateNewActivity.this,null);
+                        HTTPResponseController.getInstance().createEvent(params, headers, CreateNewActivity.this, null);
 
-                    }
-                    else{
+                    } else {
                         Toast.makeText(CreateNewActivity.this, "Saving...", Toast.LENGTH_LONG).show();
                         HashMap<String, String> params = new HashMap<String, String>();
                         HashMap<String, String> headers = new HashMap<String, String>();
                         headers.put("authKey", Persistance.getInstance().getUserInfo(CreateNewActivity.this).authKey);
                         params.put("userId", Persistance.getInstance().getUserInfo(CreateNewActivity.this).id);
-                        params.put("eventId",getIntent().getStringExtra("eventId"));
+                        params.put("eventId", getIntent().getStringExtra("eventId"));
 
 
                         Calendar calendar = myCalendar;
                         myCalendar.getTimeInMillis();
-                        if(eventDetails.eventDate < myCalendar.getTimeInMillis() / 1000) {
+                        if (eventDetails.eventDate < myCalendar.getTimeInMillis() / 1000) {
                             params.put("eventDate", String.valueOf(myCalendar.getTimeInMillis() / 1000));
                         }
-                        if(!eventDetails.description.equals(descriptionEditText.getText().toString())) {
+                        if (!eventDetails.description.equals(descriptionEditText.getText().toString())) {
                             params.put("description", descriptionEditText.getText().toString());
                         }
-                        if(eventDetails.latitude != GMapsActivity.markerSelected.getPosition().latitude || eventDetails.longitude != GMapsActivity.markerSelected.getPosition().longitude) {
+                        if (eventDetails.latitude != GMapsActivity.markerSelected.getPosition().latitude || eventDetails.longitude != GMapsActivity.markerSelected.getPosition().longitude) {
                             params.put("latitude", String.valueOf(GMapsActivity.markerSelected.getPosition().latitude));
                             params.put("longitude", String.valueOf(GMapsActivity.markerSelected.getPosition().longitude));
                             if (!locationName.getText().toString().equals("Unauthorized location")) {
@@ -250,23 +250,23 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                                 params.put("placeName", adress.getText().toString());
                             }
                         }
-                        if(eventDetails.privacy != privacy) {
+                        if (eventDetails.privacy != privacy) {
                             params.put("privacy", String.valueOf(privacy));
                         }
-                        if(eventDetails.capacity != Integer.valueOf(playersNumber.getText().toString())) {
+                        if (eventDetails.capacity != Integer.valueOf(playersNumber.getText().toString())) {
                             params.put("capacity", playersNumber.getText().toString());
                         }
-                        if(!eventDetails.sportName.equals(sportCode)) {
+                        if (!eventDetails.sportName.equals(sportCode)) {
                             params.put("sportCode", sportCode);
                             if (sportCode.equals("OTH")) {
                                 params.put("otherSportName", otherSportName.getText().toString());
                             }
                         }
-                        if(InviteFriendsActivity.numberOfOfflineFriends != 0) {
+                        if (InviteFriendsActivity.numberOfOfflineFriends != 0) {
                             params.put("numberOfOffliners", String.valueOf(InviteFriendsActivity.numberOfOfflineFriends));
                         }
                         int counterOfInvitedFriends = 0;
-                        if(InviteFriendsActivity.friendsList.size() > 0) {
+                        if (InviteFriendsActivity.friendsList.size() > 0) {
                             for (int i = 0; i < InviteFriendsActivity.friendsList.size(); i++) {
                                 if (InviteFriendsActivity.friendsList.get(i).isInvited) {
                                     params.put("invitedParticipants[" + counterOfInvitedFriends + "]", InviteFriendsActivity.friendsList.get(i).userID);
@@ -274,9 +274,8 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                                 }
                             }
                         }
-                        HTTPResponseController.getInstance().createEvent(params, headers, CreateNewActivity.this,null);
+                        HTTPResponseController.getInstance().createEvent(params, headers, CreateNewActivity.this, null);
                     }
-
 
 
                     createActivityButton.setEnabled(false);
@@ -287,14 +286,13 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
         invitedFriends0.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!getIntent().getBooleanExtra("isEdit",false)) {
+                if (!getIntent().getBooleanExtra("isEdit", false)) {
                     Intent goToNextActivity = new Intent(CreateNewActivity.this, InviteFriendsActivity.class);
                     startActivityForResult(goToNextActivity, ASK_FRIENDS);
-                }
-                else{
+                } else {
                     Intent goToNextActivity = new Intent(CreateNewActivity.this, InviteFriendsActivity.class);
-                    goToNextActivity.putExtra("isEdit",true);
-                    goToNextActivity.putExtra("eventId",getIntent().getStringExtra("eventId"));
+                    goToNextActivity.putExtra("isEdit", true);
+                    goToNextActivity.putExtra("eventId", getIntent().getStringExtra("eventId"));
                     startActivityForResult(goToNextActivity, ASK_FRIENDS);
                 }
             }
@@ -303,13 +301,12 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
 
         InviteFriendsActivity.friendsList.clear();
         InviteFriendsActivity.numberOfOfflineFriends = 0;
-        InviteFriendsActivity.inviteFriendsAdapter=null;
-        InviteFriendsActivity.isFirstTimeInviteFriends=false;
+        InviteFriendsActivity.inviteFriendsAdapter = null;
+        InviteFriendsActivity.isFirstTimeInviteFriends = false;
 
-        if(!getIntent().getBooleanExtra("isEdit",false)) {
+        if (!getIntent().getBooleanExtra("isEdit", false)) {
             titleText.setText("Create Activity");
-        }
-        else{
+        } else {
             titleText.setText("Edit Activity");
         }
         Typeface typeFace = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Medium.ttf");
@@ -329,8 +326,8 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(otherSportName.getText().length() >=20){
-                    Toast.makeText(getApplicationContext(),"You have reached maximum lenght for this field!",Toast.LENGTH_SHORT).show();
+                if (otherSportName.getText().length() >= 20) {
+                    Toast.makeText(getApplicationContext(), "You have reached maximum lenght for this field!", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -348,8 +345,8 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(descriptionEditText.getText().length() >=100){
-                    Toast.makeText(getApplicationContext(),"You have reached maximum lenght for this field!",Toast.LENGTH_SHORT).show();
+                if (descriptionEditText.getText().length() >= 100) {
+                    Toast.makeText(getApplicationContext(), "You have reached maximum lenght for this field!", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -368,12 +365,12 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                     ViewGroup.LayoutParams params = otherSportLayout.getLayoutParams();
                     params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                     otherSportLayout.setLayoutParams(params);
-                    sportCode=sportCodes[position];
+                    sportCode = sportCodes[position];
                 } else {
                     ViewGroup.LayoutParams params = otherSportLayout.getLayoutParams();
                     params.height = 0;
                     otherSportLayout.setLayoutParams(params);
-                    sportCode=sportCodes[position];
+                    sportCode = sportCodes[position];
                 }
             }
 
@@ -414,7 +411,7 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                     ViewGroup.MarginLayoutParams margins = (ViewGroup.MarginLayoutParams) privateText.getLayoutParams();
                     margins.topMargin = 16;
                     privateText.setLayoutParams(margins);
-                    privacy=1;
+                    privacy = 1;
                 } else {
                     ViewGroup.LayoutParams params = privateText.getLayoutParams();
                     params.height = 0;
@@ -422,7 +419,7 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                     ViewGroup.MarginLayoutParams margins = (ViewGroup.MarginLayoutParams) privateText.getLayoutParams();
                     margins.topMargin = 0;
                     privateText.setLayoutParams(margins);
-                    privacy=0;
+                    privacy = 0;
                 }
             }
 
@@ -436,7 +433,7 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
 
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
+                    int dayOfMonth) {
                 // TODO Auto-generated method stub
                 myCalendar.set(Calendar.YEAR, year);
                 myCalendar.set(Calendar.MONTH, monthOfYear);
@@ -518,37 +515,37 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
             }
         });
 
-        if(getIntent().getBooleanExtra("isEdit",false)){
-            Bundle b=getIntent().getExtras();
+        if (getIntent().getBooleanExtra("isEdit", false)) {
+            Bundle b = getIntent().getExtras();
 
-            eventDetails.eventDate=b.getInt("eventDate");
-            eventDetails.description=b.getString("description");
-            eventDetails.placeName=b.getString("placeName");
-            eventDetails.latitude=b.getDouble("latitude");
-            eventDetails.longitude=b.getDouble("longitude");
-            eventDetails.placeId=b.getString("placeId");
-            eventDetails.isAuthorized=b.getInt("isAuthorized");
-            eventDetails.placeAdress=b.getString("placeAdress");
-            eventDetails.authorizeLevel=b.getString("authorizelevel");
-            eventDetails.companyImage=b.getString("placeImage");
-            eventDetails.sportName=b.getString("sportName");
-            eventDetails.otherSportName=b.getString("otherSportName");
-            eventDetails.capacity=b.getInt("capacity");
-            eventDetails.numberOfParticipants=b.getInt("numberOfParticipants");
-            eventDetails.points=b.getInt("points");
-            eventDetails.isParticipant=b.getInt("isParticipant");
-            eventDetails.ludicoins=b.getInt("ludicoins");
-            eventDetails.privacy=b.getInt("privacy");
-            eventDetails.creatorName=b.getString("creatorName");
-            eventDetails.creatorLevel=b.getInt("creatorLevel");
-            eventDetails.creatorId=b.getString("creatorId");
-            eventDetails.creatorProfilePicture=b.getString("creatorProfilePicture");
-            for(int i=0;i < b.getStringArrayList("participantsId").size();i++){
-                Friend friend=new Friend();
-                friend.userID=b.getStringArrayList("participantsId").get(i);
-                friend.userName=b.getStringArrayList("participantsName").get(i);
-                friend.profileImage=b.getStringArrayList("participantsProfileImage").get(i);
-                friend.level=b.getIntegerArrayList("participantsLevel").get(i);
+            eventDetails.eventDate = b.getInt("eventDate");
+            eventDetails.description = b.getString("description");
+            eventDetails.placeName = b.getString("placeName");
+            eventDetails.latitude = b.getDouble("latitude");
+            eventDetails.longitude = b.getDouble("longitude");
+            eventDetails.placeId = b.getString("placeId");
+            eventDetails.isAuthorized = b.getInt("isAuthorized");
+            eventDetails.placeAdress = b.getString("placeAdress");
+            eventDetails.authorizeLevel = b.getString("authorizelevel");
+            eventDetails.companyImage = b.getString("placeImage");
+            eventDetails.sportName = b.getString("sportName");
+            eventDetails.otherSportName = b.getString("otherSportName");
+            eventDetails.capacity = b.getInt("capacity");
+            eventDetails.numberOfParticipants = b.getInt("numberOfParticipants");
+            eventDetails.points = b.getInt("points");
+            eventDetails.isParticipant = b.getInt("isParticipant");
+            eventDetails.ludicoins = b.getInt("ludicoins");
+            eventDetails.privacy = b.getInt("privacy");
+            eventDetails.creatorName = b.getString("creatorName");
+            eventDetails.creatorLevel = b.getInt("creatorLevel");
+            eventDetails.creatorId = b.getString("creatorId");
+            eventDetails.creatorProfilePicture = b.getString("creatorProfilePicture");
+            for (int i = 0; i < b.getStringArrayList("participantsId").size(); i++) {
+                Friend friend = new Friend();
+                friend.userID = b.getStringArrayList("participantsId").get(i);
+                friend.userName = b.getStringArrayList("participantsName").get(i);
+                friend.profileImage = b.getStringArrayList("participantsProfileImage").get(i);
+                friend.level = b.getIntegerArrayList("participantsLevel").get(i);
                 eventDetails.listOfParticipants.add(friend);
             }
 
@@ -556,46 +553,56 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
 
             //set custom data for edit
 
-            switch (eventDetails.sportName){
-                case "FOT":sportSpinner.setSelection(0);
-                    break;
-                case "BAS":sportSpinner.setSelection(1);
-                    break;
-                case "VOL":sportSpinner.setSelection(2);
-                    break;
-                case "JOG":sportSpinner.setSelection(3);
-                    break;
-                case "GYM":sportSpinner.setSelection(4);
-                    break;
-                case "CYC":sportSpinner.setSelection(5);
-                    break;
-                case "TEN":sportSpinner.setSelection(6);
-                    break;
-                case "PIN":sportSpinner.setSelection(7);
-                    break;
-                case "SQU":sportSpinner.setSelection(8);
-                    break;
-                case "OTH":sportSpinner.setSelection(9);
-                    otherSportName.setText(eventDetails.otherSportName);
-                    otherSportName.setSelection(eventDetails.otherSportName.length());
-                    break;
+            switch (eventDetails.sportName) {
+            case "FOT":
+                sportSpinner.setSelection(0);
+                break;
+            case "BAS":
+                sportSpinner.setSelection(1);
+                break;
+            case "VOL":
+                sportSpinner.setSelection(2);
+                break;
+            case "JOG":
+                sportSpinner.setSelection(3);
+                break;
+            case "GYM":
+                sportSpinner.setSelection(4);
+                break;
+            case "CYC":
+                sportSpinner.setSelection(5);
+                break;
+            case "TEN":
+                sportSpinner.setSelection(6);
+                break;
+            case "PIN":
+                sportSpinner.setSelection(7);
+                break;
+            case "SQU":
+                sportSpinner.setSelection(8);
+                break;
+            case "OTH":
+                sportSpinner.setSelection(9);
+                otherSportName.setText(eventDetails.otherSportName);
+                otherSportName.setSelection(eventDetails.otherSportName.length());
+                break;
             }
 
-            if(eventDetails.privacy == 0){
+            if (eventDetails.privacy == 0) {
                 privacySpinner.setSelection(0);
-            }
-            else{
+            } else {
                 privacySpinner.setSelection(1);
             }
             playersNumber.setText(String.valueOf(eventDetails.capacity));
 
-            Calendar editCalendar=Calendar.getInstance();;
-            editCalendar.setTimeInMillis((long)eventDetails.eventDate*1000);
+            Calendar editCalendar = Calendar.getInstance();
+            ;
+            editCalendar.setTimeInMillis((long) eventDetails.eventDate * 1000);
 
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             String displayDate = formatter.format(editCalendar.getTime());
             String[] stringDate = displayDate.split("-");
-            String data= stringDate[2] + " " + getMonth(Integer.parseInt(stringDate[1])) + " " + stringDate[0];
+            String data = stringDate[2] + " " + getMonth(Integer.parseInt(stringDate[1])) + " " + stringDate[0];
             calendarTextView.setText(data);
 
             SimpleDateFormat format = new SimpleDateFormat("HH:mm");
@@ -625,8 +632,8 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
             TextView pointsNumber = (TextView) findViewById(R.id.pointsNumber);
 
             if (!eventDetails.authorizeLevel.equals("")) {
-                ludicoinsNumber.setText("+"+String.valueOf(eventDetails.ludicoins));
-                pointsNumber.setText("+"+String.valueOf(eventDetails.points));
+                ludicoinsNumber.setText("+" + String.valueOf(eventDetails.ludicoins));
+                pointsNumber.setText("+" + String.valueOf(eventDetails.points));
             } else {
                 ludicoinsNumber.setText(String.valueOf(-1));
                 pointsNumber.setText(String.valueOf(-1));
@@ -635,7 +642,7 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
             descriptionEditText.setText(eventDetails.description);
             int countOfFriends = 0;
 
-            for(int i=0;i<eventDetails.listOfParticipants.size();i++) {
+            for (int i = 0; i < eventDetails.listOfParticipants.size(); i++) {
 
                 if (countOfFriends == 0) {
                     if (!eventDetails.listOfParticipants.get(i).profileImage.equals("")) {
@@ -655,85 +662,88 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                         @Override
                         public void onClick(View view) {
                             Intent goToNextActivity = new Intent(CreateNewActivity.this, InviteFriendsActivity.class);
-                            goToNextActivity.putExtra("isEdit",true);
-                            goToNextActivity.putExtra("eventId",getIntent().getStringExtra("eventId"));
+                            goToNextActivity.putExtra("isEdit", true);
+                            goToNextActivity.putExtra("eventId", getIntent().getStringExtra("eventId"));
                             startActivityForResult(goToNextActivity, ASK_FRIENDS);
                         }
                     });
-                } else if (countOfFriends == 1) {
-                    if (!eventDetails.listOfParticipants.get(i).profileImage.equals("")) {
-                        Bitmap bitmap = decodeBase64(eventDetails.listOfParticipants.get(i).profileImage);
+                } else
+                    if (countOfFriends == 1) {
+                        if (!eventDetails.listOfParticipants.get(i).profileImage.equals("")) {
+                            Bitmap bitmap = decodeBase64(eventDetails.listOfParticipants.get(i).profileImage);
 
-                        invitedFriends1.setImageBitmap(bitmap);
-                    }
-                    countOfFriends++;
-                    invitedFriends1.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-
+                            invitedFriends1.setImageBitmap(bitmap);
                         }
-                    });
-                    invitedFriends2.setVisibility(View.VISIBLE);
-                    invitedFriends2.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Intent goToNextActivity = new Intent(CreateNewActivity.this, InviteFriendsActivity.class);
-                            goToNextActivity.putExtra("isEdit",true);
-                            goToNextActivity.putExtra("eventId",getIntent().getStringExtra("eventId"));
-                            startActivityForResult(goToNextActivity, ASK_FRIENDS);
-                        }
-                    });
-                } else if (countOfFriends == 2) {
-                    if (!eventDetails.listOfParticipants.get(i).profileImage.equals("")) {
-                        Bitmap bitmap = decodeBase64(eventDetails.listOfParticipants.get(i).profileImage);
+                        countOfFriends++;
+                        invitedFriends1.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
 
-                        invitedFriends2.setImageBitmap(bitmap);
-                    }
-                    countOfFriends++;
-                    invitedFriends2.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
+                            }
+                        });
+                        invitedFriends2.setVisibility(View.VISIBLE);
+                        invitedFriends2.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent goToNextActivity = new Intent(CreateNewActivity.this, InviteFriendsActivity.class);
+                                goToNextActivity.putExtra("isEdit", true);
+                                goToNextActivity.putExtra("eventId", getIntent().getStringExtra("eventId"));
+                                startActivityForResult(goToNextActivity, ASK_FRIENDS);
+                            }
+                        });
+                    } else
+                        if (countOfFriends == 2) {
+                            if (!eventDetails.listOfParticipants.get(i).profileImage.equals("")) {
+                                Bitmap bitmap = decodeBase64(eventDetails.listOfParticipants.get(i).profileImage);
 
-                        }
-                    });
-                    friendsNumber.setVisibility(View.VISIBLE);
-                    friendsNumber.setText("");
-                    friendsNumber.setBackgroundResource(R.drawable.ic_invite);
-                    friendsNumber.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Intent goToNextActivity = new Intent(CreateNewActivity.this, InviteFriendsActivity.class);
-                            goToNextActivity.putExtra("isEdit",true);
-                            goToNextActivity.putExtra("eventId",getIntent().getStringExtra("eventId"));
-                            startActivityForResult(goToNextActivity, ASK_FRIENDS);
-                        }
-                    });
+                                invitedFriends2.setImageBitmap(bitmap);
+                            }
+                            countOfFriends++;
+                            invitedFriends2.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
 
-                } else if (countOfFriends > 2) {
-                    friendsNumber.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                        }
-                    });
-                    countOfFriends++;
-                    invitedFriends4.setVisibility(View.VISIBLE);
-                    invitedFriends4.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Intent goToNextActivity = new Intent(CreateNewActivity.this, InviteFriendsActivity.class);
-                            goToNextActivity.putExtra("isEdit",true);
-                            goToNextActivity.putExtra("eventId",getIntent().getStringExtra("eventId"));
-                            startActivityForResult(goToNextActivity, ASK_FRIENDS);
-                        }
-                    });
+                                }
+                            });
+                            friendsNumber.setVisibility(View.VISIBLE);
+                            friendsNumber.setText("");
+                            friendsNumber.setBackgroundResource(R.drawable.ic_invite);
+                            friendsNumber.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Intent goToNextActivity = new Intent(CreateNewActivity.this, InviteFriendsActivity.class);
+                                    goToNextActivity.putExtra("isEdit", true);
+                                    goToNextActivity.putExtra("eventId", getIntent().getStringExtra("eventId"));
+                                    startActivityForResult(goToNextActivity, ASK_FRIENDS);
+                                }
+                            });
+
+                        } else
+                            if (countOfFriends > 2) {
+                                friendsNumber.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                    }
+                                });
+                                countOfFriends++;
+                                invitedFriends4.setVisibility(View.VISIBLE);
+                                invitedFriends4.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        Intent goToNextActivity = new Intent(CreateNewActivity.this, InviteFriendsActivity.class);
+                                        goToNextActivity.putExtra("isEdit", true);
+                                        goToNextActivity.putExtra("eventId", getIntent().getStringExtra("eventId"));
+                                        startActivityForResult(goToNextActivity, ASK_FRIENDS);
+                                    }
+                                });
 
 
-                }
+                            }
             }
 
-            numberOfTotalParticipants=eventDetails.numberOfParticipants-1-eventDetails.listOfParticipants.size()+countOfFriends;
+            numberOfTotalParticipants = eventDetails.numberOfParticipants - 1 - eventDetails.listOfParticipants.size() + countOfFriends;
 
-            if(numberOfTotalParticipants >= 1){
+            if (numberOfTotalParticipants >= 1) {
                 invitedFriends0.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -745,13 +755,13 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                     @Override
                     public void onClick(View view) {
                         Intent goToNextActivity = new Intent(CreateNewActivity.this, InviteFriendsActivity.class);
-                        goToNextActivity.putExtra("isEdit",true);
-                        goToNextActivity.putExtra("eventId",getIntent().getStringExtra("eventId"));
+                        goToNextActivity.putExtra("isEdit", true);
+                        goToNextActivity.putExtra("eventId", getIntent().getStringExtra("eventId"));
                         startActivityForResult(goToNextActivity, ASK_FRIENDS);
                     }
                 });
             }
-            if(numberOfTotalParticipants >= 2){
+            if (numberOfTotalParticipants >= 2) {
                 invitedFriends1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -763,14 +773,14 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                     @Override
                     public void onClick(View view) {
                         Intent goToNextActivity = new Intent(CreateNewActivity.this, InviteFriendsActivity.class);
-                        goToNextActivity.putExtra("isEdit",true);
-                        goToNextActivity.putExtra("eventId",getIntent().getStringExtra("eventId"));
+                        goToNextActivity.putExtra("isEdit", true);
+                        goToNextActivity.putExtra("eventId", getIntent().getStringExtra("eventId"));
                         startActivityForResult(goToNextActivity, ASK_FRIENDS);
                     }
                 });
 
             }
-            if(numberOfTotalParticipants >= 3){
+            if (numberOfTotalParticipants >= 3) {
                 invitedFriends2.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -784,45 +794,35 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                     @Override
                     public void onClick(View view) {
                         Intent goToNextActivity = new Intent(CreateNewActivity.this, InviteFriendsActivity.class);
-                        goToNextActivity.putExtra("isEdit",true);
-                        goToNextActivity.putExtra("eventId",getIntent().getStringExtra("eventId"));
+                        goToNextActivity.putExtra("isEdit", true);
+                        goToNextActivity.putExtra("eventId", getIntent().getStringExtra("eventId"));
                         startActivityForResult(goToNextActivity, ASK_FRIENDS);
                     }
                 });
 
             }
-            if(numberOfTotalParticipants >= 4){
+            if (numberOfTotalParticipants >= 4) {
                 friendsNumber.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
 
                     }
                 });
-                friendsNumber.setText("+"+String.valueOf(numberOfTotalParticipants-3));
+                friendsNumber.setText("+" + String.valueOf(numberOfTotalParticipants - 3));
                 friendsNumber.setBackgroundResource(R.drawable.round_textview);
                 invitedFriends4.setVisibility(View.VISIBLE);
                 invitedFriends4.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Intent goToNextActivity = new Intent(CreateNewActivity.this, InviteFriendsActivity.class);
-                        goToNextActivity.putExtra("isEdit",true);
-                        goToNextActivity.putExtra("eventId",getIntent().getStringExtra("eventId"));
+                        goToNextActivity.putExtra("isEdit", true);
+                        goToNextActivity.putExtra("eventId", getIntent().getStringExtra("eventId"));
                         startActivityForResult(goToNextActivity, ASK_FRIENDS);
                     }
                 });
 
 
-
             }
-
-
-
-
-
-
-
-
-
 
 
         }
@@ -857,9 +857,9 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
-                if(!getIntent().getBooleanExtra("isEdit",false)) {
+                if (!getIntent().getBooleanExtra("isEdit", false)) {
                     googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 15));
-                }else {
+                } else {
 
                     tapHereTextView.setText("");
                     LatLng latLng = new LatLng(eventDetails.latitude, eventDetails.longitude);
@@ -869,32 +869,32 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
 
                         switch (Integer.valueOf(eventDetails.authorizeLevel)) {
 
-                            case 0:
-                                GMapsActivity.markerSelected=m_gmap.addMarker(new MarkerOptions()
-                                        .position(latLng)
-                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_1_selected)));
-                                break;
-                            case 1:
-                                GMapsActivity.markerSelected=m_gmap.addMarker(new MarkerOptions()
-                                        .position(latLng)
-                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_2_selected)));
-                                break;
-                            case 2:
-                                GMapsActivity.markerSelected=m_gmap.addMarker(new MarkerOptions()
-                                        .position(latLng)
-                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_3_selected)));
-                                break;
+                        case 0:
+                            GMapsActivity.markerSelected = m_gmap.addMarker(new MarkerOptions()
+                                    .position(latLng)
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_1_selected)));
+                            break;
+                        case 1:
+                            GMapsActivity.markerSelected = m_gmap.addMarker(new MarkerOptions()
+                                    .position(latLng)
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_2_selected)));
+                            break;
+                        case 2:
+                            GMapsActivity.markerSelected = m_gmap.addMarker(new MarkerOptions()
+                                    .position(latLng)
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_3_selected)));
+                            break;
 
-                            case 3:
-                                GMapsActivity.markerSelected=m_gmap.addMarker(new MarkerOptions()
-                                        .position(latLng)
-                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_4_selected)));
-                                break;
+                        case 3:
+                            GMapsActivity.markerSelected = m_gmap.addMarker(new MarkerOptions()
+                                    .position(latLng)
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_4_selected)));
+                            break;
 
 
                         }
                     } else {
-                        GMapsActivity.markerSelected=m_gmap.addMarker(new MarkerOptions()
+                        GMapsActivity.markerSelected = m_gmap.addMarker(new MarkerOptions()
                                 .position(latLng)
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_1_selected)));
 
@@ -906,13 +906,13 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                 googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                     @Override
                     public void onMapClick(LatLng latLng) {
-                        if(!getIntent().getBooleanExtra("isEdit",false)) {
+                        if (!getIntent().getBooleanExtra("isEdit", false)) {
                             Intent goToNextActivity = new Intent(CreateNewActivity.this, GMapsActivity.class);
                             goToNextActivity.putExtra("latitude", String.valueOf(latitude));
                             goToNextActivity.putExtra("longitude", String.valueOf(longitude));
                             goToNextActivity.putExtra("sportCode", sportCode);
                             startActivityForResult(goToNextActivity, ASK_COORDS);
-                        }else{
+                        } else {
                             Intent goToNextActivity = new Intent(CreateNewActivity.this, GMapsActivity.class);
                             goToNextActivity.putExtra("latitude", String.valueOf(eventDetails.latitude));
                             goToNextActivity.putExtra("longitude", String.valueOf(eventDetails.longitude));
@@ -987,86 +987,87 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
             m_gmap.clear();
 
             switch (authorizeEventLevel) {
-                case -1:
-                    m_gmap.addMarker(new MarkerOptions()
-                            .position(latLng)
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_1_selected)));
-                    break;
-                case 0:
-                    m_gmap.addMarker(new MarkerOptions()
-                            .position(latLng)
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_1_selected)));
-                    break;
-                case 1:
-                    m_gmap.addMarker(new MarkerOptions()
-                            .position(latLng)
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_2_selected)));
-                    break;
-                case 2:
-                    m_gmap.addMarker(new MarkerOptions()
-                            .position(latLng)
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_3_selected)));
-                    break;
+            case -1:
+                m_gmap.addMarker(new MarkerOptions()
+                        .position(latLng)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_1_selected)));
+                break;
+            case 0:
+                m_gmap.addMarker(new MarkerOptions()
+                        .position(latLng)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_1_selected)));
+                break;
+            case 1:
+                m_gmap.addMarker(new MarkerOptions()
+                        .position(latLng)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_2_selected)));
+                break;
+            case 2:
+                m_gmap.addMarker(new MarkerOptions()
+                        .position(latLng)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_3_selected)));
+                break;
 
-                case 3:
-                    m_gmap.addMarker(new MarkerOptions()
-                            .position(latLng)
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_4_selected)));
-                    break;
+            case 3:
+                m_gmap.addMarker(new MarkerOptions()
+                        .position(latLng)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_4_selected)));
+                break;
 
 
             }
             m_gmap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-        } else if (resultCode == CreateNewActivity.ASK_FRIENDS_DONE) {
-            int countOfFriends = 0;
-            invitedFriends0.setImageResource(R.drawable.ic_invite);
-            invitedFriends1.setImageResource(R.drawable.ic_invite);
-            invitedFriends2.setImageResource(R.drawable.ic_invite);
-            friendsNumber.setBackgroundResource(R.drawable.ic_invite);
-            invitedFriends4.setImageResource(R.drawable.ic_invite);
-            invitedFriends1.setVisibility(View.INVISIBLE);
-            invitedFriends2.setVisibility(View.INVISIBLE);
-            friendsNumber.setVisibility(View.INVISIBLE);
-            invitedFriends4.setVisibility(View.INVISIBLE);
-            invitedFriends0.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent goToNextActivity = new Intent(CreateNewActivity.this, InviteFriendsActivity.class);
-                    startActivityForResult(goToNextActivity, ASK_FRIENDS);
-                }
-            });
-            invitedFriends1.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                }
-            });
-            invitedFriends2.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                }
-            });
-            friendsNumber.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                }
-            });
-            invitedFriends4.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                }
-            });
-            for (int i = 0; i < InviteFriendsActivity.friendsList.size(); i++) {
-
-
-                if (InviteFriendsActivity.friendsList.get(i).isInvited && countOfFriends == 0) {
-                    if (!InviteFriendsActivity.friendsList.get(i).profileImage.equals("")) {
-                        Bitmap bitmap = decodeBase64(InviteFriendsActivity.friendsList.get(i).profileImage);
-                        invitedFriends0.setImageBitmap(bitmap);
+        } else
+            if (resultCode == CreateNewActivity.ASK_FRIENDS_DONE) {
+                int countOfFriends = 0;
+                invitedFriends0.setImageResource(R.drawable.ic_invite);
+                invitedFriends1.setImageResource(R.drawable.ic_invite);
+                invitedFriends2.setImageResource(R.drawable.ic_invite);
+                friendsNumber.setBackgroundResource(R.drawable.ic_invite);
+                invitedFriends4.setImageResource(R.drawable.ic_invite);
+                invitedFriends1.setVisibility(View.INVISIBLE);
+                invitedFriends2.setVisibility(View.INVISIBLE);
+                friendsNumber.setVisibility(View.INVISIBLE);
+                invitedFriends4.setVisibility(View.INVISIBLE);
+                invitedFriends0.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent goToNextActivity = new Intent(CreateNewActivity.this, InviteFriendsActivity.class);
+                        startActivityForResult(goToNextActivity, ASK_FRIENDS);
                     }
-                    countOfFriends++;
-                    invitedFriends0.setOnClickListener(new View.OnClickListener() {
+                });
+                invitedFriends1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                });
+                invitedFriends2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                });
+                friendsNumber.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                    }
+                });
+                invitedFriends4.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                    }
+                });
+                for (int i = 0; i < InviteFriendsActivity.friendsList.size(); i++) {
+
+
+                    if (InviteFriendsActivity.friendsList.get(i).isInvited && countOfFriends == 0) {
+                        if (!InviteFriendsActivity.friendsList.get(i).profileImage.equals("")) {
+                            Bitmap bitmap = decodeBase64(InviteFriendsActivity.friendsList.get(i).profileImage);
+                            invitedFriends0.setImageBitmap(bitmap);
+                        }
+                        countOfFriends++;
+                        invitedFriends0.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
 
@@ -1081,15 +1082,13 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                                 startActivityForResult(goToNextActivity, ASK_FRIENDS);
                             }
                         });
-                    }
+                    } else
+                        if (InviteFriendsActivity.friendsList.get(i).isInvited && countOfFriends == 1) {
+                            if (!InviteFriendsActivity.friendsList.get(i).profileImage.equals("")) {
+                                Bitmap bitmap = decodeBase64(InviteFriendsActivity.friendsList.get(i).profileImage);
 
-
-                    else if (InviteFriendsActivity.friendsList.get(i).isInvited && countOfFriends == 1) {
-                        if (!InviteFriendsActivity.friendsList.get(i).profileImage.equals("")) {
-                            Bitmap bitmap = decodeBase64(InviteFriendsActivity.friendsList.get(i).profileImage);
-
-                            invitedFriends1.setImageBitmap(bitmap);
-                        }
+                                invitedFriends1.setImageBitmap(bitmap);
+                            }
                             countOfFriends++;
                             invitedFriends1.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -1097,6 +1096,86 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
 
                                 }
                             });
+                            invitedFriends2.setVisibility(View.VISIBLE);
+                            invitedFriends2.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Intent goToNextActivity = new Intent(CreateNewActivity.this, InviteFriendsActivity.class);
+                                    startActivityForResult(goToNextActivity, ASK_FRIENDS);
+                                }
+                            });
+                        } else
+                            if (InviteFriendsActivity.friendsList.get(i).isInvited && countOfFriends == 2) {
+                                if (!InviteFriendsActivity.friendsList.get(i).profileImage.equals("")) {
+                                    Bitmap bitmap = decodeBase64(InviteFriendsActivity.friendsList.get(i).profileImage);
+
+                                    invitedFriends2.setImageBitmap(bitmap);
+                                }
+                                countOfFriends++;
+                                invitedFriends2.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+
+                                    }
+                                });
+                                friendsNumber.setVisibility(View.VISIBLE);
+                                friendsNumber.setText("");
+                                friendsNumber.setBackgroundResource(R.drawable.ic_invite);
+                                friendsNumber.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        Intent goToNextActivity = new Intent(CreateNewActivity.this, InviteFriendsActivity.class);
+                                        startActivityForResult(goToNextActivity, ASK_FRIENDS);
+                                    }
+                                });
+
+                            } else
+                                if (InviteFriendsActivity.friendsList.get(i).isInvited && countOfFriends > 2) {
+                                    friendsNumber.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                        }
+                                    });
+                                    countOfFriends++;
+                                    invitedFriends4.setVisibility(View.VISIBLE);
+                                    invitedFriends4.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            Intent goToNextActivity = new Intent(CreateNewActivity.this, InviteFriendsActivity.class);
+                                            startActivityForResult(goToNextActivity, ASK_FRIENDS);
+                                        }
+                                    });
+
+                                }
+
+
+                }
+
+                numberOfTotalParticipants = numberOfOfflineFriends + countOfFriends;
+
+                if (numberOfOfflineFriends + countOfFriends >= 1) {
+                    invitedFriends0.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                        }
+                    });
+                    invitedFriends1.setVisibility(View.VISIBLE);
+                    invitedFriends1.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent goToNextActivity = new Intent(CreateNewActivity.this, InviteFriendsActivity.class);
+                            startActivityForResult(goToNextActivity, ASK_FRIENDS);
+                        }
+                    });
+                }
+                if (numberOfOfflineFriends + countOfFriends >= 2) {
+                    invitedFriends1.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                        }
+                    });
                     invitedFriends2.setVisibility(View.VISIBLE);
                     invitedFriends2.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -1105,14 +1184,9 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                             startActivityForResult(goToNextActivity, ASK_FRIENDS);
                         }
                     });
-                        }
-                else if (InviteFriendsActivity.friendsList.get(i).isInvited && countOfFriends == 2) {
-                    if (!InviteFriendsActivity.friendsList.get(i).profileImage.equals("")) {
-                        Bitmap bitmap = decodeBase64(InviteFriendsActivity.friendsList.get(i).profileImage);
 
-                        invitedFriends2.setImageBitmap(bitmap);
-                    }
-                    countOfFriends++;
+                }
+                if (numberOfOfflineFriends + countOfFriends >= 3) {
                     invitedFriends2.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -1131,13 +1205,15 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                     });
 
                 }
-                else if (InviteFriendsActivity.friendsList.get(i).isInvited && countOfFriends > 2) {
+                if (numberOfOfflineFriends + countOfFriends >= 4) {
                     friendsNumber.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+
                         }
                     });
-                    countOfFriends++;
+                    friendsNumber.setText("+" + String.valueOf(numberOfOfflineFriends + countOfFriends - 3));
+                    friendsNumber.setBackgroundResource(R.drawable.round_textview);
                     invitedFriends4.setVisibility(View.VISIBLE);
                     invitedFriends4.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -1150,90 +1226,11 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                 }
 
 
-
-
-                    }
-
-                    numberOfTotalParticipants=numberOfOfflineFriends+countOfFriends;
-
-                    if(numberOfOfflineFriends+countOfFriends >= 1){
-                        invitedFriends0.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-
-                            }
-                        });
-                        invitedFriends1.setVisibility(View.VISIBLE);
-                        invitedFriends1.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Intent goToNextActivity = new Intent(CreateNewActivity.this, InviteFriendsActivity.class);
-                                startActivityForResult(goToNextActivity, ASK_FRIENDS);
-                            }
-                        });
-                    }
-                    if(numberOfOfflineFriends+countOfFriends >= 2){
-                        invitedFriends1.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-
-                            }
-                        });
-                        invitedFriends2.setVisibility(View.VISIBLE);
-                        invitedFriends2.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Intent goToNextActivity = new Intent(CreateNewActivity.this, InviteFriendsActivity.class);
-                                startActivityForResult(goToNextActivity, ASK_FRIENDS);
-                            }
-                        });
-
-                    }
-                    if(numberOfOfflineFriends+countOfFriends >= 3){
-                        invitedFriends2.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-
-                            }
-                        });
-                        friendsNumber.setVisibility(View.VISIBLE);
-                        friendsNumber.setText("");
-                        friendsNumber.setBackgroundResource(R.drawable.ic_invite);
-                        friendsNumber.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Intent goToNextActivity = new Intent(CreateNewActivity.this, InviteFriendsActivity.class);
-                                startActivityForResult(goToNextActivity, ASK_FRIENDS);
-                            }
-                        });
-
-                    }
-                    if(numberOfOfflineFriends+countOfFriends >= 4){
-                        friendsNumber.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-
-                            }
-                        });
-                        friendsNumber.setText("+"+String.valueOf(numberOfOfflineFriends+countOfFriends-3));
-                        friendsNumber.setBackgroundResource(R.drawable.round_textview);
-                        invitedFriends4.setVisibility(View.VISIBLE);
-                        invitedFriends4.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Intent goToNextActivity = new Intent(CreateNewActivity.this, InviteFriendsActivity.class);
-                                startActivityForResult(goToNextActivity, ASK_FRIENDS);
-                            }
-                        });
-
-                    }
-
-
-                }
-
             }
 
-        }
+    }
+
+}
 
 
 
