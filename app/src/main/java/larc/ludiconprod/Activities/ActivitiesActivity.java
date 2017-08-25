@@ -93,13 +93,15 @@ public class ActivitiesActivity extends Fragment {
     Boolean isFirstTimeAroundMe = false;
     Boolean isFirstTimeMyEvents = false;
     public static ProgressBar v1;
+    public double longitude = 0;
+    public double latitude = 0;
 
 
     public ActivitiesActivity() {
         currentFragment = this;
     }
 
-    public void getAroundMeEvents(String pageNumber) {
+    public void getAroundMeEvents(String pageNumber,Double latitude,Double longitude) {
         v1 = (ProgressBar) v.findViewById(R.id.activityProgressBar);
         HashMap<String, String> params = new HashMap<String, String>();
         HashMap<String, String> headers = new HashMap<String, String>();
@@ -107,16 +109,6 @@ public class ActivitiesActivity extends Fragment {
         headers.put("authKey", Persistance.getInstance().getUserInfo(getActivity()).authKey);
 
         //set urlParams
-        double longitude = 0;
-        double latitude = 0;
-        GPSTracker gps = new GPSTracker(getActivity().getApplicationContext(), getActivity());
-        if (gps.canGetLocation()) {
-            latitude = gps.getLatitude();
-            longitude = gps.getLongitude();
-
-            gps.stopUsingGPS();
-        }
-
         urlParams.put("userId", Persistance.getInstance().getUserInfo(getActivity()).id);
         urlParams.put("pageNumber", pageNumber);
         urlParams.put("userLatitude", String.valueOf(latitude));
@@ -150,6 +142,7 @@ public class ActivitiesActivity extends Fragment {
 
         //get Around Me Event
         HTTPResponseController.getInstance().getMyEvent(params, headers, getActivity(), urlParams);
+
     }
 
     @Override
@@ -163,8 +156,17 @@ public class ActivitiesActivity extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mContext = inflater.getContext();
+
         v = inflater.inflate(R.layout.activities_acitivity, container, false);
         v1 = (ProgressBar) v.findViewById(R.id.activityProgressBar);
+
+        GPSTracker gps = new GPSTracker(getActivity().getApplicationContext(), getActivity());
+        if (gps.canGetLocation()) {
+            latitude = gps.getLatitude();
+            longitude = gps.getLongitude();
+
+            gps.stopUsingGPS();
+        }
 /*
         if(locationChecker == null) locationChecker = LocationChecker.getInstance();
         locationChecker.setContext(mContext);
@@ -227,7 +229,7 @@ public class ActivitiesActivity extends Fragment {
 
 
             }*/
-            getAroundMeEvents("0");
+            getAroundMeEvents("0",latitude,longitude);
             getMyEvents("0");
             myAdapter = new MyAdapter(myEventList, getActivity().getApplicationContext(), getActivity(), getResources(), currentFragment);
 
@@ -256,6 +258,7 @@ public class ActivitiesActivity extends Fragment {
         heartImageAroundMe = (ImageView) v.findViewById(R.id.heartImageAroundMe);
         progressBarAroundMe = (ProgressBar) v.findViewById(R.id.progressBarAroundMe);
         progressBarAroundMe.setIndeterminate(true);
+
         progressBarAroundMe.setAlpha(0f);
         noActivitiesTextFieldAroundMe = (TextView) v.findViewById(R.id.noActivitiesTextFieldAroundMe);
         pressPlusButtonTextFieldAroundMe = (TextView) v.findViewById(R.id.pressPlusButtonTextFieldAroundMe);
@@ -278,6 +281,7 @@ public class ActivitiesActivity extends Fragment {
 
             frlistView.setAdapter(fradapter);
         }
+
         if (aroundMeEventList.size() == 0) {
             heartImageAroundMe.setVisibility(View.VISIBLE);
             noActivitiesTextFieldAroundMe.setVisibility(View.VISIBLE);
@@ -287,6 +291,7 @@ public class ActivitiesActivity extends Fragment {
             noActivitiesTextFieldAroundMe.setVisibility(View.INVISIBLE);
             pressPlusButtonTextFieldAroundMe.setVisibility(View.INVISIBLE);
         }
+
         if (frlistView != null) {
             frlistView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
@@ -296,21 +301,28 @@ public class ActivitiesActivity extends Fragment {
                             if (frlistView.getLastVisiblePosition() == frlistView.getAdapter().getCount() - 1 &&
                                     frlistView.getChildAt(frlistView.getChildCount() - 1).getBottom() <= frlistView.getHeight()) {
 
-                                // mSwipeRefreshLayout1.setRefreshing(true);
+                                    // mSwipeRefreshLayout1.setRefreshing(true);
                                 progressBarAroundMe.setAlpha(1f);
 
-                                //(new Handler()).postDelayed(new Runnable() {
+
+//                                Log.v("numar de elemete",String.valueOf(frlistView.getAdapter().getCount()));
+                                    //(new Handler()).postDelayed(new Runnable() {
                                 ////@Override
                                 // public void run() {
-                                getAroundMeEvents(String.valueOf(NumberOfRefreshAroundMe));
+                                getAroundMeEvents(String.valueOf(NumberOfRefreshAroundMe),latitude,longitude);
+
                                 // }
                                 // }, 1000);
+                                    //
+                                }
 
-                            }
-                        }
+                      }
+
                     }
+                    frlistView.smoothScrollToPosition(frlistView.getLastVisiblePosition()+1);
                     return false;
                 }
+
             });
         }
 
@@ -318,15 +330,19 @@ public class ActivitiesActivity extends Fragment {
             mSwipeRefreshLayout2.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
-                    getAroundMeEvents("0");
+                    getAroundMeEvents("0",latitude,longitude);
                     getFirstPageAroundMe = true;
                     mSwipeRefreshLayout2.setRefreshing(false);
                     NumberOfRefreshAroundMe = 0;
+
                 }
             });
             addedSwipeAroundMe = true;
         }
+
+
         progressBarAroundMe.setAlpha(0f);
+
         isFirstTimeAroundMe = true;
 
     }
@@ -387,7 +403,6 @@ public class ActivitiesActivity extends Fragment {
                                 progressBarMyEvents.setAlpha(1f);
                                 getMyEvents(String.valueOf(NumberOfRefreshMyEvents));
 
-
                             }
                         }
                     }
@@ -408,6 +423,7 @@ public class ActivitiesActivity extends Fragment {
             });
             addedSwipeMyActivity = true;
         }
+
         isFirstTimeMyEvents = true;
     }
 

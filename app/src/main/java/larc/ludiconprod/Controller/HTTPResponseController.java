@@ -343,11 +343,14 @@ public class HTTPResponseController {
                     ActivitiesActivity.currentFragment.updateListOfEventsAroundMe(false);
                     if (jsonObject.getJSONArray("aroundMe").length() >= 1) {
                         ActivitiesActivity.NumberOfRefreshAroundMe++;
+
                     }
                     getFirstPageAroundMe = false;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                //                        fradapter.notifyDataSetChanged();
+//                        frlistView.scrollBy(0,200);
                 ActivitiesActivity.v1.setAlpha(0);
             }
         };
