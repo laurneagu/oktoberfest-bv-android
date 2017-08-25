@@ -40,6 +40,16 @@ public class LeaderboardActivity extends Fragment implements RadioGroup.OnChecke
     View dRight;
     LeaderboardPagerAdapter adapter;
     ViewPager pager;
+    String selectedSportCode;
+    boolean friends;
+
+    public String getSelectedSportCode() {
+        return selectedSportCode;
+    }
+
+    public boolean isFriends() {
+        return friends;
+    }
 
     @Nullable
     @Override
@@ -50,7 +60,7 @@ public class LeaderboardActivity extends Fragment implements RadioGroup.OnChecke
         try {
             super.onCreate(savedInstanceState);
 
-            this.adapter = new LeaderboardPagerAdapter(this.getFragmentManager(), LeaderboardActivity.TITLES, this.tabsNumber);
+            this.adapter = new LeaderboardPagerAdapter(this.getFragmentManager(), this, LeaderboardActivity.TITLES, this.tabsNumber);
 
             pager = (ViewPager) v.findViewById(R.id.couponsPager);
             pager.setAdapter(adapter);
@@ -138,12 +148,15 @@ public class LeaderboardActivity extends Fragment implements RadioGroup.OnChecke
             v.findViewById(R.id.clearFilters).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    selectedSportCode = null;
                     deselectAll(sports);
                 }
             });
             v.findViewById(R.id.filterApply).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    LeaderboardActivity.this.friends = friends.isChecked();
+                    adapter.reload();
                     mDrawer.closeDrawer(dRight);
                 }
             });
@@ -176,10 +189,14 @@ public class LeaderboardActivity extends Fragment implements RadioGroup.OnChecke
         String code = this.codes.get(view.getId());
         Integer compoundDrawable = this.compoundDrawables.get(view.getId());
         if(rb.isSelected()) {
+            if (code.equals(this.selectedSportCode)) {
+                this.selectedSportCode = null;
+            }
             rb.setSelected(false);
             rb.setAlpha(0.4f);
             rb.setCompoundDrawablesWithIntrinsicBounds(compoundDrawable,0,0,0);
         } else {
+            this.selectedSportCode = code;
             rb.setAlpha(1f);
             rb.setSelected(true);
             rb.setCompoundDrawablesWithIntrinsicBounds(compoundDrawable,0,R.drawable.ic_check,0);

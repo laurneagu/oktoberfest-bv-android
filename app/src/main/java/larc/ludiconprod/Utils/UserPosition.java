@@ -7,4 +7,10 @@ import java.io.Serializable;
  */
 
 public class UserPosition implements Serializable {
+    public String userId;
+    public String name;
+    public int points;
+    public int level;
+    public String profileImage;
+    public int rank;
 }
