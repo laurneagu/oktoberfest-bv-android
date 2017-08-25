@@ -16,7 +16,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -160,6 +165,11 @@ public class LeaderboardActivity extends Fragment implements RadioGroup.OnChecke
                     mDrawer.closeDrawer(dRight);
                 }
             });
+
+            TextView daysLeft = (TextView) v.findViewById(R.id.daysLeft);
+            Calendar day = Calendar.getInstance();
+            int left =  day.getActualMaximum(Calendar.DAY_OF_MONTH) - day.get(Calendar.DAY_OF_MONTH);
+            daysLeft.setText(left + " days left");
         } catch (Exception e) {
             e.printStackTrace();
         }

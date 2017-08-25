@@ -1,12 +1,9 @@
 package larc.ludiconprod.Activities;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
@@ -15,7 +12,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.Response;
@@ -25,7 +21,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -34,8 +29,6 @@ import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
 import larc.ludiconprod.User;
-import larc.ludiconprod.Utils.MyProfileUtils.EditViewPagerAdapter;
-import larc.ludiconprod.Utils.ui.SlidingTabLayout;
 import larc.ludiconprod.Utils.util.Sport;
 
 public class UserProfileActivity extends AppCompatActivity implements Response.Listener<JSONObject> {
@@ -64,6 +57,9 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
                     finish();
                 }
             });
+
+            Button addFriend = (Button) super.findViewById(R.id.profileFriend);
+            Button chat = (Button) super.findViewById(R.id.profileChat);
         } catch (Exception e) {
             e.printStackTrace();
         }

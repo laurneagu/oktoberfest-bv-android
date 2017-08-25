@@ -320,7 +320,7 @@ public class ActivitiesActivity extends Fragment {
                       }
 
                     }
-                    frlistView.smoothScrollToPosition(frlistView.getLastVisiblePosition()+1);
+
                     return false;
                 }
 
@@ -342,7 +342,7 @@ public class ActivitiesActivity extends Fragment {
         }
 
 
-//        progressBarAroundMe.setAlpha(0f);
+        progressBarAroundMe.setAlpha(0f);
 
         isFirstTimeAroundMe = true;
 

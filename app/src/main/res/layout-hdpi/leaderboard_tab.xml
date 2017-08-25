@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#f7f9fc">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="12dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/shadow_bottom_to_top"/>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_below="@+id/leaderTop">
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/leaderSwapRefresh"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+            <ListView
+                android:id="@+id/leaderList"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="8.0dp"
+                android:scrollbars="none"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"/>
+
+        </android.support.v4.widget.SwipeRefreshLayout>
+        <LinearLayout
+            android:id="@+id/youRank"
+            android:visibility="invisible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <include layout="@layout/leaderboard_card"/>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/heartImageCoupons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/noCoupons"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:visibility="invisible"
+        android:background="@drawable/es_prize" />
+
+    <TextView
+        android:id="@+id/noCoupons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:textSize="16sp"
+        android:textColor="#d4498b"
+        android:visibility="invisible"
+        android:fontFamily="@string/fontmedium"
+        android:text="No coupons, yet!" />
+
+    <TextView
+        android:id="@+id/noCouponsText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/noCoupons"
+        android:layout_marginTop="10dp"
+        android:textSize="16sp"
+        android:fontFamily="@string/fontmedium"
+        android:textColor="#660c3855"
+        android:visibility="invisible"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:text="Come back later. Join activities&#10;and gain Ludicoins!" />
+
+    <Button
+        android:id="@+id/noCouponsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/noCouponsText"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@string/fontmedium"
+        android:visibility="invisible"
+        android:layout_centerHorizontal="true"
+        android:textAllCaps="true"
+        android:textSize="14sp"
+        android:textColor="#ffffff"
+        android:paddingLeft="32dp"
+        android:paddingRight="32dp"
+        android:background="@drawable/pink_button_selector"
+        android:text="Discover activities"/>
+
+    <ProgressBar
+        android:id="@+id/progressCoupons"
+        style="@android:style/Widget.Holo.ProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="0"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="5dp" />
+</RelativeLayout>

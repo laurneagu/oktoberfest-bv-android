@@ -75,9 +75,11 @@ public class LeaderboardTab extends Fragment implements Response.Listener<JSONOb
         urlParams += "userId=" + Persistance.getInstance().getUserInfo(getActivity()).id;
         urlParams += "&pageNumber=" + page;
 
-        if (this.activity.getSelectedSportCode() != null) {
-            urlParams += "&sportName=" + this.activity.getSelectedSportCode();
+        String sportCode = this.activity.getSelectedSportCode();
+        if (sportCode == null) {
+            sportCode = "GEN";
         }
+        urlParams += "&sportName=" + sportCode;
         urlParams += "&timeframe=" + this.timeFrame;
         urlParams += "&area=" + (this.activity.isFriends() ? "0" : "1");
 
@@ -130,7 +132,6 @@ public class LeaderboardTab extends Fragment implements Response.Listener<JSONOb
             mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
-                    users.clear();
                     getLeaderboards("0");
                     mSwipeRefreshLayout.setRefreshing(false);
                     pageNumber = 0;
@@ -169,6 +170,12 @@ public class LeaderboardTab extends Fragment implements Response.Listener<JSONOb
         int last = listView.getLastVisiblePosition();
         LeaderboardAdapter la = (LeaderboardAdapter) listView.getAdapter();
         int count = la.getCount();
+        View you = v.findViewById(R.id.youRank);
+        if (count == 0) {
+            you.setVisibility(View.INVISIBLE);
+            return;
+        }
+
         String id = this.userId;
         int th = count;
 
@@ -181,8 +188,6 @@ public class LeaderboardTab extends Fragment implements Response.Listener<JSONOb
         }
 
         Log.d("You", first + " < " + th + " > " + last);
-
-        View you = v.findViewById(R.id.youRank);
 
         if (th < first) {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) you.getLayoutParams();
@@ -205,6 +210,10 @@ public class LeaderboardTab extends Fragment implements Response.Listener<JSONOb
     public void onResponse(JSONObject response) {
         Log.d("Leaderboard", "" + response);
         try {
+            if (pageNumber == 0) {
+                this.users.clear();
+            }
+
             JSONArray users = response.getJSONArray("users");
 
             UserPosition user;
@@ -234,6 +243,7 @@ public class LeaderboardTab extends Fragment implements Response.Listener<JSONOb
                 this.updateYourCard(v.findViewById(R.id.youRank), user);
             } catch (JSONException e) {
             }
+
 
             this.updateUserList();
         } catch (JSONException e) {
