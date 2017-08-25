@@ -20,8 +20,25 @@
         android:layout_marginBottom="15dp"
         >
 
-        <com.facebook.login.widget.LoginButton
-            xmlns:facebook="http://schemas.android.com/apk/res-auto"
+        <!--<com.facebook.login.widget.LoginButton-->
+        <!--xmlns:facebook="http://schemas.android.com/apk/res-auto"-->
+        <!--android:id="@+id/facebookButton"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:paddingLeft="16dp"-->
+        <!--android:paddingRight="16dp"-->
+        <!--android:paddingBottom="15dp"-->
+        <!--android:paddingTop="15dp"-->
+        <!--android:textSize="14sp"-->
+        <!--facebook:com_facebook_login_text="CONNECT WITH FACEBOOK"-->
+        <!--android:textColor="#ffffff"-->
+        <!--android:visibility="invisible"-->
+        <!--android:background="@drawable/rounded_facebook_button"-->
+        <!--android:drawableLeft="@drawable/ic_facebook"-->
+        <!--android:alpha="0.3">-->
+
+        <!--</com.facebook.login.widget.LoginButton>-->
+        <Button
             android:id="@+id/facebookButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -30,14 +47,12 @@
             android:paddingBottom="15dp"
             android:paddingTop="15dp"
             android:textSize="14sp"
-            facebook:com_facebook_login_text="CONNECT WITH FACEBOOK"
             android:textColor="#ffffff"
             android:visibility="invisible"
+            android:text="CONNECT WITH FACEBOOK"
             android:background="@drawable/rounded_facebook_button"
             android:drawableLeft="@drawable/ic_facebook"
-            android:alpha="0.3">
-
-        </com.facebook.login.widget.LoginButton>
+            android:alpha="0.3"/>
 
         <RelativeLayout
             android:layout_width="match_parent"

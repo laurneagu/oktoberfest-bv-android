@@ -259,7 +259,8 @@ public class ActivitiesActivity extends Fragment {
         progressBarAroundMe = (ProgressBar) v.findViewById(R.id.progressBarAroundMe);
         progressBarAroundMe.setIndeterminate(true);
 
-        progressBarAroundMe.setAlpha(0f);
+       progressBarAroundMe.setAlpha(0f);
+
         noActivitiesTextFieldAroundMe = (TextView) v.findViewById(R.id.noActivitiesTextFieldAroundMe);
         pressPlusButtonTextFieldAroundMe = (TextView) v.findViewById(R.id.pressPlusButtonTextFieldAroundMe);
         final FloatingActionButton createNewActivityFloatingButtonAroundMe = (FloatingActionButton) v.findViewById(R.id.floatingButton2);
@@ -341,7 +342,7 @@ public class ActivitiesActivity extends Fragment {
         }
 
 
-        progressBarAroundMe.setAlpha(0f);
+//        progressBarAroundMe.setAlpha(0f);
 
         isFirstTimeAroundMe = true;
 
