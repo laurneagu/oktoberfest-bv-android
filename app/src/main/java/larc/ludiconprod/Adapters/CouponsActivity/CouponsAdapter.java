@@ -126,6 +126,8 @@ public class CouponsAdapter extends BaseAdapter implements ListAdapter {
             if (!currentCoupon.companyPicture.equals("")) {
                 Bitmap bitmap = MyAdapter.decodeBase64(currentCoupon.companyPicture);
                 holder.locationImage.setImageBitmap(bitmap);
+            } else {
+                holder.locationImage.setImageResource(R.drawable.ph_company);
             }
 
             holder.location.setText(currentCoupon.companyName);

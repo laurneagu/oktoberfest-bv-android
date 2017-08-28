@@ -2,41 +2,38 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
     <include
         android:id="@+id/tool_bar"
         layout="@layout/header_login"
         android:layout_height="56dp"
-        android:layout_width="match_parent"/>
-
+        android:layout_width="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="12dp"
         android:background="@drawable/shadow_top_to_bottom"
         android:layout_below="@+id/tool_bar"/>
-
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    <ScrollView
         android:id="@+id/profileContent"
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/tool_bar"
         android:scrollbars="none"
         android:fillViewport="true"
-        android:layout_below="@+id/tool_bar"
-        android:alpha="1">
-
+        android:alpha="1"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingLeft="16dp"
             android:paddingRight="16dp">
-
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp">
-
                 <de.hdodenhof.circleimageview.CircleImageView
                     xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/profileImage"
@@ -45,9 +42,7 @@
                     android:layout_centerHorizontal="true"
                     android:clickable="false"
                     android:src="@drawable/com_facebook_profile_picture_blank_portrait" />
-
             </RelativeLayout>
-
             <TextView
                 android:id="@+id/profileName"
                 android:layout_height="wrap_content"
@@ -58,7 +53,6 @@
                 android:textSize="18sp"
                 android:textColor="@color/pink"
                 android:text="Florin Bogdan"/>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -90,7 +84,6 @@
                     android:textColor="#ffffff"
                     android:textSize="14sp" />
             </LinearLayout>
-
             <LinearLayout
                 android:layout_height="60dp"
                 android:layout_width="match_parent"
@@ -234,10 +227,173 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal">
+                </LinearLayout>
+            </HorizontalScrollView>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/blueAlpha"
+                android:layout_marginTop="16dp">
+            </LinearLayout>
+            <RelativeLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginTop="24dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="BADGES"
+                    android:fontFamily="@string/fontbold"
+                    android:textSize="14sp"
+                    android:gravity="left"/>
+                <TextView
+                    android:id="@+id/profileBadgesCountLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="2/12"
+                    android:fontFamily="@string/fontmedium"
+                    android:textSize="14sp"
+                    android:gravity="right"/>
+            </RelativeLayout>
+            <HorizontalScrollView
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:scrollbars="none"
+                android:fillViewport="true">
+                <LinearLayout
+                    android:id="@+id/profileBadges"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
 
                 </LinearLayout>
             </HorizontalScrollView>
-
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/blueAlpha"
+                android:layout_marginTop="16dp">
+            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="VERSUS"
+                android:fontFamily="@string/fontbold"
+                android:textSize="14sp"
+                android:gravity="left"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/white"
+                android:layout_marginBottom="16dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="16dp">
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_alignParentLeft="true">
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/profileYouImage"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@drawable/ph_user"/>
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center">
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="You"
+                                android:textColor="@color/green"/>
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center">>
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:src="@drawable/ic_points_small"/>
+                                <TextView
+                                    android:id="@+id/profileYouPoints"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/blue"
+                                    android:text="12.500"/>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:text="VS"
+                        android:gravity="center"/>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_alignParentRight="true">
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center">
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Foe"
+                                android:textAlignment="viewEnd"
+                                android:textColor="@color/pink"/>
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center">
+                                <TextView
+                                    android:id="@+id/profileFoePoints"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="12.500"
+                                    android:textColor="@color/blue"/>
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:src="@drawable/ic_points_small"/>
+                            </LinearLayout>
+                        </LinearLayout>
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/profileFoeImage"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@drawable/ph_user"/>
+                    </LinearLayout>
+                </RelativeLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/blueAlpha"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginLeft="16dp"/>
+                <LinearLayout
+                    android:id="@+id/profileVresus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:orientation="vertical">
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
     <ProgressBar
@@ -249,5 +405,4 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="56dp"
         android:indeterminate="true"/>
-
 </RelativeLayout>

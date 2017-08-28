@@ -6,12 +6,16 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.Response;
@@ -34,6 +38,8 @@ import larc.ludiconprod.Utils.util.Sport;
 public class UserProfileActivity extends AppCompatActivity implements Response.Listener<JSONObject> {
 
     private User user = new User();
+    private HashMap<String, Integer> youPoints = new HashMap<>();
+    private HashMap<String, Integer> foePoints = new HashMap<>();
 
     @Nullable
     @Override
@@ -48,7 +54,7 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
 
             ImageButton backButton=(ImageButton) findViewById(R.id.backButton);
             backButton.setBackgroundResource(R.drawable.ic_nav_up);
-            TextView titleText=(TextView) findViewById(R.id.titleText);
+            TextView titleText = (TextView) findViewById(R.id.titleText);
             titleText.setText("Player profile");
 
             backButton.setOnClickListener(new View.OnClickListener() {
@@ -106,7 +112,6 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
             u.range = jsonObject.getString("range");
             u.profileImage = jsonObject.getString("profileImage");
 
-
             JSONArray sports = jsonObject.getJSONArray("sports");
             u.sports.clear();
             for (int i = 0; i < sports.length(); ++i) {
@@ -118,6 +123,14 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
                 jsonObject.getBoolean("isFriend");
             } catch (JSONException e) {
                 friend = false;
+            }
+
+            JSONObject headtohead = jsonObject.getJSONObject("headtohead");
+            JSONArray names = headtohead.names();
+            for (int i = 0; i < names.length(); ++i) {
+                String spn = names.getString(i);
+                this.youPoints.put(spn, Integer.parseInt(headtohead.getJSONObject(spn).getString("user")));
+                this.foePoints.put(spn, Integer.parseInt(headtohead.getJSONObject(spn).getString("versus")));
             }
 
             this.printInfo(friend);
@@ -158,7 +171,6 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
 
             LinearLayout sportsLayout = (LinearLayout) findViewById(R.id.profileSports);
             ImageView sportImage;
-            Class t = R.drawable.class;
             ArrayList<String> allSportCodes = new ArrayList<>(Sport.getSportMap().keySet());
             Collections.sort(allSportCodes, new Comparator<String>() {
                 @Override
@@ -211,6 +223,61 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
 
                 sportsLayout.addView(sportImage, lp);
             }
+
+            ImageView youImg = (ImageView) findViewById(R.id.profileYouImage);
+            ImageView versusImg = (ImageView) findViewById(R.id.profileFoeImage);
+
+            User you = Persistance.getInstance().getUserInfo(this);
+            if (you.profileImage != null && !you.profileImage.isEmpty()) {
+                Bitmap im = IntroActivity.decodeBase64(you.profileImage);
+                youImg.setImageBitmap(im);
+            }
+            if (u.profileImage != null && !u.profileImage.isEmpty()) {
+                Bitmap im = IntroActivity.decodeBase64(u.profileImage);
+                versusImg.setImageBitmap(im);
+            }
+
+            TextView youPoints = (TextView) findViewById(R.id.profileYouPoints);
+            TextView foePoints = (TextView) findViewById(R.id.profileFoePoints);
+            foePoints.setText("" + u.points);
+
+            int youPointsSum = 0;
+            LinearLayout versusLayout = (LinearLayout) findViewById(R.id.profileVresus);
+            versusLayout.removeAllViews();
+            for (int i = 0; i < allSportCodes.size(); ++i) {
+                String sc = allSportCodes.get(i);
+
+                int yp = this.youPoints.get(sc);
+                youPointsSum += yp;
+                int fp = this.foePoints.get(sc);
+                int tot = yp + fp;
+
+                LayoutInflater.from(this).inflate(R.layout.versus_card, versusLayout);
+                View c = versusLayout.getChildAt(i);
+
+                sportImage = (ImageView) c.findViewById(R.id.image);
+                TextView t = (TextView) c.findViewById(R.id.youText);
+
+                t.setText("" + yp);
+                t = (TextView) c.findViewById(R.id.foeText);
+                t.setText("" + fp);
+
+                if (tot > 0) {
+                    ProgressBar p = (ProgressBar) c.findViewById(R.id.you);
+                    p.setProgress(yp * 100 / tot);
+                    p = (ProgressBar) c.findViewById(R.id.foe);
+                    p.setProgress(fp * 100 / tot);
+                } else {
+                    ProgressBar p = (ProgressBar) c.findViewById(R.id.you);
+                    p.setProgress(0);
+                    p = (ProgressBar) c.findViewById(R.id.foe);
+                    p.setProgress(0);
+                }
+
+                sportImage.setImageResource(MyProfileActivity.findSportImageResource(sc));
+            }
+
+            youPoints.setText("" + youPointsSum);
 
             View tv = findViewById(R.id.profileContent);
             tv.setAlpha(1);

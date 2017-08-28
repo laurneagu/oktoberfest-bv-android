@@ -17,8 +17,11 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="pink">#d4498b</color>
+    <color name="pinkAlpha">#40d4498b</color>
     <color name="pinkPressed">#d85c97</color>
     <color name="blue">#1573ba</color>
+    <color name="blueAlpha">#401573ba</color>
     <color name="darkblue">#0c3855</color>
     <color name="green">#02b9ad</color>
+    <color name="greenAlpha">#4002b9ad</color>
 </resources>
