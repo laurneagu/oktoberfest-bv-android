@@ -18,6 +18,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
@@ -28,6 +29,7 @@ import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import larc.ludiconprod.Activities.ActivitiesActivity;
+import larc.ludiconprod.Activities.ActivityDetailsActivity;
 import larc.ludiconprod.Activities.UserProfileActivity;
 import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
@@ -195,6 +197,12 @@ public class AroundMeAdapter extends BaseAdapter implements ListAdapter {
             // Redirect to user profile on picture tap
             holder.profileImage.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
+                    String id = currentEvent.creatorId;
+                    if (Persistance.getInstance().getUserInfo(activity).id.equals(id)) {
+                        Toast.makeText(activity, "It's you :)", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
                     Intent intent = new Intent(activity, UserProfileActivity.class);
                     intent.putExtra("UserId", currentEvent.creatorId);
                     activity.startActivity(intent);

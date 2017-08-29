@@ -10,6 +10,8 @@ import java.util.TreeMap;
 
 public class Sport {
     private static final TreeMap<String, String> SPORT_MAP = new TreeMap<>();
+    public static final String GENERAL = "GEN";
+
     static {
         SPORT_MAP.put("BAS", "basketball");
         SPORT_MAP.put("CYC", "cycling");

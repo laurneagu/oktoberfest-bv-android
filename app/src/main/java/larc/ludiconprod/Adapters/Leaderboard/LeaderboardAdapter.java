@@ -2,6 +2,7 @@ package larc.ludiconprod.Adapters.Leaderboard;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
@@ -12,13 +13,17 @@ import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import larc.ludiconprod.Activities.ActivityDetailsActivity;
 import larc.ludiconprod.Activities.CouponsActivity;
 import larc.ludiconprod.Activities.LeaderboardActivity;
+import larc.ludiconprod.Activities.UserProfileActivity;
 import larc.ludiconprod.Adapters.CouponsActivity.CouponsAdapter;
 import larc.ludiconprod.Adapters.MainActivity.MyAdapter;
+import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
 import larc.ludiconprod.Utils.Coupon;
 import larc.ludiconprod.Utils.UserPosition;
@@ -90,6 +95,21 @@ public class LeaderboardAdapter extends BaseAdapter implements ListAdapter {
         holder.level.setText("" + currentPosition.level);
         holder.name.setText(currentPosition.name);
         holder.points.setText("" + currentPosition.points);
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String id = currentPosition.userId;
+                Activity ac = fragment.getActivity();
+                if (Persistance.getInstance().getUserInfo(ac).id.equals(id)) {
+                    Toast.makeText(ac, "It's you :)", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Intent intent = new Intent(fragment.getActivity(), UserProfileActivity.class);
+                intent.putExtra("UserId", currentPosition.userId);
+                fragment.getActivity().startActivity(intent);
+            }
+        });
 
         return view;
     }

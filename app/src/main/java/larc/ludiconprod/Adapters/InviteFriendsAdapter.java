@@ -311,11 +311,18 @@ public class InviteFriendsAdapter extends BaseAdapter implements ListAdapter {
                         }
 
             if (!currentFriend.offlineFriend && position != 0) {
-                holder.friendProfileImage.setOnClickListener(new View.OnClickListener() {
+                view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(activity, UserProfileActivity.class);
-                        intent.putExtra("UserId", currentFriend.userID);
+                        String id = currentFriend.userID;
+                        Activity ac = activity;
+                        if (Persistance.getInstance().getUserInfo(ac).id.equals(id)) {
+                            Toast.makeText(ac, "It's you :)", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        Intent intent = new Intent(ac, UserProfileActivity.class);
+                        intent.putExtra("UserId", id);
                         activity.startActivity(intent);
                     }
                 });

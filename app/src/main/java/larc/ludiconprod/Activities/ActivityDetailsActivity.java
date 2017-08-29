@@ -30,6 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Set;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import larc.ludiconprod.Adapters.MainActivity.AroundMeAdapter;
@@ -37,6 +38,7 @@ import larc.ludiconprod.Adapters.MainActivity.MyAdapter;
 import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
+import larc.ludiconprod.User;
 import larc.ludiconprod.Utils.EventDetails;
 import larc.ludiconprod.Utils.Friend;
 import larc.ludiconprod.Utils.General;
@@ -364,6 +366,15 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
             allParticipants.setVisibility(View.VISIBLE);
         }
 
+        HashMap<View, Friend> data = new HashMap<>();
+        try {
+            data.put(participant0, eventDetails.listOfParticipants.get(0));
+            data.put(participant1, eventDetails.listOfParticipants.get(1));
+            data.put(participant2, eventDetails.listOfParticipants.get(2));
+            data.put(participant3, eventDetails.listOfParticipants.get(3));
+        } catch (IndexOutOfBoundsException e) {
+        }
+        this.addParticipantsImaeListeners(data);
         allParticipants.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -589,9 +600,16 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
             authorizedLevel = Integer.valueOf(eventDetails.authorizeLevel);
         }
 
-        this.creatorImageProfile.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.creatorLayout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String id = eventDetails.creatorId;
+                Activity ac = ActivityDetailsActivity.this;
+                if (Persistance.getInstance().getUserInfo(ac).id.equals(id)) {
+                    Toast.makeText(ac, "It's you :)", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 Intent intent = new Intent(ActivityDetailsActivity.this, UserProfileActivity.class);
                 intent.putExtra("UserId", eventDetails.creatorId);
                 startActivity(intent);
@@ -606,8 +624,27 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
         if (MyAdapter.progressBarCard != null) {
             MyAdapter.progressBarCard.setAlpha(0);
         }
+    }
 
+    private void addParticipantsImaeListeners(final HashMap<View, Friend> data) {
+        Set<View> set = data.keySet();
+        for (final View v : set) {
+            v.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String id = data.get(v).userID;
+                    Activity ac = ActivityDetailsActivity.this;
+                    if (Persistance.getInstance().getUserInfo(ac).id.equals(id)) {
+                        Toast.makeText(ac, "It's you :)", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
+                    Intent intent = new Intent(ActivityDetailsActivity.this, UserProfileActivity.class);
+                    intent.putExtra("UserId", id);
+                    startActivity(intent);
+                }
+            });
+        }
     }
 
     @Override

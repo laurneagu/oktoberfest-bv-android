@@ -38,8 +38,8 @@ import larc.ludiconprod.Utils.util.Sport;
 public class UserProfileActivity extends AppCompatActivity implements Response.Listener<JSONObject> {
 
     private User user = new User();
-    private HashMap<String, Integer> youPoints = new HashMap<>();
-    private HashMap<String, Integer> foePoints = new HashMap<>();
+    private final HashMap<String, Integer> youPoints = new HashMap<>();
+    private final HashMap<String, Integer> foePoints = new HashMap<>();
 
     @Nullable
     @Override
@@ -125,12 +125,17 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
                 friend = false;
             }
 
-            JSONObject headtohead = jsonObject.getJSONObject("headtohead");
-            JSONArray names = headtohead.names();
-            for (int i = 0; i < names.length(); ++i) {
-                String spn = names.getString(i);
-                this.youPoints.put(spn, Integer.parseInt(headtohead.getJSONObject(spn).getString("user")));
-                this.foePoints.put(spn, Integer.parseInt(headtohead.getJSONObject(spn).getString("versus")));
+            this.youPoints.clear();
+            this.foePoints.clear();
+            try {
+                JSONObject headtohead = jsonObject.getJSONObject("headtohead");
+                JSONArray names = headtohead.names();
+                for (int i = 0; i < names.length(); ++i) {
+                    String spn = names.getString(i);
+                    this.youPoints.put(spn, Integer.parseInt(headtohead.getJSONObject(spn).getString("user")));
+                    this.foePoints.put(spn, Integer.parseInt(headtohead.getJSONObject(spn).getString("versus")));
+                }
+            } catch (JSONException e) {
             }
 
             this.printInfo(friend);
@@ -142,8 +147,7 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
     public void printInfo(boolean friend) {
         try {
             User u = this.user;
-            /*TextView toNextLevel = (TextView) findViewById(R.id.profileToNextLevel);
-            toNextLevel.setText("" + u.pointsToNextLevel);*/
+
             TextView sportsCount = (TextView) findViewById(R.id.profilePracticeSportsCountLabel);
             ImageView image = (ImageView) findViewById(R.id.profileImage);
             if (u.profileImage != null && !u.profileImage.isEmpty()) {
@@ -160,9 +164,6 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
             level.setText("" + u.level);
             points.setText("" + u.points);
             position.setText("" + u.position);
-
-            /*ProgressBar levelBar = (ProgressBar) findViewById(R.id.profileLevelBar);
-            levelBar.setProgress(u.points * levelBar.getMax() / u.pointsOfNextLevel );*/
 
             final ArrayList<String> sportCodes = new ArrayList<>();
             for (Sport s : u.sports) {
@@ -239,16 +240,21 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
 
             TextView youPoints = (TextView) findViewById(R.id.profileYouPoints);
             TextView foePoints = (TextView) findViewById(R.id.profileFoePoints);
-            foePoints.setText("" + u.points);
+            youPoints.setText("" + this.youPoints.get(Sport.GENERAL));
+            foePoints.setText("" + this.foePoints.get(Sport.GENERAL));
+            this.youPoints.remove(Sport.GENERAL);
+            this.foePoints.remove(Sport.GENERAL);
 
-            int youPointsSum = 0;
             LinearLayout versusLayout = (LinearLayout) findViewById(R.id.profileVresus);
             versusLayout.removeAllViews();
-            for (int i = 0; i < allSportCodes.size(); ++i) {
-                String sc = allSportCodes.get(i);
+
+            sportCodes.clear();
+            sportCodes.addAll(this.youPoints.keySet());
+            for (int i = 0; i < sportCodes.size(); ++i) {
+                String sc = sportCodes.get(i);
+
 
                 int yp = this.youPoints.get(sc);
-                youPointsSum += yp;
                 int fp = this.foePoints.get(sc);
                 int tot = yp + fp;
 
@@ -277,7 +283,7 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
                 sportImage.setImageResource(MyProfileActivity.findSportImageResource(sc));
             }
 
-            youPoints.setText("" + youPointsSum);
+
 
             View tv = findViewById(R.id.profileContent);
             tv.setAlpha(1);
