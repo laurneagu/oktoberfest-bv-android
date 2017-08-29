@@ -49,7 +49,8 @@
                         android:layout_height="wrap_content"
                         android:textSize="18sp"
                         android:textColor="#d4498b"
-                        android:text="20% OFF" />
+                        android:text="20% OFF"
+                        android:fontFamily="@string/fontmedium"/>
 
                     <TextView
                         android:id="@+id/location"
@@ -70,6 +71,8 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
+                android:textSize="14sp"
+                android:fontFamily="@string/fontmedium"
                 android:text="Use this voucher to recive 1% OFF for all football activities from Monday yo Friday"/>
 
             <TextView
@@ -81,6 +84,8 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginBottom="16dp"
                 android:textColor="#400c3855"
+                android:textSize="14sp"
+                android:fontFamily="@string/fontmedium"
                 android:text="Valid till 20 July 2017"/>
 
         </LinearLayout>
@@ -96,12 +101,13 @@
             android:layout_below="@+id/dataL">
 
             <TextView
+                android:id="@+id/getItText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="GET IN NOW! only "
-                android:textSize="14sp"
                 android:fontFamily="@string/fontbold"
-                android:textColor="#ffffff"/>
+                android:text="GET IN NOW! only "
+                android:textColor="#ffffff"
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/ludicoins"

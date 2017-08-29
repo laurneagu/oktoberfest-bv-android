@@ -1,7 +1,9 @@
 package larc.ludiconprod.Activities;
 
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
@@ -108,6 +110,12 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                     startActivity(intent);
                 }
             });
+
+            AssetManager assets = getAssets();// Is this the right asset?
+            Typeface typeFace= Typeface.createFromAsset(assets, "fonts/Quicksand-Medium.ttf");
+            Typeface typeFaceBold = Typeface.createFromAsset(assets,"fonts/Quicksand-Bold.ttf");
+
+            titleText.setTypeface(typeFace);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -34,6 +34,7 @@
             android:layout_marginBottom="64dp">
 
             <TextView
+                android:id="@+id/selectLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Select what sports you would like to follow"

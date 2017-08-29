@@ -114,6 +114,7 @@
                             android:fontFamily="@string/fontmedium"
                             android:textSize="16sp"/>
                         <TextView
+                            android:id="@+id/profileLevelText"
                             android:layout_height="wrap_content"
                             android:layout_width="match_parent"
                             android:text="Level"
@@ -151,6 +152,7 @@
                             android:fontFamily="@string/fontmedium"
                             android:textSize="16sp"/>
                         <TextView
+                            android:id="@+id/profilePointsText"
                             android:layout_height="wrap_content"
                             android:layout_width="match_parent"
                             android:text="Points"
@@ -188,6 +190,7 @@
                             android:fontFamily="@string/fontmedium"
                             android:textSize="16sp"/>
                         <TextView
+                            android:id="@+id/profilePositionText"
                             android:layout_height="wrap_content"
                             android:layout_width="match_parent"
                             android:text="Position"
@@ -240,6 +243,7 @@
                 android:layout_width="match_parent"
                 android:layout_marginTop="24dp">
                 <TextView
+                    android:id="@+id/profileBadgesText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="BADGES"
@@ -276,6 +280,7 @@
                 android:layout_marginTop="16dp">
             </LinearLayout>
             <TextView
+                android:id="@+id/versusLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
@@ -312,6 +317,7 @@
                             android:orientation="vertical"
                             android:gravity="center">
                             <TextView
+                                android:id="@+id/youLabel"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="You"
@@ -334,6 +340,7 @@
                         </LinearLayout>
                     </LinearLayout>
                     <TextView
+                        android:id="@+id/vsLabel"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:text="VS"
@@ -349,6 +356,7 @@
                             android:orientation="vertical"
                             android:gravity="center">
                             <TextView
+                                android:id="@+id/foeLabel"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="Foe"

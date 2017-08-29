@@ -3,8 +3,10 @@ package larc.ludiconprod.Adapters.Leaderboard;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,6 +82,15 @@ public class LeaderboardAdapter extends BaseAdapter implements ListAdapter {
             holder.level = (TextView) view.findViewById(R.id.level);
             holder.name = (TextView) view.findViewById(R.id.name);
             holder.points = (TextView) view.findViewById(R.id.points);
+
+            AssetManager assets = inflater.getContext().getAssets();// Is this the right asset?
+            Typeface typeFace= Typeface.createFromAsset(assets, "fonts/Quicksand-Medium.ttf");
+
+            holder.position.setTypeface(typeFace);
+            holder.level.setTypeface(typeFace);
+            holder.name.setTypeface(typeFace);
+            holder.points.setTypeface(typeFace);
+
             view.setTag(holder);
         } else {
             holder = (LeaderboardAdapter.ViewHolder) view.getTag();

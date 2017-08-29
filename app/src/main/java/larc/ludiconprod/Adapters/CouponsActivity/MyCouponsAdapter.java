@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,13 +78,22 @@ public class MyCouponsAdapter extends BaseAdapter implements ListAdapter {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.my_coupon_card, null);
 
+                Typeface typeFace= Typeface.createFromAsset(activity.getAssets(), "fonts/Quicksand-Medium.ttf");
+                Typeface typeFaceBold= Typeface.createFromAsset(activity.getAssets(), "fonts/Quicksand-Bold.ttf");
+
                 holder = new CouponsAdapter.ViewHolder();
                 holder.locationImage = (ImageView) view.findViewById(R.id.locationImage);
                 holder.title = (TextView) view.findViewById(R.id.title);
+                holder.title.setTypeface(typeFace);
                 holder.location = (TextView) view.findViewById(R.id.location);
+                holder.location.setTypeface(typeFace);
                 holder.description = (TextView) view.findViewById(R.id.description);
+                holder.description.setTypeface(typeFace);
                 holder.validDate = (TextView) view.findViewById(R.id.validDate);
+                holder.validDate.setTypeface(typeFace);
                 holder.ludicoinsCode = (TextView) view.findViewById(R.id.discountCode);
+                holder.ludicoinsCode.setTypeface(typeFaceBold);
+
                 view.setTag(holder);
             } else {
                 holder = (CouponsAdapter.ViewHolder) view.getTag();

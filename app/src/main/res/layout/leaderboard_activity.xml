@@ -50,6 +50,7 @@
                     android:src="@drawable/ic_leaderboard_top"
                     android:layout_gravity="center"/>
                 <TextView
+                    android:id="@+id/topText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Be on Top 50 at the end of the month\n and earn Ludicoins"

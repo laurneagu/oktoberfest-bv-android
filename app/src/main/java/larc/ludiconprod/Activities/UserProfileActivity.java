@@ -2,6 +2,7 @@ package larc.ludiconprod.Activities;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
@@ -66,6 +67,34 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
 
             Button addFriend = (Button) super.findViewById(R.id.profileFriend);
             Button chat = (Button) super.findViewById(R.id.profileChat);
+
+            Typeface typeFace = Typeface.createFromAsset(super.getAssets(),"fonts/Quicksand-Medium.ttf");
+            Typeface typeFaceBold = Typeface.createFromAsset(super.getAssets(),"fonts/Quicksand-Bold.ttf");
+
+            titleText.setTypeface(typeFace);
+            ((TextView) findViewById(R.id.profileName)).setTypeface(typeFace);
+            ((Button) findViewById(R.id.profileChat)).setTypeface(typeFaceBold);
+            ((Button) findViewById(R.id.profileFriend)).setTypeface(typeFaceBold);
+            ((TextView) findViewById(R.id.profileLevel)).setTypeface(typeFace);
+            ((TextView) findViewById(R.id.profileLevelText)).setTypeface(typeFace);
+            ((TextView) findViewById(R.id.profilePoints)).setTypeface(typeFace);
+            ((TextView) findViewById(R.id.profilePointsText)).setTypeface(typeFace);
+            ((TextView) findViewById(R.id.profilePosition)).setTypeface(typeFace);
+            ((TextView) findViewById(R.id.profilePositionText)).setTypeface(typeFace);
+
+            ((TextView) findViewById(R.id.profilePracticeSportsLabel)).setTypeface(typeFaceBold);
+            ((TextView) findViewById(R.id.profilePracticeSportsCountLabel)).setTypeface(typeFace);
+
+            ((TextView) findViewById(R.id.profileBadgesText)).setTypeface(typeFaceBold);
+            ((TextView) findViewById(R.id.profileBadgesCountLabel)).setTypeface(typeFace);
+
+            ((TextView) findViewById(R.id.versusLabel)).setTypeface(typeFaceBold);
+            ((TextView) findViewById(R.id.youLabel)).setTypeface(typeFace);
+            ((TextView) findViewById(R.id.foeLabel)).setTypeface(typeFace);
+            ((TextView) findViewById(R.id.profileYouPoints)).setTypeface(typeFace);
+            ((TextView) findViewById(R.id.profileFoePoints)).setTypeface(typeFace);
+
+            ((TextView) findViewById(R.id.vsLabel)).setTypeface(typeFaceBold);
         } catch (Exception e) {
             e.printStackTrace();
         }

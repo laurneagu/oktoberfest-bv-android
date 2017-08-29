@@ -1,5 +1,6 @@
 package larc.ludiconprod.Utils.MyProfileUtils;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -76,8 +77,12 @@ public class EditProfileTab1 extends Fragment implements View.OnClickListener, S
 
             Set<Integer> codesKeys = this.codes.keySet();
 
+            Typeface typeFace = Typeface.createFromAsset(getActivity().getAssets(),"fonts/Quicksand-Medium.ttf");
+            Typeface typeFaceBold = Typeface.createFromAsset(getActivity().getAssets(),"fonts/Quicksand-Bold.ttf");
+
             for (Integer id : codesKeys) {
                 RadioButton rb = (RadioButton) v.findViewById(id);
+                rb.setTypeface(typeFace);
                 Integer compoundDrawable = this.compoundDrawables.get(id);
                 rb.setSelected(true);
                 rb.setAlpha(0.4f);
@@ -102,6 +107,11 @@ public class EditProfileTab1 extends Fragment implements View.OnClickListener, S
             }
 
             save.setOnClickListener(epa);
+
+            ((TextView) v.findViewById(R.id.selectLabel)).setTypeface(typeFace);
+            ((TextView) v.findViewById(R.id.textViewEditRange)).setTypeface(typeFace);
+            ((TextView) v.findViewById(R.id.editRangeTextView)).setTypeface(typeFace);
+            save.setTypeface(typeFaceBold);
         } catch (Exception e) {
             e.printStackTrace();
         }

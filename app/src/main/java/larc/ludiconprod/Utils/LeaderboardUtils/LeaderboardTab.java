@@ -1,7 +1,9 @@
 package larc.ludiconprod.Utils.LeaderboardUtils;
 
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -265,6 +267,19 @@ public class LeaderboardTab extends Fragment implements Response.Listener<JSONOb
             pageNumber = 0;
 
             getLeaderboards("0");
+
+            AssetManager assets = inflater.getContext().getAssets();
+            Typeface typeFace= Typeface.createFromAsset(assets, "fonts/Quicksand-Medium.ttf");
+
+            View card = v.findViewById(R.id.youRank);
+            TextView position = (TextView) card.findViewById(R.id.position);
+            position.setTypeface(typeFace);
+            TextView level = (TextView) card.findViewById(R.id.level);
+            level.setTypeface(typeFace);
+            TextView name = (TextView) card.findViewById(R.id.name);
+            name.setTypeface(typeFace);
+            TextView points = (TextView) card.findViewById(R.id.points);
+            points.setTypeface(typeFace);
         } catch (Exception e) {
             e.printStackTrace();
         }

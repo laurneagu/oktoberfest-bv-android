@@ -4,10 +4,12 @@ package larc.ludiconprod.Adapters.MainActivity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.util.Base64;
 import android.util.Log;
@@ -62,6 +64,7 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
         public CircleImageView profileImage;
         public TextView creatorName;
         public TextView sportName;
+        public TextView sportLabel;
         public TextView ludicoinsNumber;
         public TextView pointsNumber;
         public TextView eventDate;
@@ -138,6 +141,7 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
                 holder.profileImage = (CircleImageView) view.findViewById(R.id.profileImage);
                 holder.creatorName = (TextView) view.findViewById(R.id.creatorName);
                 holder.sportName = (TextView) view.findViewById(R.id.sportName);
+                holder.sportLabel = (TextView) view.findViewById(R.id.sportNameLabel);
                 holder.ludicoinsNumber = (TextView) view.findViewById(R.id.ludicoinsNumber);
                 holder.pointsNumber = (TextView) view.findViewById(R.id.pointsNumber);
                 holder.eventDate = (TextView) view.findViewById(R.id.eventDate);
@@ -151,6 +155,21 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
                 holder.creatorLevelMyActivity = (TextView) view.findViewById(R.id.creatorLevelMyActivity);
                 holder.progressBar = (ProgressBar) view.findViewById(R.id.cardProgressBar);
                 holder.progressBar.setAlpha(0);
+
+                AssetManager assets = inflater.getContext().getAssets();
+                Typeface typeFace = Typeface.createFromAsset(assets, "fonts/Quicksand-Medium.ttf");
+                Typeface typeFaceBold = Typeface.createFromAsset(assets, "fonts/Quicksand-Bold.ttf");
+
+                holder.creatorName.setTypeface(typeFace);
+                holder.sportName.setTypeface(typeFace);
+                holder.sportLabel.setTypeface(typeFace);
+                holder.ludicoinsNumber.setTypeface(typeFace);
+                holder.pointsNumber.setTypeface(typeFace);
+                holder.eventDate.setTypeface(typeFace);
+                holder.locationEvent.setTypeface(typeFace);
+                holder.playersNumber.setTypeface(typeFace);
+                holder.friendsNumber.setTypeface(typeFace);
+                holder.creatorLevelMyActivity.setTypeface(typeFace);
 
 
                 view.setTag(holder);
@@ -222,17 +241,25 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
             Sport sport = new Sport(currentEvent.sportCode);
 
             String weWillPlayString = "";
+            String sportName = "";
 
-            if (currentEvent.sportCode.equalsIgnoreCase("JOG") ||
-                    currentEvent.sportCode.equalsIgnoreCase("GYM") || currentEvent.sportCode.equalsIgnoreCase("CYC"))
-                weWillPlayString = "Will go to " + sport.sportName;
-            else
+            if (currentEvent.sportCode.equalsIgnoreCase("JOG") || currentEvent.sportCode.equalsIgnoreCase("GYM") || currentEvent.sportCode.equalsIgnoreCase("CYC")) {
+                weWillPlayString = "Will go to ";
+                sportName = sport.sportName;
+            } else {
                 if (currentEvent.sportCode.equalsIgnoreCase("OTH")) {
-                    weWillPlayString = "Will play " + currentEvent.otherSportName;
-                } else
-                    weWillPlayString = "Will play " + sport.sportName;
+                    weWillPlayString = "Will play ";
+                    sportName = currentEvent.otherSportName;
+                } else {
+                    weWillPlayString = "Will play ";
+                    sportName = sport.sportName;
+                }
+            }
 
-            holder.sportName.setText(weWillPlayString);
+            sportName = sportName.substring(0, 1).toUpperCase() + sportName.substring(1);
+
+            holder.sportLabel.setText(weWillPlayString);
+            holder.sportName.setText(sportName);
 
             holder.ludicoinsNumber.setText("  +" + String.valueOf(currentEvent.ludicoins));
             holder.pointsNumber.setText("  +" + String.valueOf(currentEvent.points));

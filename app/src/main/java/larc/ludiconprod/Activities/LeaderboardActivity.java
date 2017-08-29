@@ -2,7 +2,9 @@ package larc.ludiconprod.Activities;
 
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
@@ -142,9 +144,13 @@ public class LeaderboardActivity extends Fragment implements RadioGroup.OnChecke
             final RadioGroup sports = (RadioGroup) v.findViewById(R.id.sports);
             sports.setOnCheckedChangeListener(this);
 
+            AssetManager assets = inflater.getContext().getAssets();
+            Typeface typeFace = Typeface.createFromAsset(assets,"fonts/Quicksand-Medium.ttf");
+
             Set<Integer> codesKeys = this.codes.keySet();
             for (Integer id : codesKeys) {
                 RadioButton rb = (RadioButton) sports.findViewById(id);
+                rb.setTypeface(typeFace);
                 rb.setOnClickListener(this);
             }
 
@@ -170,6 +176,9 @@ public class LeaderboardActivity extends Fragment implements RadioGroup.OnChecke
             Calendar day = Calendar.getInstance();
             int left =  day.getActualMaximum(Calendar.DAY_OF_MONTH) - day.get(Calendar.DAY_OF_MONTH);
             daysLeft.setText(left + " days left");
+
+            daysLeft.setTypeface(typeFace);
+            ((TextView) v.findViewById(R.id.topText)).setTypeface(typeFace);
         } catch (Exception e) {
             e.printStackTrace();
         }

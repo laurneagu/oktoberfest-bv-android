@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.support.annotation.Nullable;
@@ -72,6 +73,25 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
                     startActivity(intent);
                 }
             });
+
+            Typeface typeFace = Typeface.createFromAsset(super.getActivity().getAssets(),"fonts/Quicksand-Medium.ttf");
+            Typeface typeFaceBold = Typeface.createFromAsset(super.getActivity().getAssets(),"fonts/Quicksand-Bold.ttf");
+
+            ((TextView) v.findViewById(R.id.profileTitle)).setTypeface(typeFace);
+            ((TextView) v.findViewById(R.id.profileLudicoins)).setTypeface(typeFace);
+            ((TextView) v.findViewById(R.id.profileToNextLevel)).setTypeface(typeFace);
+            ((TextView) v.findViewById(R.id.profileToNextLevelText)).setTypeface(typeFace);
+            ((TextView) v.findViewById(R.id.profileLevel)).setTypeface(typeFace);
+            ((TextView) v.findViewById(R.id.profileLevelText)).setTypeface(typeFace);
+            ((TextView) v.findViewById(R.id.profilePoints)).setTypeface(typeFace);
+            ((TextView) v.findViewById(R.id.profilePointsText)).setTypeface(typeFace);
+            ((TextView) v.findViewById(R.id.profilePosition)).setTypeface(typeFace);
+            ((TextView) v.findViewById(R.id.profilePositionText)).setTypeface(typeFace);
+
+            ((TextView) v.findViewById(R.id.profilePracticeSportsLabel)).setTypeface(typeFaceBold);
+            ((TextView) v.findViewById(R.id.profilePracticeSportsCountLabel)).setTypeface(typeFace);
+
+            ((Button) v.findViewById(R.id.profileLogout)).setTypeface(typeFaceBold);
         } catch (Exception e) {
             e.printStackTrace();
         }

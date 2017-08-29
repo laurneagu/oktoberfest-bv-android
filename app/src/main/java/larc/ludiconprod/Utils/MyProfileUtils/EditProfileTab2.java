@@ -52,20 +52,34 @@ public class EditProfileTab2 extends Fragment {
             final EditProfileActivity epa = (EditProfileActivity) super.getActivity();
             User u = Persistance.getInstance().getProfileInfo(super.getActivity());
 
+
+            AssetManager assets = inflater.getContext().getAssets();// Is this the right asset?
+            Typeface typeFace= Typeface.createFromAsset(assets, "fonts/Quicksand-Medium.ttf");
+            Typeface typeFaceBold = Typeface.createFromAsset(assets,"fonts/Quicksand-Bold.ttf");
+
             EditText firstName = (EditText) v.findViewById(R.id.editFirstName);
+            firstName.setTypeface(typeFace);
             EditText lastName = (EditText) v.findViewById(R.id.editLastName);
+            lastName.setTypeface(typeFace);
             male = (RadioButton) v.findViewById(R.id.editMale);
             female = (RadioButton) v.findViewById(R.id.editFemale);
             sexSwitch = (RadioGroup) v.findViewById(R.id.editSexSwitch);
             ageTextView = (EditText) v.findViewById(R.id.editDate);
+            ageTextView.setTypeface(typeFace);
             Button changePassword = (Button) v.findViewById(R.id.editPasswordButton);
+            changePassword.setTypeface(typeFaceBold);
             Button save = (Button) v.findViewById(R.id.saveChangesButton);
+            save.setTypeface(typeFaceBold);
             passwordLayout = (RelativeLayout) v.findViewById(R.id.editPasswordLayout);
             EditText oldPass = (EditText) v.findViewById(R.id.oldPassword);
+            oldPass.setTypeface(typeFace);
             EditText newPass = (EditText) v.findViewById(R.id.newPassword);
+            newPass.setTypeface(typeFace);
             EditText rePass = (EditText) v.findViewById(R.id.editPasswordRepeat);
+            rePass.setTypeface(typeFace);
             TextView email = (TextView) v.findViewById(R.id.emailLabel);
             email.setText(u.email);
+            email.setTypeface(typeFace);
             ImageView image = (ImageView) v.findViewById(R.id.editImage);
 
             if (u.profileImage != null && !u.profileImage.isEmpty()) {
@@ -82,12 +96,8 @@ public class EditProfileTab2 extends Fragment {
             save.setOnClickListener(epa);
             epa.setImage(image);
 
-            AssetManager assets = inflater.getContext().getAssets();// Is this the right asset?
-            Typeface typeFace= Typeface.createFromAsset(assets, "fonts/Quicksand-Medium.ttf");
             male.setTypeface(typeFace);
             female.setTypeface(typeFace);
-
-            Intent intent = super.getActivity().getIntent();// Is this the right intent?
 
             firstName.setText(u.firstName);
             lastName.setText(u.lastName);
