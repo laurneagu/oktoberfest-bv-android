@@ -20,12 +20,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import larc.ludiconprod.R;
-import larc.ludiconprod.UserInfo.User;
-
-*/
-/**
- * Created by Andrei on 4/18/2016.
- *//*
 
 public class ChatNotifier {
 
@@ -125,4 +119,5 @@ public class ChatNotifier {
         };
     }
 }
+
 */

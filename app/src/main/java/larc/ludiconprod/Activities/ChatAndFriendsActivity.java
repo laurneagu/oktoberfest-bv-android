@@ -32,12 +32,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import larc.ludiconprod.Adapters.ChatAndFriends.ConversationsAdapter;
+import larc.ludiconprod.Adapters.ChatAndFriends.FriendsAdapter;
+import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
 import larc.ludiconprod.Utils.Chat;
 import larc.ludiconprod.Utils.ChatAndFriends.ChatAndFriendsViewPagerAdapter;
 import larc.ludiconprod.Utils.Event;
+import larc.ludiconprod.Utils.Friend;
 import larc.ludiconprod.Utils.ui.SlidingTabLayout;
+
+import static larc.ludiconprod.Activities.ChatActivity.isOnChat1to1;
 
 /**
  * Created by ancuta on 8/18/2017.
@@ -49,6 +54,8 @@ public class ChatAndFriendsActivity extends Fragment {
     ChatAndFriendsViewPagerAdapter adapter;
     SlidingTabLayout tabs;
     ConversationsAdapter chatAdapter;
+    public static FriendsAdapter friendsAdapter;
+    public static ArrayList<Friend> friends=new ArrayList<>();
     private View v;
     CharSequence Titles[] = {"CONVERSATIONS", "FRIENDS"};
     int Numboftabs = 2;
@@ -56,19 +63,25 @@ public class ChatAndFriendsActivity extends Fragment {
     static public ChatAndFriendsActivity currentFragment;
     Activity activity;
     public static ListView chatListView;
+    public static ListView friendsListView;
     public Boolean isFirstTimeSetChat=false;
+    public static Boolean isFirstTimeSetFriends=false;
     public static ArrayList<CountDownTimer> threadsList=new ArrayList<>();
+    public static ChatAndFriendsActivity currentChatAndFriends;
     public int counterOfChats=0;
     public String keyOfLastChat;
     public int valueOfLastChat;
     public int numberOfChatsPage;
     ProgressBar progressBarChats;
+    public static ProgressBar progressBarFriends;
     int numberOfTotalChatsArrived;
     Boolean isLastPage=false;
     Boolean addedSwipe=false;
+    Boolean addedSwipeFriends=false;
     public static Boolean isOnChatPage=true;
     String lastMessageSeen;
     Boolean isAlreadyProcess=false;
+    public static int NumberOfRefreshFriends=0;
 
     public ChatAndFriendsActivity() {
         currentFragment=this;
@@ -83,8 +96,12 @@ public class ChatAndFriendsActivity extends Fragment {
         mContext = inflater.getContext();
         v = inflater.inflate(R.layout.chat_and_friends_activity, container, false);
         activity=getActivity();
+        currentChatAndFriends=this;
         threadsList.clear();
+        friends.clear();
+        isFirstTimeSetFriends=false;
         isOnChatPage=true;
+        NumberOfRefreshFriends=0;
         isFirstTimeSetChat=false;
         try {
 
@@ -114,10 +131,27 @@ public class ChatAndFriendsActivity extends Fragment {
 
 
 
+
+
+
+
             final DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(activity).id).child("chats");
             firebaseRef.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    if(!isOnChatPage && !isOnChat1to1){
+
+                        String names="";
+                        Notification notification=new Notification();
+                        for (DataSnapshot users : dataSnapshot.child("users").getChildren()) {
+                            if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(activity).id)) {
+                                names += users.child("name").getValue().toString() + ",";
+                            }
+
+                        }
+
+                        notification.sendNotification(activity,names);
+                    }
 
                     if (dataSnapshot.hasChild("last_message_date") && isFirstTimeSetChat && isOnChatPage) {
                         final Chat chat = new Chat();
@@ -162,6 +196,19 @@ public class ChatAndFriendsActivity extends Fragment {
 
                 @Override
                 public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                    if(!isOnChatPage && !isOnChat1to1){
+
+                        String names="";
+                        Notification notification=new Notification();
+                        for (DataSnapshot users : dataSnapshot.child("users").getChildren()) {
+                            if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(activity).id)) {
+                                names += users.child("name").getValue().toString() + ",";
+                            }
+
+                        }
+
+                        notification.sendNotification(activity,names);
+                    }
                     if (dataSnapshot.hasChild("last_message_date")&& isOnChatPage && !isAlreadyProcess) {
                         isAlreadyProcess=true;
                         for(int i=0;i < chatList.size();i++){
@@ -242,7 +289,9 @@ public class ChatAndFriendsActivity extends Fragment {
             });
 
 
-
+            getFriends("0");
+            friendsAdapter = new FriendsAdapter(friends, activity, activity, getResources(), this);
+            setFriendsAdapter();
 
 
 
@@ -326,6 +375,75 @@ public class ChatAndFriendsActivity extends Fragment {
             });
             addedSwipe = true;
         }
+
+    }
+
+    public void setFriendsAdapter(){
+
+        friendsAdapter.notifyDataSetChanged();
+        final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refreshFriends);
+        friendsListView = (ListView) v.findViewById(R.id.friends_listView);
+        progressBarFriends=(ProgressBar)v.findViewById(R.id.progressBarFriends);
+        progressBarFriends.setAlpha(0f);
+
+        if(!isFirstTimeSetFriends) {
+            friendsListView.setAdapter(friendsAdapter);
+            isFirstTimeSetFriends=true;
+        }
+
+        TextView noFriendsTV=(TextView) v.findViewById(R.id.noFriendsTV);
+        TextView joinActivitiesFriendsTV=(TextView)v.findViewById(R.id.joinActivitiesFriendsTV);
+        Button discoverActivitiesFriendsButton=(Button)v.findViewById(R.id.discoverActivitiesFriendsButton);
+        ImageView friendsImage=(ImageView)v.findViewById(R.id.friendsImage);
+
+        if(friends.size() == 0){
+            noFriendsTV.setVisibility(View.VISIBLE);
+            joinActivitiesFriendsTV.setVisibility(View.VISIBLE);
+            discoverActivitiesFriendsButton.setVisibility(View.VISIBLE);
+            friendsImage.setVisibility(View.VISIBLE);
+        }else{
+            noFriendsTV.setVisibility(View.INVISIBLE);
+            joinActivitiesFriendsTV.setVisibility(View.INVISIBLE);
+            discoverActivitiesFriendsButton.setVisibility(View.INVISIBLE);
+            friendsImage.setVisibility(View.INVISIBLE);
+        }
+        if(friendsListView != null) {
+            friendsListView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(final View v, MotionEvent event) {
+                    if (v != null && friendsListView.getChildCount() > 0) {
+                        if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
+
+
+                            if (friendsListView.getLastVisiblePosition() == friendsListView.getAdapter().getCount() - 1 &&
+                                    friendsListView.getChildAt(friendsListView.getChildCount() - 1).getBottom() <= friendsListView.getHeight()) {
+                                    progressBarFriends.setAlpha(1f);
+                                    getFriends(String.valueOf(NumberOfRefreshFriends));
+
+
+
+
+                            }
+                        }
+                    }
+                    return false;
+                }
+            });
+        }
+
+        if (!addedSwipeFriends) {
+            mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    addedSwipeFriends=false;
+                    NumberOfRefreshFriends=0;
+                    mSwipeRefreshLayout.setRefreshing(false);
+                    getFriends("0");
+                }
+            });
+            addedSwipeFriends = true;
+        }
+
     }
 
     public void getFirstPage(){
@@ -488,5 +606,25 @@ public class ChatAndFriendsActivity extends Fragment {
                 }
             });
         }
+
+
+    public void getFriends(String pageNumber) {
+
+        HashMap<String, String> params = new HashMap<String, String>();
+        HashMap<String, String> headers = new HashMap<String, String>();
+        HashMap<String, String> urlParams = new HashMap<String, String>();
+        headers.put("authKey", Persistance.getInstance().getUserInfo(activity).authKey);
+        urlParams.put("userId", Persistance.getInstance().getUserInfo(activity).id);
+        urlParams.put("pageNumber", pageNumber);
+
+        HTTPResponseController.getInstance().getFriends(params, headers, activity, urlParams);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (chatAdapter != null) chatAdapter.notifyDataSetChanged();
+        if (friendsAdapter != null) friendsAdapter.notifyDataSetChanged();
+    }
 
 }

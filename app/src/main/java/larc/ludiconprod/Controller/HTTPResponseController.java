@@ -36,6 +36,7 @@ import java.util.HashMap;
 
 import larc.ludiconprod.Activities.ActivitiesActivity;
 import larc.ludiconprod.Activities.ActivityDetailsActivity;
+import larc.ludiconprod.Activities.ChatAndFriendsActivity;
 import larc.ludiconprod.Activities.CouponsActivity;
 import larc.ludiconprod.Activities.CreateNewActivity;
 import larc.ludiconprod.Activities.GMapsActivity;
@@ -450,6 +451,9 @@ public class HTTPResponseController {
             public void onResponse(JSONObject jsonObject) {
                 System.out.println(jsonObject + " friends");
                 try {
+                    if(ChatAndFriendsActivity.NumberOfRefreshFriends == 0) {
+                        ChatAndFriendsActivity.friends.clear();
+                    }
                     for (int i = 0; i < jsonObject.getJSONArray("friends").length(); i++) {
                         Friend friend = new Friend();
                         friend.userID = jsonObject.getJSONArray("friends").getJSONObject(i).getString("userId");
@@ -460,9 +464,26 @@ public class HTTPResponseController {
                         friend.offlineFriend = false;
                         friend.isInvited = false;
 
-                        InviteFriendsActivity.friendsList.add(InviteFriendsActivity.numberOfOfflineFriends + 1, friend);
+                        if(activity.getLocalClassName().toString().equals("Activities.Main")){
+                            ChatAndFriendsActivity.friends.add(friend);
+                        }else{
+
+                            InviteFriendsActivity.friendsList.add(InviteFriendsActivity.numberOfOfflineFriends + 1, friend);
+                        }
                     }
-                    InviteFriendsActivity.inviteFriendsAdapter.notifyDataSetChanged();
+                    if(activity.getLocalClassName().toString().equals("Activities.Main")){
+
+                        if(ChatAndFriendsActivity.NumberOfRefreshFriends == 0 && !ChatAndFriendsActivity.isFirstTimeSetFriends) {
+                            ChatAndFriendsActivity.currentChatAndFriends.setFriendsAdapter();
+                        }
+                        else{
+                            ChatAndFriendsActivity.friendsAdapter.notifyDataSetChanged();
+                            ChatAndFriendsActivity.progressBarFriends.setAlpha(0f);
+                        }
+                        ChatAndFriendsActivity.NumberOfRefreshFriends++;
+                    }else {
+                        InviteFriendsActivity.inviteFriendsAdapter.notifyDataSetChanged();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

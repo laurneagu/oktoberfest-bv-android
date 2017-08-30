@@ -1,5 +1,6 @@
 package larc.ludiconprod.Activities;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
@@ -41,6 +42,8 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
     private User user = new User();
     private final HashMap<String, Integer> youPoints = new HashMap<>();
     private final HashMap<String, Integer> foePoints = new HashMap<>();
+    String userName;
+    String userImage;
 
     @Nullable
     @Override
@@ -67,6 +70,19 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
 
             Button addFriend = (Button) super.findViewById(R.id.profileFriend);
             Button chat = (Button) super.findViewById(R.id.profileChat);
+
+            chat.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent=new Intent(UserProfileActivity.this,ChatActivity.class);
+                    intent.putExtra("otherParticipantName",userName);
+                    intent.putExtra("otherParticipantImage",userImage);
+                    intent.putExtra("chatId","isNot");
+                    intent.putExtra("UserId",getIntent().getStringExtra("UserId"));
+                    UserProfileActivity.this.startActivity(intent);
+                    finish();
+                }
+            });
 
             Typeface typeFace = Typeface.createFromAsset(super.getAssets(),"fonts/Quicksand-Medium.ttf");
             Typeface typeFaceBold = Typeface.createFromAsset(super.getAssets(),"fonts/Quicksand-Bold.ttf");
@@ -179,6 +195,7 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
 
             TextView sportsCount = (TextView) findViewById(R.id.profilePracticeSportsCountLabel);
             ImageView image = (ImageView) findViewById(R.id.profileImage);
+            userImage=u.profileImage;
             if (u.profileImage != null && !u.profileImage.isEmpty()) {
                 Bitmap im = IntroActivity.decodeBase64(u.profileImage);
                 image.setImageBitmap(im);
@@ -190,6 +207,7 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
             TextView position = (TextView) findViewById(R.id.profilePosition);
 
             name.setText(u.firstName + " " + u.lastName);
+            userName=u.firstName + " " + u.lastName+",";
             level.setText("" + u.level);
             points.setText("" + u.points);
             position.setText("" + u.position);

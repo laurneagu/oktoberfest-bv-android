@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#f7f9fc"
+    android:id="@+id/friendsListLayout">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@drawable/ic_user"
+        android:id="@+id/friendsImage"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="16dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/friendsImage"
+            android:layout_toLeftOf="@+id/chatFriends"
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_centerInParent="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Daniel Grigore"
+                android:textSize="18dp"
+                android:textColor="#d4498b"
+                android:id="@+id/friendsName"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14dp"
+                android:text="Level 6"
+                android:textColor="#02b9ad"
+                android:id="@+id/friendsLevel"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14dp"
+                android:text="12 mutual friends"
+                android:textColor="#acb8c1"
+                android:id="@+id/friendsMutualFriends"
+                android:layout_marginLeft="8dp"/>
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:id="@+id/chatFriends"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/green_button_selector"
+        android:text="CHAT"
+        android:textColor="#ffffff"
+        android:textSize="14sp"
+        android:layout_marginRight="16dp"
+        android:layout_centerInParent="true"/>
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

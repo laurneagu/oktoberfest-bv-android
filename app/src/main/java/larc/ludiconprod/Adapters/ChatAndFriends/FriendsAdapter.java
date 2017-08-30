@@ -1,10 +1,150 @@
 package larc.ludiconprod.Adapters.ChatAndFriends;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+import larc.ludiconprod.Activities.ChatActivity;
+import larc.ludiconprod.Activities.ChatAndFriendsActivity;
+import larc.ludiconprod.Activities.Notification;
+import larc.ludiconprod.Activities.UserProfileActivity;
+import larc.ludiconprod.R;
+import larc.ludiconprod.Utils.Chat;
+import larc.ludiconprod.Utils.Friend;
+
+import static larc.ludiconprod.Activities.ChatAndFriendsActivity.isOnChatPage;
+
 /**
  * Created by ancuta on 8/18/2017.
  */
 
-public class FriendsAdapter {
+public class FriendsAdapter extends BaseAdapter implements ListAdapter {
+    public static Bitmap decodeBase64(String input)
+    {
+        byte[] decodedBytes = Base64.decode(input, 0);
+        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+    }
+    class ViewHolder {
+
+        CircleImageView friendsImage;
+        TextView friendsName;
+        TextView friendsLevel;
+        TextView friendsMutualFriends;
+        Button chatFriends;
+
+
+    }
+    private ArrayList<Friend> list = new ArrayList<>();
+    private Context context;
+    private Activity activity;
+    private Resources resources;
+    private ChatAndFriendsActivity fragment;
+    final ListView listView;
+    public FriendsAdapter(ArrayList<Friend> list, Context context, Activity activity, Resources resources, ChatAndFriendsActivity fragment) {
+        this.list = list;
+        this.context = context;
+        this.activity = activity;
+        this.resources = resources;
+        this.fragment = fragment;
+
+        this.listView = (ListView) activity.findViewById(R.id.events_listView2); // era v.
+    }
+
+    public void setListOfEvents(ArrayList<Friend> newList){
+        this.list = newList;
+        this.notifyDataSetChanged();
+    }
+
+    @Override
+    public int getCount() {
+        return list.size();
+    }
+
+    @Override
+    public Object getItem(int pos) {
+        return list.get(pos);
+    }
+
+    @Override
+    public long getItemId(int pos) {
+        return 0;
+    }
+
+    @Override
+    public View getView(final int position, View convertView, ViewGroup parent) {
+        View view = convertView;
+
+
+        if (list.size() > 0) {
+            final FriendsAdapter.ViewHolder holder;
+
+            final Friend currentFriend = list.get(position);
+
+            if (view == null) {
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.friends_list_card, null);
+                holder = new FriendsAdapter.ViewHolder();
+                holder.friendsImage=(CircleImageView)view.findViewById(R.id.friendsImage);
+                holder.friendsName=(TextView) view.findViewById(R.id.friendsName);
+                holder.friendsLevel=(TextView)view.findViewById(R.id.friendsLevel);
+                holder.friendsMutualFriends=(TextView)view.findViewById(R.id.friendsMutualFriends);
+                holder.chatFriends=(Button)view.findViewById(R.id.chatFriends);
+                view.setTag(holder);
+            } else {
+                holder = (FriendsAdapter.ViewHolder) view.getTag();
+            }
+            //clear layout
+            holder.friendsImage.setImageResource(R.drawable.ic_user);
+
+            if(!currentFriend.profileImage.equalsIgnoreCase("")){
+                Bitmap bitmap=decodeBase64(currentFriend.profileImage);
+                holder.friendsImage.setImageBitmap(bitmap);
+            }
+            holder.friendsName.setText(currentFriend.userName);
+            holder.friendsLevel.setText("Level "+currentFriend.level);
+            holder.friendsMutualFriends.setText(currentFriend.numberOfMutuals+" mutual friends");
+            holder.friendsImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(activity, UserProfileActivity.class);
+                    intent.putExtra("UserId", currentFriend.userID);
+                    isOnChatPage=false;
+                    activity.startActivity(intent);
+                }
+            });
+            holder.chatFriends.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent=new Intent(activity,ChatActivity.class);
+                    intent.putExtra("otherParticipantName",currentFriend.userName+",");
+                    intent.putExtra("otherParticipantImage",currentFriend.profileImage);
+                    intent.putExtra("chatId","isNot");
+                    intent.putExtra("UserId",currentFriend.userID);
+                    activity.startActivity(intent);
+                    isOnChatPage=false;
+                    activity.finish();
+                }
+            });
+
+
+        }
+        return view;
+    }
 
 
 }

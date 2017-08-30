@@ -170,8 +170,8 @@ public class ChatActivity extends Activity {
                     HashMap<String,Object> otherValue=new HashMap<String, Object>();
                     myValue.put("image",Persistance.getInstance().getUserInfo(ChatActivity.this).profileImage);
                     myValue.put("name",Persistance.getInstance().getUserInfo(ChatActivity.this).firstName+" "+Persistance.getInstance().getUserInfo(ChatActivity.this).lastName);
-                    otherValue.put("image",getIntent().getStringExtra("profileImage"));
-                    otherValue.put("name",getIntent().getStringExtra("userName").substring(0,getIntent().getStringExtra("userName").length()-1));
+                    otherValue.put("image",getIntent().getStringExtra("otherParticipantImage"));
+                    otherValue.put("name",getIntent().getStringExtra("otherParticipantName").substring(0,getIntent().getStringExtra("otherParticipantName").length()-1));
                     usersMap.put(Persistance.getInstance().getUserInfo(ChatActivity.this).id,myValue);
                     usersMap.put(getIntent().getStringExtra("UserId"),otherValue);
                     values.put("users",usersMap);

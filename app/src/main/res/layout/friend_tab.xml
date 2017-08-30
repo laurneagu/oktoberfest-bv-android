@@ -1,11 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/friends_listview"
+    android:background="#f7f9fc">
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="12dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/shadow_bottom_to_top"/>
 
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/layout1"
+        >
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refreshFriends"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ListView
+                android:id="@+id/friends_listView"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:scrollbars="none" />
+
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+
+
+    </LinearLayout>
     <TextView
-        android:id="@+id/textView12"
+        android:id="@+id/noFriendsTV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No friends,yet!"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:textSize="18dp"
+        android:textColor="#d4498b"
+        android:fontFamily="@string/fontmedium"/>
+    <TextView
+        android:layout_below="@+id/noFriendsTV"
+        android:id="@+id/joinActivitiesFriendsTV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Discover &amp; join activities,make friends\nand start chatting!"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:textSize="16dp"
+        android:textColor="#400c3855"
+        android:fontFamily="@string/fontmedium"/>
+    <Button
+        android:id="@+id/discoverActivitiesFriendsButton"
+        android:layout_below="@+id/joinActivitiesFriendsTV"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/pink_button_selector"
+        android:text="DISCOVER ACTIVITIES"
+        android:textColor="#ffffff"
+        android:fontFamily="@string/fontbold"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="75dp"
+        android:layout_marginLeft="75dp"
+        android:textSize="14dp"/>
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="friend" />
+        android:id="@+id/friendsImage"
+        android:background="@drawable/es_friends"
+        android:layout_above="@+id/noFriendsTV"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"/>
+
+    <ProgressBar
+        android:id="@+id/progressBarFriends"
+        style="@android:style/Widget.Holo.ProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="0"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="5dp" />
 </RelativeLayout>
