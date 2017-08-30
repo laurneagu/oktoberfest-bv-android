@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -118,7 +119,12 @@ public class MessageAdapter extends BaseAdapter implements ListAdapter {
                 holder.topOtherParticipantImage=(CircleImageView)view.findViewById(R.id.topOtherParticipantImage);
                 holder.topOtherParticipantName=(TextView)view.findViewById(R.id.topOtherParticipantName);
 
-
+                Typeface typeFace = Typeface.createFromAsset(fragment.getAssets(),"fonts/Quicksand-Medium.ttf");
+                holder.otherParticipantMessage.setTypeface(typeFace);
+                holder.otherParticipantMessageTime.setTypeface(typeFace);
+                holder.myMessage.setTypeface(typeFace);
+                holder.myMessageTime.setTypeface(typeFace);
+                holder.topOtherParticipantName.setTypeface(typeFace);
 
                 view.setTag(holder);
             } else {

@@ -80,7 +80,6 @@ public class LoginActivity extends Activity {
         Typeface typeFace= Typeface.createFromAsset(getAssets(),"fonts/Quicksand-Medium.ttf");
         Typeface typeFaceBold= Typeface.createFromAsset(getAssets(),"fonts/Quicksand-Bold.ttf");
 
-
         password=(EditText) findViewById(R.id.password) ;
         password.setTypeface(typeFace);
         email=(EditText) findViewById(R.id.email);
@@ -107,18 +106,15 @@ public class LoginActivity extends Activity {
         password.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 password.setBackgroundResource(R.drawable.rounded_edittext);
-
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
-
             }
         });
 

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -104,6 +105,15 @@ public class FriendsAdapter extends BaseAdapter implements ListAdapter {
                 holder.friendsLevel=(TextView)view.findViewById(R.id.friendsLevel);
                 holder.friendsMutualFriends=(TextView)view.findViewById(R.id.friendsMutualFriends);
                 holder.chatFriends=(Button)view.findViewById(R.id.chatFriends);
+
+                Typeface typeFace = Typeface.createFromAsset(fragment.getActivity().getAssets(),"fonts/Quicksand-Medium.ttf");
+                Typeface typeFaceBold = Typeface.createFromAsset(fragment.getActivity().getAssets(),"fonts/Quicksand-Bold.ttf");
+
+                holder.friendsName.setTypeface(typeFace);
+                holder.friendsLevel.setTypeface(typeFace);
+                holder.friendsMutualFriends.setTypeface(typeFace);
+                holder.chatFriends.setTypeface(typeFaceBold);
+
                 view.setTag(holder);
             } else {
                 holder = (FriendsAdapter.ViewHolder) view.getTag();

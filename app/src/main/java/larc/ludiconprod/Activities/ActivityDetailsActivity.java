@@ -118,7 +118,6 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
 
     @Override
     public void onCreate(Bundle savedInstance) {
-
         ifFirstTimeGetParticipants = false;
         InviteFriendsActivity.isFirstTimeInviteFriends = false;
         eventID = null;
@@ -624,6 +623,20 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
         if (MyAdapter.progressBarCard != null) {
             MyAdapter.progressBarCard.setAlpha(0);
         }
+
+        Typeface typeFace = Typeface.createFromAsset(getAssets(),"fonts/Quicksand-Medium.ttf");
+        Typeface typeFaceBold = Typeface.createFromAsset(getAssets(),"fonts/Quicksand-Bold.ttf");
+        creatorName.setTypeface(typeFace);
+        sportPlayed.setTypeface(typeFace);
+        ((TextView) findViewById(R.id.youGain)).setTypeface(typeFace);
+        ((TextView) findViewById(R.id.perHour)).setTypeface(typeFace);
+        pointsNumber.setTypeface(typeFace);
+        ludicoinsNumber.setTypeface(typeFace);
+        playerNumber.setTypeface(typeFace);
+        groupChatButton.setTypeface(typeFaceBold);
+        inviteFriendsButton.setTypeface(typeFaceBold);
+        playTimeAndDate.setTypeface(typeFaceBold);
+        joinOrUnjoinButton.setTypeface(typeFaceBold);
     }
 
     private void addParticipantsImaeListeners(final HashMap<View, Friend> data) {
