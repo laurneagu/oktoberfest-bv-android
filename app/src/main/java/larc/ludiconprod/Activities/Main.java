@@ -46,18 +46,22 @@ public class Main extends FragmentActivity{
             @Override
             public void onTabSelected(@IdRes int tabId) {
                 if(tabId == R.id.tab_activities) {
+                    ChatAndFriendsActivity.isOnChatPage=false;
                     ActivitiesActivity main = new ActivitiesActivity();
                     getSupportFragmentManager().beginTransaction()
                            .replace(R.id.frame, main).commit();
                 } else if (tabId == R.id.tab_profile) {
+                    ChatAndFriendsActivity.isOnChatPage=false;
                     MyProfileActivity myProfileActivity = new MyProfileActivity();
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.frame, myProfileActivity).commit();
                 } else if (tabId == R.id.tab_coupons) {
+                    ChatAndFriendsActivity.isOnChatPage=false;
                     CouponsActivity coupons = new CouponsActivity();
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.frame, coupons).commit();
                 } else if (tabId == R.id.tab_leaderboard) {
+                    ChatAndFriendsActivity.isOnChatPage=false;
                     LeaderboardActivity leaderboard = new LeaderboardActivity();
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.frame, leaderboard).commit();
@@ -86,8 +90,8 @@ public class Main extends FragmentActivity{
         });
 
         // Notifications on tabs
-        //BottomBarTab nearby = bottomBar.getTabWithId(R.id.tab_nearby);
-        //nearby.setBadgeCount(5);
+        BottomBarTab nearby = bottomBar.getTabWithId(R.id.tab_friends);
+        nearby.setBadgeCount(5);
     }
     @Override
     public void onBackPressed() {

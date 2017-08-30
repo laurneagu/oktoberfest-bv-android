@@ -9,4 +9,7 @@ public class Message {
     public String message;
     public int date;
     public String messageId;
+    public Boolean setTopImage=false;
+    public String otherUserImage;
+    public String otherUserName;
 }

@@ -7,6 +7,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.CountDownTimer;
 import android.util.Base64;
 import android.view.LayoutInflater;
@@ -130,7 +131,14 @@ public class ConversationsAdapter extends BaseAdapter implements ListAdapter {
             if(currentChat.participantName.length() > 1) {
                 holder.participantName.setText(currentChat.participantName.substring(0, currentChat.participantName.length() - 1));
             }
+            Typeface typeFace= Typeface.createFromAsset(activity.getAssets(),"fonts/Quicksand-Medium.ttf");
+            Typeface typeFaceBold= Typeface.createFromAsset(activity.getAssets(),"fonts/Quicksand-Bold.ttf");
             holder.lastMessage.setText(currentChat.lastMessage);
+            if(!currentChat.lastMessageSeen.equalsIgnoreCase(currentChat.lastMessageId)) {
+                holder.lastMessage.setTypeface(typeFaceBold);
+            }else{
+                holder.lastMessage.setTypeface(typeFace);
+            }
             final View currView = view;
 
             view.setOnClickListener(new View.OnClickListener() {
@@ -138,9 +146,12 @@ public class ConversationsAdapter extends BaseAdapter implements ListAdapter {
                 public void onClick(View view) {
                     Intent intent=new Intent(activity, ChatActivity.class);
                     intent.putExtra("chatId",currentChat.chatId);
+                    intent.putExtra("otherParticipantName",currentChat.participantName);
+                    intent.putExtra("otherParticipantImage",currentChat.image);
+
                     activity.startActivity(intent);
                     ChatAndFriendsActivity.isOnChatPage=false;
-                    activity.finish();
+                    //activity.finish();
                 }
             });
 

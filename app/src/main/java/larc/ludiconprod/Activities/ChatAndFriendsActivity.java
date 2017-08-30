@@ -2,6 +2,7 @@ package larc.ludiconprod.Activities;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
@@ -28,6 +29,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import larc.ludiconprod.Adapters.ChatAndFriends.ConversationsAdapter;
 import larc.ludiconprod.Controller.Persistance;
@@ -65,10 +67,15 @@ public class ChatAndFriendsActivity extends Fragment {
     Boolean isLastPage=false;
     Boolean addedSwipe=false;
     public static Boolean isOnChatPage=true;
+    String lastMessageSeen;
+    Boolean isAlreadyProcess=false;
 
     public ChatAndFriendsActivity() {
         currentFragment=this;
     }
+
+
+
 
     @Nullable
     @Override
@@ -78,6 +85,7 @@ public class ChatAndFriendsActivity extends Fragment {
         activity=getActivity();
         threadsList.clear();
         isOnChatPage=true;
+        isFirstTimeSetChat=false;
         try {
 
             super.onCreate(savedInstanceState);
@@ -101,12 +109,12 @@ public class ChatAndFriendsActivity extends Fragment {
 
             // Setting the ViewPager For the SlidingTabsLayout
             tabs.setViewPager(pager);
-            chatAdapter = new ConversationsAdapter(chatList, getActivity().getApplicationContext(), getActivity(), getResources(), currentFragment);
+            chatAdapter = new ConversationsAdapter(chatList, activity.getApplicationContext(), activity, getResources(), currentFragment);
             getFirstPage();
 
 
 
-            final DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(getActivity()).id).child("chats");
+            final DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(activity).id).child("chats");
             firebaseRef.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -137,6 +145,7 @@ public class ChatAndFriendsActivity extends Fragment {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                                     chat.lastMessage = child.child("message").getValue().toString();
+                                    chat.lastMessageId=child.getKey().toString();
                                 }
                                 chatList.add(0,chat);
                                 setAdapter();
@@ -153,7 +162,8 @@ public class ChatAndFriendsActivity extends Fragment {
 
                 @Override
                 public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                    if (dataSnapshot.hasChild("last_message_date")&& isOnChatPage) {
+                    if (dataSnapshot.hasChild("last_message_date")&& isOnChatPage && !isAlreadyProcess) {
+                        isAlreadyProcess=true;
                         for(int i=0;i < chatList.size();i++){
                             if(dataSnapshot.getKey().equalsIgnoreCase(chatList.get(i).chatId)){
                                     chatList.remove(i);
@@ -192,9 +202,17 @@ public class ChatAndFriendsActivity extends Fragment {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                                     chat.lastMessage = child.child("message").getValue().toString();
+                                    chat.lastMessageId=child.getKey().toString();
                                 }
-                                chatList.add(0,chat);
-                                setAdapter();
+                                if(chatList.size() > 0 && !chatList.get(0).chatId.equals(chat.chatId)) {
+                                    chatList.add(0, chat);
+                                    setAdapter();
+                                    isAlreadyProcess=false;
+                                }else if(chatList.size() == 0){
+                                    chatList.add(0, chat);
+                                    setAdapter();
+                                    isAlreadyProcess=false;
+                                }
 
                             }
 
@@ -311,7 +329,7 @@ public class ChatAndFriendsActivity extends Fragment {
     }
 
     public void getFirstPage(){
-        final DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(getActivity()).id).child("chats");
+        final DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(activity).id).child("chats");
         Query query=firebaseRef.orderByChild("last_message_date") .limitToLast(4);
         numberOfChatsPage=1;
         chatList.clear();
@@ -329,7 +347,7 @@ public class ChatAndFriendsActivity extends Fragment {
                         }
                         String names = "";
                         for (DataSnapshot users : chats.child("users").getChildren()) {
-                            if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(getActivity()).id)) {
+                            if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(activity).id)) {
                                 names += users.child("name").getValue().toString() + ",";
                                 if (chat.eventId == null) {
                                     chat.image = users.child("image").getValue().toString();
@@ -338,7 +356,9 @@ public class ChatAndFriendsActivity extends Fragment {
 
                         }
                         chat.participantName = names;
-
+                        if(chats.hasChild("seen")) {
+                            chat.lastMessageSeen = chats.child("seen").getValue().toString();
+                        }
                         chat.lastMessageTime = Integer.valueOf(chats.child("last_message_date").getValue().toString());
                         DatabaseReference lastMessageRef = chats.child("messages").getRef();
                         Query lastMessage = lastMessageRef.orderByKey().limitToLast(1);
@@ -347,6 +367,7 @@ public class ChatAndFriendsActivity extends Fragment {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                                     chat.lastMessage = child.child("message").getValue().toString();
+                                    chat.lastMessageId=child.getKey().toString();
                                 }
                                 if(counterOfChats > 0 || numberOfTotalChatsArrived < 4) {
                                     chatList.add(0, chat);
@@ -360,6 +381,8 @@ public class ChatAndFriendsActivity extends Fragment {
                                 }
                                 if (numberOfTotalChatsArrived < 4) {
                                     if (numberOfTotalChatsArrived == counterOfChats) {
+
+
                                         isLastPage = true;
                                     }
 
@@ -384,7 +407,7 @@ public class ChatAndFriendsActivity extends Fragment {
         });
     }
     public void getPage(){
-        final DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(getActivity()).id).child("chats");
+        final DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(activity).id).child("chats");
         Query query=firebaseRef.orderByChild("last_message_date") .limitToLast(4).endAt(valueOfLastChat,keyOfLastChat);
         counterOfChats=0;
             query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -402,7 +425,7 @@ public class ChatAndFriendsActivity extends Fragment {
                             }
                             String names = "";
                             for (DataSnapshot users : chats.child("users").getChildren()) {
-                                if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(getActivity()).id)) {
+                                if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(activity).id)) {
                                     names += users.child("name").getValue().toString() + ",";
                                     if (chat.eventId == null) {
                                         chat.image = users.child("image").getValue().toString();
@@ -411,6 +434,9 @@ public class ChatAndFriendsActivity extends Fragment {
 
                             }
                             chat.participantName = names;
+                            if(chats.hasChild("seen")) {
+                                chat.lastMessageSeen = chats.child("seen").getValue().toString();
+                            }
 
                             chat.lastMessageTime = Integer.valueOf(chats.child("last_message_date").getValue().toString());
                             DatabaseReference lastMessageRef = chats.child("messages").getRef();
@@ -420,6 +446,7 @@ public class ChatAndFriendsActivity extends Fragment {
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                                         chat.lastMessage = child.child("message").getValue().toString();
+                                        chat.lastMessageId=child.getKey().toString();
                                     }
                                     if (counterOfChats > 0 || numberOfTotalChatsArrived < 4) {
                                         chatList.add(numberOfChatsPage * 3, chat);

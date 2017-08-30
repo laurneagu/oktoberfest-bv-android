@@ -52,7 +52,7 @@
 
     <style name="amu_Bubble.TextAppearance.Dark" parent="android:TextAppearance.Medium">
         <item name="android:textSize">14sp</item>
-        <item name="android:textColor">#ff7f7f7f</item>
+        <item name="android:textColor">#ffffff</item>
     </style>
     <style name="amu_Bubble.TextAppearance.Light" parent="amu_Bubble.TextAppearance.Dark">
         <item name="android:textColor">#ffeeeeee</item>
@@ -96,7 +96,8 @@
         </style>
 
         <style name="BB_BottomBarBadge_Text" parent="TextAppearance.AppCompat.Body2">
-            <item name="android:textColor">#d4498b</item>
+            <item name="android:textColor">#ffffff</item>
+            <item name="android:textSize">10sp</item>
         </style>
     <style name="CustomTitleTextAppearance">
         <item name="android:textSize">10sp</item>

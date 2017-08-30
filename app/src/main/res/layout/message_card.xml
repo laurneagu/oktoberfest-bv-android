@@ -1,12 +1,167 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <TextView
-        android:layout_width="100dp"
+    android:layout_height="wrap_content"
+    android:background="#f7f9fc">
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/message"
+        android:id="@+id/otherParticipantLayout"
+        android:background="#f7f9fc"
+        android:visibility="invisible">
+    <ImageView
+        android:layout_width="108dp"
+        android:layout_height="10dp"
+        android:background="#00000000"
+        android:layout_alignParentRight="true"
+        android:id="@+id/otherParticipantPadding"/>
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="8dp"
+            android:id="@+id/otherParticipantImage"
+            android:background="@drawable/ic_bnav_user_selected"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/otherParticipantImage"
+        android:layout_toLeftOf="@+id/otherParticipantPadding">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/a"
+            android:background="@drawable/rounded_chat_other_user">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
         android:textColor="#0c3855"
-        android:text="Costianu"/>
+        android:paddingTop="8dp"
+        android:id="@+id/otherParticipantMessage"
+        android:text="c"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/otherParticipantMessage"
+            android:layout_gravity="right"
+            android:gravity="right"
+            android:textSize="12dp"
+            android:paddingLeft="8dp"
+            android:id="@+id/otherParticipantMessageTime"
+            android:paddingBottom="8dp"
+            android:textColor="#acb8c1"
+            android:paddingRight="8dp"
+            android:text="15:40"/>
+
+            </LinearLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/myLayout"
+        android:background="#f7f9fc"
+        android:visibility="invisible">
+
+        <ImageView
+            android:layout_width="108dp"
+            android:layout_height="10dp"
+            android:background="#00000000"
+            android:layout_alignParentLeft="true"
+            android:id="@+id/myPadding"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/myPadding">
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="16dp"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/rounded_chat_pink">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:textColor="#ffffff"
+                    android:paddingTop="8dp"
+                    android:id="@+id/myMessage"
+                    android:text="c"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_below="@+id/myMessage"
+                    android:textSize="12dp"
+                    android:id="@+id/myMessageTime"
+                    android:paddingBottom="8dp"
+                    android:paddingLeft="8dp"
+                    android:textColor="#80ffffff"
+                    android:paddingRight="8dp"
+                    android:text="15:40"/>
+
+                </LinearLayout>
+
+                </RelativeLayout>
+
+
+
+        </RelativeLayout>
+
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/profileImageLayout"
+        android:background="#f7f9fc"
+        android:visibility="invisible">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@drawable/ic_bnav_user_selected"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/topOtherParticipantImage"
+            android:layout_marginTop="60dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/topOtherParticipantImage"
+            android:layout_marginTop="16dp"
+            android:text="Costianu"
+            android:textSize="18dp"
+            android:id="@+id/topOtherParticipantName"
+            android:layout_marginBottom="28dp"
+            android:textColor="#d4498b"/>
+
+        </RelativeLayout>
 
 </RelativeLayout>

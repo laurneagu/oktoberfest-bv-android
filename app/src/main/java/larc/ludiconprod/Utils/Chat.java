@@ -11,4 +11,6 @@ public class Chat {
     public String participantName;
     public int lastMessageTime;
     public String lastMessage;
+    public String lastMessageId;
+    public String lastMessageSeen="";
 }

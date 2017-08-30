@@ -3,18 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#f7f9fc">
-    <ImageView
-        android:layout_marginTop="56dp"
-        android:layout_width="match_parent"
-        android:layout_height="12dp"
-        android:background="@drawable/shadow_top_to_bottom"/>
+
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical"
-        android:layout_above="@+id/messageInput">
+        android:layout_marginBottom="12dp"
+        android:layout_above="@+id/shadowBottom">
 
 
 
@@ -23,35 +20,59 @@
         layout="@layout/header_login"
         android:layout_width="match_parent"
         android:layout_height="56dp" />
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="12dp"
+            android:id="@+id/shadowTop"
+            android:background="@drawable/shadow_top_to_bottom"/>
+
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/swipe_refreshMessage"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="fill_parent">
 
-    <ListView
-        android:id="@+id/chatMessageListView"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_marginTop="12dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:scrollbars="none"
-        />
+            <ListView
+                android:id="@+id/chatMessageListView"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="4.0dp"
+                android:scrollbars="none" />
         </android.support.v4.widget.SwipeRefreshLayout>
     </LinearLayout>
+    <ImageView
+        android:layout_above="@+id/sendButtonLayout"
+        android:layout_width="match_parent"
+        android:id="@+id/shadowBottom"
+        android:layout_height="12dp"
+        android:background="@drawable/shadow_bottom_to_top"/>
     <EditText
         android:layout_width="300dp"
         android:layout_height="56dp"
+        android:layout_marginLeft="16dp"
+        android:textSize="16dp"
+        android:background="@android:color/transparent"
         android:id="@+id/messageInput"
         android:hint="Write a message..."
+        android:layout_toLeftOf="@+id/sendButtonLayout"
         android:layout_alignParentBottom="true"/>
-    <Button
-        android:layout_width="fill_parent"
+    <RelativeLayout
+        android:layout_width="56dp"
         android:layout_height="56dp"
-        android:id="@+id/sendButton"
         android:layout_alignParentBottom="true"
-        android:text="SEND"
-        android:layout_toRightOf="@+id/messageInput"/>
+        android:layout_alignParentRight="true"
+        android:id="@+id/sendButtonLayout">
+    <Button
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/sendButton"
+        android:background="@drawable/ic_send" />
+
+    </RelativeLayout>
 
     <ProgressBar
         android:id="@+id/chatLoading"
