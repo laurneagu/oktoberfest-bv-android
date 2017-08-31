@@ -36,6 +36,7 @@ import java.util.HashMap;
 
 import larc.ludiconprod.Activities.ActivitiesActivity;
 import larc.ludiconprod.Activities.ActivityDetailsActivity;
+import larc.ludiconprod.Activities.BalanceActivity;
 import larc.ludiconprod.Activities.ChatAndFriendsActivity;
 import larc.ludiconprod.Activities.CouponsActivity;
 import larc.ludiconprod.Activities.CreateNewActivity;
@@ -1077,6 +1078,12 @@ public class HTTPResponseController {
     public void getLeaderboard(String urlParams, HashMap<String, String> headers, LeaderboardTab leaderboardTab) {
         RequestQueue requestQueue = Volley.newRequestQueue(activity);
         CustomRequest request = new CustomRequest(Request.Method.GET, prodServer + "api/leaderboard?" + urlParams, new HashMap<String, String>(), headers, leaderboardTab, this.createErrorListener());
+        requestQueue.add(request);
+    }
+
+    public void getBalance(HashMap<String, String> headers, String urlParams, BalanceActivity activity) {
+        RequestQueue requestQueue = Volley.newRequestQueue(activity);
+        CustomRequest request = new CustomRequest(Request.Method.GET, prodServer + "api/balance?" + urlParams, new HashMap<String, String>(), headers, activity, this.createErrorListener());
         requestQueue.add(request);
     }
 }

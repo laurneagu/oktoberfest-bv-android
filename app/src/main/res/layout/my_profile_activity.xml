@@ -28,6 +28,7 @@
             android:orientation="horizontal"
             android:layout_alignParentRight="true">
             <LinearLayout
+                android:id="@+id/ludicoinsLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="32dp"
                 android:background="@drawable/round_textview"

@@ -12,10 +12,10 @@
         android:layout_height="56dp"
         android:background="#FFFFFF">
         <TextView
+            android:id="@+id/profileTitle"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:textColor="@color/tab_text_color"
-
             android:text="My profile"
             android:textSize="20sp"
             android:gravity="center|left"
@@ -28,11 +28,12 @@
             android:orientation="horizontal"
             android:layout_alignParentRight="true">
             <LinearLayout
+                android:id="@+id/ludicoinsLayout"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="32dp"
                 android:background="@drawable/round_textview"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp">
+                android:orientation="horizontal"
+                android:layout_gravity="center">
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -131,15 +132,18 @@
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:fontFamily="@string/fontmedium"
-                    android:text="23.567"/>
+                    android:text="23.567"
+                    android:textSize="14sp"/>
                 <ImageView
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:src="@drawable/ic_points_small"/>
                 <TextView
+                    android:id="@+id/profileToNextLevelText"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:text="to next level"
+                    android:textSize="14sp"
                     android:fontFamily="@string/fontmedium"/>
             </LinearLayout>
 
@@ -172,6 +176,7 @@
                             android:fontFamily="@string/fontmedium"
                             android:textSize="16sp"/>
                         <TextView
+                            android:id="@+id/profileLevelText"
                             android:layout_height="wrap_content"
                             android:layout_width="match_parent"
                             android:text="Level"
@@ -209,6 +214,7 @@
                             android:fontFamily="@string/fontmedium"
                             android:textSize="16sp"/>
                         <TextView
+                            android:id="@+id/profilePointsText"
                             android:layout_height="wrap_content"
                             android:layout_width="match_parent"
                             android:text="Points"
@@ -246,6 +252,7 @@
                             android:fontFamily="@string/fontmedium"
                             android:textSize="16sp"/>
                         <TextView
+                            android:id="@+id/profilePositionText"
                             android:layout_height="wrap_content"
                             android:layout_width="match_parent"
                             android:text="Position"

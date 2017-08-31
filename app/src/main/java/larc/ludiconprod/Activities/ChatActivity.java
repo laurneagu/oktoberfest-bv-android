@@ -77,9 +77,7 @@ public class ChatActivity extends Activity {
                     Runnable getPage = getFirstPage();
                     Thread listener = new Thread(getPage);
                     listener.start();
-
-
-                }else{
+                } else {
                     chatLoading.setVisibility(View.INVISIBLE);
                     createChat=true;
                     Message firstMessage = new Message();
@@ -88,56 +86,44 @@ public class ChatActivity extends Activity {
                     firstMessage.setTopImage = true;
                     messageList.add(0, firstMessage);
                     setAdapter();
-
-
                 }
-
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
     }
-
 
     @Override
     public void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
         setContentView(R.layout.chat_activity);
-        sendButton=(Button)findViewById(R.id.sendButton);
-        messageInput=(EditText)findViewById(R.id.messageInput);
-        chatLoading=(ProgressBar)findViewById(R.id.chatLoading);
+        sendButton = (Button)findViewById(R.id.sendButton);
+        messageInput = (EditText)findViewById(R.id.messageInput);
+        chatLoading = (ProgressBar)findViewById(R.id.chatLoading);
         backButton = (ImageButton) findViewById(R.id.backButton);
         backButton.setBackgroundResource(R.drawable.ic_nav_up);
         TextView titleText = (TextView) findViewById(R.id.titleText);
         titleText.setText(getIntent().getStringExtra("otherParticipantName").substring(0,getIntent().getStringExtra("otherParticipantName").length()-1));
         //checkChatExistence(getIntent().getStringExtra("UserId"),this);
-        isOnChat1to1=true;
-        createChat=false;
+        isOnChat1to1 = true;
+        createChat = false;
 
         ChatId=getIntent().getStringExtra("chatId");
         if(ChatId.equalsIgnoreCase("isNot")){
             checkChatExistence(getIntent().getStringExtra("UserId"),this);
-
         }
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 Intent intent=new Intent(ChatActivity.this,Main.class);
                 intent.putExtra("setChatTab",true);
                 startActivity(intent);
                 isOnChat1to1=false;
                 finish();
-
             }
         });
-
-
-
-
 
         messageAdapter = new MessageAdapter(messageList, getApplicationContext(), this, getResources(), ChatActivity.this);
 
@@ -156,12 +142,9 @@ public class ChatActivity extends Activity {
                         firebaseRef.child("last_message_date").setValue(System.currentTimeMillis() / 1000);
                         firebaseRef.child("messages").push().setValue(values);
                         messageInput.setText("");
-
                     }
                 }
                 if(createChat && messageInput.getText().length() > 0){
-
-
                     final DatabaseReference chatNode = FirebaseDatabase.getInstance().getReference().child("chats");
 
                     HashMap<String,Object> values=new HashMap<String, Object>();
@@ -181,7 +164,6 @@ public class ChatActivity extends Activity {
                     FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(ChatActivity.this).id).child("talkbuddies").child(getIntent().getStringExtra("UserId")).setValue(chat);
                     FirebaseDatabase.getInstance().getReference().child("users").child(getIntent().getStringExtra("UserId")).child("talkbuddies").child(Persistance.getInstance().getUserInfo(ChatActivity.this).id).setValue(chat);
 
-
                     listenForChangesWhenCreated();
                     final DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("chats").child(ChatId);
                     HashMap<String, String> valuesCreate = new HashMap<String, String>();
@@ -191,86 +173,65 @@ public class ChatActivity extends Activity {
                     firebaseRef.child("last_message_date").setValue(System.currentTimeMillis() / 1000);
                     firebaseRef.child("messages").push().setValue(valuesCreate);
                     messageInput.setText("");
-
-
-
-
-
-
                 }
             }
         });
 
-
-
-
-            if(!ChatId.equalsIgnoreCase("isNot")) {
-                listenForChanges();
-                Runnable getPage = getFirstPage();
-                Thread listener = new Thread(getPage);
-                listener.start();
-            }
-
-
-
-
-
-
-
-
-
-
-
+        if(!ChatId.equalsIgnoreCase("isNot")) {
+            listenForChanges();
+            Runnable getPage = getFirstPage();
+            Thread listener = new Thread(getPage);
+            listener.start();
+        }
     }
 
     public void listenForChanges(){
+        final DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("chats").child(ChatId).child("messages");
+        firebaseRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                if (isFirstTimeSetMessage && isOnChat1to1 && !ChatId.equalsIgnoreCase("isNot") && !createChat) {
+                    Message message = new Message();
+                    message.authorId = dataSnapshot.child("author_id").getValue().toString();
+                    message.date = Integer.valueOf(dataSnapshot.child("date").getValue().toString());
+                    message.message = dataSnapshot.child("message").getValue().toString();
+                    message.messageId = dataSnapshot.getKey();
+                    message.otherUserImage=getIntent().getStringExtra("otherParticipantImage");
+                    messageList.add(message);
+                    DatabaseReference seenRef=FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(ChatActivity.this).id).child("chats").child(ChatId).child("seen");
+                    seenRef.setValue(message.messageId);
+                    needToScroll=true;
+                    setAdapter();
+                }
+                synchronized (waitForChatLoading) {
+                    try {
+                        waitForChatLoading.notify(); // ready, notify thread to get data from firebase
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
 
-                    final DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("chats").child(ChatId).child("messages");
-                    firebaseRef.addChildEventListener(new ChildEventListener() {
-                        @Override
-                        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                            if (isFirstTimeSetMessage && isOnChat1to1 && !ChatId.equalsIgnoreCase("isNot") && !createChat) {
-                                Message message = new Message();
-                                message.authorId = dataSnapshot.child("author_id").getValue().toString();
-                                message.date = Integer.valueOf(dataSnapshot.child("date").getValue().toString());
-                                message.message = dataSnapshot.child("message").getValue().toString();
-                                message.messageId = dataSnapshot.getKey();
-                                message.otherUserImage=getIntent().getStringExtra("otherParticipantImage");
-                                messageList.add(message);
-                                DatabaseReference seenRef=FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(ChatActivity.this).id).child("chats").child(ChatId).child("seen");
-                                seenRef.setValue(message.messageId);
-                                needToScroll=true;
-                                setAdapter();
-                            }
-                            synchronized (waitForChatLoading) {
-                                try {
-                                    waitForChatLoading.notify(); // ready, notify thread to get data from firebase
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
-                        @Override
-                        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            }
 
-                        }
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
 
-                        @Override
-                        public void onChildRemoved(DataSnapshot dataSnapshot) {
+            }
 
-                        }
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
 
-                        @Override
-                        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
 
-                        }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
+            }
+        });
 
 
 
@@ -280,78 +241,72 @@ public class ChatActivity extends Activity {
         {
             return new Runnable() {
                 public void run() {
-                    synchronized (waitForChatLoading) {
-                        try {
-                            waitForChatLoading.wait();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                synchronized (waitForChatLoading) {
+                    try {
+                        waitForChatLoading.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-                    final DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(ChatActivity.this).id).child("chats").child(ChatId).child("messages");
-                    Query query = firebaseRef.limitToLast(21);
-                    numberOfChatsPage = 1;
-                    messageList.clear();
-                    if (!ChatId.equalsIgnoreCase("isNot")) {
-                        query.addListenerForSingleValueEvent(new ValueEventListener() {
+                }
+                final DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(ChatActivity.this).id).child("chats").child(ChatId).child("messages");
+                Query query = firebaseRef.limitToLast(21);
+                numberOfChatsPage = 1;
+                messageList.clear();
+                if (!ChatId.equalsIgnoreCase("isNot")) {
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
 
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                numberOfTotalChatsArrived = (int) dataSnapshot.getChildrenCount();
-                                for (DataSnapshot messages : dataSnapshot.getChildren()) {
-                                    Message message = new Message();
-                                    message.authorId = messages.child("author_id").getValue().toString();
-                                    message.date = Integer.valueOf(messages.child("date").getValue().toString());
-                                    message.message = messages.child("message").getValue().toString();
-                                    message.messageId = messages.getKey();
-                                    message.otherUserImage = getIntent().getStringExtra("otherParticipantImage");
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            numberOfTotalChatsArrived = (int) dataSnapshot.getChildrenCount();
+                            for (DataSnapshot messages : dataSnapshot.getChildren()) {
+                                Message message = new Message();
+                                message.authorId = messages.child("author_id").getValue().toString();
+                                message.date = Integer.valueOf(messages.child("date").getValue().toString());
+                                message.message = messages.child("message").getValue().toString();
+                                message.messageId = messages.getKey();
+                                message.otherUserImage = getIntent().getStringExtra("otherParticipantImage");
 
 
-                                    if (counterOfChats > 0 || numberOfTotalChatsArrived < 21) {
-                                        messageList.add(message);
+                                if (counterOfChats > 0 || numberOfTotalChatsArrived < 21) {
+                                    messageList.add(message);
 
-                                        chatLoading.setAlpha(0f);
-                                        counterOfChats++;
-                                    } else {
-                                        counterOfChats++;
-                                        keyOfLastChat = message.messageId;
-                                        valueOfLastChat = message.date;
-                                    }
-                                    if (numberOfTotalChatsArrived < 21) {
-                                        if (numberOfTotalChatsArrived == counterOfChats) {
-
-                                            Message firstMessage = new Message();
-                                            firstMessage.otherUserName = getIntent().getStringExtra("otherParticipantName");
-                                            firstMessage.otherUserImage = getIntent().getStringExtra("otherParticipantImage");
-                                            firstMessage.setTopImage = true;
-                                            messageList.add(0, firstMessage);
-                                            isLastPage = true;
-                                        }
-
-                                    }
+                                    chatLoading.setAlpha(0f);
+                                    counterOfChats++;
+                                } else {
+                                    counterOfChats++;
+                                    keyOfLastChat = message.messageId;
+                                    valueOfLastChat = message.date;
+                                }
+                                if (numberOfTotalChatsArrived < 21) {
                                     if (numberOfTotalChatsArrived == counterOfChats) {
-                                        DatabaseReference seenRef = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(ChatActivity.this).id).child("chats").child(ChatId).child("seen");
-                                        seenRef.setValue(messageList.get(messageList.size() - 1).messageId);
-                                        setAdapter();
+
+                                        Message firstMessage = new Message();
+                                        firstMessage.otherUserName = getIntent().getStringExtra("otherParticipantName");
+                                        firstMessage.otherUserImage = getIntent().getStringExtra("otherParticipantImage");
+                                        firstMessage.setTopImage = true;
+                                        messageList.add(0, firstMessage);
+                                        isLastPage = true;
                                     }
+
+                                }
+                                if (numberOfTotalChatsArrived == counterOfChats) {
+                                    DatabaseReference seenRef = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(ChatActivity.this).id).child("chats").child(ChatId).child("seen");
+                                    seenRef.setValue(messageList.get(messageList.size() - 1).messageId);
+                                    setAdapter();
                                 }
                             }
+                        }
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
 
-                            }
-                        });
-                    }
+                        }
+                    });
+                }
                 }
             };
 
         }
-
-
-
-
-
-
     }
 
 
@@ -396,8 +351,6 @@ public class ChatActivity extends Activity {
 
             }
         });
-
-
 
     }
 

@@ -24,4 +24,5 @@
     <color name="darkblue">#0c3855</color>
     <color name="green">#02b9ad</color>
     <color name="greenAlpha">#4002b9ad</color>
+    <color name="yellow">#FFFF00</color>
 </resources>

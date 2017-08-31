@@ -74,6 +74,24 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
                 }
             });
 
+            this.settings = (ImageView) v.findViewById(R.id.settings);
+            this.settings.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(mContext, EditProfileActivity.class);
+                    startActivity(intent);
+                }
+            });
+
+            v.findViewById(R.id.ludicoinsLayout).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(mContext, BalanceActivity.class);
+                    startActivity(intent);
+                }
+            });
+
             Typeface typeFace = Typeface.createFromAsset(super.getActivity().getAssets(),"fonts/Quicksand-Medium.ttf");
             Typeface typeFaceBold = Typeface.createFromAsset(super.getActivity().getAssets(),"fonts/Quicksand-Bold.ttf");
 
@@ -132,15 +150,6 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
             TextView toNextLevel = (TextView) v.findViewById(R.id.profileToNextLevel);
             toNextLevel.setText("" + u.pointsToNextLevel);
             TextView sportsCount = (TextView) v.findViewById(R.id.profilePracticeSportsCountLabel);
-            this.settings = (ImageView) v.findViewById(R.id.settings);
-            this.settings.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(mContext, EditProfileActivity.class);
-                    startActivity(intent);
-                }
-            });
 
             ImageView image = (ImageView) v.findViewById(R.id.profileImage);
             if (u.profileImage != null && !u.profileImage.isEmpty()) {
