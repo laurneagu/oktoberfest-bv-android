@@ -40,7 +40,7 @@ import larc.ludiconprod.Utils.Message;
  */
 
 public class ChatActivity extends Activity {
-    ProgressBar chatLoading;
+    static public ProgressBar chatLoading;
     ArrayList<Message> messageList=new ArrayList<>();
     public int counterOfChats=0;
     public String keyOfLastChat;
@@ -60,9 +60,13 @@ public class ChatActivity extends Activity {
     ImageButton backButton;
     Boolean needToScroll=true;
     int nrOfPage=0;
+    int isGroupChat=0;
     Boolean createChat=false;
     String ChatId;
     ArrayList<String> unseenChats;
+    ArrayList<String> otherUsersId=new ArrayList<>();
+    ArrayList<String> otherUsersImage=new ArrayList<>();
+    TextView titleText;
 
     public  void checkChatExistence(final String otherUserId,final  Activity activity){
         final DatabaseReference myNode = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(activity).id).child("talkbuddies");
@@ -112,8 +116,10 @@ public class ChatActivity extends Activity {
         chatLoading = (ProgressBar)findViewById(R.id.chatLoading);
         backButton = (ImageButton) findViewById(R.id.backButton);
         backButton.setBackgroundResource(R.drawable.ic_nav_up);
-        TextView titleText = (TextView) findViewById(R.id.titleText);
-        titleText.setText(getIntent().getStringExtra("otherParticipantName").substring(0,getIntent().getStringExtra("otherParticipantName").length()-1));
+        titleText = (TextView) findViewById(R.id.titleText);
+        if((getIntent().getStringExtra("otherParticipantName") != null)) {
+            titleText.setText(getIntent().getStringExtra("otherParticipantName").substring(0, getIntent().getStringExtra("otherParticipantName").length() - 1));
+        }
         //checkChatExistence(getIntent().getStringExtra("UserId"),this);
         isOnChat1to1 = true;
         createChat = false;
@@ -121,6 +127,13 @@ public class ChatActivity extends Activity {
         unseenChats=Persistance.getInstance().getUnseenChats(getApplicationContext());
 
         ChatId=getIntent().getStringExtra("chatId");
+        if(getIntent().getStringArrayListExtra("otherParticipantId") != null) {
+            otherUsersId = getIntent().getStringArrayListExtra("otherParticipantId");
+        }
+        if(getIntent().getStringArrayListExtra("otherParticipantImage") != null) {
+            otherUsersImage = getIntent().getStringArrayListExtra("otherParticipantImage");
+        }
+        isGroupChat=getIntent().getIntExtra("groupChat",0);
 
         for(int i=0;i < unseenChats .size();i++){
             if(ChatId.equalsIgnoreCase(unseenChats.get(i))){
@@ -135,11 +148,16 @@ public class ChatActivity extends Activity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(ChatActivity.this,Main.class);
-                intent.putExtra("setChatTab",true);
-                startActivity(intent);
-                isOnChat1to1=false;
-                finish();
+                if(isGroupChat == 0) {
+                    Intent intent = new Intent(ChatActivity.this, Main.class);
+                    intent.putExtra("setChatTab", true);
+                    startActivity(intent);
+                    isOnChat1to1 = false;
+                    finish();
+                }
+                else{
+                    finish();
+                }
             }
         });
 
@@ -195,11 +213,46 @@ public class ChatActivity extends Activity {
             }
         });
 
-        if(!ChatId.equalsIgnoreCase("isNot")) {
+        if(!ChatId.equalsIgnoreCase("isNot") && isGroupChat == 0) {
             listenForChanges();
             Runnable getPage = getFirstPage();
             Thread listener = new Thread(getPage);
             listener.start();
+        }
+        if(!ChatId.equalsIgnoreCase("isNot") && isGroupChat == 1){
+            if(otherUsersId != null) {
+                otherUsersId.clear();
+            }
+            if(otherUsersImage != null) {
+                otherUsersImage.clear();
+            }
+
+            final DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(ChatActivity.this).id).child("chats").child(ChatId).child("users");
+            firebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    String names="";
+                    for(DataSnapshot users : dataSnapshot.getChildren()){
+                        if(!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(ChatActivity.this).id)){
+                            otherUsersImage.add(users.child("image").getValue().toString());
+                            otherUsersId.add(users.getKey().toString());
+                            names+=users.child("name").getValue().toString()+",";
+
+                        }
+                    }
+                    titleText.setText(names.substring(0,names.length()-1));
+                    listenForChanges();
+                    Runnable getPage = getFirstPage();
+                    Thread listener = new Thread(getPage);
+                    listener.start();
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
         }
     }
 
@@ -214,7 +267,11 @@ public class ChatActivity extends Activity {
                     message.date = Integer.valueOf(dataSnapshot.child("date").getValue().toString());
                     message.message = dataSnapshot.child("message").getValue().toString();
                     message.messageId = dataSnapshot.getKey();
-                    message.otherUserImage=getIntent().getStringExtra("otherParticipantImage");
+                    for(int i=0;i < otherUsersId.size();i++) {
+                        if(message.authorId.equalsIgnoreCase(otherUsersId.get(i))) {
+                            message.otherUserImage =otherUsersImage.get(i);
+                        }
+                    }
                     messageList.add(message);
                     DatabaseReference seenRef=FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(ChatActivity.this).id).child("chats").child(ChatId).child("seen");
                     seenRef.setValue(message.messageId);
@@ -282,7 +339,11 @@ public class ChatActivity extends Activity {
                                 message.date = Integer.valueOf(messages.child("date").getValue().toString());
                                 message.message = messages.child("message").getValue().toString();
                                 message.messageId = messages.getKey();
-                                message.otherUserImage = getIntent().getStringExtra("otherParticipantImage");
+                                for(int i=0;i < otherUsersId.size();i++) {
+                                    if(message.authorId.equalsIgnoreCase(otherUsersId.get(i))) {
+                                        message.otherUserImage =otherUsersImage.get(i);
+                                    }
+                                }
 
 
                                 if (counterOfChats > 0 || numberOfTotalChatsArrived < 21) {
@@ -299,11 +360,14 @@ public class ChatActivity extends Activity {
                                     if (numberOfTotalChatsArrived == counterOfChats) {
 
                                         Message firstMessage = new Message();
-                                        firstMessage.otherUserName = getIntent().getStringExtra("otherParticipantName");
-                                        firstMessage.otherUserImage = getIntent().getStringExtra("otherParticipantImage");
-                                        firstMessage.setTopImage = true;
-                                        messageList.add(0, firstMessage);
-                                        isLastPage = true;
+                                        if(otherUsersId.size() == 1 && isGroupChat == 0) {
+                                            firstMessage.otherUserName = getIntent().getStringExtra("otherParticipantName");
+                                            firstMessage.otherUserImage =otherUsersImage.get(0);
+                                            firstMessage.setTopImage = true;
+                                            messageList.add(0, firstMessage);
+                                        }
+                                            isLastPage = true;
+
                                     }
 
                                 }
@@ -388,7 +452,12 @@ public class ChatActivity extends Activity {
                     message.date = Integer.valueOf(messages.child("date").getValue().toString());
                     message.message = messages.child("message").getValue().toString();
                     message.messageId = messages.getKey();
-                    message.otherUserImage=getIntent().getStringExtra("otherParticipantImage");
+                    for(int i=0;i < otherUsersId.size();i++) {
+                        if(message.authorId.equalsIgnoreCase(otherUsersId.get(i))) {
+                            message.otherUserImage =otherUsersImage.get(i);
+                            break;
+                        }
+                    }
 
 
                     if(counterOfChats > 0 || numberOfTotalChatsArrived < 21) {
@@ -409,10 +478,12 @@ public class ChatActivity extends Activity {
                         if (numberOfTotalChatsArrived == counterOfChats) {
 
                             Message firstMessage=new Message();
-                            firstMessage.otherUserName=getIntent().getStringExtra("otherParticipantName");
-                            firstMessage.otherUserImage=getIntent().getStringExtra("otherParticipantImage");
-                            firstMessage.setTopImage=true;
-                            messageList.add(0,firstMessage);
+                            if(otherUsersId.size() == 1 && isGroupChat == 0) {
+                                firstMessage.otherUserName = getIntent().getStringExtra("otherParticipantName");
+                                firstMessage.otherUserImage =otherUsersImage.get(0);
+                                firstMessage.setTopImage = true;
+                                messageList.add(0, firstMessage);
+                            }
                             isLastPage = true;
                         }
 
@@ -494,10 +565,15 @@ public class ChatActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        Intent intent=new Intent(this,Main.class);
-        intent.putExtra("setChatTab",true);
-        startActivity(intent);
-        isOnChat1to1=false;
-        finish();
+        if(isGroupChat == 0) {
+            Intent intent = new Intent(ChatActivity.this, Main.class);
+            intent.putExtra("setChatTab", true);
+            startActivity(intent);
+            isOnChat1to1 = false;
+            finish();
+        }
+        else{
+            finish();
+        }
     }
 }

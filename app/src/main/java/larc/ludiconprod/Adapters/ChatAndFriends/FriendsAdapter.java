@@ -126,7 +126,7 @@ public class FriendsAdapter extends BaseAdapter implements ListAdapter {
                 holder.friendsImage.setImageBitmap(bitmap);
             }
             holder.friendsName.setText(currentFriend.userName);
-            holder.friendsLevel.setText("Level "+currentFriend.level);
+            holder.friendsLevel.setText(String.valueOf(currentFriend.level));
             if(currentFriend.numberOfMutuals != 0) {
                 holder.friendsMutualFriends.setText(currentFriend.numberOfMutuals + " mutual friends");
             }

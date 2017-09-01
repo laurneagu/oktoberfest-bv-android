@@ -29,5 +29,6 @@ public class EventDetails {
     public String creatorId;
     public String creatorProfilePicture;
     public int isParticipant;
+    public String chatId="";
     public ArrayList<Friend> listOfParticipants=new ArrayList<Friend>();
 }

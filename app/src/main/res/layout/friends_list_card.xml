@@ -16,6 +16,29 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:layout_marginLeft="16dp"/>
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="48dp"
+            android:id="@+id/imageView"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="16dp"
+            android:background="#00ffffff"/>
+        <TextView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/round_textview_green"
+            android:textSize="12sp"
+            android:text="12"
+            android:id="@+id/friendsLevel"
+            android:textColor="#ffffff"
+            android:layout_toRightOf="@id/imageView"
+            android:layout_alignBottom="@id/imageView"
+            android:textAlignment="center"
+            android:paddingTop="3dp"
+            android:layout_marginBottom="4dp"
+            />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -41,17 +64,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14dp"
-                android:text="Level 6"
-                android:textColor="#02b9ad"
-                android:id="@+id/friendsLevel"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="14dp"
                 android:text="12 mutual friends"
                 android:textColor="#acb8c1"
-                android:id="@+id/friendsMutualFriends"
-                android:layout_marginLeft="8dp"/>
+                android:id="@+id/friendsMutualFriends" />
             </LinearLayout>
 
 

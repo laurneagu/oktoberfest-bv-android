@@ -283,15 +283,15 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
 
             }
             for (int i = 0; i < currentEvent.participansProfilePicture.size(); i++) {
-                if (!currentEvent.participansProfilePicture.get(i).equals("") && counter == 0) {
+                if (!currentEvent.participansProfilePicture.get(i).equals("") && i == 0) {
                     Bitmap bitmap = decodeBase64(currentEvent.participansProfilePicture.get(i));
                     holder.friends0.setImageBitmap(bitmap);
                 } else
-                    if (!currentEvent.participansProfilePicture.get(i).equals("") && counter == 1) {
+                    if (!currentEvent.participansProfilePicture.get(i).equals("") && i == 1) {
                         Bitmap bitmap = decodeBase64(currentEvent.participansProfilePicture.get(i));
                         holder.friends1.setImageBitmap(bitmap);
                     } else
-                        if (!currentEvent.participansProfilePicture.get(i).equals("") && counter == 2) {
+                        if (!currentEvent.participansProfilePicture.get(i).equals("") && i == 2) {
                             Bitmap bitmap = decodeBase64(currentEvent.participansProfilePicture.get(i));
                             holder.friends2.setImageBitmap(bitmap);
                         }

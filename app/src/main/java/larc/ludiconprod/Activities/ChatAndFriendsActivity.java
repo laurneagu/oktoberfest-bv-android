@@ -139,132 +139,142 @@ public class ChatAndFriendsActivity extends Fragment {
             firebaseRef.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    if(!isOnChatPage && !isOnChat1to1){
+                    /*if(!isOnChatPage && !isOnChat1to1) {
 
-                        String names="";
-                        for (DataSnapshot users : dataSnapshot.child("users").getChildren()) {
-                            if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(activity).id)) {
-                                names += users.child("name").getValue().toString() + ",";
-                            }
-
-                        }
-
-                    }
-
-                    if (dataSnapshot.hasChild("last_message_date") && isFirstTimeSetChat && isOnChatPage) {
-                        final Chat chat = new Chat();
-                        chat.chatId = dataSnapshot.getKey();
-                        if (dataSnapshot.hasChild("event_id")) {
-                            chat.eventId = dataSnapshot.child("event_id").getValue().toString();
-                        }
                         String names = "";
                         for (DataSnapshot users : dataSnapshot.child("users").getChildren()) {
                             if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(activity).id)) {
                                 names += users.child("name").getValue().toString() + ",";
-                                if (chat.eventId == null) {
-                                    chat.image = users.child("image").getValue().toString();
-                                }
                             }
 
                         }
-                        chat.participantName = names;
+                    }*/
 
-                        chat.lastMessageTime = Integer.valueOf(dataSnapshot.child("last_message_date").getValue().toString());
-                        DatabaseReference lastMessageRef = dataSnapshot.child("messages").getRef();
-                        Query lastMessage = lastMessageRef.orderByKey().limitToLast(1);
-                        lastMessage.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                for (DataSnapshot child : dataSnapshot.getChildren()) {
-                                    chat.lastMessage = child.child("message").getValue().toString();
-                                    chat.lastMessageId=child.getKey().toString();
+
+
+                        if (dataSnapshot.hasChild("last_message_date") && isFirstTimeSetChat && isOnChatPage) {
+                            final Chat chat = new Chat();
+                            chat.chatId = dataSnapshot.getKey();
+                            if (dataSnapshot.hasChild("event_id")) {
+                                chat.eventId = dataSnapshot.child("event_id").getValue().toString();
+                            }
+                            String names = "";
+                            for (DataSnapshot users : dataSnapshot.child("users").getChildren()) {
+                                if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(activity).id)) {
+                                    names += users.child("name").getValue().toString() + ",";
+                                    chat.image.add(users.child("image").getValue().toString());
+                                    chat.otherParticipantId.add(users.getKey().toString());
+
                                 }
-                                chatList.add(0,chat);
-                                setAdapter();
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
 
                             }
-                        });
+                            chat.participantName = names;
 
-                    }
+                            chat.lastMessageTime = Integer.valueOf(dataSnapshot.child("last_message_date").getValue().toString());
+                            DatabaseReference lastMessageRef = dataSnapshot.child("messages").getRef();
+                            Query lastMessage = lastMessageRef.orderByKey().limitToLast(1);
+                            lastMessage.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                        chat.lastMessage = child.child("message").getValue().toString();
+                                        chat.lastMessageId = child.getKey().toString();
+                                    }
+                                    chatList.add(0, chat);
+                                    setAdapter();
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+
+                        }
+
+
+
                 }
 
                 @Override
                 public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                    if(!isOnChatPage && !isOnChat1to1){
+                    try {
+                        if (!isOnChatPage && !isOnChat1to1) {
 
-                        String names="";
-                        for (DataSnapshot users : dataSnapshot.child("users").getChildren()) {
-                            if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(activity).id)) {
-                                names += users.child("name").getValue().toString() + ",";
+
+                            String names = "";
+                            for (DataSnapshot users : dataSnapshot.child("users").getChildren()) {
+                                if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(activity).id)) {
+                                    names += users.child("name").getValue().toString() + ",";
+                                }
+
                             }
 
                         }
-
-                    }
-                    if (dataSnapshot.hasChild("last_message_date")&& isOnChatPage && !isAlreadyProcess) {
-                        isAlreadyProcess=true;
-                        for(int i=0;i < chatList.size();i++){
-                            if(dataSnapshot.getKey().equalsIgnoreCase(chatList.get(i).chatId)){
+                        if (dataSnapshot.hasChild("last_message_date") && isOnChatPage && !isAlreadyProcess) {
+                            isAlreadyProcess = true;
+                            for (int i = 0; i < chatList.size(); i++) {
+                                if (dataSnapshot.getKey().equalsIgnoreCase(chatList.get(i).chatId)) {
                                     chatList.remove(i);
-                                if(chatList.size() > 0) {
-                                    threadsList.get(i).cancel();
-                                    threadsList.remove(i);
-                                    break;
+                                    if (chatList.size() > 0 && threadsList.size() >= i) {
+                                        threadsList.get(i).cancel();
+                                        threadsList.remove(i);
+                                        break;
+                                    }
+
                                 }
 
                             }
+
+                            final Chat chat = new Chat();
+                            chat.chatId = dataSnapshot.getKey();
+                            if (dataSnapshot.hasChild("event_id")) {
+                                chat.eventId = dataSnapshot.child("event_id").getValue().toString();
+                            }
+                            String names = "";
+                            for (DataSnapshot users : dataSnapshot.child("users").getChildren()) {
+                                if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(activity).id)) {
+                                    names += users.child("name").getValue().toString() + ",";
+                                    chat.image.add(users.child("image").getValue().toString());
+                                    chat.otherParticipantId.add(users.getKey().toString());
+
+                                }
+
+                            }
+                            chat.participantName = names;
+
+                            chat.lastMessageTime = Integer.valueOf(dataSnapshot.child("last_message_date").getValue().toString());
+                            DatabaseReference lastMessageRef = dataSnapshot.child("messages").getRef();
+                            Query lastMessage = lastMessageRef.orderByKey().limitToLast(1);
+                            lastMessage.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                        chat.lastMessage = child.child("message").getValue().toString();
+                                        chat.lastMessageId = child.getKey().toString();
+                                    }
+                                    if (chatList.size() > 0 && !chatList.get(0).chatId.equals(chat.chatId)) {
+                                        chatList.add(0, chat);
+                                        setAdapter();
+                                        isAlreadyProcess = false;
+                                    } else if (chatList.size() == 0) {
+                                        chatList.add(0, chat);
+                                        setAdapter();
+                                        isAlreadyProcess = false;
+                                    }
+
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+
 
                         }
-
-                        final Chat chat = new Chat();
-                        chat.chatId = dataSnapshot.getKey();
-                        if (dataSnapshot.hasChild("event_id")) {
-                            chat.eventId = dataSnapshot.child("event_id").getValue().toString();
-                        }
-                        String names = "";
-                        for (DataSnapshot users : dataSnapshot.child("users").getChildren()) {
-                            if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(activity).id)) {
-                                names += users.child("name").getValue().toString() + ",";
-                                if (chat.eventId == null) {
-                                    chat.image = users.child("image").getValue().toString();
-                                }
-                            }
-
-                        }
-                        chat.participantName = names;
-
-                        chat.lastMessageTime = Integer.valueOf(dataSnapshot.child("last_message_date").getValue().toString());
-                        DatabaseReference lastMessageRef = dataSnapshot.child("messages").getRef();
-                        Query lastMessage = lastMessageRef.orderByKey().limitToLast(1);
-                        lastMessage.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                for (DataSnapshot child : dataSnapshot.getChildren()) {
-                                    chat.lastMessage = child.child("message").getValue().toString();
-                                    chat.lastMessageId=child.getKey().toString();
-                                }
-                                if(chatList.size() > 0 && !chatList.get(0).chatId.equals(chat.chatId)) {
-                                    chatList.add(0, chat);
-                                    setAdapter();
-                                    isAlreadyProcess=false;
-                                }else if(chatList.size() == 0){
-                                    chatList.add(0, chat);
-                                    setAdapter();
-                                    isAlreadyProcess=false;
-                                }
-
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
-
+                    }catch (Exception e){
+                        e.printStackTrace();
                     }
                 }
 
@@ -299,145 +309,151 @@ public class ChatAndFriendsActivity extends Fragment {
     }
 
     public void setAdapter(){
+        try {
 
-        chatAdapter.notifyDataSetChanged();
-        final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refreshChat);
-        chatListView = (ListView) v.findViewById(R.id.chat_listView);
-        progressBarChats=(ProgressBar)v.findViewById(R.id.progressBarChats);
+            chatAdapter.notifyDataSetChanged();
+            final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refreshChat);
+            chatListView = (ListView) v.findViewById(R.id.chat_listView);
+            progressBarChats = (ProgressBar) v.findViewById(R.id.progressBarChats);
 
-        if(!isFirstTimeSetChat) {
-            chatListView.setAdapter(chatAdapter);
-            isFirstTimeSetChat=true;
-        }
-        TextView noConversationTV=(TextView) v.findViewById(R.id.noConversationTV);
-        TextView joinActivitiesTV=(TextView)v.findViewById(R.id.joinActivitiesTV);
-        Button discoverActivitiesButton=(Button)v.findViewById(R.id.discoverActivitiesButton);
-        ImageView chatImage=(ImageView)v.findViewById(R.id.chatImage);
-        if(chatList.size() == 0){
-            noConversationTV.setVisibility(View.VISIBLE);
-            joinActivitiesTV.setVisibility(View.VISIBLE);
-            discoverActivitiesButton.setVisibility(View.VISIBLE);
-            chatImage.setVisibility(View.VISIBLE);
-        }else{
-            noConversationTV.setVisibility(View.INVISIBLE);
-            joinActivitiesTV.setVisibility(View.INVISIBLE);
-            discoverActivitiesButton.setVisibility(View.INVISIBLE);
-            chatImage.setVisibility(View.INVISIBLE);
-        }
-        if(chatListView != null) {
-            chatListView.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(final View v, MotionEvent event) {
-                    if (v != null && chatListView.getChildCount() > 0) {
-                        if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
+            if (!isFirstTimeSetChat) {
+                chatListView.setAdapter(chatAdapter);
+                isFirstTimeSetChat = true;
+            }
+            TextView noConversationTV = (TextView) v.findViewById(R.id.noConversationTV);
+            TextView joinActivitiesTV = (TextView) v.findViewById(R.id.joinActivitiesTV);
+            Button discoverActivitiesButton = (Button) v.findViewById(R.id.discoverActivitiesButton);
+            ImageView chatImage = (ImageView) v.findViewById(R.id.chatImage);
+            if (chatList.size() == 0) {
+                noConversationTV.setVisibility(View.VISIBLE);
+                joinActivitiesTV.setVisibility(View.VISIBLE);
+                discoverActivitiesButton.setVisibility(View.VISIBLE);
+                chatImage.setVisibility(View.VISIBLE);
+            } else {
+                noConversationTV.setVisibility(View.INVISIBLE);
+                joinActivitiesTV.setVisibility(View.INVISIBLE);
+                discoverActivitiesButton.setVisibility(View.INVISIBLE);
+                chatImage.setVisibility(View.INVISIBLE);
+            }
+            if (chatListView != null) {
+                chatListView.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(final View v, MotionEvent event) {
+                        if (v != null && chatListView.getChildCount() > 0) {
+                            if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
 
 
-                            if (chatListView.getLastVisiblePosition() == chatListView.getAdapter().getCount() - 1 &&
-                                    chatListView.getChildAt(chatListView.getChildCount() - 1).getBottom() <= chatListView.getHeight()) {
+                                if (chatListView.getLastVisiblePosition() == chatListView.getAdapter().getCount() - 1 &&
+                                        chatListView.getChildAt(chatListView.getChildCount() - 1).getBottom() <= chatListView.getHeight()) {
 
-                                // mSwipeRefreshLayout1.setRefreshing(true);
-                                if(!isLastPage) {
-                                    progressBarChats.setAlpha(1f);
-                                    getPage();
+                                    // mSwipeRefreshLayout1.setRefreshing(true);
+                                    if (!isLastPage) {
+                                        progressBarChats.setAlpha(1f);
+                                        getPage();
+                                    }
+
+
                                 }
-
-
                             }
                         }
+                        return false;
                     }
-                    return false;
-                }
-            });
-        }
-        if (!addedSwipe) {
-            mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
+                });
+            }
+            if (!addedSwipe) {
+                mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
 
-                            for(int i=0;i < threadsList.size();i++){
-                                threadsList.get(i).cancel();
-                            }
-                            threadsList.clear();
-                    counterOfChats=0;
-                    keyOfLastChat=null;
-                    valueOfLastChat=0;
-                    numberOfChatsPage=0;
-                    numberOfTotalChatsArrived=0;
-                    isLastPage=false;
-                    addedSwipe=false;
-                    mSwipeRefreshLayout.setRefreshing(false);
-                    getFirstPage();
-                }
-            });
-            addedSwipe = true;
+                        for (int i = 0; i < threadsList.size(); i++) {
+                            threadsList.get(i).cancel();
+                        }
+                        threadsList.clear();
+                        counterOfChats = 0;
+                        keyOfLastChat = null;
+                        valueOfLastChat = 0;
+                        numberOfChatsPage = 0;
+                        numberOfTotalChatsArrived = 0;
+                        isLastPage = false;
+                        addedSwipe = false;
+                        mSwipeRefreshLayout.setRefreshing(false);
+                        getFirstPage();
+                    }
+                });
+                addedSwipe = true;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
 
     }
 
     public void setFriendsAdapter(){
+        try {
 
-        friendsAdapter.notifyDataSetChanged();
-        final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refreshFriends);
-        friendsListView = (ListView) v.findViewById(R.id.friends_listView);
-        progressBarFriends=(ProgressBar)v.findViewById(R.id.progressBarFriends);
-        progressBarFriends.setAlpha(0f);
+            friendsAdapter.notifyDataSetChanged();
+            final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refreshFriends);
+            friendsListView = (ListView) v.findViewById(R.id.friends_listView);
+            progressBarFriends = (ProgressBar) v.findViewById(R.id.progressBarFriends);
+            progressBarFriends.setAlpha(0f);
 
-        if(!isFirstTimeSetFriends) {
-            friendsListView.setAdapter(friendsAdapter);
-            isFirstTimeSetFriends=true;
-        }
+            if (!isFirstTimeSetFriends) {
+                friendsListView.setAdapter(friendsAdapter);
+                isFirstTimeSetFriends = true;
+            }
 
-        TextView noFriendsTV=(TextView) v.findViewById(R.id.noFriendsTV);
-        TextView joinActivitiesFriendsTV=(TextView)v.findViewById(R.id.joinActivitiesFriendsTV);
-        Button discoverActivitiesFriendsButton=(Button)v.findViewById(R.id.discoverActivitiesFriendsButton);
-        ImageView friendsImage=(ImageView)v.findViewById(R.id.friendsImage);
+            TextView noFriendsTV = (TextView) v.findViewById(R.id.noFriendsTV);
+            TextView joinActivitiesFriendsTV = (TextView) v.findViewById(R.id.joinActivitiesFriendsTV);
+            Button discoverActivitiesFriendsButton = (Button) v.findViewById(R.id.discoverActivitiesFriendsButton);
+            ImageView friendsImage = (ImageView) v.findViewById(R.id.friendsImage);
 
-        if(friends.size() == 0){
-            noFriendsTV.setVisibility(View.VISIBLE);
-            joinActivitiesFriendsTV.setVisibility(View.VISIBLE);
-            discoverActivitiesFriendsButton.setVisibility(View.VISIBLE);
-            friendsImage.setVisibility(View.VISIBLE);
-        }else{
-            noFriendsTV.setVisibility(View.INVISIBLE);
-            joinActivitiesFriendsTV.setVisibility(View.INVISIBLE);
-            discoverActivitiesFriendsButton.setVisibility(View.INVISIBLE);
-            friendsImage.setVisibility(View.INVISIBLE);
-        }
-        if(friendsListView != null) {
-            friendsListView.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(final View v, MotionEvent event) {
-                    if (v != null && friendsListView.getChildCount() > 0) {
-                        if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
+            if (friends.size() == 0) {
+                noFriendsTV.setVisibility(View.VISIBLE);
+                joinActivitiesFriendsTV.setVisibility(View.VISIBLE);
+                discoverActivitiesFriendsButton.setVisibility(View.VISIBLE);
+                friendsImage.setVisibility(View.VISIBLE);
+            } else {
+                noFriendsTV.setVisibility(View.INVISIBLE);
+                joinActivitiesFriendsTV.setVisibility(View.INVISIBLE);
+                discoverActivitiesFriendsButton.setVisibility(View.INVISIBLE);
+                friendsImage.setVisibility(View.INVISIBLE);
+            }
+            if (friendsListView != null) {
+                friendsListView.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(final View v, MotionEvent event) {
+                        if (v != null && friendsListView.getChildCount() > 0) {
+                            if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
 
 
-                            if (friendsListView.getLastVisiblePosition() == friendsListView.getAdapter().getCount() - 1 &&
-                                    friendsListView.getChildAt(friendsListView.getChildCount() - 1).getBottom() <= friendsListView.getHeight()) {
+                                if (friendsListView.getLastVisiblePosition() == friendsListView.getAdapter().getCount() - 1 &&
+                                        friendsListView.getChildAt(friendsListView.getChildCount() - 1).getBottom() <= friendsListView.getHeight()) {
                                     progressBarFriends.setAlpha(1f);
                                     getFriends(String.valueOf(NumberOfRefreshFriends));
 
 
-
-
+                                }
                             }
                         }
+                        return false;
                     }
-                    return false;
-                }
-            });
-        }
+                });
+            }
 
-        if (!addedSwipeFriends) {
-            mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-                    addedSwipeFriends=false;
-                    NumberOfRefreshFriends=0;
-                    mSwipeRefreshLayout.setRefreshing(false);
-                    getFriends("0");
-                }
-            });
-            addedSwipeFriends = true;
+            if (!addedSwipeFriends) {
+                mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        addedSwipeFriends = false;
+                        NumberOfRefreshFriends = 0;
+                        mSwipeRefreshLayout.setRefreshing(false);
+                        getFriends("0");
+                    }
+                });
+                addedSwipeFriends = true;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
 
     }
@@ -463,9 +479,10 @@ public class ChatAndFriendsActivity extends Fragment {
                         for (DataSnapshot users : chats.child("users").getChildren()) {
                             if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(activity).id)) {
                                 names += users.child("name").getValue().toString() + ",";
-                                if (chat.eventId == null) {
-                                    chat.image = users.child("image").getValue().toString();
-                                }
+
+                                chat.image.add(users.child("image").getValue().toString());
+                                chat.otherParticipantId.add(users.getKey().toString());
+
                             }
 
                         }
@@ -541,9 +558,10 @@ public class ChatAndFriendsActivity extends Fragment {
                             for (DataSnapshot users : chats.child("users").getChildren()) {
                                 if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(activity).id)) {
                                     names += users.child("name").getValue().toString() + ",";
-                                    if (chat.eventId == null) {
-                                        chat.image = users.child("image").getValue().toString();
-                                    }
+
+                                    chat.image.add(users.child("image").getValue().toString());
+                                    chat.otherParticipantId.add(users.getKey().toString());
+
                                 }
 
                             }

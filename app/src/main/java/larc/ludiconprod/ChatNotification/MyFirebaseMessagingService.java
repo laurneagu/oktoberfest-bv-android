@@ -55,7 +55,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Persistance.getInstance().setUnseenChats(getApplicationContext(),numberOfChatUnseen);
 
         if(!isAppRunning(getApplicationContext())){
-            sendNotification(remoteMessage.getData().get("title"),remoteMessage.getData().get("body"));
+            sendNotification(remoteMessage.getData().get("title"),remoteMessage.getData().get("body"),remoteMessage.getData().get("chat"));
         }
     }
 
@@ -75,7 +75,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     }
 
-    private void sendNotification(String messageTitle,String messageBody) {
+    private void sendNotification(String messageTitle,String messageBody,String chatId) {
         Intent intent = new Intent(this, IntroActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,0 /* request code */, intent,PendingIntent.FLAG_UPDATE_CURRENT);
@@ -84,10 +84,23 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
-        NotificationCompat.Builder notificationBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
+        String displayMessage="";
+        final String splitMessage[]=messageBody.split(" ");
+        for(int i=0;i < splitMessage.length;i++) {
+            if (splitMessage[i].length() > 21 && splitMessage[i].substring(0, 10).equalsIgnoreCase("$#@$@#$%^$") && splitMessage[i].substring(splitMessage[i].length() - 10).equalsIgnoreCase("$#@$@#$%^$")) {
+                displayMessage+="this";
+            }else{
+                displayMessage+=splitMessage[i];
+            }
+            if(i < splitMessage.length) {
+                displayMessage+=" ";
+            }
+        }
+
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_info)
                 .setContentTitle(messageTitle)
-                .setContentText(messageBody)
+                .setContentText(displayMessage)
                 .setAutoCancel(true)
                 .setVibrate(pattern)
                 .setLights(Color.BLUE,1,1)
@@ -95,7 +108,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setContentIntent(pendingIntent);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+        notificationManager.notify(chatId.hashCode() /* ID of notification */, notificationBuilder.build());
     }
 
 }

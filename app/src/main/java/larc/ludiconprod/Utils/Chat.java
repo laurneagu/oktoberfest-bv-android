@@ -1,5 +1,7 @@
 package larc.ludiconprod.Utils;
 
+import java.util.ArrayList;
+
 /**
  * Created by ancuta on 8/18/2017.
  */
@@ -7,8 +9,9 @@ package larc.ludiconprod.Utils;
 public class Chat {
     public String eventId;
     public String chatId;
-    public String image;
+    public ArrayList<String> image=new ArrayList<>();
     public String participantName;
+    public ArrayList<String> otherParticipantId=new ArrayList<>();
     public int lastMessageTime;
     public String lastMessage;
     public String lastMessageId;

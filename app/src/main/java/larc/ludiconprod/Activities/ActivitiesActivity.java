@@ -186,7 +186,9 @@ public class ActivitiesActivity extends Fragment {
         final DatabaseReference userNode = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(getActivity()).id);
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("regId", 0);
         String activeToken = sharedPreferences.getString("regId", "0");
-        userNode.child("activeToken").setValue(activeToken);
+        if(!activeToken.equalsIgnoreCase("0")) {
+            userNode.child("activeToken").setValue(activeToken);
+        }
 
 /*
         if(locationChecker == null) locationChecker = LocationChecker.getInstance();

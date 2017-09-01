@@ -342,6 +342,10 @@ public class IntroActivity extends Activity {
 
                         @Override
                         public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                            logo.animate().translationY(300f);
+                            logo.animate().translationY(-300f).setDuration(1000);
+                            HTTPResponseController.getInstance().returnResponse(params, headers, IntroActivity.this, "http://207.154.236.13/api/register/");
                             System.out.println("bitmaponprepare");
                         }
                     });

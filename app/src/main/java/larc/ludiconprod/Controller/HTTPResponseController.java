@@ -37,6 +37,7 @@ import java.util.HashMap;
 import larc.ludiconprod.Activities.ActivitiesActivity;
 import larc.ludiconprod.Activities.ActivityDetailsActivity;
 import larc.ludiconprod.Activities.BalanceActivity;
+import larc.ludiconprod.Activities.ChatActivity;
 import larc.ludiconprod.Activities.ChatAndFriendsActivity;
 import larc.ludiconprod.Activities.CouponsActivity;
 import larc.ludiconprod.Activities.CreateNewActivity;
@@ -601,6 +602,7 @@ public class HTTPResponseController {
                     b.putInt("creatorLevel", jsonObject.getInt("creatorLevel"));
                     b.putString("creatorId", jsonObject.getString("creatorId"));
                     b.putInt("isParticipant", jsonObject.getInt("isParticipant"));
+                    b.putString("chatId",jsonObject.getString("chatId"));
                     b.putString("creatorProfilePicture", jsonObject.getString("creatorProfilePicture"));
                     ArrayList<String> participantsId = new ArrayList<>();
                     ArrayList<String> participantsName = new ArrayList<>();
@@ -628,6 +630,9 @@ public class HTTPResponseController {
                     intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     intent.putExtras(b);
                     activity.startActivity(intent);
+                    if(ChatActivity.chatLoading != null){
+                        ChatActivity.chatLoading.setAlpha(0f);
+                    }
 
 
                 } catch (Exception e) {

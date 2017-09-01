@@ -128,8 +128,8 @@ public class ConversationsAdapter extends BaseAdapter implements ListAdapter {
                 threadsList.remove(position);
             }
 
-            if(currentChat.image != null){
-                Bitmap bitmap=decodeBase64(currentChat.image);
+            if(currentChat.image != null && currentChat.image.size() >= 1 && currentChat.eventId == null){
+                Bitmap bitmap=decodeBase64(currentChat.image.get(0));
                 holder.chatParticipantImage.setImageBitmap(bitmap);
             }
 
@@ -141,9 +141,27 @@ public class ConversationsAdapter extends BaseAdapter implements ListAdapter {
             }
             Typeface typeFace= Typeface.createFromAsset(activity.getAssets(),"fonts/Quicksand-Medium.ttf");
             Typeface typeFaceBold= Typeface.createFromAsset(activity.getAssets(),"fonts/Quicksand-Bold.ttf");
-            holder.lastMessage.setText(currentChat.lastMessage);
+            String displayMessage="";
+            final String splitMessage[]=currentChat.lastMessage.split(" ");
+            for(int i=0;i < splitMessage.length;i++) {
+                if (splitMessage[i].length() > 21 && splitMessage[i].substring(0, 10).equalsIgnoreCase("$#@$@#$%^$") && splitMessage[i].substring(splitMessage[i].length() - 10).equalsIgnoreCase("$#@$@#$%^$")) {
+                    displayMessage+="this";
+                }else{
+                    displayMessage+=splitMessage[i];
+                }
+                if(i < splitMessage.length) {
+                    displayMessage+=" ";
+                }
+            }
+
+
+
+
+
+            holder.lastMessage.setText(displayMessage);
             if(!currentChat.lastMessageSeen.equalsIgnoreCase(currentChat.lastMessageId)) {
                 holder.lastMessage.setTypeface(typeFaceBold);
+
             }else{
                 holder.lastMessage.setTypeface(typeFace);
             }
@@ -156,6 +174,7 @@ public class ConversationsAdapter extends BaseAdapter implements ListAdapter {
                     intent.putExtra("chatId",currentChat.chatId);
                     intent.putExtra("otherParticipantName",currentChat.participantName);
                     intent.putExtra("otherParticipantImage",currentChat.image);
+                    intent.putExtra("otherParticipantId",currentChat.otherParticipantId);
 
                     activity.startActivity(intent);
                     ChatAndFriendsActivity.isOnChatPage=false;

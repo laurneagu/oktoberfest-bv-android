@@ -168,7 +168,8 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+
+                    finish();
             }
         });
 
@@ -192,6 +193,7 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
         eventDetails.capacity = b.getInt("capacity");
         eventDetails.numberOfParticipants = b.getInt("numberOfParticipants");
         eventDetails.points = b.getInt("points");
+        eventDetails.chatId=b.getString("chatId");
         eventDetails.privacy = b.getInt("privacy");
         eventDetails.isParticipant = b.getInt("isParticipant");
         eventDetails.ludicoins = b.getInt("ludicoins");
@@ -395,7 +397,14 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
         groupChatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getApplicationContext(), "You clicked GROUP CHAT button!", Toast.LENGTH_SHORT).show();
+                if(!eventDetails.chatId.equalsIgnoreCase("")) {
+                    Intent intent = new Intent(activity, ChatActivity.class);
+                    intent.putExtra("chatId", eventDetails.chatId);
+                    intent.putExtra("groupChat", 1);
+                    startActivity(intent);
+                }else{
+                    Toast.makeText(ActivityDetailsActivity.this,"Group chat isn't avaible yet for this event!",Toast.LENGTH_LONG).show();
+                }
             }
         });
         inviteFriendsButton.setOnClickListener(new View.OnClickListener() {
