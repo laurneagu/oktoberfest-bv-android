@@ -1,4 +1,4 @@
-/*
+
 package larc.ludiconprod.Utils.util;
 
 import android.app.Notification;
@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import larc.ludiconprod.Activities.IntroActivity;
 import larc.ludiconprod.R;
 
 public class ChatNotifier {
@@ -33,9 +34,6 @@ public class ChatNotifier {
     public void sendNotification(Service m_service, Object m_systemService,Resources m_resources, int notificationNumber, String author, String message, String date, String chatUid, boolean isChatMsg){
         chat = chatUid;
 
-        Runnable getPhoto = GetPhotoThread();
-        Thread photoThread = new Thread(getPhoto);
-        photoThread.start();
 
         NotificationManager manager = (NotificationManager)m_systemService;
         Notification myNotification;
@@ -89,35 +87,5 @@ public class ChatNotifier {
         NotificationManager manager = (NotificationManager)m_systemService;
         manager.cancel(notificationNumber);
     }
-
-    public Runnable GetPhotoThread() {
-        return new Runnable() {
-            public void run() {
-
-                final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-                ref.child("chat").child(chat).child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot data : dataSnapshot.getChildren()) {
-                            if(!data.getKey().equalsIgnoreCase(User.uid)){
-                                photoUrl="";//TODO
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-
-
-
-
-            }
-
-        };
-    }
 }
 
-*/

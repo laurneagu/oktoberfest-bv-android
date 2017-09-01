@@ -1,10 +1,13 @@
 package larc.ludiconprod.Controller;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.facebook.login.LoginManager;
 import com.google.gson.Gson;
+
+import java.util.ArrayList;
 
 import larc.ludiconprod.User;
 
@@ -34,6 +37,27 @@ public class Persistance {
         Gson gson = new Gson();
         editor.putString(userDetailsString, gson.toJson(user));
         editor.commit();
+    }
+
+    public void setUnseenChats(Context activity, ArrayList<String> chatList){
+        SharedPreferences.Editor editor = activity.getSharedPreferences("UnseenChats", 0).edit();
+        Gson gson = new Gson();
+        editor.putString("UnseenChats", gson.toJson(chatList));
+        editor.commit();
+    }
+
+    public ArrayList<String> getUnseenChats(Context activity){
+        String json = null;
+        SharedPreferences sharedPreferences = activity.getSharedPreferences("UnseenChats", 0);
+        json = sharedPreferences.getString("UnseenChats", "0");
+        Gson gson = new Gson();
+        ArrayList<String> chatList;
+        if (json.equals("0")) {
+            chatList = new ArrayList<>();
+        } else {
+            chatList = gson.fromJson(json, ArrayList.class);
+        }
+        return chatList;
     }
 
 

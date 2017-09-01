@@ -104,20 +104,21 @@ public class HTTPResponseController {
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
 
-    public void animateProfileImage() {
-        SharedPreferences sharedPreferences = activity.getSharedPreferences("ProfileImage", 0);
-        String image = sharedPreferences.getString("ProfileImage", "0");
+    public void animateProfileImage(Boolean isMain) {
+        String image;
+        if(isMain){
+            image=Persistance.getInstance().getUserInfo(activity).profileImage;
+        }else {
+            SharedPreferences sharedPreferences = activity.getSharedPreferences("ProfileImage", 0);
+            image = sharedPreferences.getString("ProfileImage", "0");
+        }
+
         if (image != null && !image.equals("0")) {
             Bitmap bitmap = decodeBase64(image);
             IntroActivity.profileImage.setImageBitmap(bitmap);
             IntroActivity.profileImage.setAlpha(0.3f);
             IntroActivity.profileImage.animate().alpha(1f).setDuration(1000);
         }
-        // }else if(!imageJson.equals("")){
-        // Bitmap bitmap =decodeBase64(imageJson);
-        // IntroActivity.profileImage.setImageBitmap(bitmap);
-
-        // }
 
 
     }
@@ -152,7 +153,7 @@ public class HTTPResponseController {
                             new CountDownTimer(1100, 100) {
                                 @Override
                                 public void onTick(long l) {
-                                    animateProfileImage();
+                                    animateProfileImage(false);
                                 }
 
                                 @Override
@@ -163,18 +164,10 @@ public class HTTPResponseController {
                                 }
                             }.start();
                         } else {
-                            /*new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Intent intent = new Intent(activity, Main.class);
-                                    activity.startActivity(intent);
-                                }
-                            }, 5000);*/
-
                             new CountDownTimer(1100, 100) {
-                                @Override
-                                public void onTick(long l) {
-                                    animateProfileImage();
+                               @Override
+                               public void onTick(long l) {
+                                    animateProfileImage(true);
                                 }
 
                                 @Override

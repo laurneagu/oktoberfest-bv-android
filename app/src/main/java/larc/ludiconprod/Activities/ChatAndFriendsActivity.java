@@ -142,7 +142,6 @@ public class ChatAndFriendsActivity extends Fragment {
                     if(!isOnChatPage && !isOnChat1to1){
 
                         String names="";
-                        Notification notification=new Notification();
                         for (DataSnapshot users : dataSnapshot.child("users").getChildren()) {
                             if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(activity).id)) {
                                 names += users.child("name").getValue().toString() + ",";
@@ -150,7 +149,6 @@ public class ChatAndFriendsActivity extends Fragment {
 
                         }
 
-                        notification.sendNotification(activity,names);
                     }
 
                     if (dataSnapshot.hasChild("last_message_date") && isFirstTimeSetChat && isOnChatPage) {
@@ -199,7 +197,6 @@ public class ChatAndFriendsActivity extends Fragment {
                     if(!isOnChatPage && !isOnChat1to1){
 
                         String names="";
-                        Notification notification=new Notification();
                         for (DataSnapshot users : dataSnapshot.child("users").getChildren()) {
                             if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(activity).id)) {
                                 names += users.child("name").getValue().toString() + ",";
@@ -207,7 +204,6 @@ public class ChatAndFriendsActivity extends Fragment {
 
                         }
 
-                        notification.sendNotification(activity,names);
                     }
                     if (dataSnapshot.hasChild("last_message_date")&& isOnChatPage && !isAlreadyProcess) {
                         isAlreadyProcess=true;

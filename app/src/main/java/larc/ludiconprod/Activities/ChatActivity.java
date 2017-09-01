@@ -62,6 +62,7 @@ public class ChatActivity extends Activity {
     int nrOfPage=0;
     Boolean createChat=false;
     String ChatId;
+    ArrayList<String> unseenChats;
 
     public  void checkChatExistence(final String otherUserId,final  Activity activity){
         final DatabaseReference myNode = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(activity).id).child("talkbuddies");
@@ -73,6 +74,13 @@ public class ChatActivity extends Activity {
                 if(myChatParticipants.hasChild(otherUserId)){
                     chatId=myChatParticipants.child(otherUserId).getValue().toString();
                     ChatId=chatId;
+                    for(int i=0;i < unseenChats .size();i++){
+                        if(ChatId.equalsIgnoreCase(unseenChats.get(i))){
+                            unseenChats.remove(i);
+                            break;
+                        }
+                    }
+                    Persistance.getInstance().setUnseenChats(getApplicationContext(),unseenChats);
                     listenForChanges();
                     Runnable getPage = getFirstPage();
                     Thread listener = new Thread(getPage);
@@ -110,7 +118,17 @@ public class ChatActivity extends Activity {
         isOnChat1to1 = true;
         createChat = false;
 
+        unseenChats=Persistance.getInstance().getUnseenChats(getApplicationContext());
+
         ChatId=getIntent().getStringExtra("chatId");
+
+        for(int i=0;i < unseenChats .size();i++){
+            if(ChatId.equalsIgnoreCase(unseenChats.get(i))){
+                unseenChats.remove(i);
+                break;
+            }
+        }
+        Persistance.getInstance().setUnseenChats(getApplicationContext(),unseenChats);
         if(ChatId.equalsIgnoreCase("isNot")){
             checkChatExistence(getIntent().getStringExtra("UserId"),this);
         }

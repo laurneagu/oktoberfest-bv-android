@@ -131,12 +131,6 @@ public class IntroActivity extends Activity {
         profileImage = (ImageView) findViewById(R.id.profileImage);
         logo.animate().translationY(-300f).setDuration(1000);
         callbackManager = CallbackManager.Factory.create();
-        if (Persistance.getInstance().getUserInfo(this).profileImage != null) {
-            Bitmap image;
-            image = decodeBase64(Persistance.getInstance().getUserInfo(this).profileImage);
-            profileImage.setImageBitmap(image);
-            profileImage.animate().alpha(1f).setDuration(1000);
-        }
         if (Persistance.getInstance().getUserInfo(this).id == null) {
             facebookButton.setVisibility(View.VISIBLE);
             loginButton.setVisibility(View.VISIBLE);
@@ -150,12 +144,6 @@ public class IntroActivity extends Activity {
             go = true;
         }
         facebookLogin();
-        new CountDownTimer(1500, 1000) {
-
-            public void onTick(long millisUntilFinished) {
-            }
-
-            public void onFinish() {
                 System.out.println(Persistance.getInstance().getUserInfo(IntroActivity.this).facebookId + " fbid");
                 if (Persistance.getInstance().getUserInfo(IntroActivity.this).facebookId != null && Persistance.getInstance().getUserInfo(IntroActivity.this).facebookId.equals("")) {
                     goToActivity();
@@ -201,8 +189,6 @@ public class IntroActivity extends Activity {
                                 }
                         ).executeAsync();
                     }
-            }
-        }.start();
 
 
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -334,37 +320,33 @@ public class IntroActivity extends Activity {
         }
         final HashMap<String, String> headers = new HashMap<String, String>();
         headers.put("apiKey", "b0a83e90-4ee7-49b7-9200-fdc5af8c2d33");
-
         Picasso.with(IntroActivity.this)
-                .load("https://graph.facebook.com/" + password + "/picture?type=large")
-                .into(new Target() {
-                    @Override
-                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                        image = bitmap;
-                        // profileImage.setImageBitmap(image);
-                        String imageString = ProfileDetailsActivity.encodeToBase64(image, Bitmap.CompressFormat.JPEG, 100);
-                        setImageForProfile(IntroActivity.this, imageString);
+                    .load("https://graph.facebook.com/" + password + "/picture?type=large")
+                    .into(new Target() {
+                        @Override
+                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                            image = bitmap;
+                            String imageString = ProfileDetailsActivity.encodeToBase64(image, Bitmap.CompressFormat.JPEG, 100);
+                            setImageForProfile(IntroActivity.this, imageString);
+                            logo.animate().translationY(300f);
+                            logo.animate().translationY(-300f).setDuration(1000);
+                            HTTPResponseController.getInstance().returnResponse(params, headers, IntroActivity.this, "http://207.154.236.13/api/register/");
 
-                        logo.animate().translationY(300f);
-                        // profileImage.setAlpha(0.3f);
-                        logo.animate().translationY(-300f).setDuration(1000);
-                        //profileImage.animate().alpha(1f).setDuration(1000);
-                        HTTPResponseController.getInstance().returnResponse(params, headers, IntroActivity.this, "http://207.154.236.13/api/register/");
-
-                    }
+                        }
 
 
-                    @Override
-                    public void onBitmapFailed(Drawable errorDrawable) {
+                        @Override
+                        public void onBitmapFailed(Drawable errorDrawable) {
+                            System.out.println("bitmapfailed");
+                        }
 
-                    }
+                        @Override
+                        public void onPrepareLoad(Drawable placeHolderDrawable) {
+                            System.out.println("bitmaponprepare");
+                        }
+                    });
+        }
 
-                    @Override
-                    public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                    }
-                });
-    }
 
 
     @Override

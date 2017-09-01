@@ -4,7 +4,13 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.support.v4.app.NotificationCompat;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import larc.ludiconprod.R;
 
@@ -14,15 +20,16 @@ import larc.ludiconprod.R;
 
 public class Notification {
 
-    public void sendNotification(Context context,String userName) {
+    public void sendNotification(Context context, String body) {
 
 //Get an instance of NotificationManager//
+
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
                         .setSmallIcon(R.drawable.ic_info)
-                        .setContentTitle("You received a new message")
-                        .setContentText("from "+userName);
+                        .setContentTitle("New message")
+                        .setContentText(body);
 
         Intent intent = new Intent(context,IntroActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);

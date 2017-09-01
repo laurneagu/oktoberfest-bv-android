@@ -102,6 +102,7 @@ dependencies {
     compile "com.google.firebase:firebase-database:9.2.0"
     compile 'com.google.firebase:firebase-auth:9.2.0'
     compile 'com.google.firebase:firebase-core:9.2.0'
+    compile 'com.google.firebase:firebase-messaging:9.2.0'
 }
 
 dependencies {
@@ -122,6 +123,7 @@ dependencies {
     compile 'com.android.support:design:23.0.0'
 }
 dependencies {
+    compile 'com.google.android.gms:play-services-location:9.2.0'
     compile 'com.google.android.gms:play-services-places:9.2.0'
 }
 

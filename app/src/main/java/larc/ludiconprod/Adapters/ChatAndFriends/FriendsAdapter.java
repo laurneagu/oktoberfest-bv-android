@@ -127,8 +127,13 @@ public class FriendsAdapter extends BaseAdapter implements ListAdapter {
             }
             holder.friendsName.setText(currentFriend.userName);
             holder.friendsLevel.setText("Level "+currentFriend.level);
-            holder.friendsMutualFriends.setText(currentFriend.numberOfMutuals+" mutual friends");
-            holder.friendsImage.setOnClickListener(new View.OnClickListener() {
+            if(currentFriend.numberOfMutuals != 0) {
+                holder.friendsMutualFriends.setText(currentFriend.numberOfMutuals + " mutual friends");
+            }
+            else{
+                holder.friendsMutualFriends.setText("no mutual friends");
+            }
+            view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(activity, UserProfileActivity.class);

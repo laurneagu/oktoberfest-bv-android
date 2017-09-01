@@ -37,6 +37,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
+import larc.ludiconprod.Activities.ChatActivity;
 import larc.ludiconprod.Activities.ChatListActivity;
 import larc.ludiconprod.Activities.ChatTemplateActivity;
 import larc.ludiconprod.Utils.ChatUtils.Chat;
@@ -46,10 +47,6 @@ import larc.ludiconprod.Utils.util.DateManager;
 import larc.ludiconprod.Utils.util.Notifier;
 
 
-*/
-/**
- * Created by Andrei on 2/27/2016.
- *//*
 
 
 public class FriendlyService extends Service {
@@ -71,8 +68,6 @@ public class FriendlyService extends Service {
     private Object waitForNextEvent = new Object();
 
 
-    */
-/* LOCATION *//*
 
     private static final String TAG = "BOOMBOOMTESTGPS";
     private LocationManager mLocationManager = null;
@@ -158,11 +153,10 @@ public class FriendlyService extends Service {
     }
 
 
-    */
-/*** LOCATION END *//*
 
-
-    private boolean isLocationOk(){
+*/
+/*
+private boolean isLocationOk(){
         //Looper.prepare();
         Location current = getLocationOnlyOnce();
         if(current != null){
@@ -196,6 +190,9 @@ public class FriendlyService extends Service {
         return true;
     }
 
+*//*
+
+
     private BroadcastReceiver receiveStartRequest = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -203,7 +200,6 @@ public class FriendlyService extends Service {
 
 
             Intent resp = new Intent("ServiceToMain_StartResponse");
-            if(isLocationOk()) {
                 resp.putExtra("Response", "0");
                 getSharedPreferences("UserDetails", 0).edit().putString("currentEventState", "1").commit(); // started
 
@@ -211,10 +207,7 @@ public class FriendlyService extends Service {
                 synchronized (waitForNextEvent) {
                         waitForNextEvent.notify();
                 }
-            }
-            else{
-                resp.putExtra("Response", "1");
-            }
+
 
 
             if(broadcastManager != null)
@@ -247,8 +240,8 @@ public class FriendlyService extends Service {
         //if( mRunning == false) {
         mRunning = true;
         //initializeLocationManager();
-
-        getSharedPreferences("UserDetails", 0).edit().putBoolean("isServiceRunning",true).commit();
+        */
+/*getSharedPreferences("UserDetails", 0).edit().putBoolean("isServiceRunning",true).commit();
 
         final DatabaseReference ref1 = FirebaseDatabase.getInstance().getReference();
         getSharedPreferences("UserDetails", 0).edit().putString("currentEventIsActive", "0").commit();
@@ -257,6 +250,8 @@ public class FriendlyService extends Service {
         Runnable eventChecker = getCheckNotificationsEventsThread();
         Thread eventCheckerThread = new Thread(eventChecker);
         eventCheckerThread.start();
+        *//*
+
 
         // Thread for Notifying user new chat message
         Runnable chatChecker = getCheckNotificationsChatThread();
@@ -278,7 +273,8 @@ public class FriendlyService extends Service {
 
 
 
-
+*/
+/*
 
     private Runnable getCheckNotificationsEventsThread(){
         return new Runnable() {
@@ -377,7 +373,8 @@ public class FriendlyService extends Service {
             }
 
             };
-    }
+    }*//*
+
 
     public boolean isForeground(String myPackage) {
 //        ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
@@ -385,7 +382,7 @@ public class FriendlyService extends Service {
 //        ComponentName componentInfo = runningTaskInfo.get(0).topActivity;
 //        return componentInfo.getPackageName().equals(myPackage);
         try{
-            if(ChatListActivity.isForeground || ChatTemplateActivity.isForeground){
+            if(ChatActivity.isForeground || ChatTemplateActivity.isForeground){
                 return true;
             }
             else {
@@ -412,6 +409,8 @@ public class FriendlyService extends Service {
             public void run() {
                 try{
                 //DatabaseReference.setAndroidContext(getApplicationContext());
+                    */
+/*
                 final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
                 String refJson = getSharedPreferences("UserDetails", 0).getString("uid", null);
 
@@ -425,6 +424,8 @@ public class FriendlyService extends Service {
 
                 final SharedPreferences sharedPref = getApplication().getSharedPreferences("ChatMessages", 0);
                 // Listen new 1 to 1 conversations
+                    *//*
+
                 userRef.child("chats").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
@@ -440,48 +441,7 @@ public class FriendlyService extends Service {
                                     // Retrieve new posts as they are added to the database
                                     @Override
                                     public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
-                                        String author = "";
-                                        String message = "";
-                                        Date date = null;
-                                        String seen = "false";
 
-                                        chatRefs.add(chatUid);
-
-                                        for (DataSnapshot msgData : snapshot.getChildren()) {
-                                            if (msgData.getKey().toString().equalsIgnoreCase("author")) {
-                                                author = msgData.getValue().toString();
-                                            }
-
-                                            if (msgData.getKey().toString().equalsIgnoreCase("date")) {
-
-                                                try {
-                                                    String d = DateManager.convertFromSecondsToText((long) msgData.getValue());
-                                                    String res = d.split(",")[1];
-                                                    SimpleDateFormat format = new SimpleDateFormat("dd MMM yyyy HH:mm");
-                                                    date = format.parse(res);
-                                                } catch (ParseException e) {
-                                                    e.printStackTrace();
-                                                }catch (Exception e){
-                                                    e.printStackTrace();
-                                                }
-                                            }
-
-                                            if (msgData.getKey().toString().equalsIgnoreCase("message")) {
-                                                message = msgData.getValue().toString();
-                                            }
-
-                                            if (msgData.getKey().toString().equalsIgnoreCase("seen")) {
-                                                seen = msgData.getValue().toString();
-                                            }
-                                        }
-
-                                        if (myName.compareToIgnoreCase(author) == 0) {
-                                            return;
-                                        }
-
-                                        if (message.compareToIgnoreCase("Welcome to our chat! :)") == 0){
-                                            return;
-                                        }
 
                                         boolean notAlreadySent = false;
                                         Long dateMilis = Long.valueOf(sharedPref.getString(chatUid,"0"));

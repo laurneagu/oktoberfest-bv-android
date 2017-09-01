@@ -1,4 +1,4 @@
-/*
+
 package larc.ludiconprod.Utils.util;
 
 import android.app.Notification;
@@ -12,12 +12,12 @@ import android.graphics.BitmapFactory;
 
 import java.util.Date;
 
+import larc.ludiconprod.Activities.IntroActivity;
 import larc.ludiconprod.R;
 
-*/
-/**
- * Created by LaurUser on 4/10/2016.
- *//*
+
+
+
 
 public class Notifier {
 
@@ -81,4 +81,4 @@ public class Notifier {
         manager.notify(notificationNumber, myNotification);
     }
 }
-*/
+

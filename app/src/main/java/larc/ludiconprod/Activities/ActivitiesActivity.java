@@ -3,6 +3,7 @@ package larc.ludiconprod.Activities;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.location.Location;
@@ -34,6 +35,7 @@ import com.crashlytics.android.Crashlytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import org.w3c.dom.Text;
@@ -46,6 +48,8 @@ import java.util.TimeZone;
 import io.fabric.sdk.android.Fabric;
 import larc.ludiconprod.Adapters.MainActivity.AroundMeAdapter;
 import larc.ludiconprod.Adapters.MainActivity.MyAdapter;
+import larc.ludiconprod.BottomBarHelper.BottomBar;
+import larc.ludiconprod.BottomBarHelper.BottomBarTab;
 import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.Layer.DataPersistence.PointsPersistence;
@@ -55,6 +59,8 @@ import larc.ludiconprod.Utils.Event;
 import larc.ludiconprod.Utils.Location.GPSTracker;
 import larc.ludiconprod.Utils.MainPageUtils.ViewPagerAdapter;
 import larc.ludiconprod.Utils.ui.SlidingTabLayout;
+
+import static larc.ludiconprod.Activities.Main.bottomBar;
 
 /**
  * Created by ancuta on 7/26/2017.
@@ -160,6 +166,14 @@ public class ActivitiesActivity extends Fragment {
         v = inflater.inflate(R.layout.activities_acitivity, container, false);
         v1 = (ProgressBar) v.findViewById(R.id.activityProgressBar);
 
+
+        int NumberOfUnseen=Persistance.getInstance().getUnseenChats(getActivity()).size();
+
+        BottomBarTab nearby = bottomBar.getTabWithId(R.id.tab_friends);
+        nearby.setBadgeCount(NumberOfUnseen);
+
+
+
         GPSTracker gps = new GPSTracker(getActivity().getApplicationContext(), getActivity());
         if (gps.canGetLocation()) {
             latitude = gps.getLatitude();
@@ -167,6 +181,13 @@ public class ActivitiesActivity extends Fragment {
 
             gps.stopUsingGPS();
         }
+
+        //set activeToken in firebase node for notification
+        final DatabaseReference userNode = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(getActivity()).id);
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("regId", 0);
+        String activeToken = sharedPreferences.getString("regId", "0");
+        userNode.child("activeToken").setValue(activeToken);
+
 /*
         if(locationChecker == null) locationChecker = LocationChecker.getInstance();
         locationChecker.setContext(mContext);

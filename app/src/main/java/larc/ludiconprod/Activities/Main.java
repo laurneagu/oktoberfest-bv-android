@@ -14,7 +14,7 @@ import larc.ludiconprod.R;
 
 
 public class Main extends FragmentActivity{
-    public BottomBar bottomBar;
+    public static BottomBar bottomBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -89,9 +89,7 @@ public class Main extends FragmentActivity{
             }
         });
 
-        // Notifications on tabs
-        BottomBarTab nearby = bottomBar.getTabWithId(R.id.tab_friends);
-        nearby.setBadgeCount(5);
+
     }
     @Override
     public void onBackPressed() {

@@ -1,0 +1,101 @@
+package larc.ludiconprod.ChatNotification;
+
+
+import android.app.ActivityManager;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.support.v4.app.NotificationCompat;
+
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import larc.ludiconprod.Activities.IntroActivity;
+import larc.ludiconprod.Activities.Notification;
+import larc.ludiconprod.BottomBarHelper.BottomBarTab;
+import larc.ludiconprod.Controller.Persistance;
+import larc.ludiconprod.R;
+
+import static larc.ludiconprod.Activities.Main.bottomBar;
+
+/**
+ * Created by ancuta on 8/30/2017.
+ */
+
+public class MyFirebaseMessagingService extends FirebaseMessagingService {
+    private static final String TAG = MyFirebaseMessagingService.class.getSimpleName();
+
+
+    @Override
+    public void onMessageReceived(RemoteMessage remoteMessage) {
+
+
+
+
+        ArrayList<String> numberOfChatUnseen=Persistance.getInstance().getUnseenChats(getApplicationContext());
+        Boolean chatIsAlreadyUnseen=false;
+        for(int i=0;i < numberOfChatUnseen.size();i++){
+            if(remoteMessage.getData().get("chat").equalsIgnoreCase(numberOfChatUnseen.get(i))){
+                chatIsAlreadyUnseen=true;
+                break;
+            }
+        }
+        if(!chatIsAlreadyUnseen){
+            numberOfChatUnseen.add(remoteMessage.getData().get("chat"));
+        }
+
+        Persistance.getInstance().setUnseenChats(getApplicationContext(),numberOfChatUnseen);
+
+        if(!isAppRunning(getApplicationContext())){
+            sendNotification(remoteMessage.getData().get("title"),remoteMessage.getData().get("body"));
+        }
+    }
+
+
+
+    public boolean isAppRunning(final Context context) {
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> services = activityManager
+                .getRunningTasks(Integer.MAX_VALUE);
+        boolean isActivityFound = false;
+
+        if (services.get(0).topActivity.getPackageName().toString()
+                .equalsIgnoreCase(context.getPackageName().toString())) {
+            isActivityFound = true;
+        }
+        return isActivityFound;
+
+    }
+
+    private void sendNotification(String messageTitle,String messageBody) {
+        Intent intent = new Intent(this, IntroActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,0 /* request code */, intent,PendingIntent.FLAG_UPDATE_CURRENT);
+
+        long[] pattern = {500,500,500,500,500};
+
+        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+        NotificationCompat.Builder notificationBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_info)
+                .setContentTitle(messageTitle)
+                .setContentText(messageBody)
+                .setAutoCancel(true)
+                .setVibrate(pattern)
+                .setLights(Color.BLUE,1,1)
+                .setSound(defaultSoundUri)
+                .setContentIntent(pendingIntent);
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+    }
+
+}
