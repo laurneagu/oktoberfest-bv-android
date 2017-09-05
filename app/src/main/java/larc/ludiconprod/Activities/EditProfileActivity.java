@@ -219,8 +219,8 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         HashMap<String, String> params = new HashMap<>();
         params.put("userId", old.id);
         params.put("gender", user.gender);
-        params.put("lastName", user.firstName);
-        params.put("firstName", user.lastName);
+        params.put("lastName", user.lastName);
+        params.put("firstName", user.firstName);
         params.put("yearBorn", this.date.getText().toString());
         params.put("range", user.range);
         params.put("profileImage", user.profileImage);

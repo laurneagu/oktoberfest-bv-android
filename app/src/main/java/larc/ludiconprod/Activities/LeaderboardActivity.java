@@ -16,8 +16,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -172,6 +174,8 @@ public class LeaderboardActivity extends Fragment implements RadioGroup.OnChecke
                 }
             });
 
+            this.resetInternetRefresh();
+
             TextView daysLeft = (TextView) v.findViewById(R.id.daysLeft);
             Calendar day = Calendar.getInstance();
             int left =  day.getActualMaximum(Calendar.DAY_OF_MONTH) - day.get(Calendar.DAY_OF_MONTH);
@@ -220,5 +224,16 @@ public class LeaderboardActivity extends Fragment implements RadioGroup.OnChecke
             rb.setSelected(true);
             rb.setCompoundDrawablesWithIntrinsicBounds(compoundDrawable,0,R.drawable.ic_check,0);
         }
+    }
+
+    public void resetInternetRefresh() {
+        ImageView ir = (ImageView) v.findViewById(R.id.internetRefresh);
+        ir.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                view.setOnClickListener(null);
+                adapter.reload();
+            }
+        });
     }
 }

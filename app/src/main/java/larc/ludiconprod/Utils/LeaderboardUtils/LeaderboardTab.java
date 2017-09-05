@@ -4,7 +4,6 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,14 +14,15 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.android.volley.NetworkError;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,7 +43,7 @@ import larc.ludiconprod.Utils.UserPosition;
  * Created by alex_ on 23.08.2017.
  */
 
-public class LeaderboardTab extends Fragment implements Response.Listener<JSONObject> {
+public class LeaderboardTab extends Fragment implements Response.Listener<JSONObject>, Response.ErrorListener {
 
     private ArrayList<UserPosition> users = new ArrayList<>();
     private LeaderboardAdapter leaderboardAdapter;
@@ -58,6 +58,7 @@ public class LeaderboardTab extends Fragment implements Response.Listener<JSONOb
     private int timeFrame;
     private boolean addedSwipeleaderboards;
     private LeaderboardActivity activity;
+    private boolean inLeaderboard = false;
 
     @Override
     public void setArguments(Bundle args) {
@@ -90,6 +91,11 @@ public class LeaderboardTab extends Fragment implements Response.Listener<JSONOb
     }
 
     public void updateUserList() {
+        this.activity.resetInternetRefresh();
+        RelativeLayout ll = (RelativeLayout) v.getRootView().findViewById(R.id.noInternetLayout);
+        ll.getLayoutParams().height = 0;
+        ll.setLayoutParams(ll.getLayoutParams());
+
         final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.leaderSwapRefresh);
 
         this.leaderboardAdapter.notifyDataSetChanged();
@@ -191,7 +197,9 @@ public class LeaderboardTab extends Fragment implements Response.Listener<JSONOb
 
         Log.d("You", first + " < " + th + " > " + last);
 
-        if (th < first) {
+        if (this.inLeaderboard) {
+            you.setVisibility(View.INVISIBLE);
+        } else if (th < first) {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) you.getLayoutParams();
             params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
             params.removeRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -211,6 +219,7 @@ public class LeaderboardTab extends Fragment implements Response.Listener<JSONOb
     @Override
     public void onResponse(JSONObject response) {
         Log.d("Leaderboard", "" + response);
+
         try {
             if (pageNumber == 0) {
                 this.users.clear();
@@ -242,14 +251,27 @@ public class LeaderboardTab extends Fragment implements Response.Listener<JSONOb
                 user.profileImage = you.getString("profileImage");
                 user.rank = Integer.parseInt(you.getString("rank"));
 
+                this.inLeaderboard = true;
                 this.updateYourCard(v.findViewById(R.id.youRank), user);
             } catch (JSONException e) {
+                this.inLeaderboard = false;
             }
-
 
             this.updateUserList();
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onErrorResponse(VolleyError error) {
+        if (error instanceof NetworkError) {
+            this.activity.resetInternetRefresh();
+            RelativeLayout ll = (RelativeLayout) v.getRootView().findViewById(R.id.noInternetLayout);
+            final float scale = getContext().getResources().getDisplayMetrics().density;
+            int pixels = (int) (56 * scale + 0.5f);
+            ll.getLayoutParams().height = pixels;
+            ll.setLayoutParams(ll.getLayoutParams());
         }
     }
 

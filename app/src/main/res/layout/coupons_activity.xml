@@ -16,6 +16,9 @@
             android:textColor="@color/tab_text_color"
             android:background="#FFFFFF"/>
 
+        <include
+            layout="@layout/no_connection_bar"/>
+
         <android.support.v4.view.ViewPager
             android:id="@+id/couponsPager"
             android:layout_width="wrap_content"

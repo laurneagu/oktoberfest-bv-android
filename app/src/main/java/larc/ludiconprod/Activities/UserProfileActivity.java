@@ -8,19 +8,20 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.android.volley.NetworkError;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,13 +38,13 @@ import larc.ludiconprod.R;
 import larc.ludiconprod.User;
 import larc.ludiconprod.Utils.util.Sport;
 
-public class UserProfileActivity extends AppCompatActivity implements Response.Listener<JSONObject> {
+public class UserProfileActivity extends AppCompatActivity implements Response.Listener<JSONObject>, Response.ErrorListener {
 
     private User user = new User();
     private final HashMap<String, Integer> youPoints = new HashMap<>();
     private final HashMap<String, Integer> foePoints = new HashMap<>();
-    String userName;
-    String userImage;
+    private String userName;
+    private String userImage;
 
     @Nullable
     @Override
@@ -81,6 +82,13 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
                     intent.putExtra("UserId",getIntent().getStringExtra("UserId"));
                     UserProfileActivity.this.startActivity(intent);
                     finish();
+                }
+            });
+
+            findViewById(R.id.internetRefresh).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onInternetRefresh();
                 }
             });
 
@@ -136,7 +144,7 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
         HashMap<String, String> params = new HashMap<>();
         HashMap<String, String> headers = new HashMap<>();
         headers.put("authKey", u.authKey);
-        HTTPResponseController.getInstance().getUserProfile(params, headers, id, this, this);
+        HTTPResponseController.getInstance().getUserProfile(params, headers, id, this, this, this);
     }
 
     @Override
@@ -191,11 +199,21 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
 
     public void printInfo(boolean friend) {
         try {
+            findViewById(R.id.internetRefresh).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onInternetRefresh();
+                }
+            });
+            RelativeLayout ll = (RelativeLayout) findViewById(R.id.noInternetLayout);
+            ll.getLayoutParams().height = 0;
+            ll.setLayoutParams(ll.getLayoutParams());
+
             User u = this.user;
 
             TextView sportsCount = (TextView) findViewById(R.id.profilePracticeSportsCountLabel);
             ImageView image = (ImageView) findViewById(R.id.profileImage);
-            userImage=u.profileImage;
+            userImage = u.profileImage;
             if (u.profileImage != null && !u.profileImage.isEmpty()) {
                 Bitmap im = IntroActivity.decodeBase64(u.profileImage);
                 image.setImageBitmap(im);
@@ -330,8 +348,6 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
                 sportImage.setImageResource(MyProfileActivity.findSportImageResource(sc));
             }
 
-
-
             View tv = findViewById(R.id.profileContent);
             tv.setAlpha(1);
             tv = findViewById(R.id.profileProgressBar);
@@ -383,5 +399,29 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
                 addFriend();
             }
         });
+    }
+
+    @Override
+    public void onErrorResponse(VolleyError error) {
+        //Toast.makeText(super.getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+        if (error instanceof NetworkError) {
+            findViewById(R.id.internetRefresh).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onInternetRefresh();
+                }
+            });
+            RelativeLayout ll = (RelativeLayout) findViewById(R.id.noInternetLayout);
+            final float scale = super.getResources().getDisplayMetrics().density;
+            int pixels = (int) (56 * scale + 0.5f);
+            ll.getLayoutParams().height = pixels;
+            ll.setLayoutParams(ll.getLayoutParams());
+            findViewById(R.id.profileProgressBar).setAlpha(0);
+        }
+    }
+
+    public void onInternetRefresh() {
+        findViewById(R.id.internetRefresh).setOnClickListener(null);
+        requestInfo();
     }
 }

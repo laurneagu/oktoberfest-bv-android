@@ -37,6 +37,8 @@
                     android:layout_marginRight="16dp"
                     android:layout_alignParentRight="true"/>
             </RelativeLayout>
+            <include
+                layout="@layout/no_connection_bar"/>
 
             <LinearLayout
                 android:id="@+id/leaderTop"

@@ -6,7 +6,6 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.preference.Preference;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -18,9 +17,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.android.volley.NetworkError;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,15 +44,11 @@ import larc.ludiconprod.Utils.util.Sport;
  * Created by alex_ on 10.08.2017.
  */
 
-public class MyProfileActivity extends Fragment implements Response.Listener<JSONObject> {
+public class MyProfileActivity extends Fragment implements Response.Listener<JSONObject>, Response.ErrorListener {
 
     protected Context mContext;
     protected View v;
     protected ImageView settings;
-
-    public MyProfileActivity() {
-
-    }
 
     @Nullable
     @Override
@@ -89,6 +87,13 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
                 public void onClick(View view) {
                     Intent intent = new Intent(mContext, BalanceActivity.class);
                     startActivity(intent);
+                }
+            });
+
+            v.findViewById(R.id.internetRefresh).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onInternetRefresh();
                 }
             });
 
@@ -142,11 +147,21 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
         HashMap<String, String> params = new HashMap<>();
         HashMap<String, String> headers = new HashMap<>();
         headers.put("authKey", u.authKey);
-        HTTPResponseController.getInstance().getUserProfile(params, headers, u.id, this.getActivity(), this);
+        HTTPResponseController.getInstance().getUserProfile(params, headers, u.id, this.getActivity(), this, this);
     }
 
     public void printInfo(User u) {
         try {
+            v.findViewById(R.id.internetRefresh).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onInternetRefresh();
+                }
+            });
+            RelativeLayout ll = (RelativeLayout) v.findViewById(R.id.noInternetLayout);
+            ll.getLayoutParams().height = 0;
+            ll.setLayoutParams(ll.getLayoutParams());
+
             TextView toNextLevel = (TextView) v.findViewById(R.id.profileToNextLevel);
             toNextLevel.setText("" + u.pointsToNextLevel);
             TextView sportsCount = (TextView) v.findViewById(R.id.profilePracticeSportsCountLabel);
@@ -280,5 +295,29 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onErrorResponse(VolleyError error) {
+        //Toast.makeText(super.getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+        if (error instanceof NetworkError) {
+            v.findViewById(R.id.internetRefresh).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onInternetRefresh();
+                }
+            });
+            RelativeLayout ll = (RelativeLayout) v.findViewById(R.id.noInternetLayout);
+            final float scale = getContext().getResources().getDisplayMetrics().density;
+            int pixels = (int) (56 * scale + 0.5f);
+            ll.getLayoutParams().height = pixels;
+            ll.setLayoutParams(ll.getLayoutParams());
+            v.findViewById(R.id.profileProgressBar).setAlpha(0);
+        }
+    }
+
+    public void onInternetRefresh() {
+        v.findViewById(R.id.internetRefresh).setOnClickListener(null);
+        requestInfo();
     }
 }

@@ -128,6 +128,10 @@ public class HTTPResponseController {
         return new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
+                if (activity == null) {
+                    return;
+                }
+
                 if (activity.getLocalClassName().toString().equals("Activities.LoginActivity") || activity.getLocalClassName().toString().equals("Activities.IntroActivity")) {
                     try {
                         json = jsonObject;
@@ -935,9 +939,9 @@ public class HTTPResponseController {
         requestQueue.add(jsObjRequest);
     }
 
-    public void getUserProfile(HashMap<String, String> params, HashMap<String, String> headers, String id, Activity activity, Response.Listener<JSONObject> listener) {
+    public void getUserProfile(HashMap<String, String> params, HashMap<String, String> headers, String id, Activity activity, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         RequestQueue requestQueue = Volley.newRequestQueue(activity);
-        CustomRequest jsObjRequest = new CustomRequest(Request.Method.GET, prodServer + "api/user?userId=" + id, params, headers, (Response.Listener<JSONObject>) listener, this.createErrorListener());
+        CustomRequest jsObjRequest = new CustomRequest(Request.Method.GET, prodServer + "api/user?userId=" + id, params, headers, listener, errorListener);
         requestQueue.add(jsObjRequest);
     }
 
@@ -957,7 +961,7 @@ public class HTTPResponseController {
         requestQueue.add(jsObjRequest);
     }
 
-    public void getCoupons(String params, HashMap<String, String> headers, final Fragment activity) {
+    public void getCoupons(String params, HashMap<String, String> headers, final CouponsActivity activity) {
         Response.Listener<JSONObject> success = new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -991,11 +995,11 @@ public class HTTPResponseController {
         };
 
         RequestQueue requestQueue = Volley.newRequestQueue(activity.getActivity());
-        CustomRequest request = new CustomRequest(Request.Method.GET, prodServer + "api/coupons?" + params, new HashMap<String, String>(), headers, success, this.createErrorListener());
+        CustomRequest request = new CustomRequest(Request.Method.GET, prodServer + "api/coupons?" + params, new HashMap<String, String>(), headers, success, activity);
         requestQueue.add(request);
     }
 
-    public void getMyCoupons(String params, HashMap<String, String> headers, final Fragment activity) {
+    public void getMyCoupons(String params, HashMap<String, String> headers, final CouponsActivity activity) {
         Response.Listener<JSONObject> success = new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -1029,7 +1033,7 @@ public class HTTPResponseController {
         };
 
         RequestQueue requestQueue = Volley.newRequestQueue(activity.getActivity());
-        CustomRequest request = new CustomRequest(Request.Method.GET, prodServer + "api/coupons?" + params, new HashMap<String, String>(), headers, success, this.createErrorListener());
+        CustomRequest request = new CustomRequest(Request.Method.GET, prodServer + "api/coupons?" + params, new HashMap<String, String>(), headers, success, activity);
         requestQueue.add(request);
     }
 
@@ -1083,7 +1087,7 @@ public class HTTPResponseController {
 
     public void getLeaderboard(String urlParams, HashMap<String, String> headers, LeaderboardTab leaderboardTab) {
         RequestQueue requestQueue = Volley.newRequestQueue(activity);
-        CustomRequest request = new CustomRequest(Request.Method.GET, prodServer + "api/leaderboard?" + urlParams, new HashMap<String, String>(), headers, leaderboardTab, this.createErrorListener());
+        CustomRequest request = new CustomRequest(Request.Method.GET, prodServer + "api/leaderboard?" + urlParams, new HashMap<String, String>(), headers, leaderboardTab, leaderboardTab);
         requestQueue.add(request);
     }
 
