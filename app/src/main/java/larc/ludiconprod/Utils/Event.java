@@ -11,6 +11,7 @@ import java.util.Map;
 public class Event {
     public String id;
     public String eventDate;
+    public int eventDateTimeStamp;
     public String placeName;
     public String sportCode;
     public String otherSportName;

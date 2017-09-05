@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 
 import larc.ludiconprod.User;
+import larc.ludiconprod.Utils.Event;
 
 /**
  * Created by ancuta on 7/12/2017.
@@ -30,6 +31,8 @@ public class Persistance {
 
     private final String userDetailsString = "UserDetails";
     private final String profileDetailsString = "ProfileDetails";
+    private final String myActivitiesString="MyActivities";
+    private final String aroundMeActivitiesString="AroundMeActivities";
 
     public void setUserInfo(Activity activity, User user) {
 
@@ -81,6 +84,45 @@ public class Persistance {
         Gson gson = new Gson();
         editor.putString(this.profileDetailsString, gson.toJson(user));
         editor.commit();
+    }
+    public void setMyActivities(Activity activity, ArrayList<Event> eventList){
+        SharedPreferences.Editor editor = activity.getSharedPreferences(this.myActivitiesString, 0).edit();
+        Gson gson = new Gson();
+        editor.putString(this.myActivitiesString, gson.toJson(eventList));
+        editor.commit();
+    }
+
+    public ArrayList<Event> getMyActivities(Activity activity){
+        SharedPreferences sharedPreferences = activity.getSharedPreferences(this.myActivitiesString, 0);
+        String json = sharedPreferences.getString(this.myActivitiesString, "0");
+        Gson gson = new Gson();
+        ArrayList<Event> eventList;
+        if (json.equals("0")) {
+            eventList = new ArrayList<>();
+        } else {
+            eventList = gson.fromJson(json, ArrayList.class);
+        }
+        return  eventList;
+    }
+
+    public void setAroundMeActivities(Activity activity, ArrayList<Event> eventList){
+        SharedPreferences.Editor editor = activity.getSharedPreferences(this.aroundMeActivitiesString, 0).edit();
+        Gson gson = new Gson();
+        editor.putString(this.aroundMeActivitiesString, gson.toJson(eventList));
+        editor.commit();
+    }
+
+    public ArrayList<Event> getAroundMeActivities(Activity activity){
+        SharedPreferences sharedPreferences = activity.getSharedPreferences(this.aroundMeActivitiesString, 0);
+        String json = sharedPreferences.getString(this.aroundMeActivitiesString, "0");
+        Gson gson = new Gson();
+        ArrayList<Event> eventList;
+        if (json.equals("0")) {
+            eventList = new ArrayList<>();
+        } else {
+            eventList = gson.fromJson(json, ArrayList.class);
+        }
+        return  eventList;
     }
 
     public User getProfileInfo(Activity activity) {

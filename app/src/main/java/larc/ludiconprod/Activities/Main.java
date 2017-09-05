@@ -38,6 +38,13 @@ public class Main extends FragmentActivity{
         if (sel != -1) {
             bottomBar.setDefaultTab(sel);
         }
+
+/*
+        ActivitiesActivity main = new ActivitiesActivity();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.frame, main).commit();
+                */
+
         if(getIntent().getBooleanExtra("setChatTab",false)){
             bottomBar.setDefaultTab(R.id.tab_friends);
         }
@@ -52,20 +59,24 @@ public class Main extends FragmentActivity{
                            .replace(R.id.frame, main).commit();
                 } else if (tabId == R.id.tab_profile) {
                     ChatAndFriendsActivity.isOnChatPage=false;
+                    ActivitiesActivity.isOnActivityPage=false;
                     MyProfileActivity myProfileActivity = new MyProfileActivity();
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.frame, myProfileActivity).commit();
                 } else if (tabId == R.id.tab_coupons) {
                     ChatAndFriendsActivity.isOnChatPage=false;
+                    ActivitiesActivity.isOnActivityPage=false;
                     CouponsActivity coupons = new CouponsActivity();
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.frame, coupons).commit();
                 } else if (tabId == R.id.tab_leaderboard) {
                     ChatAndFriendsActivity.isOnChatPage=false;
+                    ActivitiesActivity.isOnActivityPage=false;
                     LeaderboardActivity leaderboard = new LeaderboardActivity();
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.frame, leaderboard).commit();
                 } else if(tabId == R.id.tab_friends){
+                    ActivitiesActivity.isOnActivityPage=false;
                     ChatAndFriendsActivity chatFriends=new ChatAndFriendsActivity();
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.frame,chatFriends).commit();

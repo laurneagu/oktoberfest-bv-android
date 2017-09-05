@@ -52,6 +52,7 @@ import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.PasswordEncryptor;
 import larc.ludiconprod.R;
 import larc.ludiconprod.User;
+import larc.ludiconprod.Utils.Event;
 
 /**
  * Created by ancuta on 7/10/2017.
@@ -143,6 +144,8 @@ public class IntroActivity extends Activity {
             infoTextView.animate().alpha(1f).setDuration(1000);
             go = true;
         }
+
+
         facebookLogin();
                 System.out.println(Persistance.getInstance().getUserInfo(IntroActivity.this).facebookId + " fbid");
                 if (Persistance.getInstance().getUserInfo(IntroActivity.this).facebookId != null && Persistance.getInstance().getUserInfo(IntroActivity.this).facebookId.equals("")) {

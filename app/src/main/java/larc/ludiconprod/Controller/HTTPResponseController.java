@@ -348,6 +348,9 @@ public class HTTPResponseController {
                     if (jsonObject.getJSONArray("aroundMe").length() >= 1) {
                         ActivitiesActivity.NumberOfRefreshAroundMe++;
                     }
+                    if(getFirstPageMyActivity){
+                        Persistance.getInstance().setAroundMeActivities(activity,aroundMeEventList);
+                    }
                     getFirstPageAroundMe = false;
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -370,6 +373,7 @@ public class HTTPResponseController {
                         Event event = new Event();
                         event.id = jsonObject.getJSONArray("myEvents").getJSONObject(i).getString("id");
                         int date = jsonObject.getJSONArray("myEvents").getJSONObject(i).getInt("eventDate");
+                        event.eventDateTimeStamp=date;
                         java.util.Date date1 = new java.util.Date((long) date * 1000);
                         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
                         String displayDate = formatter.format(date1);
@@ -398,6 +402,10 @@ public class HTTPResponseController {
                     if (jsonObject.getJSONArray("myEvents").length() >= 1) {
                         ActivitiesActivity.NumberOfRefreshMyEvents++;
                     }
+                    if(getFirstPageMyActivity){
+                        Persistance.getInstance().setMyActivities(activity,myEventList);
+                    }
+
                     getFirstPageMyActivity = false;
                 } catch (Exception e) {
                     e.printStackTrace();

@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -58,6 +60,7 @@ import larc.ludiconprod.R;
 import larc.ludiconprod.Utils.Event;
 import larc.ludiconprod.Utils.Location.GPSTracker;
 import larc.ludiconprod.Utils.MainPageUtils.ViewPagerAdapter;
+import larc.ludiconprod.Utils.Message;
 import larc.ludiconprod.Utils.ui.SlidingTabLayout;
 
 import static larc.ludiconprod.Activities.Main.bottomBar;
@@ -98,14 +101,79 @@ public class ActivitiesActivity extends Fragment {
     public static ListView mylistView;
     Boolean isFirstTimeAroundMe = false;
     Boolean isFirstTimeMyEvents = false;
+    Boolean dataComeArundeMe=false;
+    Boolean dataComeMy=false;
     public static ProgressBar v1;
     public double longitude = 0;
     public double latitude = 0;
+    public static Thread startHN;
+    public static Thread stopHN;
+    static Boolean isOnActivityPage=false;
+    static int buttonState=0; //0:is never pressed 1:Check-in Performed 2:Check-Out Performed
+
+    LocationManager locationManager;
+    LocationListener locationListener;
+    Object startGettingLocation=new Object();
+
 
 
     public ActivitiesActivity() {
         currentFragment = this;
     }
+    public void getLocation(){
+        locationManager=(LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        String providerName = locationManager.getBestProvider(new Criteria(), true);
+
+
+        locationListener=new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                System.out.println(location.getLatitude()+" latitude onchange");
+            }
+
+            @Override
+            public void onStatusChanged(String s, int i, Bundle bundle) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String s) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String s) {
+
+            }
+        };
+        locationManager.requestLocationUpdates(providerName,100,0,locationListener); //150000
+    }
+
+
+    Handler handler=new Handler(){
+        @Override
+        public void handleMessage(android.os.Message msg) {
+            if(msg.what == 0) {
+
+                System.out.println("eventStarted");
+
+                //getLocation();
+
+
+
+
+
+
+
+
+
+            }else if(msg.what ==1 ){
+
+            }
+
+
+        }
+    };
 
     public void getAroundMeEvents(String pageNumber,Double latitude,Double longitude) {
         v1 = (ProgressBar) v.findViewById(R.id.activityProgressBar);
@@ -154,6 +222,7 @@ public class ActivitiesActivity extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
         if (fradapter != null) fradapter.notifyDataSetChanged();
         if (myAdapter != null) myAdapter.notifyDataSetChanged();
     }
@@ -162,6 +231,7 @@ public class ActivitiesActivity extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mContext = inflater.getContext();
+        isOnActivityPage=true;
 
         v = inflater.inflate(R.layout.activities_acitivity, container, false);
         v1 = (ProgressBar) v.findViewById(R.id.activityProgressBar);
@@ -173,7 +243,7 @@ public class ActivitiesActivity extends Fragment {
         nearby.setBadgeCount(NumberOfUnseen);
 
 
-
+/*
         GPSTracker gps = new GPSTracker(getActivity().getApplicationContext(), getActivity());
         if (gps.canGetLocation()) {
             latitude = gps.getLatitude();
@@ -181,6 +251,7 @@ public class ActivitiesActivity extends Fragment {
 
             gps.stopUsingGPS();
         }
+        */
 
         //set activeToken in firebase node for notification
         final DatabaseReference userNode = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(getActivity()).id);
@@ -252,17 +323,100 @@ public class ActivitiesActivity extends Fragment {
 
 
             }*/
-            getAroundMeEvents("0",latitude,longitude);
-            getMyEvents("0");
+
+
+
             myAdapter = new MyAdapter(myEventList, getActivity().getApplicationContext(), getActivity(), getResources(), currentFragment);
-
-
             fradapter = new AroundMeAdapter(aroundMeEventList, getActivity().getApplicationContext(), getActivity(), getResources(), currentFragment);
 
+            getAroundMeEvents("0",latitude,longitude);
+            getMyEvents("0");
 
             NumberOfRefreshMyEvents = 0;
             NumberOfRefreshAroundMe = 0;
 
+            Runnable runnableStart=new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        ArrayList<Event> myFirstPageEventList = Persistance.getInstance().getMyActivities(getActivity());
+                        if (myFirstPageEventList.size() >= 1) {
+                            //long timeToNextEvent = (myFirstPageEventList.get(0).eventDateTimeStamp - System.currentTimeMillis() / 1000) / 60;
+                            long timeToNextEvent = (1504527780 - System.currentTimeMillis() / 1000) ;
+                            while (timeToNextEvent >= 0) {
+                                Thread.sleep(1000);
+                                timeToNextEvent -= 1;
+                            }
+                            //happening now started
+
+                            handler.sendEmptyMessage(0);
+
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            };
+
+            Runnable runnableStop=new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        ArrayList<Event> myFirstPageEventList = Persistance.getInstance().getMyActivities(getActivity());
+                        if (myFirstPageEventList.size() >= 1) {
+                            //long timeToNextEvent = (myFirstPageEventList.get(0).eventDateTimeStamp - System.currentTimeMillis() / 1000) / 60;
+                            long timeToNextEvent = (System.currentTimeMillis() / 1000 - 1504527780) ;
+                            while ((buttonState == 0 && timeToNextEvent <= 3600 ) || (buttonState == 1 && timeToNextEvent < 7200)) {
+                                if(buttonState == 2)
+                                    break;
+                                Thread.sleep(1000);
+                                timeToNextEvent += 1;
+                            }
+                            //happening now stoped
+                            handler.sendEmptyMessage(1);
+
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            };
+
+
+
+            Thread startHappeningNow=new Thread(runnableStart);
+            startHappeningNow.start();
+            Thread stopHappeningNow=new Thread(runnableStop);
+            stopHappeningNow.start();
+
+            locationManager=(LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+            String providerName = locationManager.getBestProvider(new Criteria(), true);
+            Location location=locationManager.getLastKnownLocation(providerName);
+            System.out.println(location.getLatitude()+"latitude");
+
+
+            locationListener=new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    System.out.println(location.getLatitude()+" latitude onchange main");
+                }
+
+                @Override
+                public void onStatusChanged(String s, int i, Bundle bundle) {
+
+                }
+
+                @Override
+                public void onProviderEnabled(String s) {
+
+                }
+
+                @Override
+                public void onProviderDisabled(String s) {
+
+                }
+            };
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,100,0,locationListener); //150000
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -281,8 +435,8 @@ public class ActivitiesActivity extends Fragment {
         heartImageAroundMe = (ImageView) v.findViewById(R.id.heartImageAroundMe);
         progressBarAroundMe = (ProgressBar) v.findViewById(R.id.progressBarAroundMe);
         progressBarAroundMe.setIndeterminate(true);
+        progressBarAroundMe.setAlpha(0f);
 
-       progressBarAroundMe.setAlpha(0f);
 
         noActivitiesTextFieldAroundMe = (TextView) v.findViewById(R.id.noActivitiesTextFieldAroundMe);
         pressPlusButtonTextFieldAroundMe = (TextView) v.findViewById(R.id.pressPlusButtonTextFieldAroundMe);
@@ -382,8 +536,10 @@ public class ActivitiesActivity extends Fragment {
         noActivitiesTextFieldMyActivity = (TextView) v.findViewById(R.id.noActivitiesTextFieldMyActivity);
         pressPlusButtonTextFieldMyActivity = (TextView) v.findViewById(R.id.pressPlusButtonTextFieldMyActivity);
         progressBarMyEvents = (ProgressBar) v.findViewById(R.id.progressBarMyEvents);
+
         progressBarMyEvents.setIndeterminate(true);
         progressBarMyEvents.setAlpha(0f);
+
         final FloatingActionButton createNewActivityFloatingButtonMyActivity = (FloatingActionButton) v.findViewById(R.id.floatingButton1);
         createNewActivityFloatingButtonMyActivity.setOnClickListener(new View.OnClickListener() {
             @Override
