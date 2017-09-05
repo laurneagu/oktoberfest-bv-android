@@ -4,20 +4,27 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
+import com.google.android.gms.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -27,13 +34,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AbsListView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderApi;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -47,6 +61,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import io.fabric.sdk.android.Fabric;
 import larc.ludiconprod.Adapters.MainActivity.AroundMeAdapter;
 import larc.ludiconprod.Adapters.MainActivity.MyAdapter;
@@ -55,6 +70,7 @@ import larc.ludiconprod.BottomBarHelper.BottomBarTab;
 import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.Layer.DataPersistence.PointsPersistence;
+import larc.ludiconprod.Manifest;
 import larc.ludiconprod.PasswordEncryptor;
 import larc.ludiconprod.R;
 import larc.ludiconprod.Utils.Event;
@@ -62,6 +78,7 @@ import larc.ludiconprod.Utils.Location.GPSTracker;
 import larc.ludiconprod.Utils.MainPageUtils.ViewPagerAdapter;
 import larc.ludiconprod.Utils.Message;
 import larc.ludiconprod.Utils.ui.SlidingTabLayout;
+import larc.ludiconprod.Utils.util.Sport;
 
 import static larc.ludiconprod.Activities.Main.bottomBar;
 
@@ -69,7 +86,7 @@ import static larc.ludiconprod.Activities.Main.bottomBar;
  * Created by ancuta on 7/26/2017.
  */
 
-public class ActivitiesActivity extends Fragment {
+public class ActivitiesActivity extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener ,LocationListener{
 
     ViewPager pager;
     private Context mContext;
@@ -111,42 +128,27 @@ public class ActivitiesActivity extends Fragment {
     static Boolean isOnActivityPage=false;
     static int buttonState=0; //0:is never pressed 1:Check-in Performed 2:Check-Out Performed
 
-    LocationManager locationManager;
+    //LocationManager locationManager;
     LocationListener locationListener;
     Object startGettingLocation=new Object();
+    private LocationRequest locationRequest;
+    private FusedLocationProviderApi fusedLocationProviderApi= LocationServices.FusedLocationApi;
+    private GoogleApiClient googleApiClient;
+    RelativeLayout happeningNowLayout;
+    public static CountDownTimer buttonSetter;
+    static Button checkinButton;
+
+
 
 
 
     public ActivitiesActivity() {
         currentFragment = this;
     }
-    public void getLocation(){
-        locationManager=(LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        String providerName = locationManager.getBestProvider(new Criteria(), true);
 
-
-        locationListener=new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                System.out.println(location.getLatitude()+" latitude onchange");
-            }
-
-            @Override
-            public void onStatusChanged(String s, int i, Bundle bundle) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String s) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String s) {
-
-            }
-        };
-        locationManager.requestLocationUpdates(providerName,100,0,locationListener); //150000
+    public  Bitmap decodeBase64(String input) {
+        byte[] decodedBytes = Base64.decode(input, 0);
+        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
 
 
@@ -157,7 +159,185 @@ public class ActivitiesActivity extends Fragment {
 
                 System.out.println("eventStarted");
 
-                //getLocation();
+                happeningNowLayout=(RelativeLayout) v.findViewById(R.id.generalHappeningNowLayout);
+                ViewGroup.LayoutParams params = happeningNowLayout.getLayoutParams();
+                params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                happeningNowLayout.setLayoutParams(params);
+
+                //set happening now field
+                TextView weWillplay=(TextView)v.findViewById(R.id.HNPlay) ;
+                TextView sportField=(TextView)v.findViewById(R.id.HNPlayWhat) ;
+                TextView ludicoins=(TextView)v.findViewById(R.id.ludicoinsHN);
+                TextView points=(TextView)v.findViewById(R.id.pointsHN);
+                TextView location=(TextView)v.findViewById(R.id.locationHN);
+                ImageView imageViewBackground=(ImageView)v.findViewById(R.id.imageViewBackground);
+                CircleImageView friends0=(CircleImageView)v.findViewById(R.id.friends0HN);
+                CircleImageView friends1=(CircleImageView)v.findViewById(R.id.friends1HN);
+                CircleImageView friends2=(CircleImageView)v.findViewById(R.id.friends2HN);
+                TextView allFriends=(TextView)v.findViewById(R.id.friendsNumberHN);
+                if(checkinButton == null) {
+                    checkinButton = (Button) v.findViewById(R.id.checkinHN);
+
+
+                    checkinButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (buttonState == 0) {
+                                buttonState = 1;
+                                buttonSetter = new CountDownTimer(7200000, 1000) {
+                                    int minutes = 0;
+                                    int seconds = 0;
+
+                                    @Override
+                                    public void onTick(long l) {
+                                        System.out.println("ontick");
+                                        String minutesValue = "";
+                                        String secondsValue = "";
+                                        seconds++;
+                                        if (seconds == 60) {
+                                            seconds = 0;
+                                            minutes++;
+                                        }
+                                        if (minutes > 9) {
+                                            minutesValue = String.valueOf(minutes);
+                                        } else {
+                                            minutesValue = "0" + String.valueOf(minutes);
+                                        }
+                                        if (seconds > 9) {
+                                            secondsValue = String.valueOf(seconds);
+                                        } else {
+                                            secondsValue = "0" + String.valueOf(seconds);
+                                        }
+                                        System.out.println(isOnActivityPage + " booleana " + checkinButton);
+                                        if (isOnActivityPage) {
+                                            checkinButton.setText("CHECK-OUT " + minutesValue + ":" + secondsValue);
+                                        }
+
+
+                                    }
+
+                                    @Override
+                                    public void onFinish() {
+
+                                    }
+                                }.start();
+
+                                if (googleApiClient.isConnected()) {
+                                    requestLocationUpdates();
+                                } else {
+                                    System.out.println("error");
+                                }
+
+                            }
+                        }
+                    });
+                }
+
+
+
+
+                ArrayList<Event> eventArrayList=Persistance.getInstance().getMyActivities(getActivity());
+                Event currentEvent=new Event();
+                currentEvent.id=eventArrayList.get(0).id;
+                currentEvent.sportCode=eventArrayList.get(0).sportCode;
+                currentEvent.participansProfilePicture=eventArrayList.get(0).participansProfilePicture;
+                currentEvent.numberOfParticipants=eventArrayList.get(0).numberOfParticipants;
+                currentEvent.ludicoins=eventArrayList.get(0).ludicoins;
+                currentEvent.points=eventArrayList.get(0).points;
+                currentEvent.placeName=eventArrayList.get(0).placeName;
+                currentEvent.otherSportName=eventArrayList.get(0).otherSportName;
+
+
+                Sport sport = new Sport(currentEvent.sportCode);
+                String weWillPlayString = "";
+                String sportName = "";
+
+                if (currentEvent.sportCode.equalsIgnoreCase("JOG") || currentEvent.sportCode.equalsIgnoreCase("GYM") || currentEvent.sportCode.equalsIgnoreCase("CYC")) {
+                    weWillPlayString = "Will go to ";
+                    sportName =  sport.sportName;
+                } else {
+                    if (currentEvent.sportCode.equalsIgnoreCase("OTH")) {
+                        weWillPlayString = "Will play ";
+                        sportName = currentEvent.otherSportName;
+                    } else {
+                        weWillPlayString = "Will play ";
+                        sportName = sport.sportName;
+                    }
+                }
+
+                sportName = sportName.substring(0, 1).toUpperCase() + sportName.substring(1);
+
+                weWillplay.setText(weWillPlayString);
+                sportField.setText(sportName);
+                ludicoins.setText(String.valueOf(currentEvent.ludicoins));
+                points.setText(String.valueOf(currentEvent.points));
+                location.setText(currentEvent.placeName);
+                switch (currentEvent.sportCode) {
+                    case "FOT":
+                        imageViewBackground.setBackgroundResource(R.drawable.bg_sport_football);
+                        break;
+                    case "BAS":
+                        imageViewBackground.setBackgroundResource(R.drawable.bg_sport_basketball);
+                        break;
+                    case "VOL":
+                        imageViewBackground.setBackgroundResource(R.drawable.bg_sport_volleyball);
+                        break;
+                    case "JOG":
+                        imageViewBackground.setBackgroundResource(R.drawable.bg_sport_jogging);
+                        break;
+                    case "GYM":
+                        imageViewBackground.setBackgroundResource(R.drawable.bg_sport_gym);
+                        break;
+                    case "CYC":
+                        imageViewBackground.setBackgroundResource(R.drawable.bg_sport_cycling);
+                        break;
+                    case "TEN":
+                        imageViewBackground.setBackgroundResource(R.drawable.bg_sport_tennis);
+                        break;
+                    case "PIN":
+                        imageViewBackground.setBackgroundResource(R.drawable.bg_sport_pingpong);
+                        break;
+                    case "SQU":
+                        imageViewBackground.setBackgroundResource(R.drawable.bg_sport_squash);
+                        break;
+                    case "OTH":
+                        imageViewBackground.setBackgroundResource(R.drawable.bg_sport_others);
+                        break;
+                }
+
+                if (currentEvent.numberOfParticipants - 1 >= 1) {
+                    friends0.setVisibility(View.VISIBLE);
+                }
+                if (currentEvent.numberOfParticipants - 1 >= 2) {
+                    friends1.setVisibility(View.VISIBLE);
+                }
+                if (currentEvent.numberOfParticipants - 1 >= 3) {
+                    friends2.setVisibility(View.VISIBLE);
+                }
+                if (currentEvent.numberOfParticipants - 1 >= 4) {
+                    allFriends.setVisibility(View.VISIBLE);
+                    allFriends.setText("+" + String.valueOf(currentEvent.numberOfParticipants - 4));
+
+                }
+                for (int i = 0; i < currentEvent.participansProfilePicture.size(); i++) {
+                    if (!currentEvent.participansProfilePicture.get(i).equals("") && i == 0) {
+                        Bitmap bitmap = decodeBase64(currentEvent.participansProfilePicture.get(i));
+                        friends0.setImageBitmap(bitmap);
+                    } else
+                    if (!currentEvent.participansProfilePicture.get(i).equals("") && i == 1) {
+                        Bitmap bitmap = decodeBase64(currentEvent.participansProfilePicture.get(i));
+                        friends1.setImageBitmap(bitmap);
+                    } else
+                    if (!currentEvent.participansProfilePicture.get(i).equals("") && i == 2) {
+                        Bitmap bitmap = decodeBase64(currentEvent.participansProfilePicture.get(i));
+                        friends2.setImageBitmap(bitmap);
+                    }
+
+                }
+
+
+
+
 
 
 
@@ -168,7 +348,17 @@ public class ActivitiesActivity extends Fragment {
 
 
             }else if(msg.what ==1 ){
+                System.out.println("eventStopped");
 
+
+                happeningNowLayout=(RelativeLayout) v.findViewById(R.id.generalHappeningNowLayout);
+                ViewGroup.LayoutParams params = happeningNowLayout.getLayoutParams();
+                params.height = 0;
+                happeningNowLayout.setLayoutParams(params);
+
+                if (googleApiClient.isConnected()) {
+                    googleApiClient.disconnect();
+                }
             }
 
 
@@ -223,6 +413,8 @@ public class ActivitiesActivity extends Fragment {
     public void onResume() {
         super.onResume();
 
+
+
         if (fradapter != null) fradapter.notifyDataSetChanged();
         if (myAdapter != null) myAdapter.notifyDataSetChanged();
     }
@@ -243,15 +435,6 @@ public class ActivitiesActivity extends Fragment {
         nearby.setBadgeCount(NumberOfUnseen);
 
 
-/*
-        GPSTracker gps = new GPSTracker(getActivity().getApplicationContext(), getActivity());
-        if (gps.canGetLocation()) {
-            latitude = gps.getLatitude();
-            longitude = gps.getLongitude();
-
-            gps.stopUsingGPS();
-        }
-        */
 
         //set activeToken in firebase node for notification
         final DatabaseReference userNode = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(getActivity()).id);
@@ -260,30 +443,11 @@ public class ActivitiesActivity extends Fragment {
         if(!activeToken.equalsIgnoreCase("0")) {
             userNode.child("activeToken").setValue(activeToken);
         }
-
-/*
-        if(locationChecker == null) locationChecker = LocationChecker.getInstance();
-        locationChecker.setContext(mContext);
-        */
-
         myEventList.clear();
         aroundMeEventList.clear();
 
         try {
             super.onCreate(savedInstanceState);
-
-
-            //Go to chat
-            /*
-            String chatUID = getActivity().getIntent().getStringExtra("chatUID");
-            if (chatUID != null) {
-                Intent goToChatList = new Intent(getActivity(), ChatListActivity.class);
-                goToChatList.putExtra("chatUID", chatUID);
-                startActivity(goToChatList);
-
-
-            }
-            */
 
             // Creating ViewPager Adapter and Passing Fragment Manager, Titles fot the Tabs and Number Of Tabs
             adapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager(), Titles, Numboftabs);
@@ -342,14 +506,19 @@ public class ActivitiesActivity extends Fragment {
                         ArrayList<Event> myFirstPageEventList = Persistance.getInstance().getMyActivities(getActivity());
                         if (myFirstPageEventList.size() >= 1) {
                             //long timeToNextEvent = (myFirstPageEventList.get(0).eventDateTimeStamp - System.currentTimeMillis() / 1000) / 60;
-                            long timeToNextEvent = (1504527780 - System.currentTimeMillis() / 1000) ;
+                            long timeToNextEvent = (1504618679 - System.currentTimeMillis() / 1000) ;
                             while (timeToNextEvent >= 0) {
                                 Thread.sleep(1000);
                                 timeToNextEvent -= 1;
                             }
                             //happening now started
+                        if((timeToNextEvent > -3600 && buttonState == 0)|| (timeToNextEvent > -7200 && buttonState == 1)) {
 
-                            handler.sendEmptyMessage(0);
+                                googleApiClient.connect();
+
+                                handler.sendEmptyMessage(0);
+
+                        }
 
                         }
                     }catch (Exception e){
@@ -365,7 +534,7 @@ public class ActivitiesActivity extends Fragment {
                         ArrayList<Event> myFirstPageEventList = Persistance.getInstance().getMyActivities(getActivity());
                         if (myFirstPageEventList.size() >= 1) {
                             //long timeToNextEvent = (myFirstPageEventList.get(0).eventDateTimeStamp - System.currentTimeMillis() / 1000) / 60;
-                            long timeToNextEvent = (System.currentTimeMillis() / 1000 - 1504527780) ;
+                            long timeToNextEvent = (System.currentTimeMillis() / 1000 - 1504618679) ;
                             while ((buttonState == 0 && timeToNextEvent <= 3600 ) || (buttonState == 1 && timeToNextEvent < 7200)) {
                                 if(buttonState == 2)
                                     break;
@@ -383,40 +552,21 @@ public class ActivitiesActivity extends Fragment {
             };
 
 
-
-            Thread startHappeningNow=new Thread(runnableStart);
-            startHappeningNow.start();
             Thread stopHappeningNow=new Thread(runnableStop);
             stopHappeningNow.start();
-
-            locationManager=(LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-            String providerName = locationManager.getBestProvider(new Criteria(), true);
-            Location location=locationManager.getLastKnownLocation(providerName);
-            System.out.println(location.getLatitude()+"latitude");
+            Thread startHappeningNow=new Thread(runnableStart);
+            startHappeningNow.start();
 
 
-            locationListener=new LocationListener() {
-                @Override
-                public void onLocationChanged(Location location) {
-                    System.out.println(location.getLatitude()+" latitude onchange main");
-                }
-
-                @Override
-                public void onStatusChanged(String s, int i, Bundle bundle) {
-
-                }
-
-                @Override
-                public void onProviderEnabled(String s) {
-
-                }
-
-                @Override
-                public void onProviderDisabled(String s) {
-
-                }
-            };
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,100,0,locationListener); //150000
+            googleApiClient = new GoogleApiClient.Builder(getContext())
+                    .addApi(LocationServices.API)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .build();
+            locationRequest=new LocationRequest();
+            locationRequest.setInterval(10*1000);
+            locationRequest.setFastestInterval(5*1000);
+            locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -550,12 +700,6 @@ public class ActivitiesActivity extends Fragment {
         });
 
         if (!isFirstTimeMyEvents) {
-            //  if (
-            //      friendsEventsList.size() == 0 &&
-            //          !eventHappeningNow) {
-            // place holder no events created
-            //  }
-            //else frlistView.setBackgroundColor(Color.parseColor("#FFFFFF"));
 
             mylistView.setAdapter(myAdapter);
         }
@@ -608,4 +752,46 @@ public class ActivitiesActivity extends Fragment {
     }
 
 
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        requestLocationUpdates();
+}
+
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        System.out.println("Connection suspended");
+    }
+
+
+    private void requestLocationUpdates() {
+        /*if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }*/
+        LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        System.out.println("Connection failed");
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        System.out.println(location.getLatitude()+" new api");
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+    }
 }

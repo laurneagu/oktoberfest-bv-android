@@ -6,8 +6,11 @@ import android.content.SharedPreferences;
 
 import com.facebook.login.LoginManager;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import larc.ludiconprod.User;
 import larc.ludiconprod.Utils.Event;
@@ -95,12 +98,14 @@ public class Persistance {
     public ArrayList<Event> getMyActivities(Activity activity){
         SharedPreferences sharedPreferences = activity.getSharedPreferences(this.myActivitiesString, 0);
         String json = sharedPreferences.getString(this.myActivitiesString, "0");
-        Gson gson = new Gson();
-        ArrayList<Event> eventList;
+        ArrayList<Event> eventList = new ArrayList<>();;
+
+        Type type = new TypeToken<ArrayList<Event>>() {
+        }.getType();
         if (json.equals("0")) {
             eventList = new ArrayList<>();
         } else {
-            eventList = gson.fromJson(json, ArrayList.class);
+            eventList = new Gson().fromJson(json, type);
         }
         return  eventList;
     }

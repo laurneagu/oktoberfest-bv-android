@@ -2,7 +2,8 @@
 <RelativeLayout android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:paddingBottom="56dp">
+    android:paddingBottom="56dp"
+    android:background="#f7f9fc">
     <ImageView
         android:layout_marginTop="56dp"
         android:layout_width="match_parent"
@@ -21,6 +22,218 @@
             android:textColor="@color/tab_text_color"
             android:background="#FFFFFF"/>
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/generalHappeningNowLayout"
+            >
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="16dp"
+                android:background="#ffffff"
+                android:id="@+id/happeningNowLayout"
+
+                >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignBottom="@+id/imageBackground"
+                    android:background="@drawable/bg_sport_football"
+                    android:id="@+id/imageViewBackground"/>
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/imageBackground">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Happening Now!"
+                        android:textSize="18dp"
+                        android:id="@+id/HNTV"
+                        android:textColor="#d4498b"
+                        android:layout_marginTop="16dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="You are playing Football"
+                        android:textSize="12dp"
+                        android:textColor="#acb8c1"
+                        android:id="@+id/HNPlayWhat"
+                        android:layout_below="@+id/HNTV"/>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="16dp"
+                        android:layout_below="@+id/HNPlayWhat"
+                        android:id="@+id/pointsLayout">
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="You will gain"
+                            android:textColor="#0c3855"
+                            android:textSize="12dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/ludicoinsHN"
+                            android:text="+25"
+                            android:textSize="12dp"
+                            android:textColor="#fcb851"
+                            android:layout_marginLeft="8dp"/>
+
+                        <ImageView
+                            android:layout_width="12dp"
+                            android:layout_height="12dp"
+                            android:background="@drawable/ic_ludicoins_small"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="4dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/pointsHN"
+                            android:text="+100"
+                            android:textSize="12dp"
+                            android:textColor="#1573ba"
+                            android:layout_marginLeft="8dp"/>
+
+                        <ImageView
+                            android:layout_width="12dp"
+                            android:layout_height="12dp"
+                            android:background="@drawable/ic_points_small"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="4dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="per hour"
+                            android:textSize="12dp"
+                            android:textColor="#acb8c1"
+                            android:layout_marginLeft="8dp"/>
+
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/pointsLayout"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="24dp"
+                        android:layout_marginTop="8dp">
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="12dp"
+                                android:textColor="#acb8c1"
+                                android:id="@+id/locationTitle"
+                                android:text="Location"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="12dp"
+                                android:layout_below="@+id/locationTitle"
+                                android:textColor="#0c3855"
+                                android:id="@+id/locationHN"
+                                android:text="Bulevardul Iuliu Maniu,Nr.9,Bucharest"/>
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="12dp"
+                                android:textColor="#acb8c1"
+                                android:id="@+id/playersTitle"
+                                android:text="Players"/>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/playersTitle"
+                                android:orientation="horizontal">
+
+                                <de.hdodenhof.circleimageview.CircleImageView
+                                    android:id="@+id/friends0HN"
+                                    android:layout_width="32dp"
+                                    android:layout_height="32dp"
+                                    android:layout_gravity="center"
+                                    android:background="@drawable/ph_user"
+                                    android:visibility="invisible"/>
+
+                                <de.hdodenhof.circleimageview.CircleImageView
+                                    android:id="@+id/friends1HN"
+                                    android:layout_width="32dp"
+                                    android:layout_height="32dp"
+                                    android:layout_gravity="center"
+                                    android:layout_marginLeft="4dp"
+                                    android:background="@drawable/ph_user"
+                                    android:visibility="invisible" />
+
+                                <de.hdodenhof.circleimageview.CircleImageView
+                                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                                    android:id="@+id/friends2HN"
+                                    android:layout_width="32dp"
+                                    android:layout_height="32dp"
+                                    android:layout_marginLeft="4dp"
+                                    android:visibility="invisible"
+                                    android:layout_gravity="center"
+                                    android:background="@drawable/ph_user"
+                                    />
+
+                                <TextView
+                                    android:id="@+id/friendsNumberHN"
+                                    android:layout_width="32dp"
+                                    android:layout_height="32dp"
+                                    android:textAlignment="center"
+                                    android:paddingTop="9dp"
+                                    android:textSize="14dp"
+                                    android:textColor="#02b9ad"
+                                    android:visibility="visible"
+                                    android:layout_gravity="center"
+                                    android:background="@drawable/round_textview"
+                                    android:text="+3" />
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+                </RelativeLayout>
+            </RelativeLayout>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:paddingLeft="25dp"
+                android:paddingRight="25dp"
+                android:textSize="14dp"
+                android:id="@+id/checkinHN"
+                android:layout_marginTop="144dp"
+                android:textColor="#ffffff"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/pink_button_selector"
+
+                android:text="CHECK-IN" />
+        </RelativeLayout>
+
 
 
         <android.support.v4.view.ViewPager
@@ -31,7 +244,7 @@
             android:textColor="@color/tab_text_color"
             ></android.support.v4.view.ViewPager>
 
-        </LinearLayout>
+    </LinearLayout>
 
     <ProgressBar
         android:id="@+id/activityProgressBar"
