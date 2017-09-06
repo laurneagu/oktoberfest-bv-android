@@ -16,10 +16,18 @@
         android:background="@drawable/shadow_top_to_bottom"
         android:layout_below="@+id/tool_bar"/>
     <LinearLayout
+        android:id="@+id/noInternetBalanceLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tool_bar">
+        <include
+            layout="@layout/no_connection_bar"/>
+    </LinearLayout>
+    <LinearLayout
         android:id="@+id/profileContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/tool_bar"
+        android:layout_below="@+id/noInternetBalanceLayout"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:orientation="vertical">

@@ -90,13 +90,6 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
                 }
             });
 
-            v.findViewById(R.id.internetRefresh).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onInternetRefresh();
-                }
-            });
-
             Typeface typeFace = Typeface.createFromAsset(super.getActivity().getAssets(),"fonts/Quicksand-Medium.ttf");
             Typeface typeFaceBold = Typeface.createFromAsset(super.getActivity().getAssets(),"fonts/Quicksand-Bold.ttf");
 
@@ -152,12 +145,6 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
 
     public void printInfo(User u) {
         try {
-            v.findViewById(R.id.internetRefresh).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onInternetRefresh();
-                }
-            });
             RelativeLayout ll = (RelativeLayout) v.findViewById(R.id.noInternetLayout);
             ll.getLayoutParams().height = 0;
             ll.setLayoutParams(ll.getLayoutParams());
@@ -304,6 +291,7 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
             v.findViewById(R.id.internetRefresh).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    view.setOnClickListener(null);
                     onInternetRefresh();
                 }
             });

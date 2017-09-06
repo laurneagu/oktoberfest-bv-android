@@ -91,7 +91,6 @@ public class LeaderboardTab extends Fragment implements Response.Listener<JSONOb
     }
 
     public void updateUserList() {
-        this.activity.resetInternetRefresh();
         RelativeLayout ll = (RelativeLayout) v.getRootView().findViewById(R.id.noInternetLayout);
         ll.getLayoutParams().height = 0;
         ll.setLayoutParams(ll.getLayoutParams());

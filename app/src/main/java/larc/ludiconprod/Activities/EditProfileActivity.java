@@ -16,9 +16,16 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.android.volley.NetworkError;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+
+import org.json.JSONObject;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -42,12 +49,11 @@ import larc.ludiconprod.Utils.util.Sport;
  * Created by alex_ on 10.08.2017.
  */
 
-public class EditProfileActivity extends AppCompatActivity implements View.OnClickListener {
+public class EditProfileActivity extends AppCompatActivity implements View.OnClickListener, Response.ErrorListener, Response.Listener<JSONObject> {
     public static final int PICK_IMAGE_ID = 1423;
 
     private static final CharSequence TITLES[] = {"SPORT DETAILS", "INFO DETAILS"};
     private int tabsNumber = 2;
-    private View v;
     private EditViewPagerAdapter adapter;
     private ViewPager pager;
     private SlidingTabLayout tabs;
@@ -74,6 +80,8 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             actionBar.hide();
 
             super.setContentView(R.layout.edit_profile_activity);
+
+            findViewById(R.id.internetRefresh).setAlpha(0);
 
             ImageButton backButton=(ImageButton) findViewById(R.id.backButton);
             backButton.setBackgroundResource(R.drawable.ic_nav_up);
@@ -235,21 +243,6 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         HashMap<String, String> headers = new HashMap<>();
         headers.put("authKey", old.authKey);
         HTTPResponseController.getInstance().updateUser(params, headers, this);
-
-        Log.d("Update sent", "Sent!!!");
-
-        Intent intent = new Intent(this, Main.class);
-        intent.putExtra("Tab", R.id.tab_profile);
-        startActivity(intent);
-
-        User t = Persistance.getInstance().getUserInfo(this);
-        t.gender = user.gender;
-        t.firstName = user.firstName;
-        t.lastName = user.lastName;
-        t.range = user.range;
-        t.age = user.age;
-        t.sports = user.sports;
-        Persistance.getInstance().setUserInfo(this, t);
     }
 
     @Override
@@ -266,6 +259,41 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         }
 
         //super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onErrorResponse(VolleyError error) {
+        Toast.makeText(this, error.getMessage(), Toast.LENGTH_LONG).show();
+        if (error instanceof NetworkError) {
+            RelativeLayout ll = (RelativeLayout) findViewById(R.id.noInternetLayout);
+            final float scale = super.getResources().getDisplayMetrics().density;
+            int pixels = (int) (56 * scale + 0.5f);
+            ll.getLayoutParams().height = pixels;
+            ll.setLayoutParams(ll.getLayoutParams());
+        }
+    }
+
+    @Override
+    public void onResponse(JSONObject response) {
+        Log.d("Update sent", "Sent!!!");
+
+        Intent intent = new Intent(this, Main.class);
+        intent.putExtra("Tab", R.id.tab_profile);
+        startActivity(intent);
+
+        User t = Persistance.getInstance().getUserInfo(this);
+        t.gender = "" + this.sex;
+        t.firstName = this.firstName.getText().toString();
+        t.lastName = this.lastName.getText().toString();
+        t.range = 1 + this.range.getProgress() + "";
+        t.sports.clear();
+        for(int i = 0; i < sports.size(); ++i){
+            Sport sport = new Sport(sports.get(i));
+            t.sports.add(sport);
+        }
+        Persistance.getInstance().setUserInfo(this, t);
+
+        finish();
     }
 
     public int getSex() {

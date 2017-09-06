@@ -85,13 +85,6 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
                 }
             });
 
-            findViewById(R.id.internetRefresh).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onInternetRefresh();
-                }
-            });
-
             Typeface typeFace = Typeface.createFromAsset(super.getAssets(),"fonts/Quicksand-Medium.ttf");
             Typeface typeFaceBold = Typeface.createFromAsset(super.getAssets(),"fonts/Quicksand-Bold.ttf");
 
@@ -199,12 +192,6 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
 
     public void printInfo(boolean friend) {
         try {
-            findViewById(R.id.internetRefresh).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onInternetRefresh();
-                }
-            });
             RelativeLayout ll = (RelativeLayout) findViewById(R.id.noInternetLayout);
             ll.getLayoutParams().height = 0;
             ll.setLayoutParams(ll.getLayoutParams());
@@ -408,6 +395,7 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
             findViewById(R.id.internetRefresh).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    view.setOnClickListener(null);
                     onInternetRefresh();
                 }
             });

@@ -16,10 +16,13 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.NetworkError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,10 +63,7 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener 
     public int numberOfRefreshMyCoupons = 0;
     public boolean firstPageMyCoupons = true;
     boolean addedSwipeMyCoupons = false;
-
-    public void getCoupons() {
-
-    }
+    private boolean noGps = false;
 
     public void getCoupons(String pageNumber) {
         HashMap<String, String> headers = new HashMap<>();
@@ -80,6 +80,11 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener 
             longitude = gps.getLongitude();
 
             gps.stopUsingGPS();
+            this.noGps = false;
+        } else {
+            this.noGps = true;
+            this.prepareError("No location services available!");
+            return;
         }
 
         urlParams += "userId=" + Persistance.getInstance().getUserInfo(getActivity()).id;
@@ -114,15 +119,12 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener 
     }
 
     public void updateCouponsList() {
-        v.findViewById(R.id.internetRefresh).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onInternetRefresh();
-            }
-        });
         RelativeLayout ll = (RelativeLayout) v.findViewById(R.id.noInternetLayout);
         ll.getLayoutParams().height = 0;
         ll.setLayoutParams(ll.getLayoutParams());
+        if (this.noGps) {
+            this.prepareError("No location services available!");
+        }
 
         final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.couponsSwapRefresh);
 
@@ -198,15 +200,12 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener 
     }
 
     public void updateMyCouponsList() {
-        v.findViewById(R.id.internetRefresh).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onInternetRefresh();
-            }
-        });
         RelativeLayout ll = (RelativeLayout) v.findViewById(R.id.noInternetLayout);
         ll.getLayoutParams().height = 0;
         ll.setLayoutParams(ll.getLayoutParams());
+        if (this.noGps) {
+            this.prepareError("No location services available!");
+        }
 
         final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.myCouponsSwapRefresh);
 
@@ -280,32 +279,48 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener 
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        //Toast.makeText(super.getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+        Toast.makeText(super.getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
         if (error instanceof NetworkError) {
-            v.findViewById(R.id.internetRefresh).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onInternetRefresh();
-                }
-            });
+            this.prepareError("No internet connection!");
+        } else {
             RelativeLayout ll = (RelativeLayout) v.findViewById(R.id.noInternetLayout);
-            final float scale = getContext().getResources().getDisplayMetrics().density;
-            int pixels = (int) (56 * scale + 0.5f);
-            ll.getLayoutParams().height = pixels;
+            ll.getLayoutParams().height = 0;
             ll.setLayoutParams(ll.getLayoutParams());
         }
     }
 
-    public void onInternetRefresh() {
-        v.findViewById(R.id.internetRefresh).setOnClickListener(null);
+    private void prepareError(String message) {
+        v.findViewById(R.id.internetRefresh).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                view.setOnClickListener(null);
+                onInternetRefresh();
+            }
+        });
+        RelativeLayout ll = (RelativeLayout) v.findViewById(R.id.noInternetLayout);
 
-        myCoupons.clear();
+        TextView noConnection = (TextView) ll.findViewById(R.id.noConnectionText);
+        noConnection.setText(message);
+
+        final float scale = getContext().getResources().getDisplayMetrics().density;
+        int pixels = (int) (56 * scale + 0.5f);
+        ll.getLayoutParams().height = pixels;
+        ll.setLayoutParams(ll.getLayoutParams());
+    }
+
+    private void onInternetRefresh() {
         coupons.clear();
-        getMyCoupons("0");
         getCoupons("0");
         firstPageCoupons = true;
+        SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.couponsSwapRefresh);
+        mSwipeRefreshLayout.setRefreshing(false);
         numberOfRefreshCoupons = 0;
+
+        myCoupons.clear();
+        getMyCoupons("0");
         firstPageMyCoupons = true;
+        mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.myCouponsSwapRefresh);
+        mSwipeRefreshLayout.setRefreshing(false);
         numberOfRefreshMyCoupons = 0;
     }
 
@@ -343,13 +358,6 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener 
 
             this.numberOfRefreshCoupons = 0;
             this.numberOfRefreshMyCoupons = 0;
-
-            v.findViewById(R.id.internetRefresh).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onInternetRefresh();
-                }
-            });
         } catch (Exception e) {
             e.printStackTrace();
         }

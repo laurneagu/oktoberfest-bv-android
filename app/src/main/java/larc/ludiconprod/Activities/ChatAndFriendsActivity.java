@@ -18,8 +18,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.NetworkError;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -48,7 +53,7 @@ import static larc.ludiconprod.Activities.ChatActivity.isOnChat1to1;
  * Created by ancuta on 8/18/2017.
  */
 
-public class ChatAndFriendsActivity extends Fragment {
+public class ChatAndFriendsActivity extends Fragment implements Response.ErrorListener {
     ViewPager pager;
     private Context mContext;
     ChatAndFriendsViewPagerAdapter adapter;
@@ -86,9 +91,6 @@ public class ChatAndFriendsActivity extends Fragment {
     public ChatAndFriendsActivity() {
         currentFragment=this;
     }
-
-
-
 
     @Nullable
     @Override
@@ -390,7 +392,6 @@ public class ChatAndFriendsActivity extends Fragment {
 
     public void setFriendsAdapter(){
         try {
-
             friendsAdapter.notifyDataSetChanged();
             final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refreshFriends);
             friendsListView = (ListView) v.findViewById(R.id.friends_listView);
@@ -537,7 +538,8 @@ public class ChatAndFriendsActivity extends Fragment {
             }
         });
     }
-    public void getPage(){
+
+    public void getPage() {
         final DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(activity).id).child("chats");
         Query query=firebaseRef.orderByChild("last_message_date") .limitToLast(4).endAt(valueOfLastChat,keyOfLastChat);
         counterOfChats=0;
@@ -631,7 +633,7 @@ public class ChatAndFriendsActivity extends Fragment {
         urlParams.put("userId", Persistance.getInstance().getUserInfo(activity).id);
         urlParams.put("pageNumber", pageNumber);
 
-        HTTPResponseController.getInstance().getFriends(params, headers, activity, urlParams);
+        HTTPResponseController.getInstance().getFriends(params, headers, activity, urlParams, this);
     }
 
     @Override
@@ -641,4 +643,31 @@ public class ChatAndFriendsActivity extends Fragment {
         if (friendsAdapter != null) friendsAdapter.notifyDataSetChanged();
     }
 
+    private void onInternetRefresh() {
+        addedSwipeFriends = false;
+        NumberOfRefreshFriends = 0;
+        SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refreshFriends);
+        mSwipeRefreshLayout.setRefreshing(false);
+        getFriends("0");
+    }
+
+    @Override
+    public void onErrorResponse(VolleyError error) {
+        Toast.makeText(super.getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+        Log.d("Response", error.toString());
+        if (error instanceof NetworkError) {
+            v.findViewById(R.id.internetRefresh).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    view.setOnClickListener(null);
+                    onInternetRefresh();
+                }
+            });
+            RelativeLayout ll = (RelativeLayout) v.findViewById(R.id.noInternetLayout);
+            final float scale = getContext().getResources().getDisplayMetrics().density;
+            int pixels = (int) (56 * scale + 0.5f);
+            ll.getLayoutParams().height = pixels;
+            ll.setLayoutParams(ll.getLayoutParams());
+        }
+    }
 }

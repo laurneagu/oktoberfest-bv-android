@@ -174,8 +174,6 @@ public class LeaderboardActivity extends Fragment implements RadioGroup.OnChecke
                 }
             });
 
-            this.resetInternetRefresh();
-
             TextView daysLeft = (TextView) v.findViewById(R.id.daysLeft);
             Calendar day = Calendar.getInstance();
             int left =  day.getActualMaximum(Calendar.DAY_OF_MONTH) - day.get(Calendar.DAY_OF_MONTH);

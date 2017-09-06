@@ -32,6 +32,9 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.android.volley.NetworkError;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMapOptions;
@@ -69,7 +72,7 @@ import static larc.ludiconprod.Activities.InviteFriendsActivity.numberOfOfflineF
  * Created by ancuta on 7/31/2017.
  */
 
-public class CreateNewActivity extends Activity implements AdapterView.OnItemSelectedListener, OnMapReadyCallback {
+public class CreateNewActivity extends Activity implements AdapterView.OnItemSelectedListener, OnMapReadyCallback, Response.ErrorListener {
 
     String[] sportNames = {"Football", "Basketball", "Volleyball", "Jogging", "Gym", "Cycling", "Tennis", "Ping Pong", "Squash", "Others"};
     String[] sportCodes = {"FOT", "BAS", "VOL", "JOG", "GYM", "CYC", "TEN", "PIN", "SQU", "OTH"};
@@ -156,6 +159,8 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
 
         setContentView(R.layout.create_new_activity);
 
+        findViewById(R.id.internetRefresh).setAlpha(0);
+
         final Calendar myCalendar = Calendar.getInstance();
         privateText = (TextView) findViewById(R.id.privateText);
         otherSportLayout = (RelativeLayout) findViewById(R.id.chooseSportNameLayout);
@@ -222,7 +227,7 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                                 counterOfInvitedFriends++;
                             }
                         }
-                        HTTPResponseController.getInstance().createEvent(params, headers, CreateNewActivity.this, null);
+                        HTTPResponseController.getInstance().createEvent(params, headers, CreateNewActivity.this, null, CreateNewActivity.this);
 
                     } else {
                         Toast.makeText(CreateNewActivity.this, "Saving...", Toast.LENGTH_LONG).show();
@@ -274,7 +279,7 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                                 }
                             }
                         }
-                        HTTPResponseController.getInstance().createEvent(params, headers, CreateNewActivity.this, null);
+                        HTTPResponseController.getInstance().createEvent(params, headers, CreateNewActivity.this, null, CreateNewActivity.this);
                     }
 
 
@@ -448,8 +453,6 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                ;
-
             }
 
         };
@@ -1147,8 +1150,6 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                                     });
 
                                 }
-
-
                 }
 
                 numberOfTotalParticipants = numberOfOfflineFriends + countOfFriends;
@@ -1157,7 +1158,6 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                     invitedFriends0.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-
                         }
                     });
                     invitedFriends1.setVisibility(View.VISIBLE);
@@ -1184,7 +1184,6 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                             startActivityForResult(goToNextActivity, ASK_FRIENDS);
                         }
                     });
-
                 }
                 if (numberOfOfflineFriends + countOfFriends >= 3) {
                     invitedFriends2.setOnClickListener(new View.OnClickListener() {
@@ -1203,7 +1202,6 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                             startActivityForResult(goToNextActivity, ASK_FRIENDS);
                         }
                     });
-
                 }
                 if (numberOfOfflineFriends + countOfFriends >= 4) {
                     friendsNumber.setOnClickListener(new View.OnClickListener() {
@@ -1224,12 +1222,20 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                     });
 
                 }
-
-
             }
-
     }
 
+    @Override
+    public void onErrorResponse(VolleyError error) {
+        Toast.makeText(this, error.getMessage(), Toast.LENGTH_LONG).show();
+        if (error instanceof NetworkError) {
+            RelativeLayout ll = (RelativeLayout) findViewById(R.id.noInternetLayout);
+            final float scale = super.getResources().getDisplayMetrics().density;
+            int pixels = (int) (56 * scale + 0.5f);
+            ll.getLayoutParams().height = pixels;
+            ll.setLayoutParams(ll.getLayoutParams());
+        }
+    }
 }
 
 

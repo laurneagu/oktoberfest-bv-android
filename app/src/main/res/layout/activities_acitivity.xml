@@ -22,20 +22,20 @@
             android:textColor="@color/tab_text_color"
             android:background="#FFFFFF"/>
 
+        <include
+            layout="@layout/no_connection_bar"/>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/generalHappeningNowLayout"
-            >
+            android:id="@+id/generalHappeningNowLayout">
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingLeft="16dp"
                 android:background="#ffffff"
-                android:id="@+id/happeningNowLayout"
-
-                >
+                android:id="@+id/happeningNowLayout">
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -71,7 +71,6 @@
                         android:layout_marginTop="16dp"
                         android:layout_below="@+id/HNPlayWhat"
                         android:id="@+id/pointsLayout">
-
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -119,7 +118,6 @@
                             android:textSize="12dp"
                             android:textColor="#acb8c1"
                             android:layout_marginLeft="8dp"/>
-
 
                     </LinearLayout>
                     <LinearLayout

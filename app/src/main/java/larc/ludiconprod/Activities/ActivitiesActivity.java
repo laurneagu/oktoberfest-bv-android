@@ -11,6 +11,10 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.location.Criteria;
 import android.location.Location;
+
+import com.android.volley.NetworkError;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.google.android.gms.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
@@ -86,7 +90,7 @@ import static larc.ludiconprod.Activities.Main.bottomBar;
  * Created by ancuta on 7/26/2017.
  */
 
-public class ActivitiesActivity extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener ,LocationListener{
+public class ActivitiesActivity extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener ,LocationListener, Response.ErrorListener{
 
     ViewPager pager;
     private Context mContext;
@@ -137,10 +141,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
     RelativeLayout happeningNowLayout;
     public static CountDownTimer buttonSetter;
     static Button checkinButton;
-
-
-
-
+    private boolean noGps = false;
 
     public ActivitiesActivity() {
         currentFragment = this;
@@ -150,7 +151,6 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         byte[] decodedBytes = Base64.decode(input, 0);
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
-
 
     Handler handler=new Handler(){
         @Override
@@ -365,19 +365,32 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         }
     };
 
-    public void getAroundMeEvents(String pageNumber,Double latitude,Double longitude) {
+    public void getAroundMeEvents(String pageNumber, Double latitude, Double longitude) {
         v1 = (ProgressBar) v.findViewById(R.id.activityProgressBar);
         HashMap<String, String> params = new HashMap<String, String>();
         HashMap<String, String> headers = new HashMap<String, String>();
         HashMap<String, String> urlParams = new HashMap<String, String>();
         headers.put("authKey", Persistance.getInstance().getUserInfo(getActivity()).authKey);
 
+        GPSTracker gps = new GPSTracker(getActivity().getApplicationContext(),  getActivity());
+        if (gps.canGetLocation()) {
+            this.latitude = gps.getLatitude();
+            this.longitude = gps.getLongitude();
+
+            gps.stopUsingGPS();
+            this.noGps = false;
+        } else {
+            this.noGps = true;
+            this.prepareError("No location services available!");
+            return;
+        }
+
         //set urlParams
         urlParams.put("userId", Persistance.getInstance().getUserInfo(getActivity()).id);
         urlParams.put("pageNumber", pageNumber);
         urlParams.put("userLatitude", String.valueOf(latitude));
         urlParams.put("userLongitude", String.valueOf(longitude));
-        urlParams.put("userRange", "10000");
+        urlParams.put("userRange", "" + Persistance.getInstance().getUserInfo(getActivity()).range);
         String userSport = "";
         for (int i = 0; i < Persistance.getInstance().getUserInfo(getActivity()).sports.size(); i++) {
             if (i < Persistance.getInstance().getUserInfo(getActivity()).sports.size() - 1) {
@@ -388,7 +401,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         }
         urlParams.put("userSports", userSport);
         //get Around Me Event
-        HTTPResponseController.getInstance().getAroundMeEvent(params, headers, getActivity(), urlParams);
+        HTTPResponseController.getInstance().getAroundMeEvent(params, headers, getActivity(), urlParams, this);
     }
 
     public void getMyEvents(String pageNumber) {
@@ -405,15 +418,12 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
 
         //get Around Me Event
-        HTTPResponseController.getInstance().getMyEvent(params, headers, getActivity(), urlParams);
-
+        HTTPResponseController.getInstance().getMyEvent(params, headers, getActivity(), urlParams, this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
-
 
         if (fradapter != null) fradapter.notifyDataSetChanged();
         if (myAdapter != null) myAdapter.notifyDataSetChanged();
@@ -428,13 +438,10 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         v = inflater.inflate(R.layout.activities_acitivity, container, false);
         v1 = (ProgressBar) v.findViewById(R.id.activityProgressBar);
 
-
         int NumberOfUnseen=Persistance.getInstance().getUnseenChats(getActivity()).size();
 
         BottomBarTab nearby = bottomBar.getTabWithId(R.id.tab_friends);
         nearby.setBadgeCount(NumberOfUnseen);
-
-
 
         //set activeToken in firebase node for notification
         final DatabaseReference userNode = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(getActivity()).id);
@@ -493,7 +500,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
             myAdapter = new MyAdapter(myEventList, getActivity().getApplicationContext(), getActivity(), getResources(), currentFragment);
             fradapter = new AroundMeAdapter(aroundMeEventList, getActivity().getApplicationContext(), getActivity(), getResources(), currentFragment);
 
-            getAroundMeEvents("0",latitude,longitude);
+            getAroundMeEvents("0", latitude, longitude);
             getMyEvents("0");
 
             NumberOfRefreshMyEvents = 0;
@@ -570,12 +577,18 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
         } catch (Exception e) {
             e.printStackTrace();
-
         }
         return v;
     }
 
     public void updateListOfEventsAroundMe(final boolean eventHappeningNow) {
+        RelativeLayout ll = (RelativeLayout) v.findViewById(R.id.noInternetLayout);
+        ll.getLayoutParams().height = 0;
+        ll.setLayoutParams(ll.getLayoutParams());
+        if (this.noGps) {
+            this.prepareError("No location services available!");
+        }
+
         // stop swiping on my events
         final SwipeRefreshLayout mSwipeRefreshLayout2 = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh2);
         // mSwipeRefreshLayout2.setEnabled(false);
@@ -676,6 +689,13 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
     }
 
     public void updateListOfMyEvents(final boolean eventHappeningNow) {
+        RelativeLayout ll = (RelativeLayout) v.findViewById(R.id.noInternetLayout);
+        ll.getLayoutParams().height = 0;
+        ll.setLayoutParams(ll.getLayoutParams());
+        if (this.noGps) {
+            this.prepareError("No location services available!");
+        }
+
         // stop swiping on my events
         final SwipeRefreshLayout mSwipeRefreshLayout1 = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh1);
         // mSwipeRefreshLayout2.setEnabled(false);
@@ -788,10 +808,44 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         System.out.println(location.getLatitude()+" new api");
     }
 
+    private void onInternetRefresh() {
+        getMyEvents("0");
+        getFirstPageMyActivity = true;
+        SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh1);
+        mSwipeRefreshLayout.setRefreshing(false);
+        NumberOfRefreshMyEvents = 0;
+        getAroundMeEvents("0", latitude, longitude);
+        getFirstPageAroundMe = true;
+        mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh2);
+        mSwipeRefreshLayout.setRefreshing(false);
+        NumberOfRefreshAroundMe = 0;
+    }
+
+    private void prepareError(String message) {
+        v.findViewById(R.id.internetRefresh).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                view.setOnClickListener(null);
+                onInternetRefresh();
+            }
+        });
+        RelativeLayout ll = (RelativeLayout) v.findViewById(R.id.noInternetLayout);
+
+        TextView noConnection = (TextView) ll.findViewById(R.id.noConnectionText);
+        noConnection.setText(message);
+
+        final float scale = getContext().getResources().getDisplayMetrics().density;
+        int pixels = (int) (56 * scale + 0.5f);
+        ll.getLayoutParams().height = pixels;
+        ll.setLayoutParams(ll.getLayoutParams());
+    }
 
     @Override
-    public void onStart() {
-        super.onStart();
-
+    public void onErrorResponse(VolleyError error) {
+        Toast.makeText(super.getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+        Log.d("Response", error.toString());
+        if (error instanceof NetworkError) {
+            this.prepareError("No internet connection!");
+        }
     }
 }

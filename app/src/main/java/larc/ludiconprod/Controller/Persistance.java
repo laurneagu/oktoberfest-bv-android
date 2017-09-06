@@ -12,6 +12,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import larc.ludiconprod.Activities.BalanceActivity;
 import larc.ludiconprod.User;
 import larc.ludiconprod.Utils.Event;
 
@@ -36,6 +37,7 @@ public class Persistance {
     private final String profileDetailsString = "ProfileDetails";
     private final String myActivitiesString="MyActivities";
     private final String aroundMeActivitiesString="AroundMeActivities";
+    private final String balanceString = "BalanceActivity";
 
     public void setUserInfo(Activity activity, User user) {
 
@@ -151,5 +153,25 @@ public class Persistance {
         editor.clear();
         editor.commit();
         LoginManager.getInstance().logOut();
+    }
+
+    public ArrayList<BalanceActivity.BalanceEntry> getBalanceChache(Activity activity) {
+        String json = null;
+        System.out.println(activity + "activity");
+        SharedPreferences sharedPreferences = activity.getSharedPreferences(balanceString, 0);
+        json = sharedPreferences.getString(balanceString, "0");
+        Gson gson = new Gson();
+        User user;
+        if (json.equals("0")) {
+            return new ArrayList<>();
+        }
+        return gson.fromJson(json, ArrayList.class);
+    }
+
+    public void setBalanceChache(ArrayList<BalanceActivity.BalanceEntry> entries, Activity activity) {
+        SharedPreferences.Editor editor = activity.getSharedPreferences(this.balanceString, 0).edit();
+        Gson gson = new Gson();
+        editor.putString(this.balanceString, gson.toJson(entries));
+        editor.commit();
     }
 }

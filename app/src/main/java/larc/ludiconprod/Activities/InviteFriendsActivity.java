@@ -14,6 +14,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -87,7 +90,7 @@ public class InviteFriendsActivity extends Activity {
                             }
                         }
                     }
-                    HTTPResponseController.getInstance().createEvent(params, headers, InviteFriendsActivity.this, getIntent().getStringExtra("eventId"));
+                    HTTPResponseController.getInstance().createEvent(params, headers, InviteFriendsActivity.this, getIntent().getStringExtra("eventId"), null);
                     saveInvitedFriends.setEnabled(false);
                     ActivityDetailsActivity.activity.finish();
                     finish();
@@ -161,7 +164,12 @@ public class InviteFriendsActivity extends Activity {
         urlParams.put("userId", Persistance.getInstance().getUserInfo(InviteFriendsActivity.this).id);
         urlParams.put("pageNumber", pageNumber);
 
-        HTTPResponseController.getInstance().getFriends(params, headers, InviteFriendsActivity.this, urlParams);
+        HTTPResponseController.getInstance().getFriends(params, headers, InviteFriendsActivity.this, urlParams, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
     }
 
     public void getInvitedFriends(String pageNumber) {

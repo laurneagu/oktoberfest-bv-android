@@ -14,9 +14,13 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.NetworkError;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -48,7 +52,7 @@ import larc.ludiconprod.Utils.util.Sport;
  * Created by ancuta on 8/9/2017.
  */
 
-public class ActivityDetailsActivity extends Activity implements OnMapReadyCallback {
+public class ActivityDetailsActivity extends Activity implements OnMapReadyCallback, Response.ErrorListener {
     ImageButton backButton;
     CircleImageView creatorImageProfile;
     TextView creatorName;
@@ -126,6 +130,7 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
         super.onCreate(savedInstance);
         activity = this;
         setContentView(R.layout.activity_details_activity);
+        findViewById(R.id.internetRefresh).setAlpha(0);
         backButton = (ImageButton) findViewById(R.id.backButton);
         backButton.setBackgroundResource(R.drawable.ic_nav_up);
         TextView titleText = (TextView) findViewById(R.id.titleText);
@@ -710,6 +715,18 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
                 }
             }
         });
+    }
 
+    @Override
+    public void onErrorResponse(VolleyError error) {
+        Toast.makeText(this, error.getMessage(), Toast.LENGTH_LONG).show();
+        if (error instanceof NetworkError) {
+            joinOrUnjoinButton.setEnabled(true);
+            RelativeLayout ll = (RelativeLayout) findViewById(R.id.noInternetLayout);
+            final float scale = super.getResources().getDisplayMetrics().density;
+            int pixels = (int) (56 * scale + 0.5f);
+            ll.getLayoutParams().height = pixels;
+            ll.setLayoutParams(ll.getLayoutParams());
+        }
     }
 }

@@ -12,9 +12,13 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.NetworkError;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,9 +33,9 @@ import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
 
-public class BalanceActivity extends AppCompatActivity implements Response.Listener<JSONObject> {
+public class BalanceActivity extends AppCompatActivity implements Response.Listener<JSONObject>, Response.ErrorListener {
 
-    private ArrayList<BalanceEntry> entryes = new ArrayList<>();
+    private final ArrayList<BalanceEntry> entryes = new ArrayList<>();
     private int pageNumber;
     private BalanceAdapter balanceAdapter;
     private boolean firstTimeBalance;
@@ -72,6 +76,8 @@ public class BalanceActivity extends AppCompatActivity implements Response.Liste
 
             this.balanceAdapter = new BalanceAdapter(this.entryes, this);
 
+            this.entryes.addAll(Persistance.getInstance().getBalanceChache(this));
+            this.updateBalanceList();
             getBalance(0);
 
             AssetManager assets = super.getAssets();
@@ -86,6 +92,10 @@ public class BalanceActivity extends AppCompatActivity implements Response.Liste
     }
 
     public void updateBalanceList() {
+        RelativeLayout ll = (RelativeLayout) findViewById(R.id.noInternetLayout);
+        ll.getLayoutParams().height = 0;
+        ll.setLayoutParams(ll.getLayoutParams());
+
         final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.balamceSwapRefresh);
 
         this.balanceAdapter.notifyDataSetChanged();
@@ -148,9 +158,37 @@ public class BalanceActivity extends AppCompatActivity implements Response.Liste
 
                 this.entryes.add(be);
             }
+            Persistance.getInstance().setBalanceChache(this.entryes, this);
             this.updateBalanceList();
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void onInternetRefresh() {
+        entryes.clear();
+        getBalance(0);
+        SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.balamceSwapRefresh);
+        mSwipeRefreshLayout.setRefreshing(false);
+        pageNumber = 0;
+    }
+
+    @Override
+    public void onErrorResponse(VolleyError error) {
+        Toast.makeText(this, error.getMessage(), Toast.LENGTH_LONG).show();
+        if (error instanceof NetworkError) {
+            findViewById(R.id.internetRefresh).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    view.setOnClickListener(null);
+                    onInternetRefresh();
+                }
+            });
+            RelativeLayout ll = (RelativeLayout) findViewById(R.id.noInternetLayout);
+            final float scale = this.getResources().getDisplayMetrics().density;
+            int pixels = (int) (56 * scale + 0.5f);
+            ll.getLayoutParams().height = pixels;
+            ll.setLayoutParams(ll.getLayoutParams());
         }
     }
 
