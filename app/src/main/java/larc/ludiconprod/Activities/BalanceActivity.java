@@ -49,7 +49,7 @@ public class BalanceActivity extends AppCompatActivity implements Response.Liste
         String params = "userId=" + id;
         params += "&pageNumber=" + pageNumber;
 
-        HTTPResponseController.getInstance().getBalance(head, params, this);
+        HTTPResponseController.getInstance().getBalance(head, params, this, this, this);
     }
 
     @Nullable

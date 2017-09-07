@@ -22,7 +22,9 @@ import com.android.volley.NetworkError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
-import org.w3c.dom.Text;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,7 +40,7 @@ import larc.ludiconprod.Utils.Location.GPSTracker;
 import larc.ludiconprod.Utils.ui.SlidingTabLayout;
 import larc.ludiconprod.Utils.util.Sport;
 
-public class CouponsActivity extends Fragment implements Response.ErrorListener {
+public class CouponsActivity extends Fragment implements Response.ErrorListener, Response.Listener<JSONObject> {
 
     private static final CharSequence TITLES[] = {"COUPONS", "MY COUPONS"};
 
@@ -103,7 +105,12 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener 
         }
         urlParams += "&sportList=" + userSport;
 
-        HTTPResponseController.getInstance().getCoupons(urlParams, headers, this);
+        HTTPResponseController.getInstance().getCoupons(urlParams, headers, this, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                onCouponsResponse(response);
+            }
+        }, this);
     }
 
     public void getMyCoupons(String pageNumber) {
@@ -115,7 +122,12 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener 
         urlParams += "userId=" + Persistance.getInstance().getUserInfo(getActivity()).id;
         urlParams += "&page=" + pageNumber;
 
-        HTTPResponseController.getInstance().getMyCoupons(urlParams, headers, this);
+        HTTPResponseController.getInstance().getMyCoupons(urlParams, headers, this, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                onMyCouponsResponse(response);
+            }
+        }, this);
     }
 
     public void updateCouponsList() {
@@ -365,5 +377,79 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener 
         return v;
     }
 
+    public void onMyCouponsResponse(JSONObject response) {
+        try {
+            JSONArray coupons = response.getJSONArray("coupons");
 
+            CouponsActivity ca = this;
+
+            Coupon c;
+            for (int i = 0; i < coupons.length(); ++i) {
+                JSONObject o = coupons.getJSONObject(i);
+                c = new Coupon();
+                c.couponBlockId = o.getString("couponBlockId");
+                c.title = o.getString("title");
+                c.description = o.getString("description");
+                c.expiryDate = Long.parseLong(o.getString("expiryDate"));
+                c.numberOfCoupons = Integer.parseInt(o.getString("numberOfCoupons"));
+                c.ludicoins = Integer.parseInt(o.getString("ludicoins"));
+                c.companyPicture = o.getString("companyPicture");
+                c.companyName = o.getString("companyName");
+                c.discountCode = o.getString("discountCode");
+
+                ca.myCoupons.add(c);
+            }
+
+            ca.updateMyCouponsList();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void onCouponsResponse(JSONObject response) {
+        try {
+            JSONArray coupons = response.getJSONArray("coupons");
+
+            CouponsActivity ca = this;
+
+            Coupon c;
+            for (int i = 0; i < coupons.length(); ++i) {
+                JSONObject o = coupons.getJSONObject(i);
+                c = new Coupon();
+                c.couponBlockId = o.getString("couponBlockId");
+                c.title = o.getString("title");
+                c.description = o.getString("description");
+                c.expiryDate = Long.parseLong(o.getString("expiryDate"));
+                c.numberOfCoupons = Integer.parseInt(o.getString("numberOfCoupons"));
+                c.ludicoins = Integer.parseInt(o.getString("ludicoins"));
+                c.companyPicture = o.getString("companyPicture");
+                c.companyName = o.getString("companyName");
+
+                ca.coupons.add(c);
+            }
+
+            ca.updateCouponsList();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onResponse(JSONObject response) {
+        try {
+            Toast.makeText(super.getActivity(), "" + response, Toast.LENGTH_SHORT).show();
+
+            this.coupons.clear();
+            this.getCoupons("0");
+            this.firstPageCoupons = true;
+            this.numberOfRefreshCoupons = 0;
+
+            this.myCoupons.clear();
+            this.getMyCoupons("0");
+            this.firstPageMyCoupons = true;
+            this.numberOfRefreshMyCoupons = 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -86,7 +86,7 @@ public class LeaderboardTab extends Fragment implements Response.Listener<JSONOb
         urlParams += "&timeframe=" + this.timeFrame;
         urlParams += "&area=" + (this.activity.isFriends() ? "0" : "1");
 
-        HTTPResponseController.getInstance().getLeaderboard(urlParams, headers, this);
+        HTTPResponseController.getInstance().getLeaderboard(urlParams, headers, super.getActivity(), this, this);
         Log.d("urlParams", urlParams);
     }
 

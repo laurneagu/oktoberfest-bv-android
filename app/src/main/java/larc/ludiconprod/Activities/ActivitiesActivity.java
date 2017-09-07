@@ -377,6 +377,9 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
             this.latitude = gps.getLatitude();
             this.longitude = gps.getLongitude();
 
+            latitude = this.latitude;
+            longitude = this.longitude;
+
             gps.stopUsingGPS();
             this.noGps = false;
         } else {

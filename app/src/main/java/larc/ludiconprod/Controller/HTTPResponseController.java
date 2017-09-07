@@ -840,11 +840,11 @@ public class HTTPResponseController {
         requestQueue.add(jsObjRequest);
     }
 
-    public void joinEvent(Activity activity, HashMap<String, String> params, HashMap<String, String> headers, String eventId) {
+    public void joinEvent(Activity activity, HashMap<String, String> params, HashMap<String, String> headers, String eventId, Response.ErrorListener errorListener) {
         setActivity(activity, params.get("email"), params.get("password"));
         eventid = eventId;
         RequestQueue requestQueue = Volley.newRequestQueue(activity);
-        CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, prodServer + "api/joinEvent/", params, headers, this.createJoinEventSuccesListener(), (Response.ErrorListener) activity);
+        CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, prodServer + "api/joinEvent/", params, headers, this.createJoinEventSuccesListener(), errorListener);
         requestQueue.add(jsObjRequest);
 
     }
@@ -982,139 +982,39 @@ public class HTTPResponseController {
         requestQueue.add(jsObjRequest);
     }
 
-    public void getCoupons(String params, HashMap<String, String> headers, final CouponsActivity activity) {
-        Response.Listener<JSONObject> success = new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-
-                try {
-                    JSONArray coupons = response.getJSONArray("coupons");
-
-                    CouponsActivity ca = (CouponsActivity) activity;
-
-                    Coupon c;
-                    for (int i = 0; i < coupons.length(); ++i) {
-                        JSONObject o = coupons.getJSONObject(i);
-                        c = new Coupon();
-                        c.couponBlockId = o.getString("couponBlockId");
-                        c.title = o.getString("title");
-                        c.description = o.getString("description");
-                        c.expiryDate = Long.parseLong(o.getString("expiryDate"));
-                        c.numberOfCoupons = Integer.parseInt(o.getString("numberOfCoupons"));
-                        c.ludicoins = Integer.parseInt(o.getString("ludicoins"));
-                        c.companyPicture = o.getString("companyPicture");
-                        c.companyName = o.getString("companyName");
-
-                        ca.coupons.add(c);
-                    }
-
-                    ca.updateCouponsList();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-
+    public void getCoupons(String params, HashMap<String, String> headers, final CouponsActivity activity, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         RequestQueue requestQueue = Volley.newRequestQueue(activity.getActivity());
-        CustomRequest request = new CustomRequest(Request.Method.GET, prodServer + "api/coupons?" + params, new HashMap<String, String>(), headers, success, activity);
+        CustomRequest request = new CustomRequest(Request.Method.GET, prodServer + "api/coupons?" + params, new HashMap<String, String>(), headers, listener, activity);
         requestQueue.add(request);
     }
 
-    public void getMyCoupons(String params, HashMap<String, String> headers, final CouponsActivity activity) {
-        Response.Listener<JSONObject> success = new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    JSONArray coupons = response.getJSONArray("coupons");
-
-                    CouponsActivity ca = (CouponsActivity) activity;
-
-                    Coupon c;
-                    for (int i = 0; i < coupons.length(); ++i) {
-                        JSONObject o = coupons.getJSONObject(i);
-                        c = new Coupon();
-                        c.couponBlockId = o.getString("couponBlockId");
-                        c.title = o.getString("title");
-                        c.description = o.getString("description");
-                        c.expiryDate = Long.parseLong(o.getString("expiryDate"));
-                        c.numberOfCoupons = Integer.parseInt(o.getString("numberOfCoupons"));
-                        c.ludicoins = Integer.parseInt(o.getString("ludicoins"));
-                        c.companyPicture = o.getString("companyPicture");
-                        c.companyName = o.getString("companyName");
-                        c.discountCode = o.getString("discountCode");
-
-                        ca.myCoupons.add(c);
-                    }
-
-                    ca.updateMyCouponsList();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-
+    public void getMyCoupons(String params, HashMap<String, String> headers, CouponsActivity activity, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         RequestQueue requestQueue = Volley.newRequestQueue(activity.getActivity());
-        CustomRequest request = new CustomRequest(Request.Method.GET, prodServer + "api/coupons?" + params, new HashMap<String, String>(), headers, success, activity);
+        CustomRequest request = new CustomRequest(Request.Method.GET, prodServer + "api/coupons?" + params, new HashMap<String, String>(), headers, listener, errorListener);
         requestQueue.add(request);
     }
 
-    public void redeemCoupon(HashMap<String, String> params, HashMap<String, String> headers, final Fragment fragment) {
-        Response.Listener<JSONObject> success = new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    Toast.makeText(activity, "" + response, Toast.LENGTH_SHORT).show();
-
-                    CouponsActivity ca = (CouponsActivity) fragment;
-                    ca.coupons.clear();
-                    ca.getCoupons("0");
-                    ca.firstPageCoupons = true;
-                    ca.numberOfRefreshCoupons = 0;
-
-                    ca.myCoupons.clear();
-                    ca.getMyCoupons("0");
-                    ca.firstPageMyCoupons = true;
-                    ca.numberOfRefreshMyCoupons = 0;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-
+    public void redeemCoupon(HashMap<String, String> params, HashMap<String, String> headers, Activity activity, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         RequestQueue requestQueue = Volley.newRequestQueue(activity);
-        CustomRequest request = new CustomRequest(Request.Method.POST, prodServer + "api/redeemCoupon", params, headers, success, (Response.ErrorListener) fragment);
+        CustomRequest request = new CustomRequest(Request.Method.POST, prodServer + "api/redeemCoupon", params, headers, listener, errorListener);
         requestQueue.add(request);
     }
 
-    public void friendRequest(final HashMap<String, String> params, HashMap<String, String> headers, final Activity activity) {
-        Response.Listener<JSONObject> success = new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Toast.makeText(activity, "" + response, Toast.LENGTH_SHORT).show();
-
-                UserProfileActivity upa = (UserProfileActivity) activity;
-                if (params.get("action").equals("1")) {
-                    upa.friendAdded();
-                } else {
-                    upa.friendRemoved();
-                }
-            }
-        };
-
+    public void friendRequest(final HashMap<String, String> params, HashMap<String, String> headers, final Activity activity, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         RequestQueue requestQueue = Volley.newRequestQueue(activity);
-        CustomRequest request = new CustomRequest(Request.Method.POST, prodServer + "api/friend", params, headers, success, this.createErrorListener());
+        CustomRequest request = new CustomRequest(Request.Method.POST, prodServer + "api/friend", params, headers, listener, errorListener);
         requestQueue.add(request);
     }
 
-    public void getLeaderboard(String urlParams, HashMap<String, String> headers, LeaderboardTab leaderboardTab) {
+    public void getLeaderboard(String urlParams, HashMap<String, String> headers, Activity activity, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         RequestQueue requestQueue = Volley.newRequestQueue(activity);
-        CustomRequest request = new CustomRequest(Request.Method.GET, prodServer + "api/leaderboard?" + urlParams, new HashMap<String, String>(), headers, leaderboardTab, leaderboardTab);
+        CustomRequest request = new CustomRequest(Request.Method.GET, prodServer + "api/leaderboard?" + urlParams, new HashMap<String, String>(), headers, listener, errorListener);
         requestQueue.add(request);
     }
 
-    public void getBalance(HashMap<String, String> headers, String urlParams, BalanceActivity activity) {
+    public void getBalance(HashMap<String, String> headers, String urlParams, BalanceActivity activity, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         RequestQueue requestQueue = Volley.newRequestQueue(activity);
-        CustomRequest request = new CustomRequest(Request.Method.GET, prodServer + "api/balance?" + urlParams, new HashMap<String, String>(), headers, activity, activity);
+        CustomRequest request = new CustomRequest(Request.Method.GET, prodServer + "api/balance?" + urlParams, new HashMap<String, String>(), headers, listener, errorListener);
         requestQueue.add(request);
     }
 }

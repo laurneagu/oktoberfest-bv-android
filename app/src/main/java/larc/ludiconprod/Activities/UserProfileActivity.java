@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.NetworkError;
 import com.android.volley.Response;
@@ -164,12 +165,7 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
                 u.sports.add(new Sport(sports.getString(i)));
             }
 
-            boolean friend = true;
-            try {
-                jsonObject.getBoolean("isFriend");
-            } catch (JSONException e) {
-                friend = false;
-            }
+            boolean friend = jsonObject.getBoolean("isFriend");
 
             this.youPoints.clear();
             this.foePoints.clear();
@@ -344,6 +340,16 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
         }
     }
 
+    public void onFriendResponse(JSONObject response, boolean action) {
+        Toast.makeText(this, "" + response, Toast.LENGTH_SHORT).show();
+
+        if (action) {
+            this.friendAdded();
+        } else {
+            this.friendRemoved();
+        }
+    }
+
     public void addFriend() {
         User u = Persistance.getInstance().getUserInfo(this);
         HashMap<String, String> params = new HashMap<>();
@@ -352,7 +358,12 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
         params.put("action", "1");
         HashMap<String, String> headers = new HashMap<>();
         headers.put("authKey", u.authKey);
-        HTTPResponseController.getInstance().friendRequest(params, headers, this);
+        HTTPResponseController.getInstance().friendRequest(params, headers, this, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                onFriendResponse(response, true);
+            }
+        }, this);
     }
 
     public void removeFriend() {
@@ -363,7 +374,12 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
         params.put("action", "0");
         HashMap<String, String> headers = new HashMap<>();
         headers.put("authKey", u.authKey);
-        HTTPResponseController.getInstance().friendRequest(params, headers, this);
+        HTTPResponseController.getInstance().friendRequest(params, headers, this,new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                onFriendResponse(response, false);
+            }
+        }, this);
     }
 
     public void friendAdded() {

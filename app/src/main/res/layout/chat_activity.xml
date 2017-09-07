@@ -25,7 +25,8 @@
             android:layout_height="12dp"
             android:id="@+id/shadowTop"
             android:background="@drawable/shadow_top_to_bottom"/>
-
+        <include
+            layout="@layout/no_connection_bar"/>
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/swipe_refreshMessage"
             android:layout_width="wrap_content"

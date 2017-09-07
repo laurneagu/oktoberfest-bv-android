@@ -14,6 +14,9 @@ import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -130,7 +133,7 @@ public class CouponsAdapter extends BaseAdapter implements ListAdapter {
 
                     params.put("userId", Persistance.getInstance().getUserInfo(activity).id);
                     params.put("couponBlockId", currentCoupon.couponBlockId);
-                    HTTPResponseController.getInstance().redeemCoupon(params, headers, fragment);
+                    HTTPResponseController.getInstance().redeemCoupon(params, headers, activity, fragment, fragment);
                 }
             });
 

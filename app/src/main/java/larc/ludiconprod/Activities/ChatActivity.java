@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,8 +68,9 @@ public class ChatActivity extends Activity {
     ArrayList<String> otherUsersId=new ArrayList<>();
     ArrayList<String> otherUsersImage=new ArrayList<>();
     TextView titleText;
+    private int dp56;
 
-    public  void checkChatExistence(final String otherUserId,final  Activity activity){
+    public void checkChatExistence(final String otherUserId,final  Activity activity){
         final DatabaseReference myNode = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(activity).id).child("talkbuddies");
         final DatabaseReference otherUserNode = FirebaseDatabase.getInstance().getReference().child("users").child(otherUserId).child("talkbuddies");
         myNode.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -254,6 +256,41 @@ public class ChatActivity extends Activity {
                 }
             });
         }
+
+        findViewById(R.id.internetRefresh).setAlpha(0);
+
+        final float scale = super.getResources().getDisplayMetrics().density;
+        this.dp56 = (int) (56 * scale + 0.5f);
+
+        DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+        connectedRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                boolean connected = snapshot.getValue(Boolean.class);
+                if (!connected) {
+                    onInternetLost();
+                } else {
+                    onInternetRefresh();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+            }
+        });
+    }
+
+    private void onInternetRefresh() {
+        RelativeLayout ll = (RelativeLayout) findViewById(R.id.noInternetLayout);
+        ll.getLayoutParams().height = 0;
+        ll.setLayoutParams(ll.getLayoutParams());
+    }
+
+    private void onInternetLost() {
+        RelativeLayout ll = (RelativeLayout) findViewById(R.id.noInternetLayout);
+
+        ll.getLayoutParams().height = this.dp56;
+        ll.setLayoutParams(ll.getLayoutParams());
     }
 
     public void listenForChanges(){
