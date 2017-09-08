@@ -1,5 +1,6 @@
 package larc.ludiconprod.Activities;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -148,10 +149,12 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
     static Thread startHappeningNow;
     static Boolean HPShouldBeVisible=false;
     static public HappeningNowLocation happeningNowLocation=new HappeningNowLocation();
+    static public Activity activity;
 
 
     public ActivitiesActivity() {
         currentFragment = this;
+        activity=getActivity();
     }
 
     public  Bitmap decodeBase64(String input) {
@@ -641,7 +644,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                     .addOnConnectionFailedListener(this)
                     .build();
             locationRequest=new LocationRequest();
-            locationRequest.setInterval(10*1000);
+            locationRequest.setInterval(300*1000);
             locationRequest.setFastestInterval(5*1000);
             locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 
@@ -890,7 +893,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
     public void onLocationChanged(Location location) {
         System.out.println(location.getLatitude()+" new api");
         happeningNowLocation.locationList.add(location);
-        Persistance.getInstance().setLocation(getActivity(),happeningNowLocation);
+        Persistance.getInstance().setLocation(activity,happeningNowLocation);
 
 
     }
