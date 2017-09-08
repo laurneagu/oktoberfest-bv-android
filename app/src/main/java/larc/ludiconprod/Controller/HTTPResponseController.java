@@ -51,6 +51,7 @@ import larc.ludiconprod.Activities.MyProfileActivity;
 import larc.ludiconprod.Activities.ProfileDetailsActivity;
 import larc.ludiconprod.Activities.ResetPasswordFinalActivity;
 import larc.ludiconprod.Activities.UserProfileActivity;
+import larc.ludiconprod.Dialogs.PointsReceivedDialog;
 import larc.ludiconprod.R;
 import larc.ludiconprod.Utils.Coupon;
 import larc.ludiconprod.Utils.EventDetails;
@@ -743,6 +744,9 @@ public class HTTPResponseController {
             @Override
             public void onResponse(JSONObject jsonObject) {
                 try {
+
+                    PointsReceivedDialog dialog= new PointsReceivedDialog();
+                    dialog.show(activity.getFragmentManager(),"tag");
 
                     System.out.println(jsonObject.getInt("points")+ " points");
 

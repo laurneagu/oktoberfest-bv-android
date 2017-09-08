@@ -403,6 +403,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         headers.put("authKey", Persistance.getInstance().getUserInfo(getActivity()).authKey);
         params.put("userId", Persistance.getInstance().getUserInfo(getActivity()).id);
         params.put("eventId",currentEvent.id);
+        System.out.println("happening id" + currentEvent.id);
         params.put("startedAt",happeningNowLocation.startDate);
         params.put("endedAt",happeningNowLocation.endDate);
         for(int i=0;i < happeningNowLocation.locationList.size();i++){
@@ -570,10 +571,8 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                 @Override
                 public void run() {
                     try {
-                        ArrayList<Event> myFirstPageEventList = Persistance.getInstance().getMyActivities(getActivity());
-                        if (myFirstPageEventList.size() >= 1) {
-                            //long timeToNextEvent = (myFirstPageEventList.get(0).eventDateTimeStamp - System.currentTimeMillis() / 1000) / 60;
-                            long timeToNextEvent = (1504869293 - System.currentTimeMillis() / 1000) ;
+                        if (myEventList.size() >= 1) {
+                            long timeToNextEvent = (Persistance.getInstance().getMyActivities(getActivity()).get(0).eventDateTimeStamp - System.currentTimeMillis() / 1000) / 60;
                             while (timeToNextEvent >= 0) {
                                 Thread.sleep(1000);
                                 timeToNextEvent -= 1;
@@ -583,7 +582,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
                                 googleApiClient.connect();
                                 myEventList.remove(0);
-                                myAdapter.notifyDataSetChanged();
+                                //myAdapter.notifyDataSetChanged();
 
                             SharedPreferences.Editor editor = getActivity().getSharedPreferences("HappeningNowEvent", 0).edit();
                             Gson gson = new Gson();
@@ -605,10 +604,8 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                 @Override
                 public void run() {
                     try {
-                        ArrayList<Event> myFirstPageEventList = Persistance.getInstance().getMyActivities(getActivity());
-                        if (myFirstPageEventList.size() >= 1) {
-                            //long timeToNextEvent = (myFirstPageEventList.get(0).eventDateTimeStamp - System.currentTimeMillis() / 1000) / 60;
-                            long timeToNextEvent = (System.currentTimeMillis() / 1000 - 1504869293) ;
+                        if (myEventList.size() >= 1) {
+                            long timeToNextEvent = (Persistance.getInstance().getMyActivities(getActivity()).get(0).eventDateTimeStamp - System.currentTimeMillis() / 1000) / 60;
                             while ((buttonState == 0 && timeToNextEvent <= 3600 ) || (buttonState == 1 && timeToNextEvent < 7200)) {
                                 if(buttonState == 2)
                                     break;
