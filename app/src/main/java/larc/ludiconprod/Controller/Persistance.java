@@ -3,6 +3,7 @@ package larc.ludiconprod.Controller;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.location.Location;
 
 import com.facebook.login.LoginManager;
 import com.google.gson.Gson;
@@ -15,6 +16,7 @@ import java.util.Arrays;
 import larc.ludiconprod.Activities.BalanceActivity;
 import larc.ludiconprod.User;
 import larc.ludiconprod.Utils.Event;
+import larc.ludiconprod.Utils.HappeningNowLocation;
 
 /**
  * Created by ancuta on 7/12/2017.
@@ -38,6 +40,7 @@ public class Persistance {
     private final String myActivitiesString="MyActivities";
     private final String aroundMeActivitiesString="AroundMeActivities";
     private final String balanceString = "BalanceActivity";
+    private final String locationString = "locationsList";
 
     public void setUserInfo(Activity activity, User user) {
 
@@ -173,5 +176,24 @@ public class Persistance {
         Gson gson = new Gson();
         editor.putString(this.balanceString, gson.toJson(entries));
         editor.commit();
+    }
+    public void setLocation(Activity activity, HappeningNowLocation locationList){
+        SharedPreferences.Editor editor = activity.getSharedPreferences(this.locationString, 0).edit();
+        Gson gson = new Gson();
+        editor.putString(this.locationString, gson.toJson(locationList));
+        editor.commit();
+    }
+
+    public HappeningNowLocation getLocation(Activity activity){
+        SharedPreferences sharedPreferences = activity.getSharedPreferences(this.locationString, 0);
+        String json = sharedPreferences.getString(this.locationString, "0");
+        HappeningNowLocation locationsList;
+
+        if (json.equals("0")) {
+            locationsList = new HappeningNowLocation();
+        } else {
+            locationsList = new Gson().fromJson(json, HappeningNowLocation.class);
+        }
+        return  locationsList;
     }
 }

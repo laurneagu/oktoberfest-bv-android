@@ -66,6 +66,7 @@ import static larc.ludiconprod.Activities.ActivitiesActivity.fradapter;
 import static larc.ludiconprod.Activities.ActivitiesActivity.frlistView;
 import static larc.ludiconprod.Activities.ActivitiesActivity.getFirstPageAroundMe;
 import static larc.ludiconprod.Activities.ActivitiesActivity.getFirstPageMyActivity;
+import static larc.ludiconprod.Activities.ActivitiesActivity.happeningNowLocation;
 import static larc.ludiconprod.Activities.ActivitiesActivity.myAdapter;
 import static larc.ludiconprod.Activities.ActivitiesActivity.myEventList;
 
@@ -409,7 +410,9 @@ public class HTTPResponseController {
                         ActivitiesActivity.NumberOfRefreshMyEvents++;
                     }
                     if(getFirstPageMyActivity){
-                        Persistance.getInstance().setMyActivities(activity,myEventList);
+                        ArrayList <Event> localEventList=new ArrayList<>();
+                        localEventList.addAll(myEventList);
+                        Persistance.getInstance().setMyActivities(activity,localEventList);
                     }
 
                     getFirstPageMyActivity = false;
@@ -734,6 +737,30 @@ public class HTTPResponseController {
             }
         };
     }
+    private Response.Listener<JSONObject> savePointsSuccessListener() {
+        return new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                try {
+
+                    System.out.println(jsonObject.getInt("points")+ " points");
+
+                    SharedPreferences.Editor editor = activity.getSharedPreferences("HappeningNowEvent", 0).edit();
+                    editor.clear();
+                    editor.commit();
+                    editor = activity.getSharedPreferences("locationsList", 0).edit();
+                    editor.clear();
+                    editor.commit();
+                    happeningNowLocation =null;
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        };
+    }
 
     public String trimMessage(String json, String key) {
         String trimmedString = null;
@@ -1015,6 +1042,12 @@ public class HTTPResponseController {
     public void getBalance(HashMap<String, String> headers, String urlParams, BalanceActivity activity, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         RequestQueue requestQueue = Volley.newRequestQueue(activity);
         CustomRequest request = new CustomRequest(Request.Method.GET, prodServer + "api/balance?" + urlParams, new HashMap<String, String>(), headers, listener, errorListener);
+        requestQueue.add(request);
+    }
+
+    public void savePoints(HashMap<String, String> params, HashMap<String, String> headers, Activity activity, Response.ErrorListener errorListener) {
+        RequestQueue requestQueue = Volley.newRequestQueue(activity);
+        CustomRequest request = new CustomRequest(Request.Method.POST, prodServer + "api/savePoints", params, headers, this.savePointsSuccessListener(), errorListener);
         requestQueue.add(request);
     }
 }
