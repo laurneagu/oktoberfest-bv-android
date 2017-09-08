@@ -159,6 +159,17 @@ public class LeaderboardTab extends Fragment implements Response.Listener<JSONOb
         TextView points = (TextView) card.findViewById(R.id.points);
 
         position.setText("" + up.rank);
+        switch (up.rank) {
+            case 1:
+                position.setTextColor(0xfffcb851);
+                break;
+            case 2:
+                position.setTextColor(0xffa7c7e1);
+                break;
+            case 3:
+                position.setTextColor(0xffd98966);
+                break;
+        }
         if (!up.profileImage.equals("")) {
             Bitmap bitmap = MyAdapter.decodeBase64(up.profileImage);
             image.setImageBitmap(bitmap);
@@ -188,7 +199,7 @@ public class LeaderboardTab extends Fragment implements Response.Listener<JSONOb
 
         for (int i = 0; i < count; ++i) {
             UserPosition up = (UserPosition) la.getItem(i);
-            if (up.userId.equals(id)) {
+            if (up != null && up.userId.equals(id)) {
                 th = i;
                 break;
             }
@@ -196,7 +207,7 @@ public class LeaderboardTab extends Fragment implements Response.Listener<JSONOb
 
         Log.d("You", first + " < " + th + " > " + last);
 
-        if (this.inLeaderboard) {
+        if (!this.inLeaderboard) {
             you.setVisibility(View.INVISIBLE);
         } else if (th < first) {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) you.getLayoutParams();
@@ -207,7 +218,7 @@ public class LeaderboardTab extends Fragment implements Response.Listener<JSONOb
         } else if (th > last) {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) you.getLayoutParams();
             params.removeRule(RelativeLayout.ALIGN_PARENT_TOP);
-            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);;
+            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
             you.setLayoutParams(params);
             you.setVisibility(View.VISIBLE);
         } else {
@@ -222,6 +233,23 @@ public class LeaderboardTab extends Fragment implements Response.Listener<JSONOb
         try {
             if (pageNumber == 0) {
                 this.users.clear();
+                this.users.add(null);
+
+                try {
+                    JSONObject you = response.getJSONObject("you");
+                    UserPosition user = new UserPosition();
+                    user.userId = you.getString("userId");
+                    user.name = you.getString("name");
+                    user.points = Integer.parseInt(you.getString("points"));
+                    user.level = Integer.parseInt(you.getString("level"));
+                    user.profileImage = you.getString("profileImage");
+                    user.rank = Integer.parseInt(you.getString("rank"));
+
+                    this.inLeaderboard = true;
+                    this.updateYourCard(v.findViewById(R.id.youRank), user);
+                } catch (JSONException e) {
+                    this.inLeaderboard = false;
+                }
             }
 
             JSONArray users = response.getJSONArray("users");
@@ -238,22 +266,6 @@ public class LeaderboardTab extends Fragment implements Response.Listener<JSONOb
                 user.profileImage = obj.getString("profileImage");
                 user.rank = Integer.parseInt(obj.getString("rank"));
                 this.users.add(user);
-            }
-
-            try {
-                JSONObject you = response.getJSONObject("you");
-                user = new UserPosition();
-                user.userId = you.getString("userId");
-                user.name = you.getString("name");
-                user.points = Integer.parseInt(you.getString("points"));
-                user.level = Integer.parseInt(you.getString("level"));
-                user.profileImage = you.getString("profileImage");
-                user.rank = Integer.parseInt(you.getString("rank"));
-
-                this.inLeaderboard = true;
-                this.updateYourCard(v.findViewById(R.id.youRank), user);
-            } catch (JSONException e) {
-                this.inLeaderboard = false;
             }
 
             this.updateUserList();

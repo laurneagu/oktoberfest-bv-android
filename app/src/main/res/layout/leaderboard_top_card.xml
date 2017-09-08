@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/leaderTop"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:orientation="vertical"
+    android:background="@drawable/bg_leaderboard_header">
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_leaderboard_top"
+        android:layout_gravity="center"/>
+    <TextView
+        android:id="@+id/topText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Be on Top 50 at the end of the month\n and earn Ludicoins"
+        android:gravity="center"
+        android:textColor="#000000"/>
+    <TextView
+        android:id="@+id/daysLeft"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="14 days left"
+        android:gravity="center"
+        android:textColor="#acb8c1"/>
+</LinearLayout>

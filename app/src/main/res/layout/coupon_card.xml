@@ -5,7 +5,8 @@
     android:id="@+id/couponsRelativeLayout"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/card_background">
 
     <ImageView
         android:layout_width="wrap_content"

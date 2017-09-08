@@ -9,7 +9,10 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.util.Calendar;
@@ -43,15 +47,39 @@ public class EditProfileTab2 extends Fragment {
 
     private EditText ageTextView;
     private RelativeLayout passwordLayout;
+    private TextWatcher textWatcher;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.edittab2, container, false);
+        final View v = inflater.inflate(R.layout.edittab2, container, false);
 
         try {
             final EditProfileActivity epa = (EditProfileActivity) super.getActivity();
+            final Button save = (Button) v.findViewById(R.id.saveChangesButton);
             User u = Persistance.getInstance().getProfileInfo(super.getActivity());
 
+            this.textWatcher = new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    if (epa.sameProfileInfo()) {
+                        epa.findViewById(R.id.saveChangesButton).setAlpha(0);
+                        epa.findViewById(R.id.saveChangesButton2).setAlpha(0);
+                    } else {
+                        epa.findViewById(R.id.saveChangesButton).setAlpha(1);
+                        epa.findViewById(R.id.saveChangesButton2).setAlpha(1);
+                    }
+                }
+            };
 
             AssetManager assets = inflater.getContext().getAssets();// Is this the right asset?
             Typeface typeFace= Typeface.createFromAsset(assets, "fonts/Quicksand-Medium.ttf");
@@ -68,14 +96,13 @@ public class EditProfileTab2 extends Fragment {
             ageTextView.setTypeface(typeFace);
             Button changePassword = (Button) v.findViewById(R.id.editPasswordButton);
             changePassword.setTypeface(typeFaceBold);
-            Button save = (Button) v.findViewById(R.id.saveChangesButton);
             save.setTypeface(typeFaceBold);
             passwordLayout = (RelativeLayout) v.findViewById(R.id.editPasswordLayout);
-            EditText oldPass = (EditText) v.findViewById(R.id.oldPassword);
+            final EditText oldPass = (EditText) v.findViewById(R.id.oldPassword);
             oldPass.setTypeface(typeFace);
-            EditText newPass = (EditText) v.findViewById(R.id.newPassword);
+            final EditText newPass = (EditText) v.findViewById(R.id.newPassword);
             newPass.setTypeface(typeFace);
-            EditText rePass = (EditText) v.findViewById(R.id.editPasswordRepeat);
+            final EditText rePass = (EditText) v.findViewById(R.id.editPasswordRepeat);
             rePass.setTypeface(typeFace);
             TextView email = (TextView) v.findViewById(R.id.emailLabel);
             email.setText(u.email);
@@ -141,18 +168,34 @@ public class EditProfileTab2 extends Fragment {
                 }
             });
 
-            changePassword.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    ViewGroup.LayoutParams params = passwordLayout.getLayoutParams();
-                    if (params.height == 0) {
-                        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                    } else {
-                        params.height = 0;
+            if (u.facebookId == null || u.facebookId.isEmpty()) {
+                changePassword.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ViewGroup.LayoutParams params = passwordLayout.getLayoutParams();
+                        if (params.height == 0) {
+                            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                            passwordLayout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                                @Override
+                                public void onLayoutChange(View view, int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7) {
+                                    passwordLayout.removeOnLayoutChangeListener(this);
+                                    ScrollView sv = (ScrollView) v.findViewById(R.id.editScroll);
+                                    sv.fullScroll(View.FOCUS_DOWN);
+                                }
+                            });
+                        } else {
+                            params.height = 0;
+                            newPass.setText("");
+                            oldPass.setText("");
+                            rePass.setText("");
+                        }
+                        passwordLayout.setLayoutParams(params);
                     }
-                    passwordLayout.setLayoutParams(params);
-                }
-            });
+                });
+            } else {
+                changePassword.getLayoutParams().width = 0;
+                changePassword.setLayoutParams(changePassword.getLayoutParams());
+            }
 
             ImageView editChoosePhoto = (ImageView) v.findViewById(R.id.editChoosePhoto);
             editChoosePhoto.setOnClickListener(new View.OnClickListener() {
@@ -162,12 +205,17 @@ public class EditProfileTab2 extends Fragment {
                     startActivityForResult(chooseImageIntent, EditProfileActivity.PICK_IMAGE_ID);
                 }
             });
+
+            firstName.addTextChangedListener(this.textWatcher);
+            lastName.addTextChangedListener(this.textWatcher);
+            ageTextView.addTextChangedListener(this.textWatcher);
+            oldPass.addTextChangedListener(this.textWatcher);
+            newPass.addTextChangedListener(this.textWatcher);
+            rePass.addTextChangedListener(this.textWatcher);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         return v;
     }
-
-
 }

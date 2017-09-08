@@ -269,12 +269,17 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
             u.range = jsonObject.getString("range");
             u.age = Calendar.getInstance().get(Calendar.YEAR) - Integer.parseInt(jsonObject.getString("yearBorn"));
             u.profileImage = jsonObject.getString("profileImage");
+            u.facebookId = Persistance.getInstance().getUserInfo(super.getActivity()).facebookId;
 
             JSONArray sports = jsonObject.getJSONArray("sports");
             u.sports.clear();
             for (int i = 0; i < sports.length(); ++i) {
                 u.sports.add(new Sport(sports.getString(i)));
             }
+
+            User t = Persistance.getInstance().getUserInfo(this.getActivity());
+            t.age = Calendar.getInstance().get(Calendar.YEAR) - Integer.parseInt(jsonObject.getString("yearBorn"));
+            Persistance.getInstance().setUserInfo(this.getActivity(), t);
 
             MyProfileActivity mpa = (MyProfileActivity) this;
             Persistance.getInstance().setProfileInfo(this.getActivity(), u);

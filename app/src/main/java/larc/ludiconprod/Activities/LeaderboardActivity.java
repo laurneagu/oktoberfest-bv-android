@@ -100,19 +100,19 @@ public class LeaderboardActivity extends Fragment implements RadioGroup.OnChecke
             final RadioButton general =  (RadioButton) v.findViewById(R.id.general);
             final RadioButton friends =  (RadioButton) v.findViewById(R.id.friends);
 
-            general.setBackgroundResource(R.drawable.toggle_male);
+            general.setBackgroundResource(R.drawable.toggle_option_first);
             general.setTextColor(Color.parseColor("#ffffff"));
             filterSwich.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
                     if(general.isChecked()){
-                        general.setBackgroundResource(R.drawable.toggle_male);
+                        general.setBackgroundResource(R.drawable.toggle_option_first);
                         general.setTextColor(Color.parseColor("#ffffff"));
                         friends.setBackgroundResource(transparent);
                         friends.setTextColor(Color.parseColor("#1A0c3855"));
                     }
                     else{
-                        friends.setBackgroundResource(R.drawable.toggle_female);
+                        friends.setBackgroundResource(R.drawable.toggle_option_second);
                         friends.setTextColor(Color.parseColor("#ffffff"));
                         general.setBackgroundResource(transparent);
                         general.setTextColor(Color.parseColor("#1A0c3855"));
@@ -148,6 +148,9 @@ public class LeaderboardActivity extends Fragment implements RadioGroup.OnChecke
 
             AssetManager assets = inflater.getContext().getAssets();
             Typeface typeFace = Typeface.createFromAsset(assets,"fonts/Quicksand-Medium.ttf");
+
+            general.setTypeface(typeFace);
+            friends.setTypeface(typeFace);
 
             Set<Integer> codesKeys = this.codes.keySet();
             for (Integer id : codesKeys) {
