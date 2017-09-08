@@ -109,17 +109,6 @@ public class CouponsAdapter extends BaseAdapter implements ListAdapter {
                 holder = (CouponsAdapter.ViewHolder) view.getTag();
             }
 
-            /*holder.friends0.setVisibility(View.INVISIBLE);
-            holder.friends1.setVisibility(View.INVISIBLE);
-            holder.friends2.setVisibility(View.INVISIBLE);
-            holder.friendsNumber.setVisibility(View.INVISIBLE);
-            holder.profileImage.setImageResource(R.drawable.ph_user);
-            holder.friends0.setImageResource(R.drawable.ph_user);
-            holder.friends1.setImageResource(R.drawable.ph_user);
-            holder.friends2.setImageResource(R.drawable.ph_user);*/
-
-            view.setBackgroundColor(Color.parseColor("#FFFFFF"));
-
             final View currView = view;
 
             view.findViewById(R.id.couponGetIt).setOnClickListener(new View.OnClickListener() {

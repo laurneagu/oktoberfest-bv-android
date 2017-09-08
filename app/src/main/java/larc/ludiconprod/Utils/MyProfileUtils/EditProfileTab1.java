@@ -31,13 +31,14 @@ public class EditProfileTab1 extends Fragment implements View.OnClickListener, S
     private TreeMap<Integer, Integer> compoundDrawables = new TreeMap<>();
     private int progress;
     private TextView progressText;
+    EditProfileActivity epa;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.edittab1,container,false);
 
         try {
-            EditProfileActivity epa = (EditProfileActivity) getActivity();
+            epa = (EditProfileActivity) getActivity();
 
             User u = Persistance.getInstance().getProfileInfo(super.getActivity());
             SeekBar seekBar = (SeekBar) v.findViewById(R.id.editRangeBar);
@@ -136,6 +137,13 @@ public class EditProfileTab1 extends Fragment implements View.OnClickListener, S
             rb.setCompoundDrawablesWithIntrinsicBounds(compoundDrawable,0,R.drawable.ic_check,0);
             counter++;
             sports.add(code);
+        }
+        if (epa.sameProfileInfo()) {
+            epa.findViewById(R.id.saveChangesButton).setAlpha(0);
+            epa.findViewById(R.id.saveChangesButton2).setAlpha(0);
+        } else {
+            epa.findViewById(R.id.saveChangesButton).setAlpha(1);
+            epa.findViewById(R.id.saveChangesButton2).setAlpha(1);
         }
         Log.d("New sports", this.sports.toString());
     }

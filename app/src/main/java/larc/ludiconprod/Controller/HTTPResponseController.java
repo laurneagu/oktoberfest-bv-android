@@ -394,6 +394,7 @@ public class HTTPResponseController {
                         event.capacity = jsonObject.getJSONArray("myEvents").getJSONObject(i).getInt("capacity");
                         event.creatorName = jsonObject.getJSONArray("myEvents").getJSONObject(i).getString("creatorName");
                         event.creatorLevel = jsonObject.getJSONArray("myEvents").getJSONObject(i).getInt("creatorLevel");
+                        event.creatorId = jsonObject.getJSONArray("myEvents").getJSONObject(i).getString("creatorId");
                         event.numberOfParticipants = jsonObject.getJSONArray("myEvents").getJSONObject(i).getInt("numberOfParticipants");
                         event.points = jsonObject.getJSONArray("myEvents").getJSONObject(i).getInt("points");
                         event.creatorProfilePicture = jsonObject.getJSONArray("myEvents").getJSONObject(i).getString("creatorProfilePicture");

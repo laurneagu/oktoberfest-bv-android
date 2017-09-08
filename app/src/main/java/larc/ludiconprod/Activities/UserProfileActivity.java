@@ -29,6 +29,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -76,11 +77,11 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
             chat.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent=new Intent(UserProfileActivity.this,ChatActivity.class);
-                    intent.putExtra("otherParticipantName",userName);
-                    intent.putExtra("otherParticipantImage",userImage);
-                    intent.putExtra("chatId","isNot");
-                    intent.putExtra("UserId",getIntent().getStringExtra("UserId"));
+                    Intent intent=new Intent(UserProfileActivity.this, ChatActivity.class);
+                    intent.putExtra("otherParticipantName", userName);
+                    intent.putExtra("otherParticipantImage", userImage);
+                    intent.putExtra("chatId", "isNot");
+                    intent.putExtra("UserId", getIntent().getStringExtra("UserId"));
                     UserProfileActivity.this.startActivity(intent);
                     finish();
                 }
@@ -276,7 +277,12 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
             ImageView youImg = (ImageView) findViewById(R.id.profileYouImage);
             ImageView versusImg = (ImageView) findViewById(R.id.profileFoeImage);
 
+            TextView foeLabel = (TextView) findViewById(R.id.foeLabel);
+            foeLabel.setText(u.firstName + " " + u.lastName);
+            TextView youLabel = (TextView) findViewById(R.id.youLabel);
             User you = Persistance.getInstance().getUserInfo(this);
+            youLabel.setText(you.firstName + " " + you.lastName);
+
             if (you.profileImage != null && !you.profileImage.isEmpty()) {
                 Bitmap im = IntroActivity.decodeBase64(you.profileImage);
                 youImg.setImageBitmap(im);
@@ -341,11 +347,12 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
     }
 
     public void onFriendResponse(JSONObject response, boolean action) {
-        Toast.makeText(this, "" + response, Toast.LENGTH_SHORT).show();
-
+        String name = this.user.firstName + " " + this.user.lastName;
         if (action) {
+            Toast.makeText(this, "You are now friend with " + name + "!", Toast.LENGTH_SHORT).show();
             this.friendAdded();
         } else {
+            Toast.makeText(this, "You are no longer friend with " + name + "!", Toast.LENGTH_SHORT).show();
             this.friendRemoved();
         }
     }

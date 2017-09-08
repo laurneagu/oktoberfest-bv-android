@@ -151,17 +151,18 @@
                 android:layout_marginTop="8dp"
                 android:inputType="numberDecimal"
                 android:background="@drawable/rounded_edittext"
-                android:hint="Year born"/>
+                android:hint="Year born"
+                android:layout_marginBottom="8dp"/>
 
             <Button
                 android:id="@+id/editPasswordButton"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
+                android:background="@drawable/pink_stroke_rounded_button"
                 android:text="CHANGE PASSWORD"
-                android:textSize="14sp"
                 android:textColor="@color/pink"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/pink_stroke_rounded_button"/>
+                android:textSize="14sp" />
+
             <RelativeLayout
                 android:id="@+id/editPasswordLayout"
                 android:layout_height="0dp"
@@ -222,5 +223,6 @@
         android:layout_marginRight="16dp"
         android:background="@drawable/pink_button_selector"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="16dp"
+        android:alpha="1"/>
 </RelativeLayout>

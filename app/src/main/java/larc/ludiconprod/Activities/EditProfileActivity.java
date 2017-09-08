@@ -29,7 +29,10 @@ import org.json.JSONObject;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 import larc.ludiconprod.Adapters.EditProfile.EditActivitiesAdapter;
@@ -69,6 +72,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     private ArrayList<String> sports = new ArrayList<>();
     private SeekBar range;
     private ImageView image;
+    private boolean imageChanged;
 
     @Nullable
     @Override
@@ -129,7 +133,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
-    public void changeProfile() {
+    public boolean sameProfileInfo() {
         User old = Persistance.getInstance().getProfileInfo(this);
 
         old.gender = "" + this.sex;
@@ -145,6 +149,49 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         }
 
         Persistance.getInstance().setProfileInfo(this, old);
+
+        User u = Persistance.getInstance().getUserInfo(this);
+
+        if (!u.firstName.equals(old.firstName)) {
+            return false;
+        }
+        if (!u.lastName.equals(old.lastName)) {
+            return false;
+        }
+        if (!u.gender.equals(old.gender)) {
+            return false;
+        }
+        if (u.age != old.age) {
+            return false;
+        }
+        if (!u.range.equals(old.range)) {
+            return false;
+        }
+        if (u.sports.size() != old.sports.size()) {
+            return false;
+        }
+        Collections.sort(u.sports, new Comparator<Sport>() {
+            @Override
+            public int compare(Sport a, Sport b) {
+                return a.code.compareTo(b.code);
+            }
+        });
+        Collections.sort(old.sports, new Comparator<Sport>() {
+            @Override
+            public int compare(Sport a, Sport b) {
+                return a.code.compareTo(b.code);
+            }
+        });
+        int size = u.sports.size();
+        for (int i = 0; i < size; ++i) {
+            if (!old.sports.get(i).code.equals(u.sports.get(i).code)) {
+                return false;
+            }
+        }
+        if (this.imageChanged) {
+            return false;
+        }
+        return this.newPassword.getText().length() == 0 && this.oldPassword.getText().length() == 0 && this.repeatPassword.getText().length() == 0;
     }
 
     @Override
@@ -256,6 +303,9 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             User user = Persistance.getInstance().getProfileInfo(this);
             user.profileImage = b64i;
             Persistance.getInstance().setProfileInfo(this, user);
+            this.imageChanged = true;
+            findViewById(R.id.saveChangesButton).setAlpha(1);
+            findViewById(R.id.saveChangesButton2).setAlpha(1);
         }
 
         //super.onActivityResult(requestCode, resultCode, data);

@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import larc.ludiconprod.Activities.ActivityDetailsActivity;
 import larc.ludiconprod.Activities.CouponsActivity;
@@ -66,13 +67,31 @@ public class LeaderboardAdapter extends BaseAdapter implements ListAdapter {
     }
 
     @Override
-    public View getView(final int position, View view, ViewGroup viewGroup) {
+    public View getView(int position, View view, ViewGroup viewGroup) {
+        if (position == 0) {
+            LayoutInflater inflater = (LayoutInflater) this.fragment.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            view = inflater.inflate(R.layout.leaderboard_top_card, null);
+
+            TextView daysLeft = (TextView) view.findViewById(R.id.daysLeft);
+            Calendar day = Calendar.getInstance();
+            int left =  day.getActualMaximum(Calendar.DAY_OF_MONTH) - day.get(Calendar.DAY_OF_MONTH);
+            daysLeft.setText(left + " days left");
+
+            AssetManager assets = inflater.getContext().getAssets();// Is this the right asset?
+            Typeface typeFace= Typeface.createFromAsset(assets, "fonts/Quicksand-Medium.ttf");
+
+            daysLeft.setTypeface(typeFace);
+            ((TextView) view.findViewById(R.id.topText)).setTypeface(typeFace);
+
+            view.setTag(null);
+            return view;
+        }
 
         final UserPosition currentPosition = list.get(position);
 
         LeaderboardAdapter.ViewHolder holder;
 
-        if (view == null) {
+        //if (view == null) {
             LayoutInflater inflater = (LayoutInflater) this.fragment.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.leaderboard_card, null);
 
@@ -92,11 +111,40 @@ public class LeaderboardAdapter extends BaseAdapter implements ListAdapter {
             holder.points.setTypeface(typeFace);
 
             view.setTag(holder);
-        } else {
-            holder = (LeaderboardAdapter.ViewHolder) view.getTag();
-        }
+        /*} else {
+            LayoutInflater inflater = (LayoutInflater) this.fragment.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            view = inflater.inflate(R.layout.leaderboard_card, null);
+
+            holder = new LeaderboardAdapter.ViewHolder();
+            holder.position = (TextView) view.findViewById(R.id.position);
+            holder.image = (ImageView) view.findViewById(R.id.image);
+            holder.level = (TextView) view.findViewById(R.id.level);
+            holder.name = (TextView) view.findViewById(R.id.name);
+            holder.points = (TextView) view.findViewById(R.id.points);
+
+            AssetManager assets = view.getContext().getAssets();// Is this the right asset?
+            Typeface typeFace = Typeface.createFromAsset(assets, "fonts/Quicksand-Medium.ttf");
+
+            holder.position.setTypeface(typeFace);
+            holder.level.setTypeface(typeFace);
+            holder.name.setTypeface(typeFace);
+            holder.points.setTypeface(typeFace);
+
+            view.setTag(holder);
+        }*/
 
         holder.position.setText("" + currentPosition.rank);
+        switch (currentPosition.rank) {
+            case 1:
+            holder.position.setTextColor(0xfffcb851);
+                break;
+            case 2:
+                holder.position.setTextColor(0xffa7c7e1);
+                break;
+            case 3:
+                holder.position.setTextColor(0xffd98966);
+                break;
+        }
         if (!currentPosition.profileImage.equals("")) {
             Bitmap bitmap = MyAdapter.decodeBase64(currentPosition.profileImage);
             holder.image.setImageBitmap(bitmap);

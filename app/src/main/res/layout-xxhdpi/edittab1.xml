@@ -7,12 +7,6 @@
     android:layout_height="match_parent"
     android:background="#f7f9fc">
 
-    <ImageView
-        android:id="@+id/imageView4"
-        android:layout_width="match_parent"
-        android:layout_height="12dp"
-        android:background="@drawable/shadow_top_to_bottom" />
-
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/editScroll"
@@ -252,11 +246,14 @@
                 android:text="20 Km"
                 android:layout_below="@+id/editRangeBar"
                 android:textColor="@color/pink"
-                android:gravity="center"
-                />
+                android:gravity="center"/>
         </LinearLayout>
     </ScrollView>
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="12dp"
+        android:background="@drawable/shadow_top_to_bottom"/>
 
     <Button
         android:id="@+id/saveChangesButton2"
@@ -270,5 +267,6 @@
         android:textSize="14sp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:background="@drawable/pink_button_selector"/>
+        android:background="@drawable/pink_button_selector"
+        android:alpha="0"/>
 </RelativeLayout>
