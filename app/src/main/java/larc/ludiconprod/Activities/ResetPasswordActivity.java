@@ -11,7 +11,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,13 +30,14 @@ public class ResetPasswordActivity extends Activity {
     RelativeLayout backButton;
     Button resetPassword;
     EditText email;
+
     public boolean checkFieldsConstraints() {
-        boolean isVerified=false;
-        if(email.getText().toString().length() == 0 || !email.getText().toString().contains("@") || !email.getText().toString().contains(".")){
+        boolean isVerified = false;
+        if (email.getText().toString().length() == 0 || !email.getText().toString().contains("@") || !email.getText().toString().contains(".")) {
             Animation shake = AnimationUtils.loadAnimation(ResetPasswordActivity.this, R.anim.shake);
             email.startAnimation(shake);
             email.setBackgroundResource(R.drawable.rounded_edittext_red);
-            isVerified=true;
+            isVerified = true;
         }
 
         return isVerified;
@@ -48,14 +48,15 @@ public class ResetPasswordActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.reset_password_activity);
-        Typeface typeFace= Typeface.createFromAsset(getAssets(),"fonts/Quicksand-Medium.ttf");
-        Typeface typeFaceBold= Typeface.createFromAsset(getAssets(),"fonts/Quicksand-Bold.ttf");
-        TextView titleText=(TextView) findViewById(R.id.titleText);
+        Typeface typeFace = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Medium.ttf");
+        Typeface typeFaceBold = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.ttf");
+        TextView titleText = (TextView) findViewById(R.id.titleText);
         titleText.setText("Reset Password");
-        backButton=(RelativeLayout) findViewById(R.id.backButton);
-        resetPassword=(Button) findViewById(R.id.resetPasswordButton);
+        backButton = (RelativeLayout) findViewById(R.id.backButton);
+        backButton.setBackgroundResource(R.drawable.ic_nav_up);
+        resetPassword = (Button) findViewById(R.id.resetPasswordButton);
         resetPassword.setTypeface(typeFaceBold);
-        email=(EditText)findViewById(R.id.emailAdress);
+        email = (EditText) findViewById(R.id.emailAdress);
         email.setTypeface(typeFace);
         email.addTextChangedListener(new TextWatcher() {
             @Override
@@ -74,7 +75,7 @@ public class ResetPasswordActivity extends Activity {
 
             }
         });
-        backButton.setOnClickListener(new View.OnClickListener(){
+        backButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
@@ -82,15 +83,14 @@ public class ResetPasswordActivity extends Activity {
                 startActivity(intent);
             }
         });
-        resetPassword.setOnClickListener(new View.OnClickListener(){
+        resetPassword.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                if(!checkFieldsConstraints()) {
+                if (!checkFieldsConstraints()) {
                     resetPassword();
-                }
-                else{
-                    Toast.makeText(ResetPasswordActivity.this,"Please provide email.", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(ResetPasswordActivity.this, "Please provide email.", Toast.LENGTH_LONG).show();
                 }
             }
         });

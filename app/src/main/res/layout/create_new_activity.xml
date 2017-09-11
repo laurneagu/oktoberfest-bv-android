@@ -92,7 +92,7 @@
                         android:layout_below="@+id/chooseSportNameText"
                         android:inputType="text"
                         android:textSize="16sp"
-                        android:maxLength="20"
+                        android:maxLength="32"
                         android:paddingLeft="8dp"
                         android:drawableLeft="@drawable/ic_sport_others"
                         android:textColor="#0c3855"

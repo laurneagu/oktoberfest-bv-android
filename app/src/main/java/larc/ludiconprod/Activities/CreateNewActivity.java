@@ -4,15 +4,10 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
-import android.text.Layout;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
@@ -24,10 +19,8 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -37,7 +30,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -46,12 +38,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import larc.ludiconprod.Adapters.CustomSpinner;
@@ -60,12 +48,9 @@ import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
 import larc.ludiconprod.Utils.EventDetails;
 import larc.ludiconprod.Utils.Friend;
-import larc.ludiconprod.Utils.General;
 import larc.ludiconprod.Utils.Location.GPSTracker;
-import larc.ludiconprod.ViewPagerHelper.MyFragment;
 
 import static larc.ludiconprod.Activities.IntroActivity.decodeBase64;
-import static larc.ludiconprod.Activities.InviteFriendsActivity.friendsList;
 import static larc.ludiconprod.Activities.InviteFriendsActivity.numberOfOfflineFriends;
 
 /**
@@ -330,7 +315,7 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (otherSportName.getText().length() >= 20) {
+                if (otherSportName.getText().length() >= 32) {
                     Toast.makeText(getApplicationContext(), "You have reached maximum lenght for this field!", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -388,8 +373,7 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
 
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(CreateNewActivity.this, Main.class);
-                CreateNewActivity.this.startActivity(intent);
+                finish();
             }
         });
 
