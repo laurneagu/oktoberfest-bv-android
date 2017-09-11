@@ -746,6 +746,11 @@ public class HTTPResponseController {
                 try {
 
                     PointsReceivedDialog dialog= new PointsReceivedDialog();
+                    Bundle bundle=new Bundle();
+                    bundle.putInt("ludicoins",jsonObject.getInt("ludicoins"));
+                    bundle.putInt("points",jsonObject.getInt("points"));
+                    bundle.putInt("level",jsonObject.getInt("level"));
+                    dialog.setArguments(bundle);
                     dialog.show(activity.getFragmentManager(),"tag");
 
                     System.out.println(jsonObject.getInt("points")+ " points");

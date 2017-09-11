@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="#00000000">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:background="@drawable/bg_modal_gradient" />
+
+      <!--  <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:background="@drawable/bg_modal_ludicoins" />
+            -->
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:textColor="#ffffff"
+            android:text="24"
+            android:gravity="center"
+            android:layout_marginTop="135dp"
+            android:id="@+id/levelText"
+            android:textSize="70dp"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffff"
+            android:text="Congratulations!"
+            android:layout_centerHorizontal="true"
+            android:textSize="16dp"
+            android:id="@+id/congratulationsText"
+            android:gravity="center_horizontal"
+            android:layout_below="@+id/levelText"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffff"
+            android:text="You Leveled Up!"
+            android:layout_centerHorizontal="true"
+            android:textSize="20dp"
+            android:gravity="center_horizontal"
+            android:id="@+id/levelUPText"
+            android:layout_below="@+id/congratulationsText"
+            />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/levelUPText"
+            android:id="@+id/ludicoinsLayout"
+            android:gravity="center_horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#ffffff"
+                android:text="And gained:  "
+                android:textSize="14dp"
+                android:id="@+id/gainedText"
+                android:gravity="center_horizontal"
+
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#fcb851"
+                android:text="+25 "
+                android:textSize="14dp"
+                android:layout_toRightOf="@+id/gainedText"
+                android:id="@+id/ludicoinsText"
+                />
+            <ImageView
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:background="@drawable/ic_ludicoins_small"
+                android:layout_toRightOf="@+id/ludicoinsText"
+                android:layout_centerInParent="true"/>
+
+
+        </RelativeLayout>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:background="@drawable/white_button_selector"
+            android:text="OKAY"
+            android:textColor="#d4498b"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="60dp"
+            android:layout_below="@+id/ludicoinsLayout"
+            android:id="@+id/okayButton"
+            android:paddingLeft="60dp"
+            android:paddingRight="60dp"
+            android:textSize="14dp"/>
+
+    </RelativeLayout>
+
+
+    </RelativeLayout>
