@@ -150,6 +150,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
     static Boolean HPShouldBeVisible=false;
     static public HappeningNowLocation happeningNowLocation=new HappeningNowLocation();
     static public Activity activity;
+    static public int startedEventDate=Integer.MAX_VALUE;
 
 
     public ActivitiesActivity() {
@@ -579,17 +580,18 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                 public void run() {
                     try {
                         if (myEventList.size() >= 1) {
-                            long timeToNextEvent = (Persistance.getInstance().getMyActivities(getActivity()).get(0).eventDateTimeStamp - System.currentTimeMillis() / 1000);
+                            long timeToNextEvent = (myEventList.get(0).eventDateTimeStamp - System.currentTimeMillis() / 1000);
                             while (timeToNextEvent >= 0) {
                                 Thread.sleep(1000);
-                                timeToNextEvent = (Persistance.getInstance().getMyActivities(getActivity()).get(0).eventDateTimeStamp - System.currentTimeMillis() / 1000) ;
+                                timeToNextEvent = (myEventList.get(0).eventDateTimeStamp - System.currentTimeMillis() / 1000) ;
                             }
                             //happening now started
                         if((timeToNextEvent > -3600 && buttonState == 0)|| (timeToNextEvent > -7200 && buttonState == 1)) {
 
                                 googleApiClient.connect();
+                            startedEventDate=myEventList.get(0).eventDateTimeStamp;
                                 myEventList.remove(0);
-                                //myAdapter.notifyDataSetChanged();
+
 
                             SharedPreferences.Editor editor = getActivity().getSharedPreferences("HappeningNowEvent", 0).edit();
                             Gson gson = new Gson();
@@ -612,13 +614,13 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                 public void run() {
                     try {
                         if (myEventList.size() >= 1) {
-                            long timeToNextEvent = (Persistance.getInstance().getMyActivities(getActivity()).get(0).eventDateTimeStamp - System.currentTimeMillis() / 1000) ;
+                            long timeToNextEvent = (startedEventDate - System.currentTimeMillis() / 1000) ;
                             while ((buttonState == 0 && timeToNextEvent <= 3600 ) || (buttonState == 1 && timeToNextEvent < 7200) || !HPShouldBeVisible) {
                                 if(buttonState == 2) {
                                     break;
                                 }
                                 Thread.sleep(1000);
-                                timeToNextEvent = (Persistance.getInstance().getMyActivities(getActivity()).get(0).eventDateTimeStamp - System.currentTimeMillis() / 1000);
+                                timeToNextEvent = (startedEventDate - System.currentTimeMillis() / 1000);
                             }
                             if(timeToNextEvent > 7200){
                                 savePoints();
@@ -898,7 +900,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
     public void onLocationChanged(Location location) {
         System.out.println(location.getLatitude()+" new api");
         happeningNowLocation.locationList.add(location);
-        Persistance.getInstance().setLocation(getActivity(),happeningNowLocation);
+        Persistance.getInstance().setLocation(activity,happeningNowLocation);
 
 
     }

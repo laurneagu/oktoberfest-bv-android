@@ -2,24 +2,28 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="#00000000">
+    android:background="#000000">
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true">
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
+        <!--
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+                android:background="@drawable/bg_modal_gradient" />
 
-        android:background="@drawable/bg_modal_gradient" />
 
-      <!--  <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
 
-            android:background="@drawable/bg_modal_ludicoins" />
-            -->
+               <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:background="@drawable/bg_modal_ludicoins" />
+                    -->
+
 
         <TextView
             android:layout_width="wrap_content"

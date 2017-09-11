@@ -465,10 +465,20 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                         if (chats.hasChild("event_id")) {
                             chat.eventId = chats.child("event_id").getValue().toString();
                         }
-                        String names = "";
+                        String names;
+                        if(chat.eventId != null){
+                            names="Group:";
+                        }else{
+                            names="";
+                        }
                         for (DataSnapshot users : chats.child("users").getChildren()) {
                             if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(activity).id)) {
-                                names += users.child("name").getValue().toString() + ",";
+                                if(users.hasChild("name")) {
+                                    names += users.child("name").getValue().toString() + ",";
+                                }
+                                else{
+                                    names += "Unknown" + ",";
+                                }
 
                                 chat.image.add(users.child("image").getValue().toString());
                                 chat.otherParticipantId.add(users.getKey().toString());
@@ -536,7 +546,12 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                             if (chats.hasChild("event_id")) {
                                 chat.eventId = chats.child("event_id").getValue().toString();
                             }
-                            String names = "";
+                            String names;
+                            if(chat.eventId != null){
+                                names="Group:";
+                            }else{
+                                names="";
+                            }
                             for (DataSnapshot users : chats.child("users").getChildren()) {
                                 if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(activity).id)) {
                                     names += users.child("name").getValue().toString() + ",";
