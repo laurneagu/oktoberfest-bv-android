@@ -253,6 +253,10 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
 
     @Override
     public void onResponse(JSONObject jsonObject) {
+        if (super.getActivity() == null) {
+            return;
+        }
+
         try {
             User u = Persistance.getInstance().getProfileInfo(this.getActivity());
 

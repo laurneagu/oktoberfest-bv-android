@@ -92,7 +92,7 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
     private GoogleMap m_gmap;
     double longitude = 0;
     double latitude = 0;
-    ImageButton backButton;
+    RelativeLayout backButton;
     TextView tapHereTextView;
     public static Button createActivityButton;
     CircleImageView invitedFriends0;
@@ -169,8 +169,7 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
         timeLayout = (RelativeLayout) findViewById(R.id.timeLayout);
         calendarTextView = (TextView) findViewById(R.id.calendarTextView);
         hourTextView = (TextView) findViewById(R.id.hourTextView);
-        backButton = (ImageButton) findViewById(R.id.backButton);
-        backButton.setBackgroundResource(R.drawable.ic_nav_up);
+        backButton = (RelativeLayout) findViewById(R.id.backButton);
         minusButton = (ImageView) findViewById(R.id.minusButton);
         plusButton = (ImageView) findViewById(R.id.plusButton);
         playersNumber = (EditText) findViewById(R.id.playersNumber);

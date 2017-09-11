@@ -128,7 +128,7 @@ public class EditProfileTab2 extends Fragment {
 
             firstName.setText(u.firstName);
             lastName.setText(u.lastName);
-            this.ageTextView.setText("" + (Calendar.getInstance().get(Calendar.YEAR) - u.age));
+            this.ageTextView.setText("" + u.age);
 
             Log.d("Epa gender", u.firstName + u.gender);
 

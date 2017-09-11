@@ -5,13 +5,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/layout_listview2"
     android:background="#f7f9fc">
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="12dp"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/shadow_bottom_to_top"/>
-
-
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -23,30 +16,27 @@
 
 
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_refresh2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
 
 
-    <ListView
-        android:id="@+id/events_listView2"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="8.0dp"
-        android:scrollbars="none"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"/>
+            <ListView
+                android:id="@+id/events_listView2"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="8.0dp"
+                android:scrollbars="none"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
+                android:clipToPadding="false"/>
 
-
-
-
-
-    </android.support.v4.widget.SwipeRefreshLayout>
+        </android.support.v4.widget.SwipeRefreshLayout>
     </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
@@ -108,5 +98,9 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="5dp" />
 
-
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="12dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/shadow_bottom_to_top"/>
 </RelativeLayout>

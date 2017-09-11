@@ -53,7 +53,7 @@ import larc.ludiconprod.Utils.util.Sport;
  */
 
 public class ActivityDetailsActivity extends Activity implements OnMapReadyCallback, Response.ErrorListener {
-    ImageButton backButton;
+    RelativeLayout backButton;
     CircleImageView creatorImageProfile;
     TextView creatorName;
     TextView sportPlayed;
@@ -131,8 +131,7 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
         activity = this;
         setContentView(R.layout.activity_details_activity);
         findViewById(R.id.internetRefresh).setAlpha(0);
-        backButton = (ImageButton) findViewById(R.id.backButton);
-        backButton.setBackgroundResource(R.drawable.ic_nav_up);
+        backButton = (RelativeLayout) findViewById(R.id.backButton);
         TextView titleText = (TextView) findViewById(R.id.titleText);
         titleText.setText("Activity Details");
         creatorImageProfile = (CircleImageView) findViewById(R.id.creatorImageProfile);

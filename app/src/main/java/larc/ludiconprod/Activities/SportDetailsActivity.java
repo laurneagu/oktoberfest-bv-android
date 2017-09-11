@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -48,7 +49,7 @@ public class SportDetailsActivity extends Activity {
     boolean squashSelected=false;
     RadioButton others;
     boolean othersSelected=false;
-    ImageButton backButton;
+    RelativeLayout backButton;
     Button savePreferincesButton;
     SeekBar seekBar;
     int counter=10;
@@ -65,8 +66,7 @@ public class SportDetailsActivity extends Activity {
         football=(RadioButton)findViewById(R.id.football);
         TextView titleText=(TextView) findViewById(R.id.titleText);
         titleText.setText("Sport Details");
-        backButton=(ImageButton) findViewById(R.id.backButton);
-        backButton.setBackgroundResource(R.drawable.ic_nav_up);
+        backButton=(RelativeLayout) findViewById(R.id.backButton);
         seekBar=(SeekBar) findViewById(R.id.seekBar);
         seekBar.setMax(19);
         seekBar.setProgress(19);

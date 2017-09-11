@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,7 +68,7 @@ import larc.ludiconprod.ViewPagerHelper.MyPagerAdapter;
 
 public class GMapsActivity extends FragmentActivity implements PlaceSelectionListener, OnMapReadyCallback{
 
-    ImageButton backButton;
+    RelativeLayout backButton;
     Marker lastAddedMarker;
     MapFragment mapFragment;
     private double selected_lat, selected_long;
@@ -119,8 +120,7 @@ public class GMapsActivity extends FragmentActivity implements PlaceSelectionLis
             currentActivity=this;
             super.onCreate(savedInstanceState);
             setContentView(R.layout.gmaps_activity);
-            backButton=(ImageButton) findViewById(R.id.backButton);
-            backButton.setBackgroundResource(R.drawable.ic_nav_up);
+            backButton = (RelativeLayout) findViewById(R.id.backButton);
             TextView titleText=(TextView) findViewById(R.id.titleText);
             selectLocationButton=(Button) findViewById(R.id.selectLocationButton) ;
             titleText.setText("Select Location");

@@ -224,7 +224,7 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
         this.myCouponsAdapter.notifyDataSetChanged();
         final ListView listView = (ListView) v.findViewById(R.id.myCouponsList);
         ImageView heartImage = (ImageView) v.findViewById(R.id.heartImageMyCoupons);
-        final ProgressBar progressBar = (ProgressBar)v.findViewById(R.id.progressMyCoupons) ;
+        final ProgressBar progressBar = (ProgressBar) v.findViewById(R.id.progressMyCoupons) ;
         progressBar.setIndeterminate(true);
         progressBar.setAlpha(0f);
 
@@ -378,6 +378,10 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
     }
 
     public void onMyCouponsResponse(JSONObject response) {
+        if (super.getActivity() == null) {
+            return;
+        }
+
         try {
             JSONArray coupons = response.getJSONArray("coupons");
 
@@ -407,6 +411,10 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
     }
 
     public void onCouponsResponse(JSONObject response) {
+        if (super.getActivity() == null) {
+            return;
+        }
+
         try {
             JSONArray coupons = response.getJSONArray("coupons");
 
@@ -436,6 +444,10 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
 
     @Override
     public void onResponse(JSONObject response) {
+        if (super.getActivity() == null) {
+            return;
+        }
+
         try {
             Toast.makeText(super.getActivity(), "" + response, Toast.LENGTH_SHORT).show();
 

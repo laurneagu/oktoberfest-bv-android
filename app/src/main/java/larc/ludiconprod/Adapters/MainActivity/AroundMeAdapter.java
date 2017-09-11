@@ -327,7 +327,7 @@ public class AroundMeAdapter extends BaseAdapter implements ListAdapter {
             Date today = c.getTime();
             int todayDay = General.getDayOfMonth(today);
             int todayMonth = today.getMonth();
-            int todayYear = today.getYear();
+            int todayYear = c.get(Calendar.YEAR);
             String displayDate = "";
             String[] stringDateAndTime = currentEvent.eventDate.split(" ");
             try {
@@ -337,15 +337,17 @@ public class AroundMeAdapter extends BaseAdapter implements ListAdapter {
                 e.printStackTrace();
             }
             String[] stringDate = displayDate.split("-");
+            int year = Integer.parseInt(stringDate[0]);
             String date = "";
-            if (Integer.parseInt(stringDate[1]) - 1 == todayMonth && Integer.parseInt(stringDate[2]) == todayDay) {
+            if (year <= todayYear && Integer.parseInt(stringDate[1]) - 1 == todayMonth && Integer.parseInt(stringDate[2]) == todayDay) {
                 date = "Today, " + stringDateAndTime[1].substring(0, 5);
-            } else
-                if (Integer.parseInt(stringDate[1]) - 1 == todayMonth && Integer.parseInt(stringDate[2]) - 1 == todayDay) {
-                    date = "Tomorrow, " + stringDateAndTime[1].substring(0, 5);
-                } else {
-                    date = getMonth(Integer.parseInt(stringDate[1])) + " " + stringDate[2] + ", " + stringDateAndTime[1].substring(0, 5);
-                }
+            } else if (year <= todayYear && Integer.parseInt(stringDate[1]) - 1 == todayMonth && Integer.parseInt(stringDate[2]) - 1 == todayDay) {
+                date = "Tomorrow, " + stringDateAndTime[1].substring(0, 5);
+            } else if (year <= todayYear) {
+                date = getMonth(Integer.parseInt(stringDate[1])) + " " + stringDate[2] + ", " + stringDateAndTime[1].substring(0, 5);
+            } else {
+                date = stringDate[2] + " " + getMonth(Integer.parseInt(stringDate[1])) + " " + year + ", " + stringDateAndTime[1].substring(0, 5);
+            }
             holder.eventDate.setText(date);
 
             // Event details set action on join button

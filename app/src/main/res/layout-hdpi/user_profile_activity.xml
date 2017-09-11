@@ -247,9 +247,11 @@
                 android:layout_marginTop="16dp">
             </LinearLayout>
             <RelativeLayout
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_width="match_parent"
-                android:layout_marginTop="24dp">
+                android:layout_marginTop="0dp">
+                <!--android:layout_height="60dp"
+                android:layout_marginTop="24dp"-->
                 <TextView
                     android:id="@+id/profileBadgesText"
                     android:layout_width="match_parent"
@@ -270,9 +272,10 @@
             <HorizontalScrollView
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="0dp"
                 android:scrollbars="none"
                 android:fillViewport="true">
+                <!--android:layout_height="60dp"-->
                 <LinearLayout
                     android:id="@+id/profileBadges"
                     android:layout_width="match_parent"
@@ -283,9 +286,11 @@
             </HorizontalScrollView>
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="0dp"
                 android:background="@color/blueAlpha"
-                android:layout_marginTop="16dp">
+                android:layout_marginTop="0dp">
+                <!--android:layout_height="1dp"
+                android:layout_marginTop="16dp"-->
             </LinearLayout>
             <TextView
                 android:id="@+id/versusLabel"

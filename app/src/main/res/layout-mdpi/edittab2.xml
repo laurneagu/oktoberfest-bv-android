@@ -124,9 +124,7 @@
                         android:gravity="center"
                         android:text="Male"
                         android:textSize="16sp"
-                        android:textColor="#1A0c3855"
-                        />
-
+                        android:textColor="#1A0c3855"/>
                     <RadioButton
                         android:layout_marginRight="1dp"
                         android:layout_marginTop="1dp"
@@ -138,7 +136,8 @@
                         android:button="@null"
                         android:gravity="center"
                         android:text="Female"
-                        android:textColor="#1A0c3855" />
+                        android:textSize="16sp"
+                        android:textColor="#1A0c3855"/>
                 </RadioGroup>
                 <EditText
                     android:id="@+id/editDate"
@@ -151,7 +150,7 @@
                     android:layout_marginTop="8dp"
                     android:inputType="numberDecimal"
                     android:background="@drawable/rounded_edittext"
-                    android:hint="Year born"
+                    android:hint="Age"
                     android:layout_marginBottom="8dp"/>
 
                 <Button
@@ -224,5 +223,5 @@
         android:background="@drawable/pink_button_selector"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="16dp"
-        android:alpha="1"/>
+        android:alpha="0"/>
 </RelativeLayout>

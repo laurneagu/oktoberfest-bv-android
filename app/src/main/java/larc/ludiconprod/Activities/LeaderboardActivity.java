@@ -176,14 +176,6 @@ public class LeaderboardActivity extends Fragment implements RadioGroup.OnChecke
                     mDrawer.closeDrawer(dRight);
                 }
             });
-
-            TextView daysLeft = (TextView) v.findViewById(R.id.daysLeft);
-            Calendar day = Calendar.getInstance();
-            int left =  day.getActualMaximum(Calendar.DAY_OF_MONTH) - day.get(Calendar.DAY_OF_MONTH);
-            daysLeft.setText(left + " days left");
-
-            daysLeft.setTypeface(typeFace);
-            ((TextView) v.findViewById(R.id.topText)).setTypeface(typeFace);
         } catch (Exception e) {
             e.printStackTrace();
         }

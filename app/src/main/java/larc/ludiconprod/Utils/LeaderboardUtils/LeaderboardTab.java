@@ -45,7 +45,13 @@ import larc.ludiconprod.Utils.UserPosition;
 
 public class LeaderboardTab extends Fragment implements Response.Listener<JSONObject>, Response.ErrorListener {
 
-    private ArrayList<UserPosition> users = new ArrayList<>();
+    private static final ArrayList<UserPosition>[] CACHE = new ArrayList[3];
+    static {
+        CACHE[LeaderboardTab.THIS_MONTH] = new ArrayList<>();
+        CACHE[LeaderboardTab.MONTHS_3] = new ArrayList<>();
+        CACHE[LeaderboardTab.ALL_TIME] = new ArrayList<>();
+    }
+    private final ArrayList<UserPosition> users = new ArrayList<>();
     private LeaderboardAdapter leaderboardAdapter;
     private int pageNumber;
     private View v;
@@ -59,6 +65,7 @@ public class LeaderboardTab extends Fragment implements Response.Listener<JSONOb
     private boolean addedSwipeleaderboards;
     private LeaderboardActivity activity;
     private boolean inLeaderboard = false;
+    private ListView listView;
 
     @Override
     public void setArguments(Bundle args) {
@@ -70,7 +77,13 @@ public class LeaderboardTab extends Fragment implements Response.Listener<JSONOb
         this.activity = activity;
     }
 
-    public void getLeaderboards(String page) {
+    public void getLeaderboards(int page) {
+        if (page == 0) {
+            this.users.clear();
+            this.users.addAll(LeaderboardTab.CACHE[this.timeFrame]);
+            this.leaderboardAdapter.notifyDataSetChanged();
+        }
+
         HashMap<String, String> headers = new HashMap<>();
         headers.put("authKey", Persistance.getInstance().getUserInfo(getActivity()).authKey);
         String urlParams = "";
@@ -92,6 +105,9 @@ public class LeaderboardTab extends Fragment implements Response.Listener<JSONOb
 
     public void updateUserList() {
         RelativeLayout ll = (RelativeLayout) v.getRootView().findViewById(R.id.noInternetLayout);
+        if (ll == null) {
+            return;
+        }
         ll.getLayoutParams().height = 0;
         ll.setLayoutParams(ll.getLayoutParams());
 
@@ -99,7 +115,7 @@ public class LeaderboardTab extends Fragment implements Response.Listener<JSONOb
 
         this.leaderboardAdapter.notifyDataSetChanged();
 
-        final ListView listView = (ListView) v.findViewById(R.id.leaderList);
+        this.listView = (ListView) v.findViewById(R.id.leaderList);
         final ProgressBar progressBar = (ProgressBar)v.findViewById(R.id.progressCoupons) ;
         progressBar.setIndeterminate(true);
         progressBar.setAlpha(0f);
@@ -116,7 +132,7 @@ public class LeaderboardTab extends Fragment implements Response.Listener<JSONOb
                             if (listView.getLastVisiblePosition() == listView.getAdapter().getCount() - 1 && listView.getChildAt(listView.getChildCount() - 1).getBottom() <= listView.getHeight()) {
                                 progressBar.setAlpha(1f);
                                 ++pageNumber;
-                                getLeaderboards(String.valueOf(pageNumber));
+                                getLeaderboards(pageNumber);
                             }
                         }
                     }
@@ -139,9 +155,9 @@ public class LeaderboardTab extends Fragment implements Response.Listener<JSONOb
             mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
-                    getLeaderboards("0");
-                    mSwipeRefreshLayout.setRefreshing(false);
                     pageNumber = 0;
+                    getLeaderboards(0);
+                    mSwipeRefreshLayout.setRefreshing(false);
                 }
             });
             this.addedSwipeleaderboards = true;
@@ -209,13 +225,13 @@ public class LeaderboardTab extends Fragment implements Response.Listener<JSONOb
 
         if (!this.inLeaderboard) {
             you.setVisibility(View.INVISIBLE);
-        } else if (th < first) {
+        } else if (th <= first) {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) you.getLayoutParams();
             params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
             params.removeRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
             you.setLayoutParams(params);
             you.setVisibility(View.VISIBLE);
-        } else if (th > last) {
+        } else if (th >= last) {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) you.getLayoutParams();
             params.removeRule(RelativeLayout.ALIGN_PARENT_TOP);
             params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -268,6 +284,11 @@ public class LeaderboardTab extends Fragment implements Response.Listener<JSONOb
                 this.users.add(user);
             }
 
+            if (pageNumber == 0) {
+                LeaderboardTab.CACHE[this.timeFrame].clear();
+                LeaderboardTab.CACHE[this.timeFrame].addAll(this.users);
+            }
+
             this.updateUserList();
         } catch (JSONException e) {
             e.printStackTrace();
@@ -299,7 +320,11 @@ public class LeaderboardTab extends Fragment implements Response.Listener<JSONOb
             this.addedSwipeleaderboards = false;
             pageNumber = 0;
 
-            getLeaderboards("0");
+            this.users.clear();
+            this.users.addAll(LeaderboardTab.CACHE[this.timeFrame]);
+            this.leaderboardAdapter.notifyDataSetChanged();
+
+            getLeaderboards(0);
 
             AssetManager assets = inflater.getContext().getAssets();
             Typeface typeFace= Typeface.createFromAsset(assets, "fonts/Quicksand-Medium.ttf");
@@ -322,7 +347,7 @@ public class LeaderboardTab extends Fragment implements Response.Listener<JSONOb
 
     public void reload() {
         users.clear();
-        getLeaderboards("0");
+        getLeaderboards(0);
         SwipeRefreshLayout sl = (SwipeRefreshLayout) v.findViewById(R.id.leaderSwapRefresh);
         sl.setRefreshing(false);
         pageNumber = 0;

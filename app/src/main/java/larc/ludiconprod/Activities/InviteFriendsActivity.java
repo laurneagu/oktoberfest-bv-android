@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,7 +41,7 @@ public class InviteFriendsActivity extends Activity {
     static public Boolean isFirstTimeInviteFriends = false;
     Button saveInvitedFriends;
     ListView friendsListView;
-    ImageButton backButton;
+    RelativeLayout backButton;
 
     private View v;
 
@@ -48,8 +49,7 @@ public class InviteFriendsActivity extends Activity {
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         setContentView(R.layout.invite_friends_activity);
-        backButton = (ImageButton) findViewById(R.id.backButton);
-        backButton.setBackgroundResource(R.drawable.ic_nav_up);
+        backButton = (RelativeLayout) findViewById(R.id.backButton);
         TextView titleText = (TextView) findViewById(R.id.titleText);
         friendsListView = (ListView) findViewById(R.id.inviteFriendsListView);
         saveInvitedFriends = (Button) findViewById(R.id.saveInvitedFriends);

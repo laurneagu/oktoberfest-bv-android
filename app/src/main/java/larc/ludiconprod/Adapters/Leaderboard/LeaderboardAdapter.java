@@ -24,6 +24,7 @@ import larc.ludiconprod.Activities.ActivityDetailsActivity;
 import larc.ludiconprod.Activities.CouponsActivity;
 import larc.ludiconprod.Activities.LeaderboardActivity;
 import larc.ludiconprod.Activities.UserProfileActivity;
+import larc.ludiconprod.Adapters.Balance.BalanceAdapter;
 import larc.ludiconprod.Adapters.CouponsActivity.CouponsAdapter;
 import larc.ludiconprod.Adapters.MainActivity.MyAdapter;
 import larc.ludiconprod.Controller.Persistance;
@@ -91,7 +92,7 @@ public class LeaderboardAdapter extends BaseAdapter implements ListAdapter {
 
         LeaderboardAdapter.ViewHolder holder;
 
-        //if (view == null) {
+        if (view == null) {
             LayoutInflater inflater = (LayoutInflater) this.fragment.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.leaderboard_card, null);
 
@@ -111,27 +112,31 @@ public class LeaderboardAdapter extends BaseAdapter implements ListAdapter {
             holder.points.setTypeface(typeFace);
 
             view.setTag(holder);
-        /*} else {
-            LayoutInflater inflater = (LayoutInflater) this.fragment.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.leaderboard_card, null);
+        } else {
+            holder = (LeaderboardAdapter.ViewHolder) view.getTag();
 
-            holder = new LeaderboardAdapter.ViewHolder();
-            holder.position = (TextView) view.findViewById(R.id.position);
-            holder.image = (ImageView) view.findViewById(R.id.image);
-            holder.level = (TextView) view.findViewById(R.id.level);
-            holder.name = (TextView) view.findViewById(R.id.name);
-            holder.points = (TextView) view.findViewById(R.id.points);
+            if (holder == null) {
+                LayoutInflater inflater = (LayoutInflater) this.fragment.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.leaderboard_card, null);
 
-            AssetManager assets = view.getContext().getAssets();// Is this the right asset?
-            Typeface typeFace = Typeface.createFromAsset(assets, "fonts/Quicksand-Medium.ttf");
+                holder = new LeaderboardAdapter.ViewHolder();
+                holder.position = (TextView) view.findViewById(R.id.position);
+                holder.image = (ImageView) view.findViewById(R.id.image);
+                holder.level = (TextView) view.findViewById(R.id.level);
+                holder.name = (TextView) view.findViewById(R.id.name);
+                holder.points = (TextView) view.findViewById(R.id.points);
 
-            holder.position.setTypeface(typeFace);
-            holder.level.setTypeface(typeFace);
-            holder.name.setTypeface(typeFace);
-            holder.points.setTypeface(typeFace);
+                AssetManager assets = fragment.getContext().getAssets();// Is this the right asset?
+                Typeface typeFace= Typeface.createFromAsset(assets, "fonts/Quicksand-Medium.ttf");
 
-            view.setTag(holder);
-        }*/
+                holder.position.setTypeface(typeFace);
+                holder.level.setTypeface(typeFace);
+                holder.name.setTypeface(typeFace);
+                holder.points.setTypeface(typeFace);
+
+                view.setTag(holder);
+            }
+        }
 
         holder.position.setText("" + currentPosition.rank);
         switch (currentPosition.rank) {
@@ -144,6 +149,14 @@ public class LeaderboardAdapter extends BaseAdapter implements ListAdapter {
             case 3:
                 holder.position.setTextColor(0xffd98966);
                 break;
+            default:
+                holder.position.setTextColor(0xffacb8c1);
+                break;
+        }
+        if (currentPosition.userId.equals(Persistance.getInstance().getUserInfo(fragment.getActivity()).id)) {
+            view.setBackgroundColor(0xffffffff);
+        } else {
+            view.setBackgroundColor(0x0);
         }
         if (!currentPosition.profileImage.equals("")) {
             Bitmap bitmap = MyAdapter.decodeBase64(currentPosition.profileImage);

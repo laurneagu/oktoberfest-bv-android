@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,7 +36,7 @@ import larc.ludiconprod.R;
  */
 
 public class LoginActivity extends Activity {
-    ImageButton backButton;
+    RelativeLayout backButton;
     TextView forgotPasswordText;
     Button loginButton;
     EditText email;
@@ -72,8 +73,7 @@ public class LoginActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
-        backButton=(ImageButton) findViewById(R.id.backButton);
-        backButton.setBackgroundResource(R.drawable.ic_nav_up);
+        backButton = (RelativeLayout) findViewById(R.id.backButton);
         forgotPasswordText=(TextView) findViewById(R.id.forgotPasswordText);
         TextView titleText=(TextView) findViewById(R.id.titleText);
         titleText.setText("Login");

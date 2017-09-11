@@ -4,11 +4,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:paddingBottom="56dp"
     android:background="#f7f9fc">
-    <ImageView
-        android:layout_marginTop="56dp"
-        android:layout_width="match_parent"
-        android:layout_height="12dp"
-        android:background="@drawable/shadow_top_to_bottom"/>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -267,6 +262,9 @@
         android:layout_marginTop="56dp"
         android:indeterminate="true"/>
 
-
-
+    <ImageView
+        android:layout_marginTop="56dp"
+        android:layout_width="match_parent"
+        android:layout_height="12dp"
+        android:background="@drawable/shadow_top_to_bottom"/>
 </RelativeLayout>

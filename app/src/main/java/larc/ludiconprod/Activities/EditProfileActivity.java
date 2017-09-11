@@ -87,8 +87,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
 
             findViewById(R.id.internetRefresh).setAlpha(0);
 
-            ImageButton backButton=(ImageButton) findViewById(R.id.backButton);
-            backButton.setBackgroundResource(R.drawable.ic_nav_up);
+            View backButton = findViewById(R.id.backButton);
             TextView titleText=(TextView) findViewById(R.id.titleText);
             titleText.setText("Edit profile");
 
@@ -140,7 +139,13 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         old.firstName = this.firstName.getText().toString();
         old.lastName = this.lastName.getText().toString();
         old.range = 1 + this.range.getProgress() + "";
-        old.age = Calendar.getInstance().get(Calendar.YEAR) - Integer.parseInt(this.date.getText().toString());
+
+        try {
+            int ageText = Integer.parseInt(this.date.getText().toString());
+            old.age = ageText;
+        } catch (NumberFormatException ex) {
+            old.age = 0;
+        }
 
         old.sports.clear();
         for(int i = 0; i < sports.size(); ++i){
@@ -220,11 +225,10 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         user.range = 1 + this.range.getProgress() + "";
         user.profileImage = old.profileImage;
 
+        int yearBorn = -1;
         try {
-            int year = Integer.parseInt(this.date.getText().toString());
-            if (year > Calendar.getInstance().get(Calendar.YEAR)) {
-                throw new NumberFormatException();
-            }
+            int age = Integer.parseInt(this.date.getText().toString());
+            yearBorn = Calendar.getInstance().get(Calendar.YEAR) - age;
         } catch (NumberFormatException e) {
             Toast.makeText(this, "Invalid year provided!", Toast.LENGTH_SHORT).show();
             return;
@@ -276,7 +280,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         params.put("gender", user.gender);
         params.put("lastName", user.lastName);
         params.put("firstName", user.firstName);
-        params.put("yearBorn", this.date.getText().toString());
+        params.put("yearBorn", "" + yearBorn);
         params.put("range", user.range);
         params.put("profileImage", user.profileImage);
 

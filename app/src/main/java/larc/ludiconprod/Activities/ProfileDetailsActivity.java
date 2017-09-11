@@ -37,7 +37,7 @@ import static android.R.color.transparent;
 
 
 public class ProfileDetailsActivity extends Activity {
-    ImageButton backButton;
+    View backButton;
     RadioButton male;
     RadioButton female;
     RadioGroup sexSwitch;
@@ -76,7 +76,7 @@ public class ProfileDetailsActivity extends Activity {
     public void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
         setContentView(R.layout.profile_details_activity);
-        backButton=(ImageButton)findViewById(R.id.backButton);
+        backButton = findViewById(R.id.backButton);
         backButton.setAlpha(0f);
         backButton.setClickable(false);
         male=(RadioButton) findViewById(R.id.male);

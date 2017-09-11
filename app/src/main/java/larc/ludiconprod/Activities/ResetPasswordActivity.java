@@ -12,6 +12,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,7 +28,7 @@ import larc.ludiconprod.R;
 
 public class ResetPasswordActivity extends Activity {
 
-    ImageButton backButton;
+    RelativeLayout backButton;
     Button resetPassword;
     EditText email;
     public boolean checkFieldsConstraints() {
@@ -51,8 +52,7 @@ public class ResetPasswordActivity extends Activity {
         Typeface typeFaceBold= Typeface.createFromAsset(getAssets(),"fonts/Quicksand-Bold.ttf");
         TextView titleText=(TextView) findViewById(R.id.titleText);
         titleText.setText("Reset Password");
-        backButton=(ImageButton) findViewById(R.id.backButton);
-        backButton.setBackgroundResource(R.drawable.ic_nav_up);
+        backButton=(RelativeLayout) findViewById(R.id.backButton);
         resetPassword=(Button) findViewById(R.id.resetPasswordButton);
         resetPassword.setTypeface(typeFaceBold);
         email=(EditText)findViewById(R.id.emailAdress);

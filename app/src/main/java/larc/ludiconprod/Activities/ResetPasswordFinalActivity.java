@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import larc.ludiconprod.R;
@@ -17,7 +18,7 @@ import larc.ludiconprod.R;
  */
 
 public class ResetPasswordFinalActivity extends Activity {
-    ImageButton backButton;
+    RelativeLayout backButton;
     Button backToLogin;
 
     @Override
@@ -27,10 +28,9 @@ public class ResetPasswordFinalActivity extends Activity {
         Typeface typeFaceBold= Typeface.createFromAsset(getAssets(),"fonts/Quicksand-Bold.ttf");
         TextView titleText=(TextView) findViewById(R.id.titleText);
         titleText.setText("Reset Password");
-        backButton=(ImageButton) findViewById(R.id.backButton);
+        backButton=(RelativeLayout) findViewById(R.id.backButton);
         backToLogin=(Button) findViewById(R.id.returnLoginButton);
         backToLogin.setTypeface(typeFaceBold);
-        backButton.setBackgroundResource(R.drawable.ic_nav_up);
         backButton.setOnClickListener(new View.OnClickListener(){
 
             @Override

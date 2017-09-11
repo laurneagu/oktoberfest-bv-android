@@ -12,6 +12,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,7 +24,7 @@ import larc.ludiconprod.R;
 
 
 public class RegisterActivity extends FragmentActivity {
-    ImageButton backButton;
+    RelativeLayout backButton;
     Button createAccountButton;
     EditText firstName;
     EditText lastName;
@@ -83,7 +84,7 @@ public class RegisterActivity extends FragmentActivity {
         Typeface typeFaceBold= Typeface.createFromAsset(getAssets(),"fonts/Quicksand-Bold.ttf");
         TextView titleText=(TextView) findViewById(R.id.titleText);
         titleText.setText("Register");
-        backButton=(ImageButton) findViewById(R.id.backButton);
+        backButton = (RelativeLayout) findViewById(R.id.backButton);
         createAccountButton=(Button) findViewById(R.id.createAccountButton);
         createAccountButton.setTypeface(typeFaceBold);
         firstName=(EditText) findViewById(R.id.firstName);
@@ -96,8 +97,7 @@ public class RegisterActivity extends FragmentActivity {
         password.setTypeface(typeFace);
         passwordRepeat=(EditText) findViewById(R.id.passwordRepeat);
         passwordRepeat.setTypeface(typeFace);
-        backButton=(ImageButton) findViewById(R.id.backButton);
-        backButton.setBackgroundResource(R.drawable.ic_nav_up);
+        backButton = (RelativeLayout) findViewById(R.id.backButton);
         backButton.setOnClickListener(new View.OnClickListener(){
 
             @Override

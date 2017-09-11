@@ -63,8 +63,7 @@ public class BalanceActivity extends AppCompatActivity implements Response.Liste
 
             super.setContentView(R.layout.balance_activity);
 
-            ImageButton backButton=(ImageButton) findViewById(R.id.backButton);
-            backButton.setBackgroundResource(R.drawable.ic_nav_up);
+            View backButton = findViewById(R.id.backButton);
             TextView titleText = (TextView) findViewById(R.id.titleText);
             titleText.setText(Persistance.getInstance().getUserInfo(this).ludicoins + " Ludicoins");
             backButton.setOnClickListener(new View.OnClickListener() {

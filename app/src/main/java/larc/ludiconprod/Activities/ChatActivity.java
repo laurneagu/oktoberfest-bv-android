@@ -58,7 +58,7 @@ public class ChatActivity extends Activity {
     EditText messageInput;
     static public Boolean isOnChat1to1=false;
     Object waitForChatLoading = new Object();
-    ImageButton backButton;
+    RelativeLayout backButton;
     Boolean needToScroll=true;
     int nrOfPage=0;
     int isGroupChat=0;
@@ -116,8 +116,7 @@ public class ChatActivity extends Activity {
         sendButton = (Button)findViewById(R.id.sendButton);
         messageInput = (EditText)findViewById(R.id.messageInput);
         chatLoading = (ProgressBar)findViewById(R.id.chatLoading);
-        backButton = (ImageButton) findViewById(R.id.backButton);
-        backButton.setBackgroundResource(R.drawable.ic_nav_up);
+        backButton = (RelativeLayout) findViewById(R.id.backButton);
         titleText = (TextView) findViewById(R.id.titleText);
         if((getIntent().getStringExtra("otherParticipantName") != null)) {
             titleText.setText(getIntent().getStringExtra("otherParticipantName").substring(0, getIntent().getStringExtra("otherParticipantName").length() - 1));

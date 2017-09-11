@@ -4,11 +4,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:paddingBottom="56dp"
     android:background="#f7f9fc">
-    <ImageView
-        android:layout_marginTop="56dp"
-        android:layout_width="match_parent"
-        android:layout_height="12dp"
-        android:background="@drawable/shadow_top_to_bottom"/>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -36,13 +31,11 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="16dp"
                 android:background="#ffffff"
-                android:id="@+id/happeningNowLayout"
-
-                >
+                android:id="@+id/happeningNowLayout">
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="140dp"
+                    android:layout_height="140dp"
                     android:layout_alignParentRight="true"
                     android:layout_alignBottom="@+id/imageBackground"
                     android:background="@drawable/bg_sport_football"
@@ -62,9 +55,19 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="You are playing Football"
+                        android:text="You are playing "
                         android:textSize="12dp"
                         android:textColor="#acb8c1"
+                        android:id="@+id/HNPlay"
+                        android:layout_below="@+id/HNTV"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Football"
+                        android:textSize="12dp"
+                        android:textColor="#acb8c1"
+                        android:layout_toRightOf="@+id/HNPlay"
                         android:id="@+id/HNPlayWhat"
                         android:layout_below="@+id/HNTV"/>
                     <LinearLayout
@@ -210,7 +213,7 @@
                                     android:paddingTop="9dp"
                                     android:textSize="14dp"
                                     android:textColor="#02b9ad"
-                                    android:visibility="visible"
+                                    android:visibility="invisible"
                                     android:layout_gravity="center"
                                     android:background="@drawable/round_textview"
                                     android:text="+3" />
@@ -259,6 +262,9 @@
         android:layout_marginTop="56dp"
         android:indeterminate="true"/>
 
-
-
+    <ImageView
+        android:layout_marginTop="56dp"
+        android:layout_width="match_parent"
+        android:layout_height="12dp"
+        android:background="@drawable/shadow_top_to_bottom"/>
 </RelativeLayout>

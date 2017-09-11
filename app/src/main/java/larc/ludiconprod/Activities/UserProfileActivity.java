@@ -59,8 +59,7 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
 
             super.setContentView(R.layout.user_profile_activity);
 
-            ImageButton backButton=(ImageButton) findViewById(R.id.backButton);
-            backButton.setBackgroundResource(R.drawable.ic_nav_up);
+            View backButton = findViewById(R.id.backButton);
             TextView titleText = (TextView) findViewById(R.id.titleText);
             titleText.setText("Player profile");
 
