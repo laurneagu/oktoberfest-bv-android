@@ -211,7 +211,6 @@ public class AroundMeAdapter extends BaseAdapter implements ListAdapter {
             if (!currentEvent.creatorProfilePicture.equals("")) {
                 Bitmap bitmap = decodeBase64(currentEvent.creatorProfilePicture);
                 holder.profileImage.setImageBitmap(bitmap);
-
             }
 
             // Redirect to user profile on picture tap
