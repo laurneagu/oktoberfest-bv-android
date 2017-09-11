@@ -43,6 +43,7 @@ public class LoginActivity extends Activity {
     EditText password;
     public static ProgressBar progressBar;
     private static String TAG = LoginActivity.class.getSimpleName();
+    Toast mToast;
 
 
 
@@ -165,7 +166,7 @@ public class LoginActivity extends Activity {
                     }
                 }
                 else{
-                    Toast.makeText(LoginActivity.this,R.string.errorMessage, Toast.LENGTH_LONG).show();
+                    showAToast();
                 }
             }
         });
@@ -174,6 +175,14 @@ public class LoginActivity extends Activity {
 
 
 
+    }
+
+    public void showAToast (){
+        if (mToast != null) {
+            mToast.cancel();
+        }
+        mToast = Toast.makeText(this, R.string.errorMessage, Toast.LENGTH_LONG);
+        mToast.show();
     }
 
 }

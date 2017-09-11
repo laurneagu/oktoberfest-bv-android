@@ -29,7 +29,7 @@
             android:padding="10dp"
             android:shape="rectangle" >
 
-            <solid android:color="#3b5998" />
+            <solid android:color="#4f6aa3" />
 
             <corners
                 android:bottomLeftRadius="24dp"

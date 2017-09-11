@@ -33,7 +33,7 @@
             facebook:com_facebook_login_text="CONNECT WITH FACEBOOK"
             android:textColor="#ffffff"
             android:visibility="invisible"
-            android:background="@drawable/rounded_facebook_button"
+            android:background="@drawable/rounded_facebook_button_background"
             android:drawableLeft="@drawable/ic_facebook"
             android:alpha="0.3">
 

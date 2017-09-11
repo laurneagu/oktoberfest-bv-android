@@ -2,6 +2,7 @@ package larc.ludiconprod.Activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
@@ -66,6 +67,8 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
                 public void onClick(View view) {
                     Persistance.getInstance().deleteUserProfileInfo(getActivity());
                     Log.v("logout", "am dat logout");
+                    SharedPreferences preferences = getActivity().getSharedPreferences("ProfileImage", 0);
+                    preferences.edit().remove("ProfileImage").apply();
                     getActivity().finish();
                     Intent intent = new Intent(mContext, IntroActivity.class);
                     startActivity(intent);

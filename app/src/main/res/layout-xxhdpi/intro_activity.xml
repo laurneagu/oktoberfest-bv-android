@@ -33,7 +33,7 @@
             facebook:com_facebook_login_text="CONNECT WITH FACEBOOK"
             android:textColor="#ffffff"
             android:visibility="invisible"
-            android:background="@drawable/rounded_facebook_button"
+            android:background="@drawable/rounded_facebook_button_background"
             android:drawableLeft="@drawable/ic_facebook"
             android:alpha="0.3">
 
@@ -117,7 +117,7 @@
                 android:layout_centerHorizontal="true"
                 android:visibility="invisible"
                 android:textSize="14sp"
-                android:text="By continuing you agree our \n   Terms and Privacy Policy" />
+                android:text="By continuing you agree our \n   Terms and Privacy Policy" /> 
         </RelativeLayout>
 
     </LinearLayout>
