@@ -1,26 +1,19 @@
 package larc.ludiconprod.Activities;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -34,10 +27,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import larc.ludiconprod.Adapters.ChatAndFriends.MessageAdapter;
-import larc.ludiconprod.BottomBarHelper.BottomBar;
 import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
-import larc.ludiconprod.Utils.Chat;
 import larc.ludiconprod.Utils.Message;
 
 /**
@@ -107,7 +98,7 @@ public class ChatActivity extends Activity {
                     createChat=true;
                     Message firstMessage = new Message();
                     firstMessage.otherUserName = getIntent().getStringExtra("otherParticipantName");
-                    firstMessage.otherUserImage = getIntent().getStringExtra("otherParticipantImage");
+                    firstMessage.otherUserImage = getIntent().getStringArrayListExtra("otherParticipantImage").get(0);
                     firstMessage.setTopImage = true;
                     messageList.add(0, firstMessage);
                     setAdapter();
@@ -161,9 +152,6 @@ public class ChatActivity extends Activity {
             @Override
             public void onClick(View view) {
                 if(isGroupChat == 0) {
-                    Intent intent = new Intent(ChatActivity.this, Main.class);
-                    intent.putExtra("setChatTab", true);
-                    startActivity(intent);
                     isOnChat1to1 = false;
                     finish();
                 }
@@ -625,9 +613,10 @@ public class ChatActivity extends Activity {
     @Override
     public void onBackPressed() {
         if(isGroupChat == 0) {
-            Intent intent = new Intent(ChatActivity.this, Main.class);
+            /*Intent intent = new Intent(ChatActivity.this, Main.class);
             intent.putExtra("setChatTab", true);
-            startActivity(intent);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);*/
             isOnChat1to1 = false;
             finish();
         }

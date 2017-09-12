@@ -12,7 +12,6 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -29,7 +28,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -78,11 +76,13 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
                 public void onClick(View view) {
                     Intent intent=new Intent(UserProfileActivity.this, ChatActivity.class);
                     intent.putExtra("otherParticipantName", userName);
-                    intent.putExtra("otherParticipantImage", userImage);
+                    ArrayList<String> myList = new ArrayList<String>();
+                    myList.add(userImage);
+                    intent.putExtra("otherParticipantImage", myList);
                     intent.putExtra("chatId", "isNot");
                     intent.putExtra("UserId", getIntent().getStringExtra("UserId"));
                     UserProfileActivity.this.startActivity(intent);
-                    finish();
+                    //finish();
                 }
             });
 

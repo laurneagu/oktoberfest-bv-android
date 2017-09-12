@@ -11,10 +11,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -29,21 +26,18 @@ import org.json.JSONObject;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
 import larc.ludiconprod.Adapters.EditProfile.EditActivitiesAdapter;
-import larc.ludiconprod.Adapters.EditProfile.EditInfoAdapter;
 import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.ImagePicker;
 import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.PasswordEncryptor;
 import larc.ludiconprod.R;
 import larc.ludiconprod.User;
-import larc.ludiconprod.Utils.Event;
 import larc.ludiconprod.Utils.MyProfileUtils.EditViewPagerAdapter;
 import larc.ludiconprod.Utils.ui.SlidingTabLayout;
 import larc.ludiconprod.Utils.util.Sport;
@@ -88,7 +82,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             findViewById(R.id.internetRefresh).setAlpha(0);
 
             View backButton = findViewById(R.id.backButton);
-            TextView titleText=(TextView) findViewById(R.id.titleText);
+            TextView titleText = (TextView) findViewById(R.id.titleText);
             titleText.setText("Edit profile");
 
             this.adapter = new EditViewPagerAdapter(getSupportFragmentManager(), EditProfileActivity.TITLES, tabsNumber);
@@ -118,13 +112,21 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                 public void onClick(View view) {
                     Intent intent = new Intent(EditProfileActivity.this, Main.class);
                     intent.putExtra("Tab", R.id.tab_profile);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
+                    /*android.app.Fragment currentFragment = getFragmentManager().findFragmentById(R.id.frame);
+                    FragmentTransaction fragTransaction = getFragmentManager().beginTransaction();
+                    fragTransaction.detach(currentFragment);
+                    fragTransaction.attach(currentFragment);
+                    fragTransaction.commit();*/
+
+
                 }
             });
 
             AssetManager assets = getAssets();// Is this the right asset?
-            Typeface typeFace= Typeface.createFromAsset(assets, "fonts/Quicksand-Medium.ttf");
-            Typeface typeFaceBold = Typeface.createFromAsset(assets,"fonts/Quicksand-Bold.ttf");
+            Typeface typeFace = Typeface.createFromAsset(assets, "fonts/Quicksand-Medium.ttf");
+            Typeface typeFaceBold = Typeface.createFromAsset(assets, "fonts/Quicksand-Bold.ttf");
 
             titleText.setTypeface(typeFace);
         } catch (Exception e) {
@@ -148,7 +150,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         }
 
         old.sports.clear();
-        for(int i = 0; i < sports.size(); ++i){
+        for (int i = 0; i < sports.size(); ++i) {
             Sport sport = new Sport(sports.get(i));
             old.sports.add(sport);
         }
@@ -201,7 +203,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     public void onClick(View view) {
-        Log.d("Changed", ""  + firstName.getText() + range.getProgress() + sex + sports);
+        Log.d("Changed", "" + firstName.getText() + range.getProgress() + sex + sports);
 
         User old = Persistance.getInstance().getProfileInfo(this);
 
@@ -241,7 +243,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             }
 
             String pass = this.newPassword.getText().toString();
-			String oldPass = this.oldPassword.getText().toString();
+            String oldPass = this.oldPassword.getText().toString();
 
             if (pass.isEmpty()) {
                 Toast.makeText(this, "Enter a new password!", Toast.LENGTH_SHORT).show();
@@ -265,9 +267,9 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             }
 
             HashMap<String, String> params = new HashMap<>();
-			params.put("userId", old.id);
-			params.put("oldPassword", oldPass);
-			params.put("newPassword", pass);
+            params.put("userId", old.id);
+            params.put("oldPassword", oldPass);
+            params.put("newPassword", pass);
             HashMap<String, String> headers = new HashMap<>();
             headers.put("authKey", old.authKey);
             HTTPResponseController.getInstance().changePassword(params, headers, this);
@@ -285,7 +287,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         params.put("profileImage", user.profileImage);
 
         user.sports.clear();
-        for(int i = 0; i < sports.size(); ++i){
+        for (int i = 0; i < sports.size(); ++i) {
             params.put("sports[" + i + "]", sports.get(i));
             Sport sport = new Sport(sports.get(i));
             user.sports.add(sport);
@@ -300,7 +302,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Bitmap bitmap = ImagePicker.getImageFromResult(this, resultCode, data);
         Log.d("B64 picture", "" + bitmap);
-        if(bitmap != null) {
+        if (bitmap != null) {
             image.setImageBitmap(bitmap);
             String b64i = ProfileDetailsActivity.encodeToBase64(bitmap, Bitmap.CompressFormat.JPEG, 50);
             Log.d("B64 picture", b64i);
@@ -333,6 +335,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
 
         Intent intent = new Intent(this, Main.class);
         intent.putExtra("Tab", R.id.tab_profile);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
 
         User t = Persistance.getInstance().getUserInfo(this);
@@ -341,7 +344,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         t.lastName = this.lastName.getText().toString();
         t.range = 1 + this.range.getProgress() + "";
         t.sports.clear();
-        for(int i = 0; i < sports.size(); ++i){
+        for (int i = 0; i < sports.size(); ++i) {
             Sport sport = new Sport(sports.get(i));
             t.sports.add(sport);
         }
