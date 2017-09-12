@@ -297,8 +297,16 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
 
             TextView youPoints = (TextView) findViewById(R.id.profileYouPoints);
             TextView foePoints = (TextView) findViewById(R.id.profileFoePoints);
-            youPoints.setText("" + this.youPoints.get(Sport.GENERAL));
-            foePoints.setText("" + this.foePoints.get(Sport.GENERAL));
+            Integer yp = this.youPoints.get(Sport.GENERAL);
+            Integer fp = this.foePoints.get(Sport.GENERAL);
+            if (yp == null) {
+                yp = 0;
+            }
+            if (fp == null) {
+                fp = 0;
+            }
+            youPoints.setText("" + yp);
+            foePoints.setText("" + fp);
             this.youPoints.remove(Sport.GENERAL);
             this.foePoints.remove(Sport.GENERAL);
 
@@ -311,8 +319,8 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
                 String sc = sportCodes.get(i);
 
 
-                int yp = this.youPoints.get(sc);
-                int fp = this.foePoints.get(sc);
+                yp = this.youPoints.get(sc);
+                fp = this.foePoints.get(sc);
                 int tot = yp + fp;
 
                 LayoutInflater.from(this).inflate(R.layout.versus_card, versusLayout);

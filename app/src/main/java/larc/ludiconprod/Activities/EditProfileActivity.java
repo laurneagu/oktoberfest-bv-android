@@ -284,7 +284,9 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         params.put("firstName", user.firstName);
         params.put("yearBorn", "" + yearBorn);
         params.put("range", user.range);
-        params.put("profileImage", user.profileImage);
+        if (user.profileImage != null && !user.profileImage.isEmpty()) {
+            params.put("profileImage", user.profileImage);
+        }
 
         user.sports.clear();
         for (int i = 0; i < sports.size(); ++i) {

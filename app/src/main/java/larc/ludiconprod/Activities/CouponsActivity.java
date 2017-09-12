@@ -27,6 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 import larc.ludiconprod.Adapters.CouponsActivity.CouponsAdapter;
@@ -57,17 +58,24 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
     public ArrayList<Coupon> myCoupons = new ArrayList<>();
 
     boolean firstTimeCoupons = false;
-    public int numberOfRefreshCoupons = 0;
+    public int couponsPage = 0;
     public boolean firstPageCoupons = true;
     boolean addedSwipeCoupons = false;
 
     boolean firstTimeMyCoupons = false;
-    public int numberOfRefreshMyCoupons = 0;
+    public int myCouponsPage = 0;
     public boolean firstPageMyCoupons = true;
     boolean addedSwipeMyCoupons = false;
     private boolean noGps = false;
 
     public void getCoupons(String pageNumber) {
+        if (pageNumber.equals("0")) {
+            this.coupons.clear();
+            ArrayList<Coupon> c = Persistance.getInstance().getCouponsCache(super.getActivity());
+            this.coupons.addAll(c);
+            this.couponsAdapter.notifyDataSetChanged();
+        }
+
         HashMap<String, String> headers = new HashMap<>();
         //headers.put("Content-Type", "application/json");
         headers.put("authKey", Persistance.getInstance().getUserInfo(getActivity()).authKey);
@@ -114,6 +122,13 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
     }
 
     public void getMyCoupons(String pageNumber) {
+        if (pageNumber.equals("0")) {
+            this.myCoupons.clear();
+            ArrayList<Coupon> c = Persistance.getInstance().getMyCouponsCache(super.getActivity());
+            this.myCoupons.addAll(c);
+            this.myCouponsAdapter.notifyDataSetChanged();
+        }
+
         HashMap<String, String> headers = new HashMap<>();
         //headers.put("Content-Type", "application/json");
         headers.put("authKey", Persistance.getInstance().getUserInfo(getActivity()).authKey);
@@ -185,8 +200,8 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
                         if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
                             if (listView.getLastVisiblePosition() == listView.getAdapter().getCount() - 1 && listView.getChildAt(listView.getChildCount() - 1).getBottom() <= listView.getHeight()) {
                                 progressBar.setAlpha(1f);
-                                ++numberOfRefreshCoupons;
-                                getCoupons(String.valueOf(numberOfRefreshCoupons));
+                                ++couponsPage;
+                                getCoupons(String.valueOf(couponsPage));
                             }
                         }
                     }
@@ -199,10 +214,10 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
                 @Override
                 public void onRefresh() {
                     coupons.clear();
+                    couponsPage = 0;
                     getCoupons("0");
                     firstPageCoupons = true;
                     mSwipeRefreshLayout.setRefreshing(false);
-                    numberOfRefreshCoupons = 0;
                 }
             });
             this.addedSwipeCoupons = true;
@@ -263,8 +278,8 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
                         if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
                             if (listView.getLastVisiblePosition() == listView.getAdapter().getCount() - 1 && listView.getChildAt(listView.getChildCount() - 1).getBottom() <= listView.getHeight()) {
                                 progressBar.setAlpha(1f);
-                                ++numberOfRefreshMyCoupons;
-                                getMyCoupons(String.valueOf(numberOfRefreshMyCoupons));
+                                ++myCouponsPage;
+                                getMyCoupons(String.valueOf(myCouponsPage));
                             }
                         }
                     }
@@ -277,10 +292,10 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
                 @Override
                 public void onRefresh() {
                     myCoupons.clear();
+                    myCouponsPage = 0;
                     getMyCoupons("0");
                     firstPageMyCoupons = true;
                     mSwipeRefreshLayout.setRefreshing(false);
-                    numberOfRefreshMyCoupons = 0;
                 }
             });
             this.addedSwipeMyCoupons = true;
@@ -322,18 +337,18 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
 
     private void onInternetRefresh() {
         coupons.clear();
+        couponsPage = 0;
         getCoupons("0");
         firstPageCoupons = true;
         SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.couponsSwapRefresh);
         mSwipeRefreshLayout.setRefreshing(false);
-        numberOfRefreshCoupons = 0;
 
         myCoupons.clear();
+        myCouponsPage = 0;
         getMyCoupons("0");
         firstPageMyCoupons = true;
         mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.myCouponsSwapRefresh);
         mSwipeRefreshLayout.setRefreshing(false);
-        numberOfRefreshMyCoupons = 0;
     }
 
     @Nullable
@@ -368,13 +383,51 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
             getCoupons("0");
             getMyCoupons("0");
 
-            this.numberOfRefreshCoupons = 0;
-            this.numberOfRefreshMyCoupons = 0;
+            this.couponsPage = 0;
+            this.myCouponsPage = 0;
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         return v;
+    }
+
+    public void onCouponsResponse(JSONObject response) {
+        if (super.getActivity() == null) {
+            return;
+        }
+
+        try {
+            JSONArray coupons = response.getJSONArray("coupons");
+
+            if (this.couponsPage == 0) {
+                this.coupons.clear();
+            }
+
+            Coupon c;
+            for (int i = 0; i < coupons.length(); ++i) {
+                JSONObject o = coupons.getJSONObject(i);
+                c = new Coupon();
+                c.couponBlockId = o.getString("couponBlockId");
+                c.title = o.getString("title");
+                c.description = o.getString("description");
+                c.expiryDate = Long.parseLong(o.getString("expiryDate"));
+                c.numberOfCoupons = Integer.parseInt(o.getString("numberOfCoupons"));
+                c.ludicoins = Integer.parseInt(o.getString("ludicoins"));
+                c.companyPicture = o.getString("companyPicture");
+                c.companyName = o.getString("companyName");
+
+                this.coupons.add(c);
+            }
+
+            if (this.couponsPage == 0) {
+                Persistance.getInstance().setCouponsCache(this.coupons, super.getActivity());
+            }
+
+            this.updateCouponsList();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public void onMyCouponsResponse(JSONObject response) {
@@ -385,7 +438,9 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
         try {
             JSONArray coupons = response.getJSONArray("coupons");
 
-            CouponsActivity ca = this;
+            if (this.myCouponsPage == 0) {
+                this.myCoupons.clear();
+            }
 
             Coupon c;
             for (int i = 0; i < coupons.length(); ++i) {
@@ -401,42 +456,14 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
                 c.companyName = o.getString("companyName");
                 c.discountCode = o.getString("discountCode");
 
-                ca.myCoupons.add(c);
+                this.myCoupons.add(c);
             }
 
-            ca.updateMyCouponsList();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void onCouponsResponse(JSONObject response) {
-        if (super.getActivity() == null) {
-            return;
-        }
-
-        try {
-            JSONArray coupons = response.getJSONArray("coupons");
-
-            CouponsActivity ca = this;
-
-            Coupon c;
-            for (int i = 0; i < coupons.length(); ++i) {
-                JSONObject o = coupons.getJSONObject(i);
-                c = new Coupon();
-                c.couponBlockId = o.getString("couponBlockId");
-                c.title = o.getString("title");
-                c.description = o.getString("description");
-                c.expiryDate = Long.parseLong(o.getString("expiryDate"));
-                c.numberOfCoupons = Integer.parseInt(o.getString("numberOfCoupons"));
-                c.ludicoins = Integer.parseInt(o.getString("ludicoins"));
-                c.companyPicture = o.getString("companyPicture");
-                c.companyName = o.getString("companyName");
-
-                ca.coupons.add(c);
+            if (this.myCouponsPage == 0) {
+                Persistance.getInstance().setMyCouponsCache(this.myCoupons, super.getActivity());
             }
 
-            ca.updateCouponsList();
+            this.updateMyCouponsList();
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -454,12 +481,12 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
             this.coupons.clear();
             this.getCoupons("0");
             this.firstPageCoupons = true;
-            this.numberOfRefreshCoupons = 0;
+            this.couponsPage = 0;
 
             this.myCoupons.clear();
             this.getMyCoupons("0");
             this.firstPageMyCoupons = true;
-            this.numberOfRefreshMyCoupons = 0;
+            this.myCouponsPage = 0;
         } catch (Exception e) {
             e.printStackTrace();
         }

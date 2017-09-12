@@ -65,6 +65,7 @@
         android:layout_below="@+id/myProfileTop"/>
 
     <LinearLayout
+        android:id="@+id/noConnectionTop"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/myProfileTop">
@@ -79,7 +80,7 @@
         android:layout_height="match_parent"
         android:scrollbars="none"
         android:fillViewport="true"
-        android:layout_below="@+id/myProfileTop"
+        android:layout_below="@+id/noConnectionTop"
         android:alpha="1">
 
         <LinearLayout

@@ -15,6 +15,7 @@ import java.util.Arrays;
 
 import larc.ludiconprod.Activities.BalanceActivity;
 import larc.ludiconprod.User;
+import larc.ludiconprod.Utils.Coupon;
 import larc.ludiconprod.Utils.Event;
 import larc.ludiconprod.Utils.HappeningNowLocation;
 
@@ -40,6 +41,8 @@ public class Persistance {
     private final String myActivitiesString="MyActivities";
     private final String aroundMeActivitiesString="AroundMeActivities";
     private final String balanceString = "BalanceActivity";
+    private final String cuponsString = "CouponsActivityCoupons";
+    private final String myCuponsString = "CouponsActivityMyCoupons";
     private final String locationString = "locationsList";
 
     public void setUserInfo(Activity activity, User user) {
@@ -160,7 +163,7 @@ public class Persistance {
         LoginManager.getInstance().logOut();
     }
 
-    public ArrayList<BalanceActivity.BalanceEntry> getBalanceChache(Activity activity) {
+    public ArrayList<BalanceActivity.BalanceEntry> getBalanceCache(Activity activity) {
         String json = null;
         System.out.println(activity + "activity");
         SharedPreferences sharedPreferences = activity.getSharedPreferences(balanceString, 0);
@@ -173,7 +176,7 @@ public class Persistance {
         return gson.fromJson(json, ArrayList.class);
     }
 
-    public void setBalanceChache(ArrayList<BalanceActivity.BalanceEntry> entries, Activity activity) {
+    public void setBalanceCache(ArrayList<BalanceActivity.BalanceEntry> entries, Activity activity) {
         SharedPreferences.Editor editor = activity.getSharedPreferences(this.balanceString, 0).edit();
         Gson gson = new Gson();
         editor.putString(this.balanceString, gson.toJson(entries));
@@ -197,5 +200,45 @@ public class Persistance {
             locationsList = new Gson().fromJson(json, HappeningNowLocation.class);
         }
         return  locationsList;
+    }
+
+    public ArrayList<Coupon> getCouponsCache(Activity activity) {
+        System.out.println(activity + "activity");
+        SharedPreferences sharedPreferences = activity.getSharedPreferences(cuponsString, 0);
+        String json = sharedPreferences.getString(cuponsString, "0");
+        Gson gson = new Gson();
+        if (json.equals("0")) {
+            return new ArrayList<>();
+        }
+        Type type = new TypeToken<ArrayList<Coupon>>() {
+        }.getType();
+        return gson.fromJson(json, type);
+    }
+
+    public void setCouponsCache(ArrayList<Coupon> cs, Activity activity) {
+        SharedPreferences.Editor editor = activity.getSharedPreferences(this.cuponsString, 0).edit();
+        Gson gson = new Gson();
+        editor.putString(this.cuponsString, gson.toJson(cs));
+        editor.commit();
+    }
+
+    public ArrayList<Coupon> getMyCouponsCache(Activity activity) {
+        System.out.println(activity + "activity");
+        SharedPreferences sharedPreferences = activity.getSharedPreferences(myCuponsString, 0);
+        String json = sharedPreferences.getString(myCuponsString, "0");
+        Gson gson = new Gson();
+        if (json.equals("0")) {
+            return new ArrayList<>();
+        }
+        Type type = new TypeToken<ArrayList<Coupon>>() {
+        }.getType();
+        return gson.fromJson(json, type);
+    }
+
+    public void setMyCouponsCache(ArrayList<Coupon> cs, Activity activity) {
+        SharedPreferences.Editor editor = activity.getSharedPreferences(this.myCuponsString, 0).edit();
+        Gson gson = new Gson();
+        editor.putString(this.myCuponsString, gson.toJson(cs));
+        editor.commit();
     }
 }

@@ -50,6 +50,7 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
     protected Context mContext;
     protected View v;
     protected ImageView settings;
+    private static User cache;
 
     @Nullable
     @Override
@@ -93,6 +94,10 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
                 }
             });
 
+            if (MyProfileActivity.cache != null) {
+                this.printInfo(MyProfileActivity.cache);
+            }
+
             Typeface typeFace = Typeface.createFromAsset(super.getActivity().getAssets(),"fonts/Quicksand-Medium.ttf");
             Typeface typeFaceBold = Typeface.createFromAsset(super.getActivity().getAssets(),"fonts/Quicksand-Bold.ttf");
 
@@ -126,10 +131,12 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
     }
 
     private void requestInfo() {
-        View tv = v.findViewById(R.id.profileContent);
-        tv.setAlpha(0);
-        tv = v.findViewById(R.id.profileProgressBar);
-        tv.setAlpha(1);
+        if (MyProfileActivity.cache == null) {
+            View tv = v.findViewById(R.id.profileContent);
+            tv.setAlpha(0);
+            tv = v.findViewById(R.id.profileProgressBar);
+            tv.setAlpha(1);
+        }
 
         User u = Persistance.getInstance().getUserInfo(super.getActivity());
 
@@ -288,9 +295,10 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
             t.age = Calendar.getInstance().get(Calendar.YEAR) - Integer.parseInt(jsonObject.getString("yearBorn"));
             Persistance.getInstance().setUserInfo(this.getActivity(), t);
 
-            MyProfileActivity mpa = (MyProfileActivity) this;
+            MyProfileActivity.cache = u;
+
             Persistance.getInstance().setProfileInfo(this.getActivity(), u);
-            mpa.printInfo(u);
+            this.printInfo(u);
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -9,7 +9,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -75,7 +74,7 @@ public class BalanceActivity extends AppCompatActivity implements Response.Liste
 
             this.balanceAdapter = new BalanceAdapter(this.entryes, this);
 
-            this.entryes.addAll(Persistance.getInstance().getBalanceChache(this));
+            this.entryes.addAll(Persistance.getInstance().getBalanceCache(this));
             this.updateBalanceList();
             getBalance(0);
 
@@ -157,7 +156,7 @@ public class BalanceActivity extends AppCompatActivity implements Response.Liste
 
                 this.entryes.add(be);
             }
-            Persistance.getInstance().setBalanceChache(this.entryes, this);
+            Persistance.getInstance().setBalanceCache(this.entryes, this);
             this.updateBalanceList();
         } catch (JSONException e) {
             e.printStackTrace();
