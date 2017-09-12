@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
@@ -16,6 +17,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,6 +71,7 @@ import larc.ludiconprod.ViewPagerHelper.MyPagerAdapter;
 public class GMapsActivity extends FragmentActivity implements PlaceSelectionListener, OnMapReadyCallback{
 
     RelativeLayout backButton;
+    public static RelativeLayout noLocationLayout;
     Marker lastAddedMarker;
     MapFragment mapFragment;
     private double selected_lat, selected_long;
@@ -122,11 +125,15 @@ public class GMapsActivity extends FragmentActivity implements PlaceSelectionLis
             setContentView(R.layout.gmaps_activity);
             backButton = (RelativeLayout) findViewById(R.id.backButton);
             TextView titleText=(TextView) findViewById(R.id.titleText);
+            TextView noLocationText = (TextView) findViewById(R.id.noLocationText);
             selectLocationButton=(Button) findViewById(R.id.selectLocationButton) ;
-            titleText.setText("Select Location");
+            noLocationLayout = (RelativeLayout) findViewById(R.id.noLocationLayout);
+
+
+            Log.v("titlul e",titleText.getText().toString());
             Typeface typeFace= Typeface.createFromAsset(getAssets(),"fonts/Quicksand-Medium.ttf");
             Typeface typeFaceBold= Typeface.createFromAsset(getAssets(),"fonts/Quicksand-Bold.ttf");
-
+            noLocationText.setTypeface(typeFace);
             mapFragment= (MapFragment) getFragmentManager()
                     .findFragmentById(R.id.map);
             mapFragment.getMapAsync(this);
@@ -135,7 +142,7 @@ public class GMapsActivity extends FragmentActivity implements PlaceSelectionLis
             dM = getResources().getDisplayMetrics();
             context=this;
             fragmentManager=this.getSupportFragmentManager();
-
+            titleText.setText("Select Location");
 
 
             backButton.setOnClickListener(new View.OnClickListener(){
@@ -154,6 +161,7 @@ public class GMapsActivity extends FragmentActivity implements PlaceSelectionLis
                         intent.putExtra("latitude", markerSelected.getPosition().latitude);
                         intent.putExtra("longitude",  markerSelected.getPosition().longitude);
                         intent.putExtra("AuthorizeEventLevel",MyFragment.valueOfAuthorizedPlace);
+
                         if(MyFragment.valueOfAuthorizedPlace != -1){
                             for(int i=0;i< authLocation.size();i++){
                                 if(markerSelected.getPosition().latitude == authLocation.get(i).latitude && markerSelected.getPosition().longitude == authLocation.get(i).longitude){
@@ -235,6 +243,8 @@ public class GMapsActivity extends FragmentActivity implements PlaceSelectionLis
                 }else {
                     googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 15));
                 }
+
+
                 LatLng sW = googleMap.getProjection().getVisibleRegion().nearLeft;
                 LatLng nE=googleMap.getProjection().getVisibleRegion().farRight;
                 getAuthLocation(sW,nE);
@@ -342,6 +352,8 @@ public class GMapsActivity extends FragmentActivity implements PlaceSelectionLis
                 isFirstTime = true;
             } else if(authLocation.size() > 0){
                 adapter.notifyDataSetChanged();
+            }else if(authLocation.size() == 0){
+                noLocationLayout.setAlpha(1);
             }
 
 
@@ -359,6 +371,7 @@ public class GMapsActivity extends FragmentActivity implements PlaceSelectionLis
                 }
             }
             System.out.println(listOfMarkers.size() + " number of markers before");
+
 
 
             for (int i = 0; i < authLocation.size(); i++) {

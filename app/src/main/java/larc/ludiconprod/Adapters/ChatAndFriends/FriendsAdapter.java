@@ -153,7 +153,6 @@ public class FriendsAdapter extends BaseAdapter implements ListAdapter {
                     intent.putExtra("UserId", currentFriend.userID);
                     activity.startActivity(intent);
                     isOnChatPage = false;
-                    activity.finish();
                 }
             });
 

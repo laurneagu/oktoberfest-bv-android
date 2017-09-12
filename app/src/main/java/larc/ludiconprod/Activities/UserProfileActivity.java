@@ -80,7 +80,11 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
                     myList.add(userImage);
                     intent.putExtra("otherParticipantImage", myList);
                     intent.putExtra("chatId", "isNot");
+                    intent.putExtra("groupChat",0);
                     intent.putExtra("UserId", getIntent().getStringExtra("UserId"));
+                    ArrayList<String> userIdList=new ArrayList<String>();
+                    userIdList.add(getIntent().getStringExtra("UserId"));
+                    intent.putExtra("otherParticipantId",userIdList);
                     UserProfileActivity.this.startActivity(intent);
                     //finish();
                 }

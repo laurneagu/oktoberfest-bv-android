@@ -65,6 +65,7 @@ public class ChatActivity extends Activity {
     TextView titleText;
     private int dp56;
 
+
     public static String encodeToBase64(Bitmap image, Bitmap.CompressFormat compressFormat, int quality)
     {
         ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
@@ -236,11 +237,17 @@ public class ChatActivity extends Activity {
                         if(!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(ChatActivity.this).id)){
                             otherUsersImage.add(users.child("image").getValue().toString());
                             otherUsersId.add(users.getKey().toString());
-                            names+=users.child("name").getValue().toString()+",";
+                            if(users.hasChild("name")) {
+                                names += users.child("name").getValue().toString() + ",";
+                            }
+                            else{
+                                names += "Unknown" + ",";
+                            }
 
                         }
+                    }if(names.length() > 0) {
+                        titleText.setText(names.substring(0, names.length() - 1));
                     }
-                    titleText.setText(names.substring(0,names.length()-1));
                     listenForChanges();
                     Runnable getPage = getFirstPage();
                     Thread listener = new Thread(getPage);
