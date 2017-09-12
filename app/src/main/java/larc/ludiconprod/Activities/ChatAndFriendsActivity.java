@@ -88,6 +88,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
     Boolean isAlreadyProcess=false;
     public static int NumberOfRefreshFriends=0;
     private int dp56;
+    ProgressBar chatLoading;
 
     public ChatAndFriendsActivity() {
         currentFragment=this;
@@ -134,6 +135,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
 
             final float scale = mContext.getResources().getDisplayMetrics().density;
             this.dp56 = (int) (56 * scale + 0.5f);
+            chatLoading=(ProgressBar)v.findViewById(R.id.chatLoading);
 
             DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
             connectedRef.addValueEventListener(new ValueEventListener() {
@@ -307,7 +309,11 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
     public void setAdapter(){
         try {
 
+
+
             chatAdapter.notifyDataSetChanged();
+
+            chatLoading.setAlpha(0f);
             final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refreshChat);
             chatListView = (ListView) v.findViewById(R.id.chat_listView);
             progressBarChats = (ProgressBar) v.findViewById(R.id.progressBarChats);
@@ -500,7 +506,6 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                                 }
                                 if(counterOfChats > 0 || numberOfTotalChatsArrived < 4) {
                                     chatList.add(0, chat);
-                                    setAdapter();
                                     counterOfChats++;
                                 } else {
                                     counterOfChats++;
@@ -511,6 +516,9 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                                     if (numberOfTotalChatsArrived == counterOfChats) {
                                         isLastPage = true;
                                     }
+                                }
+                                if (numberOfTotalChatsArrived == counterOfChats) {
+                                    setAdapter();
                                 }
                             }
 
@@ -582,7 +590,6 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                                     }
                                     if (counterOfChats > 0 || numberOfTotalChatsArrived < 4) {
                                         chatList.add(numberOfChatsPage * 3, chat);
-                                        setAdapter();
                                         counterOfChats++;
                                     } else {
                                         counterOfChats++;
@@ -599,6 +606,9 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                                             progressBarChats.setAlpha(0f);
                                             isLastPage = true;
                                         }
+                                    }
+                                    if (numberOfTotalChatsArrived == counterOfChats) {
+                                        setAdapter();
                                     }
                                 }
 
