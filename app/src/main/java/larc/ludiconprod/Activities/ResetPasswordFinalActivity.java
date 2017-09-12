@@ -6,7 +6,6 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -35,8 +34,9 @@ public class ResetPasswordFinalActivity extends Activity {
 
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), IntroActivity.class);
-                startActivity(intent);
+                /*Intent intent = new Intent(getApplicationContext(), IntroActivity.class);
+                startActivity(intent);*/
+                finish();
             }
         });
         backToLogin.setOnClickListener(new View.OnClickListener(){

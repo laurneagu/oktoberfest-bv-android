@@ -1,7 +1,6 @@
 package larc.ludiconprod.Activities;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Editable;
@@ -79,8 +78,7 @@ public class ResetPasswordActivity extends Activity {
 
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), IntroActivity.class);
-                startActivity(intent);
+               finish();
             }
         });
         resetPassword.setOnClickListener(new View.OnClickListener() {
@@ -103,5 +101,10 @@ public class ResetPasswordActivity extends Activity {
         HashMap<String, String> head = new HashMap<>();
         head.put("apiKey", HTTPResponseController.API_KEY);
         HTTPResponseController.getInstance().resetPassword(params, head, this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 }

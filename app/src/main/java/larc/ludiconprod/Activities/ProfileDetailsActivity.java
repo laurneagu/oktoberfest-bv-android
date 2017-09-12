@@ -17,7 +17,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -34,8 +33,6 @@ import larc.ludiconprod.R;
 import static android.R.color.transparent;
 
 
-
-
 public class ProfileDetailsActivity extends Activity {
     View backButton;
     RadioButton male;
@@ -48,87 +45,83 @@ public class ProfileDetailsActivity extends Activity {
     Button saveAndContinueButton;
     TextView introText;
 
-    int sex=0;
+    int sex = 0;
     EditText age;
 
-    public String getImageForProfile(){
+    public String getImageForProfile() {
         SharedPreferences sharedPreferences = ProfileDetailsActivity.this.getSharedPreferences("ProfileImage", 0);
-        String imageString=sharedPreferences.getString("ProfileImage", "0");
+        String imageString = sharedPreferences.getString("ProfileImage", "0");
         return imageString;
     }
 
-    public static String encodeToBase64(Bitmap image, Bitmap.CompressFormat compressFormat, int quality)
-    {
+    public static String encodeToBase64(Bitmap image, Bitmap.CompressFormat compressFormat, int quality) {
         ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
         image.compress(compressFormat, quality, byteArrayOS);
         return Base64.encodeToString(byteArrayOS.toByteArray(), Base64.DEFAULT);
     }
 
-    public static Bitmap decodeBase64(String input)
-    {
+    public static Bitmap decodeBase64(String input) {
         byte[] decodedBytes = Base64.decode(input, 0);
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
 
 
-
     @Override
-    public void onCreate(Bundle savedInstance){
+    public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         setContentView(R.layout.profile_details_activity);
         backButton = findViewById(R.id.backButton);
         backButton.setAlpha(0f);
         backButton.setClickable(false);
-        male=(RadioButton) findViewById(R.id.male);
-        female=(RadioButton) findViewById(R.id.female);
-        TextView titleText=(TextView) findViewById(R.id.titleText);
+        male = (RadioButton) findViewById(R.id.male);
+        female = (RadioButton) findViewById(R.id.female);
+        TextView titleText = (TextView) findViewById(R.id.titleText);
         titleText.setText("Profile Details");
-        sexSwitch=(RadioGroup) findViewById(R.id.sexSwitch);
-        chooseAPhoto=(ImageView) findViewById(R.id.chooseAPhoto);
+        sexSwitch = (RadioGroup) findViewById(R.id.sexSwitch);
+        chooseAPhoto = (ImageView) findViewById(R.id.chooseAPhoto);
         chooseAPhoto.setImageResource(R.drawable.ic_image_add);
-        imgProfilePicture=(ImageView) findViewById(R.id.imgProfilePicture);
-        TextView descriptionText =(TextView)findViewById(R.id.textView5) ;
+        imgProfilePicture = (ImageView) findViewById(R.id.imgProfilePicture);
+        TextView descriptionText = (TextView) findViewById(R.id.textView5);
 
-        Typeface typeFace= Typeface.createFromAsset(getAssets(),"fonts/Quicksand-Medium.ttf");
-        Typeface typeFaceBold= Typeface.createFromAsset(getAssets(),"fonts/Quicksand-Bold.ttf");
+        Typeface typeFace = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Medium.ttf");
+        Typeface typeFaceBold = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.ttf");
         descriptionText.setTypeface(typeFace);
         male.setTypeface(typeFace);
         female.setTypeface(typeFace);
 
 
-
-        if(!getImageForProfile().equals("0")){
-            Bitmap bitmap=decodeBase64(getImageForProfile());
+        if (!getImageForProfile().equals("0")) {
+            Bitmap bitmap = decodeBase64(getImageForProfile());
             imgProfilePicture.setImageBitmap(bitmap);
             chooseAPhoto.setImageResource(R.drawable.ic_image_edit);
-            myBase64Image=getImageForProfile();
+            myBase64Image = getImageForProfile();
         }
 
-        saveAndContinueButton=(Button) findViewById(R.id.saveAndContinueButton);
+        saveAndContinueButton = (Button) findViewById(R.id.saveAndContinueButton);
         saveAndContinueButton.setTypeface(typeFaceBold);
-        introText=(TextView) findViewById(R.id.introText);
-        introText.setText("New you out here "+ Persistance.getInstance().getUserInfo(this).firstName+"?Cool!");
+        introText = (TextView) findViewById(R.id.introText);
+        introText.setText("New you out here " + Persistance.getInstance().getUserInfo(this).firstName + "?Cool!");
         introText.setTypeface(typeFace);
-        age=(EditText)findViewById(R.id.age);
+        age = (EditText) findViewById(R.id.age);
         age.setTypeface(typeFace);
-        if(getIntent().getStringExtra("profileImage")!= null){
-            myBase64Image=getIntent().getStringExtra("profileImage");
+        if (getIntent().getStringExtra("profileImage") != null) {
+            myBase64Image = getIntent().getStringExtra("profileImage");
             imgProfilePicture.setImageBitmap(decodeBase64(getIntent().getStringExtra("profileImage")));
             chooseAPhoto.setImageResource(R.drawable.ic_image_edit);
         }
-        if(getIntent().getStringExtra("yearBorn")!=null){
-            age.setText(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)- Integer.parseInt(getIntent().getStringExtra("yearBorn"))));
-            age.setSelection(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)- Integer.parseInt(getIntent().getStringExtra("yearBorn"))).length());
+        if (getIntent().getStringExtra("yearBorn") != null) {
+            age.setText(String.valueOf(Calendar.getInstance().get(Calendar.YEAR) - Integer.parseInt(getIntent().getStringExtra("yearBorn"))));
+            age.setSelection(String.valueOf(Calendar.getInstance().get(Calendar.YEAR) - Integer.parseInt(getIntent().getStringExtra("yearBorn"))).length());
         }
-        if(getIntent().getStringExtra("gender")!=null){
-            if(getIntent().getStringExtra("gender").equals("0")){
+        if (getIntent().getStringExtra("gender") != null) {
+            if (getIntent().getStringExtra("gender").equals("0")) {
                 male.setChecked(true);
                 male.setTextColor(Color.parseColor("#ffffff"));
-            }
-            else if(getIntent().getStringExtra("gender").equals("1")){
-                female.setChecked(true);
-                female.setTextColor(Color.parseColor("#ffffff"));
-            }
+            } else
+                if (getIntent().getStringExtra("gender").equals("1")) {
+                    female.setChecked(true);
+                    female.setTextColor(Color.parseColor("#ffffff"));
+                }
         }
         age.addTextChangedListener(new TextWatcher() {
             @Override
@@ -149,29 +142,28 @@ public class ProfileDetailsActivity extends Activity {
         });
 
 
-        if(male.isChecked()){
+        if (male.isChecked()) {
             male.setBackgroundResource(R.drawable.toggle_male);
             male.setTextColor(Color.parseColor("#ffffff"));
-        } else{
+        } else {
             female.setBackgroundResource(R.drawable.toggle_female);
             male.setTextColor(Color.parseColor("#ffffff"));
         }
         sexSwitch.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
-                if(male.isChecked()){
+                if (male.isChecked()) {
                     male.setBackgroundResource(R.drawable.toggle_male);
                     female.setBackgroundResource(transparent);
                     male.setTextColor(Color.parseColor("#ffffff"));
                     female.setTextColor(Color.parseColor("#1A0c3855"));
-                    sex=0;
-                }
-                else{
+                    sex = 0;
+                } else {
                     female.setBackgroundResource(R.drawable.toggle_female);
                     male.setBackgroundResource(transparent);
                     male.setTextColor(Color.parseColor("#1A0c3855"));
                     female.setTextColor(Color.parseColor("#ffffff"));
-                    sex=1;
+                    sex = 1;
                 }
             }
         });
@@ -193,41 +185,41 @@ public class ProfileDetailsActivity extends Activity {
                         intent.putExtra("profileImage", myBase64Image);
                     }
                     intent.putExtra("gender", String.valueOf(sex));
-                    ProfileDetailsActivity.this.startActivity(intent);
+                    //ProfileDetailsActivity.this.startActivity(intent);
                     startActivityForResult(intent, 1);
-                }
-                else{
+                } else {
                     Animation shake = AnimationUtils.loadAnimation(ProfileDetailsActivity.this, R.anim.shake);
                     age.startAnimation(shake);
                     age.setBackgroundResource(R.drawable.rounded_edittext_red);
-                    Toast.makeText(ProfileDetailsActivity.this,"Please insert your age!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ProfileDetailsActivity.this, "Please insert your age!", Toast.LENGTH_LONG).show();
                 }
             }
         });
 
 
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch(requestCode) {
-            case PICK_IMAGE_ID:
-                Bitmap bitmap = ImagePicker.getImageFromResult(this, resultCode, data);
-                if(bitmap != null) {
-                    imgProfilePicture.setImageBitmap(bitmap);
-                    myBase64Image=encodeToBase64(bitmap, Bitmap.CompressFormat.JPEG, 50);
-                    chooseAPhoto.setImageResource(R.drawable.ic_image_edit);
-                    System.out.println("dimensiunea este:" + myBase64Image.length());
-                }
-                break;
-            default:
-                super.onActivityResult(requestCode, resultCode, data);
-                break;
+        switch (requestCode) {
+        case PICK_IMAGE_ID:
+            Bitmap bitmap = ImagePicker.getImageFromResult(this, resultCode, data);
+            if (bitmap != null) {
+                imgProfilePicture.setImageBitmap(bitmap);
+                myBase64Image = encodeToBase64(bitmap, Bitmap.CompressFormat.JPEG, 50);
+                chooseAPhoto.setImageResource(R.drawable.ic_image_edit);
+                System.out.println("dimensiunea este:" + myBase64Image.length());
+            }
+            break;
+        default:
+            super.onActivityResult(requestCode, resultCode, data);
+            break;
         }
     }
 
 
     @Override
     public void onBackPressed() {
-
+        finish();
     }
 }

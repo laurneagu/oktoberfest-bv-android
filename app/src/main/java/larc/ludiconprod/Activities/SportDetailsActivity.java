@@ -1,7 +1,6 @@
 package larc.ludiconprod.Activities;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -9,7 +8,6 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -112,14 +110,15 @@ public class SportDetailsActivity extends Activity {
 
             @Override
             public void onClick(View view) {
-                String profileImage = getIntent().getStringExtra("profileImage");
+               /* String profileImage = getIntent().getStringExtra("profileImage");
                 String yearBorn=getIntent().getStringExtra("yearBorn");
                 String gender=getIntent().getStringExtra("gender");
                 Intent intent = new Intent(SportDetailsActivity.this, ProfileDetailsActivity.class);
                 intent.putExtra("profileImage", profileImage);
                 intent.putExtra("yearBorn",yearBorn);
                 intent.putExtra("gender",gender);
-                SportDetailsActivity.this.startActivity(intent);
+                SportDetailsActivity.this.startActivity(intent);*/
+               finish();
             }
         });
 
@@ -427,13 +426,14 @@ public class SportDetailsActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        String profileImage = getIntent().getStringExtra("profileImage");
+        /*String profileImage = getIntent().getStringExtra("profileImage");
         String yearBorn=getIntent().getStringExtra("yearBorn");
         String gender=getIntent().getStringExtra("gender");
         Intent intent = new Intent(SportDetailsActivity.this, ProfileDetailsActivity.class);
         intent.putExtra("profileImage", profileImage);
         intent.putExtra("yearBorn",yearBorn);
         intent.putExtra("gender",gender);
-        SportDetailsActivity.this.startActivity(intent);
+        SportDetailsActivity.this.startActivity(intent);*/
+        finish();
     }
 }

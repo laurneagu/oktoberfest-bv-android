@@ -1,8 +1,6 @@
 package larc.ludiconprod.Controller;
 
 import android.app.Activity;
-import android.content.Context;
-import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -10,12 +8,12 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.support.v4.content.IntentCompat;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -23,16 +21,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.facebook.login.LoginManager;
 
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 
 import larc.ludiconprod.Activities.ActivitiesActivity;
@@ -47,30 +40,22 @@ import larc.ludiconprod.Activities.IntroActivity;
 import larc.ludiconprod.Activities.InviteFriendsActivity;
 import larc.ludiconprod.Activities.LoginActivity;
 import larc.ludiconprod.Activities.Main;
-import larc.ludiconprod.Activities.MyProfileActivity;
 import larc.ludiconprod.Activities.ProfileDetailsActivity;
 import larc.ludiconprod.Activities.ResetPasswordFinalActivity;
-import larc.ludiconprod.Activities.UserProfileActivity;
 import larc.ludiconprod.Dialogs.PointsReceivedDialog;
 import larc.ludiconprod.R;
-import larc.ludiconprod.Utils.Coupon;
-import larc.ludiconprod.Utils.EventDetails;
-import larc.ludiconprod.Utils.Friend;
-import larc.ludiconprod.Utils.LeaderboardUtils.LeaderboardTab;
-import larc.ludiconprod.Utils.util.AuthorizedLocation;
-import larc.ludiconprod.Utils.util.Sport;
 import larc.ludiconprod.User;
 import larc.ludiconprod.Utils.Event;
+import larc.ludiconprod.Utils.Friend;
+import larc.ludiconprod.Utils.util.AuthorizedLocation;
+import larc.ludiconprod.Utils.util.Sport;
 
 import static larc.ludiconprod.Activities.ActivitiesActivity.aroundMeEventList;
 import static larc.ludiconprod.Activities.ActivitiesActivity.fradapter;
-import static larc.ludiconprod.Activities.ActivitiesActivity.frlistView;
 import static larc.ludiconprod.Activities.ActivitiesActivity.getFirstPageAroundMe;
 import static larc.ludiconprod.Activities.ActivitiesActivity.getFirstPageMyActivity;
 import static larc.ludiconprod.Activities.ActivitiesActivity.happeningNowLocation;
-import static larc.ludiconprod.Activities.ActivitiesActivity.myAdapter;
 import static larc.ludiconprod.Activities.ActivitiesActivity.myEventList;
-import static larc.ludiconprod.Activities.ActivitiesActivity.startedEventDate;
 
 /**
  * Created by ancuta on 7/12/2017.
@@ -113,9 +98,9 @@ public class HTTPResponseController {
 
     public void animateProfileImage(Boolean isMain) {
         String image;
-        if(isMain){
-            image=Persistance.getInstance().getUserInfo(activity).profileImage;
-        }else {
+        if (isMain) {
+            image = Persistance.getInstance().getUserInfo(activity).profileImage;
+        } else {
             SharedPreferences sharedPreferences = activity.getSharedPreferences("ProfileImage", 0);
             image = sharedPreferences.getString("ProfileImage", "0");
         }
@@ -170,14 +155,15 @@ public class HTTPResponseController {
                                 @Override
                                 public void onFinish() {
                                     Intent intent = new Intent(activity, ProfileDetailsActivity.class);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
                                     activity.startActivity(intent);
                                     activity.finish();
                                 }
                             }.start();
                         } else {
                             new CountDownTimer(1100, 100) {
-                               @Override
-                               public void onTick(long l) {
+                                @Override
+                                public void onTick(long l) {
                                     animateProfileImage(true);
                                 }
 
@@ -195,26 +181,27 @@ public class HTTPResponseController {
                         e.printStackTrace();
                     }
                 } else
-                if (activity.getLocalClassName().toString().equals("Activities.RegisterActivity")) {
+                    if (activity.getLocalClassName().toString().equals("Activities.RegisterActivity")) {
 
-                    Toast.makeText(activity, "Account has created!!", Toast.LENGTH_LONG).show();
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            Intent intent = new Intent(activity, LoginActivity.class);
+                        Toast.makeText(activity, "Account has created!!", Toast.LENGTH_LONG).show();
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                Intent intent = new Intent(activity, LoginActivity.class);
+                                activity.startActivity(intent);
+                            }
+                        }, 3000);
+
+
+                    } else
+                        if (activity.getLocalClassName().toString().equals("Activities.SportDetailsActivity")) {
+
+
+                            Intent intent = new Intent(activity, Main.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
                             activity.startActivity(intent);
+
                         }
-                    }, 3000);
-
-
-                } else
-                if (activity.getLocalClassName().toString().equals("Activities.SportDetailsActivity")) {
-
-
-                    Intent intent = new Intent(activity, Main.class);
-                    activity.startActivity(intent);
-
-                }
 
             }
         };
@@ -238,7 +225,7 @@ public class HTTPResponseController {
 
                 } else {
                     //Intent intent = new Intent(activity, Main.class);
-                   // activity.startActivity(intent);
+                    // activity.startActivity(intent);
                     activity.finish();
                 }
             }
@@ -358,8 +345,8 @@ public class HTTPResponseController {
                     if (jsonObject.getJSONArray("aroundMe").length() >= 1) {
                         ActivitiesActivity.NumberOfRefreshAroundMe++;
                     }
-                    if(getFirstPageMyActivity){
-                        Persistance.getInstance().setAroundMeActivities(activity,aroundMeEventList);
+                    if (getFirstPageMyActivity) {
+                        Persistance.getInstance().setAroundMeActivities(activity, aroundMeEventList);
                     }
                     getFirstPageAroundMe = false;
                 } catch (Exception e) {
@@ -383,7 +370,7 @@ public class HTTPResponseController {
                         Event event = new Event();
                         event.id = jsonObject.getJSONArray("myEvents").getJSONObject(i).getString("id");
                         int date = jsonObject.getJSONArray("myEvents").getJSONObject(i).getInt("eventDate");
-                        event.eventDateTimeStamp=date;
+                        event.eventDateTimeStamp = date;
                         java.util.Date date1 = new java.util.Date((long) date * 1000);
                         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
                         String displayDate = formatter.format(date1);
@@ -413,10 +400,10 @@ public class HTTPResponseController {
                     if (jsonObject.getJSONArray("myEvents").length() >= 1) {
                         ActivitiesActivity.NumberOfRefreshMyEvents++;
                     }
-                    if(getFirstPageMyActivity){
-                        ArrayList <Event> localEventList=new ArrayList<>();
+                    if (getFirstPageMyActivity) {
+                        ArrayList<Event> localEventList = new ArrayList<>();
                         localEventList.addAll(myEventList);
-                        Persistance.getInstance().setMyActivities(activity,localEventList);
+                        Persistance.getInstance().setMyActivities(activity, localEventList);
                     }
 
                     getFirstPageMyActivity = false;
@@ -467,7 +454,7 @@ public class HTTPResponseController {
             public void onResponse(JSONObject jsonObject) {
                 System.out.println(jsonObject + " friends");
                 try {
-                    if(ChatAndFriendsActivity.NumberOfRefreshFriends == 0) {
+                    if (ChatAndFriendsActivity.NumberOfRefreshFriends == 0) {
                         ChatAndFriendsActivity.friends.clear();
                     }
                     for (int i = 0; i < jsonObject.getJSONArray("friends").length(); i++) {
@@ -480,19 +467,18 @@ public class HTTPResponseController {
                         friend.offlineFriend = false;
                         friend.isInvited = false;
 
-                        if(activity.getLocalClassName().toString().equals("Activities.Main")){
+                        if (activity.getLocalClassName().toString().equals("Activities.Main")) {
                             ChatAndFriendsActivity.friends.add(friend);
-                        }else{
+                        } else {
 
                             InviteFriendsActivity.friendsList.add(InviteFriendsActivity.numberOfOfflineFriends + 1, friend);
                         }
                     }
-                    if(activity.getLocalClassName().toString().equals("Activities.Main")){
+                    if (activity.getLocalClassName().toString().equals("Activities.Main")) {
 
-                        if(ChatAndFriendsActivity.NumberOfRefreshFriends == 0 && !ChatAndFriendsActivity.isFirstTimeSetFriends) {
+                        if (ChatAndFriendsActivity.NumberOfRefreshFriends == 0 && !ChatAndFriendsActivity.isFirstTimeSetFriends) {
                             ChatAndFriendsActivity.currentChatAndFriends.setFriendsAdapter();
-                        }
-                        else{
+                        } else {
                             ChatAndFriendsActivity.friendsAdapter.notifyDataSetChanged();
                             ChatAndFriendsActivity.progressBarFriends.setAlpha(0f);
                         }
@@ -501,7 +487,7 @@ public class HTTPResponseController {
                         RelativeLayout ll = (RelativeLayout) ChatAndFriendsActivity.currentChatAndFriends.getView().findViewById(R.id.noInternetLayout);
                         ll.getLayoutParams().height = 0;
                         ll.setLayoutParams(ll.getLayoutParams());
-                    }else {
+                    } else {
                         InviteFriendsActivity.inviteFriendsAdapter.notifyDataSetChanged();
                     }
                 } catch (Exception e) {
@@ -627,7 +613,7 @@ public class HTTPResponseController {
                     b.putInt("creatorLevel", jsonObject.getInt("creatorLevel"));
                     b.putString("creatorId", jsonObject.getString("creatorId"));
                     b.putInt("isParticipant", jsonObject.getInt("isParticipant"));
-                    b.putString("chatId",jsonObject.getString("chatId"));
+                    b.putString("chatId", jsonObject.getString("chatId"));
                     b.putString("creatorProfilePicture", jsonObject.getString("creatorProfilePicture"));
                     ArrayList<String> participantsId = new ArrayList<>();
                     ArrayList<String> participantsName = new ArrayList<>();
@@ -777,7 +763,7 @@ public class HTTPResponseController {
                     editor = activity.getSharedPreferences("locationsList", 0).edit();
                     editor.clear();
                     editor.commit();
-                    happeningNowLocation =null;
+                    happeningNowLocation = null;
 //                    startedEventDate=Integer.MAX_VALUE;
 
 
