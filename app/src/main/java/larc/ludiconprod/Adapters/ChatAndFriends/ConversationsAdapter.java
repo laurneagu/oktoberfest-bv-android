@@ -74,7 +74,6 @@ public class ConversationsAdapter extends BaseAdapter implements ListAdapter {
         this.context = context;
         this.activity = activity;
         this.resources = resources;
-
         this.listView = (ListView) activity.findViewById(R.id.events_listView2); // era v.
     }
 
@@ -119,12 +118,12 @@ public class ConversationsAdapter extends BaseAdapter implements ListAdapter {
                 holder.timeElapsed=(TextView)view.findViewById(R.id.timeElapsed);
                 holder.lastMessage=(TextView)view.findViewById(R.id.lastMessage);
 
-                //Typeface typeFace = Typeface.createFromAsset(fragment.getActivity().getAssets(),"fonts/Quicksand-Medium.ttf");
-                //Typeface typeFaceBold = Typeface.createFromAsset(fragment.getActivity().getAssets(),"fonts/Quicksand-Bold.ttf");
+                Typeface typeFace = Typeface.createFromAsset(activity.getAssets(),"fonts/Quicksand-Medium.ttf");
+                Typeface typeFaceBold = Typeface.createFromAsset(activity.getAssets(),"fonts/Quicksand-Bold.ttf");
 
-                //holder.participantName.setTypeface(typeFace);
-               // holder.timeElapsed.setTypeface(typeFace);
-                //holder.lastMessage.setTypeface(typeFace);
+                holder.participantName.setTypeface(typeFace);
+                holder.timeElapsed.setTypeface(typeFace);
+                holder.lastMessage.setTypeface(typeFace);
 
                 view.setTag(holder);
             } else {

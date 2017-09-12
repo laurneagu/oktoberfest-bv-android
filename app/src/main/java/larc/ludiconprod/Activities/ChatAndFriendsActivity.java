@@ -89,6 +89,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
     public static int NumberOfRefreshFriends=0;
     private int dp56;
     ProgressBar chatLoading;
+    Boolean shouldRequestPage=false;
 
     public ChatAndFriendsActivity() {
         currentFragment=this;
@@ -337,7 +338,8 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                 discoverActivitiesButton.setVisibility(View.INVISIBLE);
                 chatImage.setVisibility(View.INVISIBLE);
             }
-            if (chatListView != null) {
+            shouldRequestPage=true;
+            if (chatListView != null && shouldRequestPage) {
                 chatListView.setOnTouchListener(new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(final View v, MotionEvent event) {
@@ -384,6 +386,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                 });
                 addedSwipe = true;
             }
+
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -521,6 +524,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                                 if (numberOfTotalChatsArrived == counterOfChats) {
                                     setAdapter();
                                     Persistance.getInstance().setConversation(activity,chatList);
+
                                 }
                             }
 
@@ -541,9 +545,11 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
     }
 
     public void getPage() {
-        final DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(activity).id).child("chats");
-        Query query=firebaseRef.orderByChild("last_message_date") .limitToLast(4).endAt(valueOfLastChat,keyOfLastChat);
-        counterOfChats=0;
+        if(shouldRequestPage) {
+            shouldRequestPage=false;
+            final DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(activity).id).child("chats");
+            Query query = firebaseRef.orderByChild("last_message_date").limitToLast(4).endAt(valueOfLastChat, keyOfLastChat);
+            counterOfChats = 0;
             query.addListenerForSingleValueEvent(new ValueEventListener() {
 
                 @Override
@@ -557,28 +563,27 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                                 chat.eventId = chats.child("event_id").getValue().toString();
                             }
                             String names;
-                            if(chat.eventId != null){
-                                names="Group:";
-                            }else{
-                                names="";
+                            if (chat.eventId != null) {
+                                names = "Group:";
+                            } else {
+                                names = "";
                             }
                             for (DataSnapshot users : chats.child("users").getChildren()) {
                                 if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(activity).id)) {
-                                    if(users.hasChild("name")) {
+                                    if (users.hasChild("name")) {
                                         names += users.child("name").getValue().toString() + ",";
-                                    }
-                                    else{
+                                    } else {
                                         names += "Unknown" + ",";
                                     }
 
-                                    if(users.hasChild("image")) {
+                                    if (users.hasChild("image")) {
                                         chat.image.add(users.child("image").getValue().toString());
                                     }
                                     chat.otherParticipantId.add(users.getKey().toString());
                                 }
                             }
                             chat.participantName = names;
-                            if(chats.hasChild("seen")) {
+                            if (chats.hasChild("seen")) {
                                 chat.lastMessageSeen = chats.child("seen").getValue().toString();
                             }
 
@@ -590,7 +595,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                                         chat.lastMessage = child.child("message").getValue().toString();
-                                        chat.lastMessageId=child.getKey().toString();
+                                        chat.lastMessageId = child.getKey().toString();
                                     }
                                     if (counterOfChats > 0 || numberOfTotalChatsArrived < 4) {
                                         chatList.add(numberOfChatsPage * 3, chat);
@@ -602,7 +607,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
 
                                         progressBarChats.setAlpha(0f);
                                     }
-                                    if(counterOfChats == 4){
+                                    if (counterOfChats == 4) {
                                         numberOfChatsPage++;
                                     }
                                     if (numberOfTotalChatsArrived < 4) {
@@ -628,6 +633,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                 public void onCancelled(DatabaseError databaseError) {
                 }
             });
+        }
         }
 
 

@@ -68,12 +68,10 @@ public class Persistance {
         json = sharedPreferences.getString("UnseenChats", "0");
         Gson gson = new Gson();
         ArrayList<String> chatList;
-        Type type = new TypeToken<ArrayList<Event>>() {
-        }.getType();
         if (json.equals("0")) {
             chatList = new ArrayList<>();
         } else {
-            chatList = gson.fromJson(json, type);
+            chatList = gson.fromJson(json, ArrayList.class);
         }
         return chatList;
     }
