@@ -491,7 +491,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         mContext = inflater.getContext();
         isOnActivityPage=true;
 
-        v = inflater.inflate(R.layout.activities_acitivity, container, false);
+        v = inflater.inflate(R.layout.activities_acitivity, null, true);
         v1 = (ProgressBar) v.findViewById(R.id.activityProgressBar);
 
         int NumberOfUnseen=Persistance.getInstance().getUnseenChats(getActivity()).size();
@@ -563,11 +563,10 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
             }
 
-
-
+            aroundMeEventList=Persistance.getInstance().getAroundMeActivities(activity);
             myAdapter = new MyAdapter(myEventList, getActivity().getApplicationContext(), getActivity(), getResources(), currentFragment);
             fradapter = new AroundMeAdapter(aroundMeEventList, getActivity().getApplicationContext(), getActivity(), getResources(), currentFragment);
-
+            //updateListOfEventsAroundMe(false);
             getAroundMeEvents("0", latitude, longitude);
             getMyEvents("0");
 
@@ -698,7 +697,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
             }
         });
 
-        if (!isFirstTimeAroundMe) {
+         if (!isFirstTimeAroundMe) {
             //  if (
             //      friendsEventsList.size() == 0 &&
             //          !eventHappeningNow) {

@@ -126,11 +126,13 @@ public class Persistance {
         SharedPreferences sharedPreferences = activity.getSharedPreferences(this.aroundMeActivitiesString, 0);
         String json = sharedPreferences.getString(this.aroundMeActivitiesString, "0");
         Gson gson = new Gson();
-        ArrayList<Event> eventList;
+        ArrayList<Event>eventList=new ArrayList<>();
+        Type type = new TypeToken<ArrayList<Event>>() {
+        }.getType();
         if (json.equals("0")) {
             eventList = new ArrayList<>();
         } else {
-            eventList = gson.fromJson(json, ArrayList.class);
+            eventList = gson.fromJson(json, type);
         }
         return  eventList;
     }
