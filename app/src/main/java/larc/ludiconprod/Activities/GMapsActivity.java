@@ -335,7 +335,6 @@ public class GMapsActivity extends FragmentActivity implements PlaceSelectionLis
                 // previous pages will be showed
 
                 int widthOfScreen = dM.widthPixels;
-                float lala=dM.xdpi;
                 int widthOfView = 240; //in DP
                 int spaceBetweenViews =16; // in DP
                 float offset = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, widthOfView + spaceBetweenViews, dM);

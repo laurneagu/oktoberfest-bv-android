@@ -329,7 +329,11 @@ public class MessageAdapter extends BaseAdapter implements ListAdapter {
                 }
             }else if(currentMessage.setTopImage){
                 holder.profileImageLayout.setVisibility(View.VISIBLE);
-                holder.topOtherParticipantName.setText(currentMessage.otherUserName.substring(0,currentMessage.otherUserName.length()-1));
+                if(currentMessage.otherUserName.length() > 1) {
+                    holder.topOtherParticipantName.setText(currentMessage.otherUserName.substring(0, currentMessage.otherUserName.length() - 1));
+                }else{
+                    holder.topOtherParticipantName.setText("");
+                }
                 if(currentMessage.otherUserImage != null){
                     Bitmap bitmap=decodeBase64(currentMessage.otherUserImage);
                     holder.topOtherParticipantImage.setImageBitmap(bitmap);

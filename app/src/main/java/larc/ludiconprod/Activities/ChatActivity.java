@@ -3,9 +3,12 @@ package larc.ludiconprod.Activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.DataSetObserver;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,6 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -45,7 +49,7 @@ public class ChatActivity extends Activity {
     ArrayList<Message> messageList=new ArrayList<>();
     public int counterOfChats=0;
     public String keyOfLastChat;
-    public int valueOfLastChat;
+    public Double valueOfLastChat;
     public int numberOfChatsPage;
     ProgressBar progressBarChats;
     int numberOfTotalChatsArrived;
@@ -69,6 +73,13 @@ public class ChatActivity extends Activity {
     ArrayList<String> otherUsersImage=new ArrayList<>();
     TextView titleText;
     private int dp56;
+
+    public static String encodeToBase64(Bitmap image, Bitmap.CompressFormat compressFormat, int quality)
+    {
+        ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
+        image.compress(compressFormat, quality, byteArrayOS);
+        return Base64.encodeToString(byteArrayOS.toByteArray(), Base64.DEFAULT);
+    }
 
     public void checkChatExistence(final String otherUserId,final  Activity activity){
         final DatabaseReference myNode = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(activity).id).child("talkbuddies");
@@ -172,9 +183,9 @@ public class ChatActivity extends Activity {
                     if (messageInput.getText().length() > 0) {
                         final DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("chats").child(ChatId);
 
-                        HashMap<String, String> values = new HashMap<String, String>();
+                        HashMap<String, Object> values = new HashMap<String, Object>();
                         values.put("author_id", Persistance.getInstance().getUserInfo(ChatActivity.this).id);
-                        values.put("date", String.valueOf(System.currentTimeMillis() / 1000));
+                        values.put("date", Double.valueOf(System.currentTimeMillis() / 1000));
                         values.put("message", messageInput.getText().toString());
                         firebaseRef.child("last_message_date").setValue(System.currentTimeMillis() / 1000);
                         firebaseRef.child("messages").push().setValue(values);
@@ -300,7 +311,7 @@ public class ChatActivity extends Activity {
                 if (isFirstTimeSetMessage && isOnChat1to1 && !ChatId.equalsIgnoreCase("isNot") && !createChat) {
                     Message message = new Message();
                     message.authorId = dataSnapshot.child("author_id").getValue().toString();
-                    message.date = Integer.valueOf(dataSnapshot.child("date").getValue().toString());
+                    message.date = Double.valueOf(dataSnapshot.child("date").getValue().toString());
                     message.message = dataSnapshot.child("message").getValue().toString();
                     message.messageId = dataSnapshot.getKey();
                     for(int i=0;i < otherUsersId.size();i++) {
@@ -372,7 +383,7 @@ public class ChatActivity extends Activity {
                             for (DataSnapshot messages : dataSnapshot.getChildren()) {
                                 Message message = new Message();
                                 message.authorId = messages.child("author_id").getValue().toString();
-                                message.date = Integer.valueOf(messages.child("date").getValue().toString());
+                                message.date = Double.valueOf(messages.child("date").getValue().toString());
                                 message.message = messages.child("message").getValue().toString();
                                 message.messageId = messages.getKey();
                                 for(int i=0;i < otherUsersId.size();i++) {
@@ -399,6 +410,12 @@ public class ChatActivity extends Activity {
                                         if(otherUsersId.size() == 1 && isGroupChat == 0) {
                                             firstMessage.otherUserName = getIntent().getStringExtra("otherParticipantName");
                                             firstMessage.otherUserImage =otherUsersImage.get(0);
+                                            firstMessage.setTopImage = true;
+                                            messageList.add(0, firstMessage);
+                                        }else{
+                                            firstMessage.otherUserName = "";
+                                            Bitmap bitmap= BitmapFactory.decodeResource(getResources(),R.drawable.ph_group);
+                                            firstMessage.otherUserImage =encodeToBase64(bitmap, Bitmap.CompressFormat.JPEG, 100);
                                             firstMessage.setTopImage = true;
                                             messageList.add(0, firstMessage);
                                         }
@@ -437,7 +454,7 @@ public class ChatActivity extends Activity {
                 if(isOnChat1to1 && createChat) {
                     Message message = new Message();
                     message.authorId = dataSnapshot.child("author_id").getValue().toString();
-                    message.date = Integer.valueOf(dataSnapshot.child("date").getValue().toString());
+                    message.date = Double.valueOf(dataSnapshot.child("date").getValue().toString());
                     message.message = dataSnapshot.child("message").getValue().toString();
                     message.messageId = dataSnapshot.getKey();
                     message.otherUserImage = getIntent().getStringExtra("otherParticipantImage");
@@ -485,7 +502,7 @@ public class ChatActivity extends Activity {
                 for (DataSnapshot messages : dataSnapshot.getChildren()) {
                     Message message = new Message();
                     message.authorId = messages.child("author_id").getValue().toString();
-                    message.date = Integer.valueOf(messages.child("date").getValue().toString());
+                    message.date = Double.valueOf(messages.child("date").getValue().toString());
                     message.message = messages.child("message").getValue().toString();
                     message.messageId = messages.getKey();
                     for(int i=0;i < otherUsersId.size();i++) {
@@ -517,6 +534,12 @@ public class ChatActivity extends Activity {
                             if(otherUsersId.size() == 1 && isGroupChat == 0) {
                                 firstMessage.otherUserName = getIntent().getStringExtra("otherParticipantName");
                                 firstMessage.otherUserImage =otherUsersImage.get(0);
+                                firstMessage.setTopImage = true;
+                                messageList.add(0, firstMessage);
+                            }else{
+                                firstMessage.otherUserName = "";
+                                Bitmap bitmap= BitmapFactory.decodeResource(getResources(),R.drawable.ph_group);
+                                firstMessage.otherUserImage =encodeToBase64(bitmap, Bitmap.CompressFormat.JPEG, 100);
                                 firstMessage.setTopImage = true;
                                 messageList.add(0, firstMessage);
                             }

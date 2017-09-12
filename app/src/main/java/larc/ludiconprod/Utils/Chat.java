@@ -12,7 +12,7 @@ public class Chat {
     public ArrayList<String> image=new ArrayList<>();
     public String participantName;
     public ArrayList<String> otherParticipantId=new ArrayList<>();
-    public int lastMessageTime;
+    public Double lastMessageTime;
     public String lastMessage;
     public String lastMessageId;
     public String lastMessageSeen="";

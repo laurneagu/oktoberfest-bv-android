@@ -75,7 +75,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
     public static ChatAndFriendsActivity currentChatAndFriends;
     public int counterOfChats=0;
     public String keyOfLastChat;
-    public int valueOfLastChat;
+    public Double valueOfLastChat;
     public int numberOfChatsPage;
     ProgressBar progressBarChats;
     public static ProgressBar progressBarFriends;
@@ -182,7 +182,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                             }
                             chat.participantName = names;
 
-                            chat.lastMessageTime = Integer.valueOf(dataSnapshot.child("last_message_date").getValue().toString());
+                            chat.lastMessageTime = Double.valueOf(dataSnapshot.child("last_message_date").getValue().toString());
                             DatabaseReference lastMessageRef = dataSnapshot.child("messages").getRef();
                             Query lastMessage = lastMessageRef.orderByKey().limitToLast(1);
                             lastMessage.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -245,7 +245,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                             }
                             chat.participantName = names;
 
-                            chat.lastMessageTime = Integer.valueOf(dataSnapshot.child("last_message_date").getValue().toString());
+                            chat.lastMessageTime = Double.valueOf(dataSnapshot.child("last_message_date").getValue().toString());
                             DatabaseReference lastMessageRef = dataSnapshot.child("messages").getRef();
                             Query lastMessage = lastMessageRef.orderByKey().limitToLast(1);
                             lastMessage.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -367,7 +367,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                         threadsList.clear();
                         counterOfChats = 0;
                         keyOfLastChat = null;
-                        valueOfLastChat = 0;
+                        valueOfLastChat = 0.0;
                         numberOfChatsPage = 0;
                         numberOfTotalChatsArrived = 0;
                         isLastPage = false;
@@ -488,7 +488,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                         if(chats.hasChild("seen")) {
                             chat.lastMessageSeen = chats.child("seen").getValue().toString();
                         }
-                        chat.lastMessageTime = Integer.valueOf(chats.child("last_message_date").getValue().toString());
+                        chat.lastMessageTime = Double.valueOf(chats.child("last_message_date").getValue().toString());
                         DatabaseReference lastMessageRef = chats.child("messages").getRef();
                         Query lastMessage = lastMessageRef.orderByKey().limitToLast(1);
                         lastMessage.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -554,7 +554,12 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                             }
                             for (DataSnapshot users : chats.child("users").getChildren()) {
                                 if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(activity).id)) {
-                                    names += users.child("name").getValue().toString() + ",";
+                                    if(users.hasChild("name")) {
+                                        names += users.child("name").getValue().toString() + ",";
+                                    }
+                                    else{
+                                        names += "Unknown" + ",";
+                                    }
 
                                     chat.image.add(users.child("image").getValue().toString());
                                     chat.otherParticipantId.add(users.getKey().toString());
@@ -565,7 +570,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                                 chat.lastMessageSeen = chats.child("seen").getValue().toString();
                             }
 
-                            chat.lastMessageTime = Integer.valueOf(chats.child("last_message_date").getValue().toString());
+                            chat.lastMessageTime = Double.valueOf(chats.child("last_message_date").getValue().toString());
                             DatabaseReference lastMessageRef = chats.child("messages").getRef();
                             Query lastMessage = lastMessageRef.orderByKey().limitToLast(1);
                             lastMessage.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -643,7 +648,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
         threadsList.clear();
         counterOfChats = 0;
         keyOfLastChat = null;
-        valueOfLastChat = 0;
+        valueOfLastChat = 0.0;
         numberOfChatsPage = 0;
         numberOfTotalChatsArrived = 0;
         isLastPage = false;

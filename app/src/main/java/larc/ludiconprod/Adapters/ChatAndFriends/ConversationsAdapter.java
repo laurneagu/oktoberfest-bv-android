@@ -132,6 +132,9 @@ public class ConversationsAdapter extends BaseAdapter implements ListAdapter {
                 Bitmap bitmap=decodeBase64(currentChat.image.get(0));
                 holder.chatParticipantImage.setImageBitmap(bitmap);
             }
+            if(currentChat.eventId != null){
+                holder.chatParticipantImage.setImageResource(R.drawable.ph_group);
+            }
 
             final int timeElapsed=(int)((System.currentTimeMillis()/1000 - currentChat.lastMessageTime)/60);
             setTime(timeElapsed,holder,currentChat);
@@ -175,6 +178,11 @@ public class ConversationsAdapter extends BaseAdapter implements ListAdapter {
                     intent.putExtra("otherParticipantName",currentChat.participantName);
                     intent.putExtra("otherParticipantImage",currentChat.image);
                     intent.putExtra("otherParticipantId",currentChat.otherParticipantId);
+                    if(currentChat.eventId != null){
+                        intent.putExtra("groupChat",1);
+                    }else{
+                        intent.putExtra("groupChat",0);
+                    }
 
                     activity.startActivity(intent);
                     ChatAndFriendsActivity.isOnChatPage=false;
@@ -223,7 +231,7 @@ public class ConversationsAdapter extends BaseAdapter implements ListAdapter {
             String displayDate="";
             try {
                 SimpleDateFormat formatter = new SimpleDateFormat("dd MM yyyy");
-                java.util.Date date=new java.util.Date((long)currentChat.lastMessageTime*1000);
+                java.util.Date date=new java.util.Date(new Double(currentChat.lastMessageTime*1000).longValue());
                 displayDate = formatter.format(date);
             } catch (Exception e) {
                 e.printStackTrace();

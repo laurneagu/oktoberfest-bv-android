@@ -7,7 +7,7 @@ package larc.ludiconprod.Utils;
 public class Message {
     public String authorId;
     public String message;
-    public int date;
+    public Double date;
     public String messageId;
     public Boolean setTopImage=false;
     public String otherUserImage;

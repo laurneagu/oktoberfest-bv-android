@@ -70,6 +70,7 @@ import static larc.ludiconprod.Activities.ActivitiesActivity.getFirstPageMyActiv
 import static larc.ludiconprod.Activities.ActivitiesActivity.happeningNowLocation;
 import static larc.ludiconprod.Activities.ActivitiesActivity.myAdapter;
 import static larc.ludiconprod.Activities.ActivitiesActivity.myEventList;
+import static larc.ludiconprod.Activities.ActivitiesActivity.startedEventDate;
 
 /**
  * Created by ancuta on 7/12/2017.
