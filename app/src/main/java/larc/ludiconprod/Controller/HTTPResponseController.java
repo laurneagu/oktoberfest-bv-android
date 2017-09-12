@@ -777,7 +777,7 @@ public class HTTPResponseController {
                     editor.clear();
                     editor.commit();
                     happeningNowLocation =null;
-                    startedEventDate=Integer.MAX_VALUE;
+//                    startedEventDate=Integer.MAX_VALUE;
 
 
                 } catch (Exception e) {

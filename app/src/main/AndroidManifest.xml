@@ -287,7 +287,7 @@
         -->
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="098c82c27060e970e9dff901278f5c6de7aeb755" />
+            android:value="50b28f48aeb1a7dae3feff618d1a0d8c19b9d9ce" />
     </application>
 
 </manifest>

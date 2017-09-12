@@ -58,6 +58,9 @@ dependencies {
     compile 'com.android.support:support-annotations:25.3.1'
     //compile files('C:/Users/ancuta/AndroidStudioProjects/Ludicon/libs/volley.jar')
     compile 'com.android.volley:volley:1.0.0'
+    compile('com.crashlytics.sdk.android:crashlytics-ndk:1.1.6@aar') {
+        transitive = true;
+    }
 }
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
@@ -129,3 +132,9 @@ dependencies {
 
 apply plugin: 'com.google.gms.google-services'
 
+
+crashlytics {
+    enableNdk true
+    androidNdkOut 'src/main/obj'
+    androidNdkLibsOut 'src/main/libs'
+}
