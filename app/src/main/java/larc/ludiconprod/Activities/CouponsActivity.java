@@ -1,6 +1,7 @@
 package larc.ludiconprod.Activities;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -359,6 +360,11 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mContext = inflater.getContext();
         v = inflater.inflate(R.layout.coupons_activity, container, false);
+        TextView ludicoins = (TextView) v.findViewById(R.id.cuponsLudicoins);
+        Typeface typeFace = Typeface.createFromAsset(super.getActivity().getAssets(),"fonts/Quicksand-Medium.ttf");
+        ludicoins.setTypeface(typeFace);
+        int ludicoinsS = Persistance.getInstance().getProfileInfo(getActivity()).ludicoins;
+        ludicoins.setText(String.valueOf(ludicoinsS));
         while (activity == null) {
             activity = getActivity();
         }
