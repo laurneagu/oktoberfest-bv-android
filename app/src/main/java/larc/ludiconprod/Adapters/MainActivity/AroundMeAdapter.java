@@ -93,13 +93,11 @@ public class AroundMeAdapter extends BaseAdapter implements ListAdapter {
         this.listView = (ListView) activity.findViewById(R.id.events_listView2); // era v.
     }
 
-    public AroundMeAdapter(ArrayList<Event> list, Context context, Activity activity, Resources resources, Activity fragment) {
+    public AroundMeAdapter(ArrayList<Event> list, Context context, Activity activity, Resources resources) {
         this.list = list;
         this.context = context;
         this.activity = activity;
         this.resources = resources;
-        //this.fragment = fragment;
-
         this.listView = (ListView) activity.findViewById(R.id.events_listView2); // era v.
     }
 

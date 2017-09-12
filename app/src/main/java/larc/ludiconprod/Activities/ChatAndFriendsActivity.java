@@ -485,8 +485,9 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                                 else{
                                     names += "Unknown" + ",";
                                 }
-
-                                chat.image.add(users.child("image").getValue().toString());
+                                if(users.hasChild("image")) {
+                                    chat.image.add(users.child("image").getValue().toString());
+                                }
                                 chat.otherParticipantId.add(users.getKey().toString());
                             }
                         }
@@ -519,6 +520,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                                 }
                                 if (numberOfTotalChatsArrived == counterOfChats) {
                                     setAdapter();
+                                    Persistance.getInstance().setConversation(activity,chatList);
                                 }
                             }
 
@@ -569,7 +571,9 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                                         names += "Unknown" + ",";
                                     }
 
-                                    chat.image.add(users.child("image").getValue().toString());
+                                    if(users.hasChild("image")) {
+                                        chat.image.add(users.child("image").getValue().toString());
+                                    }
                                     chat.otherParticipantId.add(users.getKey().toString());
                                 }
                             }

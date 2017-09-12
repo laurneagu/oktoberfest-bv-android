@@ -15,6 +15,7 @@ import java.util.Arrays;
 
 import larc.ludiconprod.Activities.BalanceActivity;
 import larc.ludiconprod.User;
+import larc.ludiconprod.Utils.Chat;
 import larc.ludiconprod.Utils.Coupon;
 import larc.ludiconprod.Utils.Event;
 import larc.ludiconprod.Utils.HappeningNowLocation;
@@ -44,6 +45,7 @@ public class Persistance {
     private final String cuponsString = "CouponsActivityCoupons";
     private final String myCuponsString = "CouponsActivityMyCoupons";
     private final String locationString = "locationsList";
+    private final String conversationString="conversationList";
 
     public void setUserInfo(Activity activity, User user) {
 
@@ -66,10 +68,12 @@ public class Persistance {
         json = sharedPreferences.getString("UnseenChats", "0");
         Gson gson = new Gson();
         ArrayList<String> chatList;
+        Type type = new TypeToken<ArrayList<Event>>() {
+        }.getType();
         if (json.equals("0")) {
             chatList = new ArrayList<>();
         } else {
-            chatList = gson.fromJson(json, ArrayList.class);
+            chatList = gson.fromJson(json, type);
         }
         return chatList;
     }
@@ -96,6 +100,31 @@ public class Persistance {
         editor.putString(this.profileDetailsString, gson.toJson(user));
         editor.commit();
     }
+
+
+    public void setConversation(Activity activity, ArrayList<Chat> chatList){
+        SharedPreferences.Editor editor = activity.getSharedPreferences(this.conversationString, 0).edit();
+        Gson gson = new Gson();
+        editor.putString(this.conversationString, gson.toJson(chatList));
+        editor.commit();
+    }
+
+    public ArrayList<Chat> getConversation(Activity activity){
+        SharedPreferences sharedPreferences = activity.getSharedPreferences(this.conversationString, 0);
+        String json = sharedPreferences.getString(this.conversationString, "0");
+        ArrayList<Chat> chatList = new ArrayList<>();;
+
+        Type type = new TypeToken<ArrayList<Chat>>() {
+        }.getType();
+        if (json.equals("0")) {
+            chatList = new ArrayList<>();
+        } else {
+            chatList = new Gson().fromJson(json, type);
+        }
+        return  chatList;
+    }
+
+
     public void setMyActivities(Activity activity, ArrayList<Event> eventList){
         SharedPreferences.Editor editor = activity.getSharedPreferences(this.myActivitiesString, 0).edit();
         Gson gson = new Gson();

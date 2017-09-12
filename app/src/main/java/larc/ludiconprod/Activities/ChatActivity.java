@@ -235,7 +235,11 @@ public class ChatActivity extends Activity {
                     String names="";
                     for(DataSnapshot users : dataSnapshot.getChildren()){
                         if(!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(ChatActivity.this).id)){
-                            otherUsersImage.add(users.child("image").getValue().toString());
+                            if(users.hasChild("image")) {
+                                otherUsersImage.add(users.child("image").getValue().toString());
+                            }else{
+                                otherUsersImage.add("");
+                            }
                             otherUsersId.add(users.getKey().toString());
                             if(users.hasChild("name")) {
                                 names += users.child("name").getValue().toString() + ",";

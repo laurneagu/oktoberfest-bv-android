@@ -534,10 +534,10 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
             // Setting the ViewPager For the SlidingTabsLayout
             tabs.setViewPager(pager);
-            while(getActivity() == null){
-
+            while(activity == null){
+                activity=getActivity();
             }
-            activity=getActivity();
+
 
             // Initialize Crashlytics (Fabric)
             //Fabric.with(getActivity(), new Crashlytics());

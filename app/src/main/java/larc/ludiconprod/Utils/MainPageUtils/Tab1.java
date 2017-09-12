@@ -41,7 +41,7 @@ public class Tab1 extends Fragment {
         v =inflater.inflate(R.layout.tab1,container,false);
 
         aroundMeEventList= Persistance.getInstance().getAroundMeActivities(getActivity());
-        fradapter = new AroundMeAdapter(aroundMeEventList, getActivity().getApplicationContext(), getActivity(), getResources(), getActivity());
+        fradapter = new AroundMeAdapter(aroundMeEventList, getActivity().getApplicationContext(), getActivity(), getResources());
         updateListOfEventsAroundMe();
 
         return v;
