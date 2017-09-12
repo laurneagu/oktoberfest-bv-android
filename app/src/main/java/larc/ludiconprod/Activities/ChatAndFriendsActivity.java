@@ -1,12 +1,11 @@
 package larc.ludiconprod.Activities;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
@@ -43,7 +42,6 @@ import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
 import larc.ludiconprod.Utils.Chat;
 import larc.ludiconprod.Utils.ChatAndFriends.ChatAndFriendsViewPagerAdapter;
-import larc.ludiconprod.Utils.Event;
 import larc.ludiconprod.Utils.Friend;
 import larc.ludiconprod.Utils.ui.SlidingTabLayout;
 
@@ -60,39 +58,39 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
     SlidingTabLayout tabs;
     ConversationsAdapter chatAdapter;
     public static FriendsAdapter friendsAdapter;
-    public static ArrayList<Friend> friends=new ArrayList<>();
+    public static ArrayList<Friend> friends = new ArrayList<>();
     private View v;
     CharSequence Titles[] = {"CONVERSATIONS", "FRIENDS"};
     int Numboftabs = 2;
-    ArrayList<Chat> chatList=new ArrayList<>();
+    ArrayList<Chat> chatList = new ArrayList<>();
     static public ChatAndFriendsActivity currentFragment;
-    Activity activity;
+    FragmentActivity activity;
     public static ListView chatListView;
     public static ListView friendsListView;
-    public Boolean isFirstTimeSetChat=false;
-    public static Boolean isFirstTimeSetFriends=false;
-    public static ArrayList<CountDownTimer> threadsList=new ArrayList<>();
+    public Boolean isFirstTimeSetChat = false;
+    public static Boolean isFirstTimeSetFriends = false;
+    public static ArrayList<CountDownTimer> threadsList = new ArrayList<>();
     public static ChatAndFriendsActivity currentChatAndFriends;
-    public int counterOfChats=0;
+    public int counterOfChats = 0;
     public String keyOfLastChat;
     public Double valueOfLastChat;
     public int numberOfChatsPage;
     ProgressBar progressBarChats;
     public static ProgressBar progressBarFriends;
     int numberOfTotalChatsArrived;
-    Boolean isLastPage=false;
-    Boolean addedSwipe=false;
-    Boolean addedSwipeFriends=false;
-    public static Boolean isOnChatPage=true;
+    Boolean isLastPage = false;
+    Boolean addedSwipe = false;
+    Boolean addedSwipeFriends = false;
+    public static Boolean isOnChatPage = true;
     String lastMessageSeen;
-    Boolean isAlreadyProcess=false;
-    public static int NumberOfRefreshFriends=0;
+    Boolean isAlreadyProcess = false;
+    public static int NumberOfRefreshFriends = 0;
     private int dp56;
     ProgressBar chatLoading;
-    Boolean shouldRequestPage=false;
+    public boolean shouldRequestPage = false;
 
     public ChatAndFriendsActivity() {
-        currentFragment=this;
+        currentFragment = this;
     }
 
     @Nullable
@@ -100,18 +98,20 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mContext = inflater.getContext();
         v = inflater.inflate(R.layout.chat_and_friends_activity, container, false);
-        activity=getActivity();
-        currentChatAndFriends=this;
+        while (activity == null) {
+            activity = getActivity();
+        }
+        currentChatAndFriends = this;
         threadsList.clear();
         friends.clear();
-        isFirstTimeSetFriends=false;
-        isOnChatPage=true;
-        NumberOfRefreshFriends=0;
-        isFirstTimeSetChat=false;
+        isFirstTimeSetFriends = false;
+        isOnChatPage = true;
+        NumberOfRefreshFriends = 0;
+        isFirstTimeSetChat = false;
         try {
 
             super.onCreate(savedInstanceState);
-            adapter = new ChatAndFriendsViewPagerAdapter(getActivity().getSupportFragmentManager(), Titles, Numboftabs);
+            adapter = new ChatAndFriendsViewPagerAdapter(activity.getSupportFragmentManager(), Titles, Numboftabs);
 
             // Assigning ViewPager View and setting the adapter
             pager = (ViewPager) v.findViewById(R.id.pager);
@@ -136,7 +136,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
 
             final float scale = mContext.getResources().getDisplayMetrics().density;
             this.dp56 = (int) (56 * scale + 0.5f);
-            chatLoading=(ProgressBar)v.findViewById(R.id.chatLoading);
+            chatLoading = (ProgressBar) v.findViewById(R.id.chatLoading);
 
             DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
             connectedRef.addValueEventListener(new ValueEventListener() {
@@ -167,44 +167,44 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
 
                         }
                     }*/
-                        if (dataSnapshot.hasChild("last_message_date") && isFirstTimeSetChat && isOnChatPage) {
-                            final Chat chat = new Chat();
-                            chat.chatId = dataSnapshot.getKey();
-                            if (dataSnapshot.hasChild("event_id")) {
-                                chat.eventId = dataSnapshot.child("event_id").getValue().toString();
-                            }
-                            String names = "";
-                            for (DataSnapshot users : dataSnapshot.child("users").getChildren()) {
-                                if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(activity).id)) {
-                                    names += users.child("name").getValue().toString() + ",";
-                                    chat.image.add(users.child("image").getValue().toString());
-                                    chat.otherParticipantId.add(users.getKey().toString());
-
-                                }
-
-                            }
-                            chat.participantName = names;
-
-                            chat.lastMessageTime = Double.valueOf(dataSnapshot.child("last_message_date").getValue().toString());
-                            DatabaseReference lastMessageRef = dataSnapshot.child("messages").getRef();
-                            Query lastMessage = lastMessageRef.orderByKey().limitToLast(1);
-                            lastMessage.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    for (DataSnapshot child : dataSnapshot.getChildren()) {
-                                        chat.lastMessage = child.child("message").getValue().toString();
-                                        chat.lastMessageId = child.getKey().toString();
-                                    }
-                                    chatList.add(0, chat);
-                                    setAdapter();
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
-                                }
-                            });
+                    if (dataSnapshot.hasChild("last_message_date") && isFirstTimeSetChat && isOnChatPage) {
+                        final Chat chat = new Chat();
+                        chat.chatId = dataSnapshot.getKey();
+                        if (dataSnapshot.hasChild("event_id")) {
+                            chat.eventId = dataSnapshot.child("event_id").getValue().toString();
                         }
+                        String names = "";
+                        for (DataSnapshot users : dataSnapshot.child("users").getChildren()) {
+                            if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(activity).id)) {
+                                names += users.child("name").getValue().toString() + ",";
+                                chat.image.add(users.child("image").getValue().toString());
+                                chat.otherParticipantId.add(users.getKey().toString());
+
+                            }
+
+                        }
+                        chat.participantName = names;
+
+                        chat.lastMessageTime = Double.valueOf(dataSnapshot.child("last_message_date").getValue().toString());
+                        DatabaseReference lastMessageRef = dataSnapshot.child("messages").getRef();
+                        Query lastMessage = lastMessageRef.orderByKey().limitToLast(1);
+                        lastMessage.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                    chat.lastMessage = child.child("message").getValue().toString();
+                                    chat.lastMessageId = child.getKey().toString();
+                                }
+                                chatList.add(0, chat);
+                                setAdapter();
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
                 }
 
                 @Override
@@ -262,11 +262,12 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                                         chatList.add(0, chat);
                                         setAdapter();
                                         isAlreadyProcess = false;
-                                    } else if (chatList.size() == 0) {
-                                        chatList.add(0, chat);
-                                        setAdapter();
-                                        isAlreadyProcess = false;
-                                    }
+                                    } else
+                                        if (chatList.size() == 0) {
+                                            chatList.add(0, chat);
+                                            setAdapter();
+                                            isAlreadyProcess = false;
+                                        }
                                 }
 
                                 @Override
@@ -275,7 +276,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                                 }
                             });
                         }
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -307,9 +308,8 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
         return v;
     }
 
-    public void setAdapter(){
+    public void setAdapter() {
         try {
-
 
 
             chatAdapter.notifyDataSetChanged();
@@ -338,8 +338,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                 discoverActivitiesButton.setVisibility(View.INVISIBLE);
                 chatImage.setVisibility(View.INVISIBLE);
             }
-            shouldRequestPage=true;
-            if (chatListView != null && shouldRequestPage) {
+            if (chatListView != null) {
                 chatListView.setOnTouchListener(new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(final View v, MotionEvent event) {
@@ -386,14 +385,13 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                 });
                 addedSwipe = true;
             }
-
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
-    public void setFriendsAdapter(){
+    public void setFriendsAdapter() {
         try {
             friendsAdapter.notifyDataSetChanged();
             final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refreshFriends);
@@ -452,15 +450,15 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                 });
                 addedSwipeFriends = true;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public void getFirstPage() {
         final DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(activity).id).child("chats");
-        Query query=firebaseRef.orderByChild("last_message_date") .limitToLast(4);
-        numberOfChatsPage=1;
+        Query query = firebaseRef.orderByChild("last_message_date").limitToLast(4);
+        numberOfChatsPage = 1;
         chatList.clear();
         query.addListenerForSingleValueEvent(new ValueEventListener() {
 
@@ -475,27 +473,28 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                             chat.eventId = chats.child("event_id").getValue().toString();
                         }
                         String names;
-                        if(chat.eventId != null){
-                            names="Group:";
-                        }else{
-                            names="";
+                        if (chat.eventId != null) {
+                            names = "Group:";
+                        } else {
+                            names = "";
                         }
                         for (DataSnapshot users : chats.child("users").getChildren()) {
                             if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(activity).id)) {
-                                if(users.hasChild("name")) {
+                                if (users.hasChild("name")) {
                                     names += users.child("name").getValue().toString() + ",";
-                                }
-                                else{
+                                } else {
                                     names += "Unknown" + ",";
                                 }
-                                if(users.hasChild("image")) {
+                                if (users.hasChild("image")) {
                                     chat.image.add(users.child("image").getValue().toString());
+                                } else {
+                                    chat.image.add("");
                                 }
                                 chat.otherParticipantId.add(users.getKey().toString());
                             }
                         }
                         chat.participantName = names;
-                        if(chats.hasChild("seen")) {
+                        if (chats.hasChild("seen")) {
                             chat.lastMessageSeen = chats.child("seen").getValue().toString();
                         }
                         chat.lastMessageTime = Double.valueOf(chats.child("last_message_date").getValue().toString());
@@ -506,15 +505,15 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                                     chat.lastMessage = child.child("message").getValue().toString();
-                                    chat.lastMessageId=child.getKey().toString();
+                                    chat.lastMessageId = child.getKey().toString();
                                 }
-                                if(counterOfChats > 0 || numberOfTotalChatsArrived < 4) {
+                                if (counterOfChats > 0 || numberOfTotalChatsArrived < 4) {
                                     chatList.add(0, chat);
                                     counterOfChats++;
                                 } else {
                                     counterOfChats++;
-                                    keyOfLastChat=chat.chatId;
-                                    valueOfLastChat=chat.lastMessageTime;
+                                    keyOfLastChat = chat.chatId;
+                                    valueOfLastChat = chat.lastMessageTime;
                                 }
                                 if (numberOfTotalChatsArrived < 4) {
                                     if (numberOfTotalChatsArrived == counterOfChats) {
@@ -523,8 +522,6 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                                 }
                                 if (numberOfTotalChatsArrived == counterOfChats) {
                                     setAdapter();
-                                    Persistance.getInstance().setConversation(activity,chatList);
-
                                 }
                             }
 
@@ -545,8 +542,8 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
     }
 
     public void getPage() {
-        if(shouldRequestPage) {
-            shouldRequestPage=false;
+        if (shouldRequestPage) {
+            shouldRequestPage = false;
             final DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(activity).id).child("chats");
             Query query = firebaseRef.orderByChild("last_message_date").limitToLast(4).endAt(valueOfLastChat, keyOfLastChat);
             counterOfChats = 0;
@@ -634,7 +631,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                 }
             });
         }
-        }
+    }
 
 
     public void getFriends(String pageNumber) {

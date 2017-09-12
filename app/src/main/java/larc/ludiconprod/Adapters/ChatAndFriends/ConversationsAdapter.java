@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.CountDownTimer;
 import android.util.Base64;
@@ -14,8 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -24,13 +21,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import larc.ludiconprod.Activities.ActivitiesActivity;
 import larc.ludiconprod.Activities.ChatActivity;
 import larc.ludiconprod.Activities.ChatAndFriendsActivity;
-import larc.ludiconprod.Adapters.MainActivity.AroundMeAdapter;
 import larc.ludiconprod.R;
 import larc.ludiconprod.Utils.Chat;
-import larc.ludiconprod.Utils.Event;
 
 import static larc.ludiconprod.Activities.ChatAndFriendsActivity.threadsList;
 
@@ -39,11 +33,11 @@ import static larc.ludiconprod.Activities.ChatAndFriendsActivity.threadsList;
  */
 
 public class ConversationsAdapter extends BaseAdapter implements ListAdapter {
-    public static Bitmap decodeBase64(String input)
-    {
+    public static Bitmap decodeBase64(String input) {
         byte[] decodedBytes = Base64.decode(input, 0);
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
+
     class ViewHolder {
 
         CircleImageView chatParticipantImage;
@@ -53,12 +47,14 @@ public class ConversationsAdapter extends BaseAdapter implements ListAdapter {
 
 
     }
+
     private ArrayList<Chat> list = new ArrayList<>();
     private Context context;
-    private Activity activity;
     private Resources resources;
     private ChatAndFriendsActivity fragment;
     final ListView listView;
+    Activity activity;
+
     public ConversationsAdapter(ArrayList<Chat> list, Context context, Activity activity, Resources resources, ChatAndFriendsActivity fragment) {
         this.list = list;
         this.context = context;
@@ -74,10 +70,11 @@ public class ConversationsAdapter extends BaseAdapter implements ListAdapter {
         this.context = context;
         this.activity = activity;
         this.resources = resources;
+
         this.listView = (ListView) activity.findViewById(R.id.events_listView2); // era v.
     }
 
-    public void setListOfEvents(ArrayList<Chat> newList){
+    public void setListOfEvents(ArrayList<Chat> newList) {
         this.list = newList;
         this.notifyDataSetChanged();
     }
@@ -103,7 +100,8 @@ public class ConversationsAdapter extends BaseAdapter implements ListAdapter {
         View view = convertView;
 
 
-        if(list.size() > 0) {
+
+        if (list.size() > 0) {
 
             final ConversationsAdapter.ViewHolder holder;
 
@@ -113,13 +111,13 @@ public class ConversationsAdapter extends BaseAdapter implements ListAdapter {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.chat_list_card, null);
                 holder = new ConversationsAdapter.ViewHolder();
-                holder.chatParticipantImage=(CircleImageView)view.findViewById(R.id.chatParticipantImage);
-                holder.participantName=(TextView) view.findViewById(R.id.participantName);
-                holder.timeElapsed=(TextView)view.findViewById(R.id.timeElapsed);
-                holder.lastMessage=(TextView)view.findViewById(R.id.lastMessage);
+                holder.chatParticipantImage = (CircleImageView) view.findViewById(R.id.chatParticipantImage);
+                holder.participantName = (TextView) view.findViewById(R.id.participantName);
+                holder.timeElapsed = (TextView) view.findViewById(R.id.timeElapsed);
+                holder.lastMessage = (TextView) view.findViewById(R.id.lastMessage);
 
-                Typeface typeFace = Typeface.createFromAsset(activity.getAssets(),"fonts/Quicksand-Medium.ttf");
-                Typeface typeFaceBold = Typeface.createFromAsset(activity.getAssets(),"fonts/Quicksand-Bold.ttf");
+                Typeface typeFace = Typeface.createFromAsset(activity.getAssets(), "fonts/Quicksand-Medium.ttf");
+                Typeface typeFaceBold = Typeface.createFromAsset(activity.getAssets(), "fonts/Quicksand-Bold.ttf");
 
                 holder.participantName.setTypeface(typeFace);
                 holder.timeElapsed.setTypeface(typeFace);
@@ -131,37 +129,37 @@ public class ConversationsAdapter extends BaseAdapter implements ListAdapter {
             }
             //clear layout
             holder.chatParticipantImage.setImageResource(R.drawable.ic_user);
-            if(threadsList.size() > 0 && threadsList.size() > position && threadsList.get(position) != null ) {
+            if (threadsList.size() > 0 && threadsList.size() > position && threadsList.get(position) != null) {
                 threadsList.get(position).cancel();
                 threadsList.remove(position);
             }
 
-            if(currentChat.image != null && currentChat.image.size() >= 1 && currentChat.eventId == null){
-                Bitmap bitmap=decodeBase64(currentChat.image.get(0));
+            if (currentChat.image != null && currentChat.image.size() >= 1 && currentChat.eventId == null) {
+                Bitmap bitmap = decodeBase64(currentChat.image.get(0));
                 holder.chatParticipantImage.setImageBitmap(bitmap);
             }
-            if(currentChat.eventId != null){
+            if (currentChat.eventId != null) {
                 holder.chatParticipantImage.setImageResource(R.drawable.ph_group);
             }
 
-            final int timeElapsed=(int)((System.currentTimeMillis()/1000 - currentChat.lastMessageTime)/60);
-            setTime(timeElapsed,holder,currentChat);
-            updateTime(timeElapsed,holder,currentChat,position);
-            if(currentChat.participantName.length() > 1) {
+            final int timeElapsed = (int) ((System.currentTimeMillis() / 1000 - currentChat.lastMessageTime) / 60);
+            setTime(timeElapsed, holder, currentChat);
+            updateTime(timeElapsed, holder, currentChat, position);
+            if (currentChat.participantName.length() > 1) {
                 holder.participantName.setText(currentChat.participantName.substring(0, currentChat.participantName.length() - 1));
             }
-            Typeface typeFace= Typeface.createFromAsset(activity.getAssets(),"fonts/Quicksand-Medium.ttf");
-            Typeface typeFaceBold= Typeface.createFromAsset(activity.getAssets(),"fonts/Quicksand-Bold.ttf");
-            String displayMessage="";
-            final String splitMessage[]=currentChat.lastMessage.split(" ");
-            for(int i=0;i < splitMessage.length;i++) {
+            Typeface typeFace = Typeface.createFromAsset(activity.getAssets(), "fonts/Quicksand-Medium.ttf");
+            Typeface typeFaceBold = Typeface.createFromAsset(activity.getAssets(), "fonts/Quicksand-Bold.ttf");
+            String displayMessage = "";
+            final String splitMessage[] = currentChat.lastMessage.split(" ");
+            for (int i = 0; i < splitMessage.length; i++) {
                 if (splitMessage[i].length() > 21 && splitMessage[i].substring(0, 10).equalsIgnoreCase("$#@$@#$%^$") && splitMessage[i].substring(splitMessage[i].length() - 10).equalsIgnoreCase("$#@$@#$%^$")) {
-                    displayMessage+="this";
-                }else{
-                    displayMessage+=splitMessage[i];
+                    displayMessage += "this";
+                } else {
+                    displayMessage += splitMessage[i];
                 }
-                if(i < splitMessage.length) {
-                    displayMessage+=" ";
+                if (i < splitMessage.length) {
+                    displayMessage += " ";
                 }
             }
 
@@ -170,10 +168,10 @@ public class ConversationsAdapter extends BaseAdapter implements ListAdapter {
 
 
             holder.lastMessage.setText(displayMessage);
-            if(!currentChat.lastMessageSeen.equalsIgnoreCase(currentChat.lastMessageId)) {
+            if (!currentChat.lastMessageSeen.equalsIgnoreCase(currentChat.lastMessageId)) {
                 holder.lastMessage.setTypeface(typeFaceBold);
 
-            }else{
+            } else {
                 holder.lastMessage.setTypeface(typeFace);
             }
             final View currView = view;
@@ -181,19 +179,19 @@ public class ConversationsAdapter extends BaseAdapter implements ListAdapter {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent=new Intent(activity, ChatActivity.class);
-                    intent.putExtra("chatId",currentChat.chatId);
-                    intent.putExtra("otherParticipantName",currentChat.participantName);
-                    intent.putExtra("otherParticipantImage",currentChat.image);
-                    intent.putExtra("otherParticipantId",currentChat.otherParticipantId);
-                    if(currentChat.eventId != null){
-                        intent.putExtra("groupChat",1);
-                    }else{
-                        intent.putExtra("groupChat",0);
+                    Intent intent = new Intent(activity, ChatActivity.class);
+                    intent.putExtra("chatId", currentChat.chatId);
+                    intent.putExtra("otherParticipantName", currentChat.participantName);
+                    intent.putExtra("otherParticipantImage", currentChat.image);
+                    intent.putExtra("otherParticipantId", currentChat.otherParticipantId);
+                    if (currentChat.eventId != null) {
+                        intent.putExtra("groupChat", 1);
+                    } else {
+                        intent.putExtra("groupChat", 0);
                     }
 
                     activity.startActivity(intent);
-                    ChatAndFriendsActivity.isOnChatPage=false;
+                    ChatAndFriendsActivity.isOnChatPage = false;
                     //activity.finish();
                 }
             });
@@ -209,42 +207,46 @@ public class ConversationsAdapter extends BaseAdapter implements ListAdapter {
         return view;
     }
 
-    public void updateTime(final int timeElapsed,final ViewHolder holder,final Chat currentChat,final int position){
-        threadsList.add(position,new CountDownTimer(3600000, 60000) {
-            int newtimeElapsed=timeElapsed;
+    public void updateTime(final int timeElapsed, final ViewHolder holder, final Chat currentChat, final int position) {
+        threadsList.add(position, new CountDownTimer(3600000, 60000) {
+            int newtimeElapsed = timeElapsed;
+
             @Override
             public void onTick(long l) {
-                newtimeElapsed=newtimeElapsed+1;
-                setTime(newtimeElapsed,holder,currentChat);
+                newtimeElapsed = newtimeElapsed + 1;
+                setTime(newtimeElapsed, holder, currentChat);
 
             }
 
             @Override
             public void onFinish() {
-                updateTime(newtimeElapsed,holder,currentChat,position);
+                updateTime(newtimeElapsed, holder, currentChat, position);
             }
-            }.start());
+        }.start());
     }
 
-    public void setTime(int timeElapsed,ViewHolder holder,Chat currentChat){
-        if(timeElapsed == 0){
+    public void setTime(int timeElapsed, ViewHolder holder, Chat currentChat) {
+        if (timeElapsed == 0) {
             holder.timeElapsed.setText("less than a min ago");
-        }else if(timeElapsed < 60){
-            holder.timeElapsed.setText(Integer.valueOf(timeElapsed)+" min ago");
-        }else if(timeElapsed < 1440){
-            holder.timeElapsed.setText(Integer.valueOf(timeElapsed/60)+" hour ago");
-        }else if(timeElapsed < 10080){
-            holder.timeElapsed.setText(Integer.valueOf(timeElapsed/1440)+" days ago");
-        }else{
-            String displayDate="";
-            try {
-                SimpleDateFormat formatter = new SimpleDateFormat("dd MM yyyy");
-                java.util.Date date=new java.util.Date(new Double(currentChat.lastMessageTime*1000).longValue());
-                displayDate = formatter.format(date);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            holder.timeElapsed.setText(displayDate);
-        }
+        } else
+            if (timeElapsed < 60) {
+                holder.timeElapsed.setText(Integer.valueOf(timeElapsed) + " min ago");
+            } else
+                if (timeElapsed < 1440) {
+                    holder.timeElapsed.setText(Integer.valueOf(timeElapsed / 60) + " hour ago");
+                } else
+                    if (timeElapsed < 10080) {
+                        holder.timeElapsed.setText(Integer.valueOf(timeElapsed / 1440) + " days ago");
+                    } else {
+                        String displayDate = "";
+                        try {
+                            SimpleDateFormat formatter = new SimpleDateFormat("dd MM yyyy");
+                            java.util.Date date = new java.util.Date(new Double(currentChat.lastMessageTime * 1000).longValue());
+                            displayDate = formatter.format(date);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        holder.timeElapsed.setText(displayDate);
+                    }
     }
 }

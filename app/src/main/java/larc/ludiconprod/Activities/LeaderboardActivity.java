@@ -9,28 +9,19 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Set;
 import java.util.TreeMap;
 
 import larc.ludiconprod.R;
-import larc.ludiconprod.Utils.CouponsUtils.CouponsPagerAdapter;
 import larc.ludiconprod.Utils.LeaderboardUtils.LeaderboardPagerAdapter;
 import larc.ludiconprod.Utils.ui.SlidingTabLayout;
 
@@ -73,6 +64,7 @@ public class LeaderboardActivity extends Fragment implements RadioGroup.OnChecke
 
             pager = (ViewPager) v.findViewById(R.id.couponsPager);
             pager.setAdapter(adapter);
+            pager.setOffscreenPageLimit(3);
 
             SlidingTabLayout tabs = (SlidingTabLayout) v.findViewById(R.id.couponsTabs);
             tabs.setDistributeEvenly(false);

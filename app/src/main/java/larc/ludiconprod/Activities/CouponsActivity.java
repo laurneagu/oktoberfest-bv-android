@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
@@ -67,6 +68,7 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
     public boolean firstPageMyCoupons = true;
     boolean addedSwipeMyCoupons = false;
     private boolean noGps = false;
+    FragmentActivity activity;
 
     public void getCoupons(String pageNumber) {
         if (pageNumber.equals("0")) {
@@ -78,13 +80,13 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
 
         HashMap<String, String> headers = new HashMap<>();
         //headers.put("Content-Type", "application/json");
-        headers.put("authKey", Persistance.getInstance().getUserInfo(getActivity()).authKey);
+        headers.put("authKey", Persistance.getInstance().getUserInfo(activity).authKey);
         String urlParams = "";
 
         //set urlParams
         double longitude = 0;
         double latitude = 0;
-        GPSTracker gps = new GPSTracker(getActivity().getApplicationContext(),  getActivity());
+        GPSTracker gps = new GPSTracker(activity.getApplicationContext(), activity);
         if (gps.canGetLocation()) {
             latitude = gps.getLatitude();
             longitude = gps.getLongitude();
@@ -97,15 +99,15 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
             return;
         }
 
-        urlParams += "userId=" + Persistance.getInstance().getUserInfo(getActivity()).id;
+        urlParams += "userId=" + Persistance.getInstance().getUserInfo(activity).id;
         urlParams += "&page=" + pageNumber;
         urlParams += "&latitude=" + String.valueOf(latitude);
         urlParams += "&longitude=" + String.valueOf(longitude);
         urlParams += "&range=" + 10000;
         String userSport = "";
-        ArrayList<Sport> sports = Persistance.getInstance().getUserInfo(getActivity()).sports;
-        for(int i = 0; i < sports.size(); ++i) {
-            if(i < sports.size() - 1) {
+        ArrayList<Sport> sports = Persistance.getInstance().getUserInfo(activity).sports;
+        for (int i = 0; i < sports.size(); ++i) {
+            if (i < sports.size() - 1) {
                 userSport = userSport + sports.get(i).code + ";";
             } else {
                 userSport = userSport + sports.get(i).code;
@@ -131,10 +133,10 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
 
         HashMap<String, String> headers = new HashMap<>();
         //headers.put("Content-Type", "application/json");
-        headers.put("authKey", Persistance.getInstance().getUserInfo(getActivity()).authKey);
+        headers.put("authKey", Persistance.getInstance().getUserInfo(activity).authKey);
         String urlParams = "";
 
-        urlParams += "userId=" + Persistance.getInstance().getUserInfo(getActivity()).id;
+        urlParams += "userId=" + Persistance.getInstance().getUserInfo(activity).id;
         urlParams += "&page=" + pageNumber;
 
         HTTPResponseController.getInstance().getMyCoupons(urlParams, headers, this, new Response.Listener<JSONObject>() {
@@ -158,11 +160,11 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
         this.couponsAdapter.notifyDataSetChanged();
         final ListView listView = (ListView) v.findViewById(R.id.couponsList);
         ImageView heartImage = (ImageView) v.findViewById(R.id.heartImageCoupons);
-        final ProgressBar progressBar = (ProgressBar)v.findViewById(R.id.progressCoupons) ;
+        final ProgressBar progressBar = (ProgressBar) v.findViewById(R.id.progressCoupons);
         progressBar.setIndeterminate(true);
         progressBar.setAlpha(0f);
 
-        TextView noCoupons = (TextView)v.findViewById(R.id.noCoupons);
+        TextView noCoupons = (TextView) v.findViewById(R.id.noCoupons);
         TextView discoverActivities = (TextView) v.findViewById(R.id.noCouponsText);
         Button noMyCouponsButton = (Button) v.findViewById(R.id.noCouponsButton);
 
@@ -181,7 +183,7 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
                     /*Intent intent = new Intent(getActivity(), Main.class);
                     intent.putExtra("Tab", R.id.tab_activities);
                     startActivity(intent);*/
-                    Main mainFr = (Main) getActivity();
+                    Main mainFr = (Main) activity;
                     mainFr.bottomBar.setDefaultTab(R.id.tab_activities);
                 }
             });
@@ -192,7 +194,7 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
             noMyCouponsButton.setEnabled(false);
         }
 
-        if(listView != null) {
+        if (listView != null) {
             listView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(final View v, MotionEvent event) {
@@ -239,11 +241,11 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
         this.myCouponsAdapter.notifyDataSetChanged();
         final ListView listView = (ListView) v.findViewById(R.id.myCouponsList);
         ImageView heartImage = (ImageView) v.findViewById(R.id.heartImageMyCoupons);
-        final ProgressBar progressBar = (ProgressBar) v.findViewById(R.id.progressMyCoupons) ;
+        final ProgressBar progressBar = (ProgressBar) v.findViewById(R.id.progressMyCoupons);
         progressBar.setIndeterminate(true);
         progressBar.setAlpha(0f);
 
-        TextView noCoupons = (TextView)v.findViewById(R.id.noMyCoupons);
+        TextView noCoupons = (TextView) v.findViewById(R.id.noMyCoupons);
         TextView discoverActivities = (TextView) v.findViewById(R.id.noMyCouponsText);
         Button noMyCouponsButton = (Button) v.findViewById(R.id.noMyCouponsButton);
 
@@ -270,7 +272,7 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
             noMyCouponsButton.setEnabled(false);
         }
 
-        if(listView != null) {
+        if (listView != null) {
             listView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(final View v, MotionEvent event) {
@@ -351,11 +353,15 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mContext = inflater.getContext();
         v = inflater.inflate(R.layout.coupons_activity, container, false);
+        while (activity == null) {
+            activity = getActivity();
+        }
 
         try {
             super.onCreate(savedInstanceState);
@@ -377,8 +383,8 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
 
             this.tabs.setViewPager(pager);
 
-            this.couponsAdapter = new CouponsAdapter(this.coupons, getActivity().getApplicationContext(), getActivity(), getResources(), this);
-            this.myCouponsAdapter = new MyCouponsAdapter(this.myCoupons, getActivity().getApplicationContext(), getActivity(), getResources(), this);
+            this.couponsAdapter = new CouponsAdapter(this.coupons, activity.getApplicationContext(), activity, getResources(), this);
+            this.myCouponsAdapter = new MyCouponsAdapter(this.myCoupons, activity.getApplicationContext(), activity, getResources(), this);
 
             getCoupons("0");
             getMyCoupons("0");
@@ -476,7 +482,7 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
         }
 
         try {
-            Toast.makeText(super.getActivity(), "" + response, Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, "" + response, Toast.LENGTH_SHORT).show();
 
             this.coupons.clear();
             this.getCoupons("0");

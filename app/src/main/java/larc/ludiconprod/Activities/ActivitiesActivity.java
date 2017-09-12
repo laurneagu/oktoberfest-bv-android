@@ -1,44 +1,27 @@
 package larc.ludiconprod.Activities;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.Point;
-import android.location.Criteria;
 import android.location.Location;
-
-import com.android.volley.NetworkError;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.google.android.gms.location.LocationListener;
-import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Base64;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -47,43 +30,33 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.crashlytics.android.Crashlytics;
+import com.android.volley.NetworkError;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderApi;
+import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.TimeZone;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import io.fabric.sdk.android.Fabric;
 import larc.ludiconprod.Adapters.MainActivity.AroundMeAdapter;
 import larc.ludiconprod.Adapters.MainActivity.MyAdapter;
-import larc.ludiconprod.BottomBarHelper.BottomBar;
 import larc.ludiconprod.BottomBarHelper.BottomBarTab;
 import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
-import larc.ludiconprod.Layer.DataPersistence.PointsPersistence;
-import larc.ludiconprod.Manifest;
-import larc.ludiconprod.PasswordEncryptor;
 import larc.ludiconprod.R;
 import larc.ludiconprod.Utils.Event;
 import larc.ludiconprod.Utils.HappeningNowLocation;
 import larc.ludiconprod.Utils.Location.GPSTracker;
 import larc.ludiconprod.Utils.MainPageUtils.ViewPagerAdapter;
-import larc.ludiconprod.Utils.Message;
 import larc.ludiconprod.Utils.ui.SlidingTabLayout;
 import larc.ludiconprod.Utils.util.Sport;
 
@@ -93,7 +66,7 @@ import static larc.ludiconprod.Activities.Main.bottomBar;
  * Created by ancuta on 7/26/2017.
  */
 
-public class ActivitiesActivity extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener ,LocationListener, Response.ErrorListener{
+public class ActivitiesActivity extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, Response.ErrorListener {
 
     ViewPager pager;
     private Context mContext;
@@ -125,21 +98,21 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
     public static ListView mylistView;
     Boolean isFirstTimeAroundMe = false;
     Boolean isFirstTimeMyEvents = false;
-    Boolean dataComeArundeMe=false;
-    Boolean dataComeMy=false;
+    Boolean dataComeArundeMe = false;
+    Boolean dataComeMy = false;
     public static ProgressBar v1;
     public double longitude = 0;
     public double latitude = 0;
     public static Thread startHN;
     public static Thread stopHN;
-    static Boolean isOnActivityPage=false;
-    static int buttonState=0;//0:is never pressed 1:Check-in Performed 2:Check-Out Performed
+    static Boolean isOnActivityPage = false;
+    static int buttonState = 0;//0:is never pressed 1:Check-in Performed 2:Check-Out Performed
 
     //LocationManager locationManager;
     LocationListener locationListener;
-    Object startGettingLocation=new Object();
+    Object startGettingLocation = new Object();
     private LocationRequest locationRequest;
-    private FusedLocationProviderApi fusedLocationProviderApi= LocationServices.FusedLocationApi;
+    private FusedLocationProviderApi fusedLocationProviderApi = LocationServices.FusedLocationApi;
     private GoogleApiClient googleApiClient;
     RelativeLayout happeningNowLayout;
     public static CountDownTimer buttonSetter;
@@ -147,30 +120,30 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
     private boolean noGps = false;
     static Thread stopHappeningNow;
     static Thread startHappeningNow;
-    static Boolean HPShouldBeVisible=false;
-    static public HappeningNowLocation happeningNowLocation=new HappeningNowLocation();
-    static public Activity activity;
-    static public int startedEventDate=Integer.MAX_VALUE;
+    static Boolean HPShouldBeVisible = false;
+    static public HappeningNowLocation happeningNowLocation = new HappeningNowLocation();
+    static public FragmentActivity activity;
+    static public int startedEventDate = Integer.MAX_VALUE;
 
 
     public ActivitiesActivity() {
         currentFragment = this;
-        activity=getActivity();
+        activity = getActivity();
     }
 
-    public  Bitmap decodeBase64(String input) {
+    public Bitmap decodeBase64(String input) {
         byte[] decodedBytes = Base64.decode(input, 0);
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
 
-    Handler handler=new Handler(){
+    Handler handler = new Handler() {
         @Override
         public void handleMessage(android.os.Message msg) {
-            if(msg.what == 0) {
+            if (msg.what == 0) {
 
 
-                HPShouldBeVisible=true;
-                if(isFirstTimeMyEvents){
+                HPShouldBeVisible = true;
+                if (isFirstTimeMyEvents) {
                     myEventList.remove(0);
                     myAdapter.notifyDataSetChanged();
                 }
@@ -182,82 +155,81 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                 happeningNowLayout.setLayoutParams(params);
 
                 //set happening now field
-                TextView weWillplay=(TextView)v.findViewById(R.id.HNPlay) ;
-                TextView sportField=(TextView)v.findViewById(R.id.HNPlayWhat) ;
-                TextView ludicoins=(TextView)v.findViewById(R.id.ludicoinsHN);
-                TextView points=(TextView)v.findViewById(R.id.pointsHN);
-                TextView location=(TextView)v.findViewById(R.id.locationHN);
-                ImageView imageViewBackground=(ImageView)v.findViewById(R.id.imageViewBackground);
-                CircleImageView friends0=(CircleImageView)v.findViewById(R.id.friends0HN);
-                CircleImageView friends1=(CircleImageView)v.findViewById(R.id.friends1HN);
-                CircleImageView friends2=(CircleImageView)v.findViewById(R.id.friends2HN);
-                TextView allFriends=(TextView)v.findViewById(R.id.friendsNumberHN);
+                TextView weWillplay = (TextView) v.findViewById(R.id.HNPlay);
+                TextView sportField = (TextView) v.findViewById(R.id.HNPlayWhat);
+                TextView ludicoins = (TextView) v.findViewById(R.id.ludicoinsHN);
+                TextView points = (TextView) v.findViewById(R.id.pointsHN);
+                TextView location = (TextView) v.findViewById(R.id.locationHN);
+                ImageView imageViewBackground = (ImageView) v.findViewById(R.id.imageViewBackground);
+                CircleImageView friends0 = (CircleImageView) v.findViewById(R.id.friends0HN);
+                CircleImageView friends1 = (CircleImageView) v.findViewById(R.id.friends1HN);
+                CircleImageView friends2 = (CircleImageView) v.findViewById(R.id.friends2HN);
+                TextView allFriends = (TextView) v.findViewById(R.id.friendsNumberHN);
                 checkinButton = (Button) v.findViewById(R.id.checkinHN);
 
 
-                    checkinButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            if (buttonState == 0) {
-                                buttonState = 1;
-                                buttonSetter = new CountDownTimer(7200000, 1000) {
-                                    int minutes = 0;
-                                    int seconds = 0;
+                checkinButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (buttonState == 0) {
+                            buttonState = 1;
+                            buttonSetter = new CountDownTimer(7200000, 1000) {
+                                int minutes = 0;
+                                int seconds = 0;
 
-                                    @Override
-                                    public void onTick(long l) {
-                                        System.out.println("ontick");
-                                        String minutesValue = "";
-                                        String secondsValue = "";
-                                        seconds++;
-                                        if (seconds == 60) {
-                                            seconds = 0;
-                                            minutes++;
-                                        }
-                                        if (minutes > 9) {
-                                            minutesValue = String.valueOf(minutes);
-                                        } else {
-                                            minutesValue = "0" + String.valueOf(minutes);
-                                        }
-                                        if (seconds > 9) {
-                                            secondsValue = String.valueOf(seconds);
-                                        } else {
-                                            secondsValue = "0" + String.valueOf(seconds);
-                                        }
-                                        System.out.println(isOnActivityPage + " booleana " + checkinButton);
-                                        if (isOnActivityPage) {
-                                            checkinButton.setText("CHECK-OUT " + minutesValue + ":" + secondsValue);
-                                        }
-
-
+                                @Override
+                                public void onTick(long l) {
+                                    System.out.println("ontick");
+                                    String minutesValue = "";
+                                    String secondsValue = "";
+                                    seconds++;
+                                    if (seconds == 60) {
+                                        seconds = 0;
+                                        minutes++;
+                                    }
+                                    if (minutes > 9) {
+                                        minutesValue = String.valueOf(minutes);
+                                    } else {
+                                        minutesValue = "0" + String.valueOf(minutes);
+                                    }
+                                    if (seconds > 9) {
+                                        secondsValue = String.valueOf(seconds);
+                                    } else {
+                                        secondsValue = "0" + String.valueOf(seconds);
+                                    }
+                                    System.out.println(isOnActivityPage + " booleana " + checkinButton);
+                                    if (isOnActivityPage) {
+                                        checkinButton.setText("CHECK-OUT " + minutesValue + ":" + secondsValue);
                                     }
 
-                                    @Override
-                                    public void onFinish() {
 
-                                    }
-                                }.start();
+                                }
 
-                                    requestLocationUpdates();
-                                happeningNowLocation.startDate=String.valueOf(System.currentTimeMillis()/1000);
+                                @Override
+                                public void onFinish() {
+
+                                }
+                            }.start();
+
+                            requestLocationUpdates();
+                            happeningNowLocation.startDate = String.valueOf(System.currentTimeMillis() / 1000);
 
 
-
-
-                            }else if(buttonState == 1){
+                        } else
+                            if (buttonState == 1) {
 
                                 //Call sendLocation
-                                happeningNowLocation.endDate=String.valueOf(System.currentTimeMillis()/1000);
+                                happeningNowLocation.endDate = String.valueOf(System.currentTimeMillis() / 1000);
                                 savePoints();
 
 
-                                buttonState=2;
+                                buttonState = 2;
                                 ViewGroup.LayoutParams params = happeningNowLayout.getLayoutParams();
                                 params.height = 0;
                                 happeningNowLayout.setLayoutParams(params);
                             }
-                        }
-                    });
+                    }
+                });
 
 
 
@@ -265,7 +237,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
                 Event currentEvent;
 
-                SharedPreferences sharedPreferences = getActivity().getSharedPreferences("HappeningNowEvent", 0);
+                SharedPreferences sharedPreferences = activity.getSharedPreferences("HappeningNowEvent", 0);
                 String json = sharedPreferences.getString("HappeningNowEvent", "0");
                 Gson gson = new Gson();
                 currentEvent = gson.fromJson(json, Event.class);
@@ -278,7 +250,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
                 if (currentEvent.sportCode.equalsIgnoreCase("JOG") || currentEvent.sportCode.equalsIgnoreCase("GYM") || currentEvent.sportCode.equalsIgnoreCase("CYC")) {
                     weWillPlayString = "Will go to ";
-                    sportName =  sport.sportName;
+                    sportName = sport.sportName;
                 } else {
                     if (currentEvent.sportCode.equalsIgnoreCase("OTH")) {
                         weWillPlayString = "Will play ";
@@ -297,36 +269,36 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                 points.setText(String.valueOf(currentEvent.points));
                 location.setText(currentEvent.placeName);
                 switch (currentEvent.sportCode) {
-                    case "FOT":
-                        imageViewBackground.setBackgroundResource(R.drawable.bg_sport_football);
-                        break;
-                    case "BAS":
-                        imageViewBackground.setBackgroundResource(R.drawable.bg_sport_basketball);
-                        break;
-                    case "VOL":
-                        imageViewBackground.setBackgroundResource(R.drawable.bg_sport_volleyball);
-                        break;
-                    case "JOG":
-                        imageViewBackground.setBackgroundResource(R.drawable.bg_sport_jogging);
-                        break;
-                    case "GYM":
-                        imageViewBackground.setBackgroundResource(R.drawable.bg_sport_gym);
-                        break;
-                    case "CYC":
-                        imageViewBackground.setBackgroundResource(R.drawable.bg_sport_cycling);
-                        break;
-                    case "TEN":
-                        imageViewBackground.setBackgroundResource(R.drawable.bg_sport_tennis);
-                        break;
-                    case "PIN":
-                        imageViewBackground.setBackgroundResource(R.drawable.bg_sport_pingpong);
-                        break;
-                    case "SQU":
-                        imageViewBackground.setBackgroundResource(R.drawable.bg_sport_squash);
-                        break;
-                    case "OTH":
-                        imageViewBackground.setBackgroundResource(R.drawable.bg_sport_others);
-                        break;
+                case "FOT":
+                    imageViewBackground.setBackgroundResource(R.drawable.bg_sport_football);
+                    break;
+                case "BAS":
+                    imageViewBackground.setBackgroundResource(R.drawable.bg_sport_basketball);
+                    break;
+                case "VOL":
+                    imageViewBackground.setBackgroundResource(R.drawable.bg_sport_volleyball);
+                    break;
+                case "JOG":
+                    imageViewBackground.setBackgroundResource(R.drawable.bg_sport_jogging);
+                    break;
+                case "GYM":
+                    imageViewBackground.setBackgroundResource(R.drawable.bg_sport_gym);
+                    break;
+                case "CYC":
+                    imageViewBackground.setBackgroundResource(R.drawable.bg_sport_cycling);
+                    break;
+                case "TEN":
+                    imageViewBackground.setBackgroundResource(R.drawable.bg_sport_tennis);
+                    break;
+                case "PIN":
+                    imageViewBackground.setBackgroundResource(R.drawable.bg_sport_pingpong);
+                    break;
+                case "SQU":
+                    imageViewBackground.setBackgroundResource(R.drawable.bg_sport_squash);
+                    break;
+                case "OTH":
+                    imageViewBackground.setBackgroundResource(R.drawable.bg_sport_others);
+                    break;
                 }
 
                 if (currentEvent.numberOfParticipants - 1 >= 1) {
@@ -348,74 +320,64 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                         Bitmap bitmap = decodeBase64(currentEvent.participansProfilePicture.get(i));
                         friends0.setImageBitmap(bitmap);
                     } else
-                    if (!currentEvent.participansProfilePicture.get(i).equals("") && i == 1) {
-                        Bitmap bitmap = decodeBase64(currentEvent.participansProfilePicture.get(i));
-                        friends1.setImageBitmap(bitmap);
-                    } else
-                    if (!currentEvent.participansProfilePicture.get(i).equals("") && i == 2) {
-                        Bitmap bitmap = decodeBase64(currentEvent.participansProfilePicture.get(i));
-                        friends2.setImageBitmap(bitmap);
+                        if (!currentEvent.participansProfilePicture.get(i).equals("") && i == 1) {
+                            Bitmap bitmap = decodeBase64(currentEvent.participansProfilePicture.get(i));
+                            friends1.setImageBitmap(bitmap);
+                        } else
+                            if (!currentEvent.participansProfilePicture.get(i).equals("") && i == 2) {
+                                Bitmap bitmap = decodeBase64(currentEvent.participansProfilePicture.get(i));
+                                friends2.setImageBitmap(bitmap);
+                            }
+
+                }
+
+
+            } else
+                if (msg.what == 1) {
+                    System.out.println("eventStopped");
+
+
+                    ViewGroup.LayoutParams params = happeningNowLayout.getLayoutParams();
+                    params.height = 0;
+                    happeningNowLayout.setLayoutParams(params);
+                    if (buttonSetter != null) {
+                        buttonSetter.cancel();
                     }
 
+                    HPShouldBeVisible = false;
+
+                    if (googleApiClient.isConnected()) {
+                        googleApiClient.disconnect();
+                    }
                 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-            }else if(msg.what ==1 ){
-                System.out.println("eventStopped");
-
-
-                ViewGroup.LayoutParams params = happeningNowLayout.getLayoutParams();
-                params.height = 0;
-                happeningNowLayout.setLayoutParams(params);
-                if(buttonSetter != null) {
-                    buttonSetter.cancel();
-                }
-
-                HPShouldBeVisible=false;
-
-                if (googleApiClient.isConnected()) {
-                    googleApiClient.disconnect();
-                }
-            }
 
 
         }
     };
 
-    public void savePoints(){
+    public void savePoints() {
         System.out.println(" save points called");
         Event currentEvent;
 
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("HappeningNowEvent", 0);
+        SharedPreferences sharedPreferences = activity.getSharedPreferences("HappeningNowEvent", 0);
         String json = sharedPreferences.getString("HappeningNowEvent", "0");
         Gson gson = new Gson();
         currentEvent = gson.fromJson(json, Event.class);
 
         HashMap<String, String> params = new HashMap<String, String>();
         HashMap<String, String> headers = new HashMap<String, String>();
-        headers.put("authKey", Persistance.getInstance().getUserInfo(getActivity()).authKey);
-        params.put("userId", Persistance.getInstance().getUserInfo(getActivity()).id);
-        params.put("eventId",currentEvent.id);
+        headers.put("authKey", Persistance.getInstance().getUserInfo(activity).authKey);
+        params.put("userId", Persistance.getInstance().getUserInfo(activity).id);
+        params.put("eventId", currentEvent.id);
         System.out.println("happening id" + currentEvent.id);
-        params.put("startedAt",happeningNowLocation.startDate);
-        params.put("endedAt",happeningNowLocation.endDate);
-        for(int i=0;i < happeningNowLocation.locationList.size();i++){
-            params.put("locations["+i+"][latitude]",String.valueOf(happeningNowLocation.locationList.get(i).getLatitude()));
-            params.put("locations["+i+"][longitude]",String.valueOf(happeningNowLocation.locationList.get(i).getLongitude()));
+        params.put("startedAt", happeningNowLocation.startDate);
+        params.put("endedAt", happeningNowLocation.endDate);
+        for (int i = 0; i < happeningNowLocation.locationList.size(); i++) {
+            params.put("locations[" + i + "][latitude]", String.valueOf(happeningNowLocation.locationList.get(i).getLatitude()));
+            params.put("locations[" + i + "][longitude]", String.valueOf(happeningNowLocation.locationList.get(i).getLongitude()));
         }
 
-        HTTPResponseController.getInstance().savePoints(params, headers, getActivity(), this);
+        HTTPResponseController.getInstance().savePoints(params, headers, activity, this);
     }
 
     public void getAroundMeEvents(String pageNumber, Double latitude, Double longitude) {
@@ -423,9 +385,9 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         HashMap<String, String> params = new HashMap<String, String>();
         HashMap<String, String> headers = new HashMap<String, String>();
         HashMap<String, String> urlParams = new HashMap<String, String>();
-        headers.put("authKey", Persistance.getInstance().getUserInfo(getActivity()).authKey);
+        headers.put("authKey", Persistance.getInstance().getUserInfo(activity).authKey);
 
-        GPSTracker gps = new GPSTracker(getActivity().getApplicationContext(),  getActivity());
+        GPSTracker gps = new GPSTracker(activity.getApplicationContext(), activity);
         if (gps.canGetLocation()) {
             this.latitude = gps.getLatitude();
             this.longitude = gps.getLongitude();
@@ -442,22 +404,22 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         }
 
         //set urlParams
-        urlParams.put("userId", Persistance.getInstance().getUserInfo(getActivity()).id);
+        urlParams.put("userId", Persistance.getInstance().getUserInfo(activity).id);
         urlParams.put("pageNumber", pageNumber);
         urlParams.put("userLatitude", String.valueOf(latitude));
         urlParams.put("userLongitude", String.valueOf(longitude));
-        urlParams.put("userRange", "" + Persistance.getInstance().getUserInfo(getActivity()).range);
+        urlParams.put("userRange", "" + Persistance.getInstance().getUserInfo(activity).range);
         String userSport = "";
-        for (int i = 0; i < Persistance.getInstance().getUserInfo(getActivity()).sports.size(); i++) {
-            if (i < Persistance.getInstance().getUserInfo(getActivity()).sports.size() - 1) {
-                userSport = userSport + Persistance.getInstance().getUserInfo(getActivity()).sports.get(i).code + ";";
+        for (int i = 0; i < Persistance.getInstance().getUserInfo(activity).sports.size(); i++) {
+            if (i < Persistance.getInstance().getUserInfo(activity).sports.size() - 1) {
+                userSport = userSport + Persistance.getInstance().getUserInfo(activity).sports.get(i).code + ";";
             } else {
-                userSport = userSport + Persistance.getInstance().getUserInfo(getActivity()).sports.get(i).code;
+                userSport = userSport + Persistance.getInstance().getUserInfo(activity).sports.get(i).code;
             }
         }
         urlParams.put("userSports", userSport);
         //get Around Me Event
-        HTTPResponseController.getInstance().getAroundMeEvent(params, headers, getActivity(), urlParams, this);
+        HTTPResponseController.getInstance().getAroundMeEvent(params, headers, activity, urlParams, this);
     }
 
     public void getMyEvents(String pageNumber) {
@@ -465,16 +427,16 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         HashMap<String, String> params = new HashMap<String, String>();
         HashMap<String, String> headers = new HashMap<String, String>();
         HashMap<String, String> urlParams = new HashMap<String, String>();
-        headers.put("authKey", Persistance.getInstance().getUserInfo(getActivity()).authKey);
+        headers.put("authKey", Persistance.getInstance().getUserInfo(activity).authKey);
 
         //set urlParams
 
-        urlParams.put("userId", Persistance.getInstance().getUserInfo(getActivity()).id);
+        urlParams.put("userId", Persistance.getInstance().getUserInfo(activity).id);
         urlParams.put("pageNumber", pageNumber);
 
 
         //get Around Me Event
-        HTTPResponseController.getInstance().getMyEvent(params, headers, getActivity(), urlParams, this);
+        HTTPResponseController.getInstance().getMyEvent(params, headers, activity, urlParams, this);
     }
 
     @Override
@@ -489,21 +451,24 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mContext = inflater.getContext();
-        isOnActivityPage=true;
+        isOnActivityPage = true;
 
-        v = inflater.inflate(R.layout.activities_acitivity, null, true);
+        v = inflater.inflate(R.layout.activities_acitivity, container, false);
+        while (activity == null) {
+            activity = getActivity();
+        }
         v1 = (ProgressBar) v.findViewById(R.id.activityProgressBar);
 
-        int NumberOfUnseen=Persistance.getInstance().getUnseenChats(getActivity()).size();
+        int NumberOfUnseen = Persistance.getInstance().getUnseenChats(activity).size();
 
         BottomBarTab nearby = bottomBar.getTabWithId(R.id.tab_friends);
         nearby.setBadgeCount(NumberOfUnseen);
 
         //set activeToken in firebase node for notification
-        final DatabaseReference userNode = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(getActivity()).id);
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("regId", 0);
+        final DatabaseReference userNode = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(activity).id);
+        SharedPreferences sharedPreferences = activity.getSharedPreferences("regId", 0);
         String activeToken = sharedPreferences.getString("regId", "0");
-        if(!activeToken.equalsIgnoreCase("0")) {
+        if (!activeToken.equalsIgnoreCase("0")) {
             userNode.child("activeToken").setValue(activeToken);
         }
         myEventList.clear();
@@ -514,7 +479,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
             super.onCreate(savedInstanceState);
 
             // Creating ViewPager Adapter and Passing Fragment Manager, Titles fot the Tabs and Number Of Tabs
-            adapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager(), Titles, Numboftabs);
+            adapter = new ViewPagerAdapter(activity.getSupportFragmentManager(), Titles, Numboftabs);
 
             // Assigning ViewPager View and setting the adapter
             pager = (ViewPager) v.findViewById(R.id.pager);
@@ -534,9 +499,6 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
             // Setting the ViewPager For the SlidingTabsLayout
             tabs.setViewPager(pager);
-            while(activity == null){
-                activity=getActivity();
-            }
 
 
             // Initialize Crashlytics (Fabric)
@@ -556,26 +518,26 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
             }*/
 
-            if(Persistance.getInstance().getLocation(getActivity()).locationList.size() > 0 && !HPShouldBeVisible) {
-                 happeningNowLocation=Persistance.getInstance().getLocation(getActivity());
-                happeningNowLocation.endDate=String.valueOf(System.currentTimeMillis()/1000);
-                 savePoints();
+            if (Persistance.getInstance().getLocation(activity).locationList.size() > 0 && !HPShouldBeVisible) {
+                happeningNowLocation = Persistance.getInstance().getLocation(activity);
+                happeningNowLocation.endDate = String.valueOf(System.currentTimeMillis() / 1000);
+                savePoints();
 
             }
 
-            aroundMeEventList=Persistance.getInstance().getAroundMeActivities(activity);
-            myAdapter = new MyAdapter(myEventList, getActivity().getApplicationContext(), getActivity(), getResources(), currentFragment);
-            fradapter = new AroundMeAdapter(aroundMeEventList, getActivity().getApplicationContext(), getActivity(), getResources(), currentFragment);
-            //updateListOfEventsAroundMe(false);
+
+            myAdapter = new MyAdapter(myEventList, activity.getApplicationContext(), activity, getResources(), currentFragment);
+            fradapter = new AroundMeAdapter(aroundMeEventList, activity.getApplicationContext(), activity, getResources(), currentFragment);
+
             getAroundMeEvents("0", latitude, longitude);
             getMyEvents("0");
 
             NumberOfRefreshMyEvents = 0;
             NumberOfRefreshAroundMe = 0;
 
-            happeningNowLayout=(RelativeLayout) v.findViewById(R.id.generalHappeningNowLayout);
+            happeningNowLayout = (RelativeLayout) v.findViewById(R.id.generalHappeningNowLayout);
 
-            Runnable runnableStart=new Runnable() {
+            Runnable runnableStart = new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -583,62 +545,62 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                             long timeToNextEvent = (myEventList.get(0).eventDateTimeStamp - System.currentTimeMillis() / 1000);
                             while (timeToNextEvent >= 0) {
                                 Thread.sleep(1000);
-                                timeToNextEvent = (myEventList.get(0).eventDateTimeStamp - System.currentTimeMillis() / 1000) ;
+                                timeToNextEvent = (myEventList.get(0).eventDateTimeStamp - System.currentTimeMillis() / 1000);
                             }
                             //happening now started
-                        if((timeToNextEvent > -3600 && buttonState == 0)|| (timeToNextEvent > -7200 && buttonState == 1)) {
+                            if ((timeToNextEvent > -3600 && buttonState == 0) || (timeToNextEvent > -7200 && buttonState == 1)) {
 
                                 googleApiClient.connect();
-                            startedEventDate=myEventList.get(0).eventDateTimeStamp;
+                                startedEventDate = myEventList.get(0).eventDateTimeStamp;
                                 myEventList.remove(0);
 
 
-                            SharedPreferences.Editor editor = getActivity().getSharedPreferences("HappeningNowEvent", 0).edit();
-                            Gson gson = new Gson();
-                            editor.putString("HappeningNowEvent", gson.toJson(Persistance.getInstance().getMyActivities(getActivity()).get(0)));
-                            editor.commit();
+                                SharedPreferences.Editor editor = activity.getSharedPreferences("HappeningNowEvent", 0).edit();
+                                Gson gson = new Gson();
+                                editor.putString("HappeningNowEvent", gson.toJson(Persistance.getInstance().getMyActivities(activity).get(0)));
+                                editor.commit();
 
                                 handler.sendEmptyMessage(0);
 
-                        }
+                            }
 
                         }
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             };
 
-            Runnable runnableStop=new Runnable() {
+            Runnable runnableStop = new Runnable() {
                 @Override
                 public void run() {
                     try {
                         if (myEventList.size() >= 1) {
-                            long timeToNextEvent = (startedEventDate - System.currentTimeMillis() / 1000) ;
-                            while ((buttonState == 0 && timeToNextEvent <= 3600 ) || (buttonState == 1 && timeToNextEvent < 7200) || !HPShouldBeVisible) {
-                                if(buttonState == 2) {
+                            long timeToNextEvent = (startedEventDate - System.currentTimeMillis() / 1000);
+                            while ((buttonState == 0 && timeToNextEvent <= 3600) || (buttonState == 1 && timeToNextEvent < 7200) || !HPShouldBeVisible) {
+                                if (buttonState == 2) {
                                     break;
                                 }
                                 Thread.sleep(1000);
                                 timeToNextEvent = (startedEventDate - System.currentTimeMillis() / 1000);
                             }
-                            if(timeToNextEvent > 7200){
+                            if (timeToNextEvent > 7200) {
                                 savePoints();
                             }
                             //happening now stoped
                             handler.sendEmptyMessage(1);
 
                         }
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             };
 
-            if(stopHappeningNow == null || !stopHappeningNow.isAlive()) {
+            if (stopHappeningNow == null || !stopHappeningNow.isAlive()) {
                 stopHappeningNow = new Thread(runnableStop);
             }
-            if(startHappeningNow == null || !stopHappeningNow.isAlive()) {
+            if (startHappeningNow == null || !stopHappeningNow.isAlive()) {
                 startHappeningNow = new Thread(runnableStart);
             }
 
@@ -650,12 +612,12 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
                     .build();
-            locationRequest=new LocationRequest();
-            locationRequest.setInterval(300*1000);
-            locationRequest.setFastestInterval(5*1000);
+            locationRequest = new LocationRequest();
+            locationRequest.setInterval(300 * 1000);
+            locationRequest.setFastestInterval(5 * 1000);
             locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 
-            if(HPShouldBeVisible){
+            if (HPShouldBeVisible) {
                 googleApiClient.connect();
                 handler.sendEmptyMessage(0);
             }
@@ -692,12 +654,12 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         createNewActivityFloatingButtonAroundMe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), CreateNewActivity.class);
+                Intent intent = new Intent(activity, CreateNewActivity.class);
                 startActivity(intent);
             }
         });
 
-         if (!isFirstTimeAroundMe) {
+        if (!isFirstTimeAroundMe) {
             //  if (
             //      friendsEventsList.size() == 0 &&
             //          !eventHappeningNow) {
@@ -727,22 +689,22 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                             if (frlistView.getLastVisiblePosition() == frlistView.getAdapter().getCount() - 1 &&
                                     frlistView.getChildAt(frlistView.getChildCount() - 1).getBottom() <= frlistView.getHeight()) {
 
-                                    // mSwipeRefreshLayout1.setRefreshing(true);
+                                // mSwipeRefreshLayout1.setRefreshing(true);
                                 progressBarAroundMe.setAlpha(1f);
 
 
 //                                Log.v("numar de elemete",String.valueOf(frlistView.getAdapter().getCount()));
-                                    //(new Handler()).postDelayed(new Runnable() {
+                                //(new Handler()).postDelayed(new Runnable() {
                                 ////@Override
                                 // public void run() {
-                                getAroundMeEvents(String.valueOf(NumberOfRefreshAroundMe),latitude,longitude);
+                                getAroundMeEvents(String.valueOf(NumberOfRefreshAroundMe), latitude, longitude);
 
                                 // }
                                 // }, 1000);
-                                    //
-                                }
+                                //
+                            }
 
-                      }
+                        }
 
                     }
 
@@ -756,7 +718,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
             mSwipeRefreshLayout2.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
-                    getAroundMeEvents("0",latitude,longitude);
+                    getAroundMeEvents("0", latitude, longitude);
                     getFirstPageAroundMe = true;
                     mSwipeRefreshLayout2.setRefreshing(false);
                     NumberOfRefreshAroundMe = 0;
@@ -781,8 +743,8 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
             this.prepareError("No location services available!");
         }
         //if(HPShouldBeVisible){
-           // myEventList.remove(0);
-       // }
+        // myEventList.remove(0);
+        // }
 
         // stop swiping on my events
         final SwipeRefreshLayout mSwipeRefreshLayout1 = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh1);
@@ -802,7 +764,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         createNewActivityFloatingButtonMyActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), CreateNewActivity.class);
+                Intent intent = new Intent(activity, CreateNewActivity.class);
                 startActivity(intent);
             }
         });
@@ -855,7 +817,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
             });
             addedSwipeMyActivity = true;
         }
-        if(!stopHappeningNow.isAlive() && !startHappeningNow.isAlive()){
+        if (!stopHappeningNow.isAlive() && !startHappeningNow.isAlive()) {
             stopHappeningNow.start();
             startHappeningNow.start();
         }
@@ -866,8 +828,8 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-       // requestLocationUpdates();
-}
+        // requestLocationUpdates();
+    }
 
 
     @Override
@@ -887,7 +849,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
             // for ActivityCompat#requestPermissions for more details.
             return;
         }*/
-        locationListener=this;
+        locationListener = this;
         LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
     }
 
@@ -898,9 +860,9 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
     @Override
     public void onLocationChanged(Location location) {
-        System.out.println(location.getLatitude()+" new api");
+        System.out.println(location.getLatitude() + " new api");
         happeningNowLocation.locationList.add(location);
-        Persistance.getInstance().setLocation(activity,happeningNowLocation);
+        Persistance.getInstance().setLocation(activity, happeningNowLocation);
 
 
     }

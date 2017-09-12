@@ -9,6 +9,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -50,6 +51,7 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
     protected Context mContext;
     protected View v;
     protected ImageView settings;
+    static public FragmentActivity activity;
     private static User cache;
 
     @Nullable
@@ -57,6 +59,9 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mContext = inflater.getContext();
         v = inflater.inflate(R.layout.my_profile_activity, container, false);
+        while (activity == null) {
+            activity = getActivity();
+        }
 
         try {
             super.onCreate(savedInstanceState);
@@ -66,11 +71,11 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
 
                 @Override
                 public void onClick(View view) {
-                    Persistance.getInstance().deleteUserProfileInfo(getActivity());
+                    Persistance.getInstance().deleteUserProfileInfo(activity);
                     Log.v("logout", "am dat logout");
-                    SharedPreferences preferences = getActivity().getSharedPreferences("ProfileImage", 0);
+                    SharedPreferences preferences = activity.getSharedPreferences("ProfileImage", 0);
                     preferences.edit().remove("ProfileImage").apply();
-                    getActivity().finish();
+                    activity.finish();
                     Intent intent = new Intent(mContext, IntroActivity.class);
                     startActivity(intent);
                 }
@@ -150,7 +155,7 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
         HashMap<String, String> params = new HashMap<>();
         HashMap<String, String> headers = new HashMap<>();
         headers.put("authKey", u.authKey);
-        HTTPResponseController.getInstance().getUserProfile(params, headers, u.id, this.getActivity(), this, this);
+        HTTPResponseController.getInstance().getUserProfile(params, headers, u.id, activity, this, this);
     }
 
     public void printInfo(User u) {
@@ -268,7 +273,7 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
         }
 
         try {
-            User u = Persistance.getInstance().getProfileInfo(this.getActivity());
+            User u = Persistance.getInstance().getProfileInfo(activity);
 
             u.email = jsonObject.getString("email");
             u.firstName = jsonObject.getString("firstName");
@@ -291,14 +296,13 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
                 u.sports.add(new Sport(sports.getString(i)));
             }
 
-            User t = Persistance.getInstance().getUserInfo(this.getActivity());
+            User t = Persistance.getInstance().getUserInfo(activity);
             t.age = Calendar.getInstance().get(Calendar.YEAR) - Integer.parseInt(jsonObject.getString("yearBorn"));
-            Persistance.getInstance().setUserInfo(this.getActivity(), t);
+            Persistance.getInstance().setUserInfo(activity, t);
 
-            MyProfileActivity.cache = u;
-
-            Persistance.getInstance().setProfileInfo(this.getActivity(), u);
-            this.printInfo(u);
+            MyProfileActivity mpa = (MyProfileActivity) this;
+            Persistance.getInstance().setProfileInfo(activity, u);
+            mpa.printInfo(u);
         } catch (JSONException e) {
             e.printStackTrace();
         }

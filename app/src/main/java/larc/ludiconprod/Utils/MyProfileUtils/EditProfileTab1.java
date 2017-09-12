@@ -1,5 +1,6 @@
 package larc.ludiconprod.Utils.MyProfileUtils;
 
+import android.app.Activity;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -32,10 +33,14 @@ public class EditProfileTab1 extends Fragment implements View.OnClickListener, S
     private int progress;
     private TextView progressText;
     EditProfileActivity epa;
+    Activity activity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.edittab1,container,false);
+        while (activity == null){
+            activity = getActivity();
+        }
 
         try {
             epa = (EditProfileActivity) getActivity();
@@ -78,8 +83,8 @@ public class EditProfileTab1 extends Fragment implements View.OnClickListener, S
 
             Set<Integer> codesKeys = this.codes.keySet();
 
-            Typeface typeFace = Typeface.createFromAsset(getActivity().getAssets(),"fonts/Quicksand-Medium.ttf");
-            Typeface typeFaceBold = Typeface.createFromAsset(getActivity().getAssets(),"fonts/Quicksand-Bold.ttf");
+            Typeface typeFace = Typeface.createFromAsset(activity.getAssets(),"fonts/Quicksand-Medium.ttf");
+            Typeface typeFaceBold = Typeface.createFromAsset(activity.getAssets(),"fonts/Quicksand-Bold.ttf");
 
             for (Integer id : codesKeys) {
                 RadioButton rb = (RadioButton) v.findViewById(id);
