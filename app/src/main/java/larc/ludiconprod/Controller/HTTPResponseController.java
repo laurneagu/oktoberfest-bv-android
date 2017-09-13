@@ -184,11 +184,12 @@ public class HTTPResponseController {
                 } else
                     if (activity.getLocalClassName().toString().equals("Activities.RegisterActivity")) {
 
-                        Toast.makeText(activity, "Account has created!!", Toast.LENGTH_LONG).show();
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                Intent intent = new Intent(activity, LoginActivity.class);
+
+                                Intent intent = new Intent(activity, ResetPasswordFinalActivity.class);
+                                intent.putExtra("from","register");
                                 activity.startActivity(intent);
                             }
                         }, 3000);
@@ -1028,6 +1029,7 @@ public class HTTPResponseController {
             @Override
             public void onResponse(JSONObject response) {
                 Intent intent = new Intent(activity, ResetPasswordFinalActivity.class);
+                intent.putExtra("from","reset");
                 activity.startActivity(intent);
                 activity.finish();
             }

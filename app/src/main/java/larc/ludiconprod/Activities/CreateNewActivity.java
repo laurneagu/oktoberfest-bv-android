@@ -972,12 +972,12 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
 
                 HashMap<String, String> header = new HashMap<>();
                 header.put("authKey", Persistance.getInstance().getUserInfo(this).authKey);
-                HTTPResponseController.getInstance().valuesForUnauthorized(header, "sportCode=" + sportCode, this, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        onNotAutorizedCheck(response);
-                    }
-                }, this);
+//                HTTPResponseController.getInstance().valuesForUnauthorized(header, "sportCode=" + sportCode, this, new Response.Listener<JSONObject>() {
+//                    @Override
+//                    public void onResponse(JSONObject response) {
+//                        onNotAutorizedCheck(response);
+//                    }
+//                }, this);
             }
 
             LatLng latLng = new LatLng(lat, lng);

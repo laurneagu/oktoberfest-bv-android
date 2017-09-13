@@ -66,7 +66,6 @@ public class ResetPasswordActivity extends Activity {
         TextView titleText = (TextView) findViewById(R.id.titleText);
         titleText.setText("Reset Password");
         backButton = (RelativeLayout) findViewById(R.id.backButton);
-        backButton.setBackgroundResource(R.drawable.ic_nav_up);
         resetPassword = (Button) findViewById(R.id.resetPasswordButton);
         resetPassword.setTypeface(typeFaceBold);
         email = (EditText) findViewById(R.id.emailAdress);
