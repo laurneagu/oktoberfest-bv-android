@@ -167,11 +167,26 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                 TextView allFriends = (TextView) v.findViewById(R.id.friendsNumberHN);
                 checkinButton = (Button) v.findViewById(R.id.checkinHN);
 
+                final Event currentEvent;
+
+                SharedPreferences sharedPreferences = activity.getSharedPreferences("HappeningNowEvent", 0);
+                String json = sharedPreferences.getString("HappeningNowEvent", "0");
+                Gson gson = new Gson();
+                currentEvent = gson.fromJson(json, Event.class);
+
 
                 checkinButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+
+
                         if (buttonState == 0) {
+                            HashMap<String, String> params = new HashMap<String, String>();
+                            HashMap<String, String> headers = new HashMap<String, String>();
+                            headers.put("authKey",Persistance.getInstance().getUserInfo(activity).authKey);
+                            params.put("eventId",currentEvent.id);
+                            HTTPResponseController.getInstance().checkin(params, headers, activity);
+
                             buttonState = 1;
                             buttonSetter = new CountDownTimer(7200000, 1000) {
                                 int minutes = 0;
@@ -235,12 +250,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
 
 
-                Event currentEvent;
 
-                SharedPreferences sharedPreferences = activity.getSharedPreferences("HappeningNowEvent", 0);
-                String json = sharedPreferences.getString("HappeningNowEvent", "0");
-                Gson gson = new Gson();
-                currentEvent = gson.fromJson(json, Event.class);
 
 
 

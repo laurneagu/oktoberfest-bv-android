@@ -775,6 +775,22 @@ public class HTTPResponseController {
         };
     }
 
+    private Response.Listener<JSONObject> checkinSuccessListener() {
+        return new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                try {
+
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        };
+    }
+
     public String trimMessage(String json, String key) {
         String trimmedString = null;
         if (activity.getLocalClassName().toString().equals("Activities.LoginActivity")) {
@@ -1061,6 +1077,13 @@ public class HTTPResponseController {
     public void savePoints(HashMap<String, String> params, HashMap<String, String> headers, Activity activity, Response.ErrorListener errorListener) {
         RequestQueue requestQueue = Volley.newRequestQueue(activity);
         CustomRequest request = new CustomRequest(Request.Method.POST, prodServer + "api/savePoints", params, headers, this.savePointsSuccessListener(), errorListener);
+        requestQueue.add(request);
+    }
+
+    public void checkin(HashMap<String, String> params, HashMap<String, String> headers, Activity activity) {
+        RequestQueue requestQueue = Volley.newRequestQueue(activity);
+        setActivity(activity,"","");
+        CustomRequest request = new CustomRequest(Request.Method.POST, prodServer + "api/checkin", params, headers, this.checkinSuccessListener(), this.createErrorListener());
         requestQueue.add(request);
     }
 }

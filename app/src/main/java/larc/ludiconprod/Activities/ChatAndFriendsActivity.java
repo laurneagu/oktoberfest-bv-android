@@ -300,7 +300,6 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
 
             getFriends("0");
             friendsAdapter = new FriendsAdapter(friends, activity, activity, getResources(), this);
-            setFriendsAdapter();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -338,7 +337,8 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                 discoverActivitiesButton.setVisibility(View.INVISIBLE);
                 chatImage.setVisibility(View.INVISIBLE);
             }
-            if (chatListView != null) {
+            shouldRequestPage=true;
+            if (chatListView != null && shouldRequestPage) {
                 chatListView.setOnTouchListener(new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(final View v, MotionEvent event) {
@@ -522,6 +522,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                                 }
                                 if (numberOfTotalChatsArrived == counterOfChats) {
                                     setAdapter();
+                                    Persistance.getInstance().setConversation(activity,chatList);
                                 }
                             }
 
