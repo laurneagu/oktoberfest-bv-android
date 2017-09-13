@@ -28,6 +28,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.w3c.dom.Text;
+
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -239,6 +241,13 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
         ludicoinsNumber.setText("+ " + String.valueOf(eventDetails.ludicoins));
         pointsNumber.setText("+ " + String.valueOf(eventDetails.points));
         playerNumber.setText("PLAYERS " + String.valueOf(eventDetails.numberOfParticipants + "/" + String.valueOf(eventDetails.capacity)));
+
+        LinearLayout locationCard = (LinearLayout) findViewById(R.id.root);
+        TextView t = (TextView) locationCard.findViewById(R.id.ludicoinsNumber);
+        t.setText("+ " + String.valueOf(eventDetails.ludicoins));
+        t = (TextView) locationCard.findViewById(R.id.pointsNumber);
+        t.setText("+ " + String.valueOf(eventDetails.points));
+
         if (eventDetails.numberOfParticipants > 1) {
 
             ViewGroup.LayoutParams params = imageProfileParticipantsLayout.getLayoutParams();

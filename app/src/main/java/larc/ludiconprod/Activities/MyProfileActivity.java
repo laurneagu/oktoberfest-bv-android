@@ -319,6 +319,8 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
                 u.sports.add(new Sport(sports.getString(i)));
             }
 
+            MyProfileActivity.cache = u;
+
             User t = Persistance.getInstance().getUserInfo(activity);
             t.age = Calendar.getInstance().get(Calendar.YEAR) - Integer.parseInt(jsonObject.getString("yearBorn"));
             Persistance.getInstance().setUserInfo(activity, t);

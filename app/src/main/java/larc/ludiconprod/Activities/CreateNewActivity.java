@@ -36,6 +36,10 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -621,8 +625,8 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                 ludicoinsNumber.setText("+" + String.valueOf(eventDetails.ludicoins));
                 pointsNumber.setText("+" + String.valueOf(eventDetails.points));
             } else {
-                ludicoinsNumber.setText(String.valueOf(-1));
-                pointsNumber.setText(String.valueOf(-1));
+                ludicoinsNumber.setText("?");
+                pointsNumber.setText("?");
             }
 
             descriptionEditText.setText(eventDetails.description);
@@ -963,10 +967,18 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                 ludicoinsNumber.setText(String.valueOf(ludicoins));
                 pointsNumber.setText(String.valueOf(points));
             } else {
-                ludicoinsNumber.setText(String.valueOf(-1));
-                pointsNumber.setText(String.valueOf(-1));
-            }
+                ludicoinsNumber.setText(String.valueOf("?"));
+                pointsNumber.setText(String.valueOf("?"));
 
+                HashMap<String, String> header = new HashMap<>();
+                header.put("authKey", Persistance.getInstance().getUserInfo(this).authKey);
+                HTTPResponseController.getInstance().valuesForUnauthorized(header, "sportCode=" + sportCode, this, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        onNotAutorizedCheck(response);
+                    }
+                }, this);
+            }
 
             LatLng latLng = new LatLng(lat, lng);
 
@@ -1206,6 +1218,18 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
 
                 }
             }
+    }
+
+    private void onNotAutorizedCheck(JSONObject response) {
+        try {
+            TextView ludicoinsNumber = (TextView) findViewById(R.id.ludicoinsNumber);
+            TextView pointsNumber = (TextView) findViewById(R.id.pointsNumber);
+
+            ludicoinsNumber.setText("+" + response.getInt("ludicoins"));
+            pointsNumber.setText("+" + response.getInt("points"));
+        } catch (JSONException ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override

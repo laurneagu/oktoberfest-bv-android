@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import larc.ludiconprod.Activities.CouponsActivity;
 import larc.ludiconprod.Utils.MyProfileUtils.EditProfileTab1;
 import larc.ludiconprod.Utils.MyProfileUtils.EditProfileTab2;
 
@@ -15,13 +16,15 @@ public class CouponsPagerAdapter extends FragmentStatePagerAdapter {
     private CouponsTab2 editProfileTab2;
     private boolean t1 = false;
     private boolean t2 = false;
+    private CouponsActivity fragment;
 
     // Build a Constructor and assign the passed Values to appropriate values in the class
-    public CouponsPagerAdapter(FragmentManager fm, CharSequence mTitles[], int mNumbOfTabsumb) {
+    public CouponsPagerAdapter(FragmentManager fm, CharSequence mTitles[], int mNumbOfTabsumb, CouponsActivity fragment) {
         super(fm);
 
         this.Titles = mTitles;
         this.NumbOfTabs = mNumbOfTabsumb;
+        this.fragment = fragment;
     }
 
     //This method return the fragment for the every position in the View Pager
@@ -31,12 +34,14 @@ public class CouponsPagerAdapter extends FragmentStatePagerAdapter {
         if(position == 0) { // if the position is 0 we are returning the First tab
             if (!this.t1) {
                 editProfileTab1 = new CouponsTab1();
+                editProfileTab1.fragment = this.fragment;
                 t1 = true;
             }
             return editProfileTab1;
         } else {
             if(!this.t2) {
                 editProfileTab2 = new CouponsTab2();
+                //editProfileTab2.fragment = this.fragment;
                 t2 = true;
             }
             return editProfileTab2;

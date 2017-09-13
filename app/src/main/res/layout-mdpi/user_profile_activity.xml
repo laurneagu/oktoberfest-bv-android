@@ -314,6 +314,12 @@
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
                     android:layout_marginBottom="16dp">
+                    <TextView
+                        android:id="@+id/vsLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:text="VS"
+                        android:gravity="center"/>
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -327,18 +333,18 @@
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:gravity="center">
+                            android:orientation="vertical">
                             <TextView
                                 android:id="@+id/youLabel"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="You"
+                                android:text="You     "
+                                android:textAlignment="viewStart"
                                 android:textColor="@color/green"/>
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:gravity="center">>
+                                android:gravity="start">
                                 <ImageView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -352,12 +358,6 @@
                             </LinearLayout>
                         </LinearLayout>
                     </LinearLayout>
-                    <TextView
-                        android:id="@+id/vsLabel"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:text="VS"
-                        android:gravity="center"/>
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -367,18 +367,18 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:orientation="vertical"
-                            android:gravity="center">
+                            android:gravity="center_vertical">
                             <TextView
                                 android:id="@+id/foeLabel"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Foe"
+                                android:text="            Foe"
                                 android:textAlignment="viewEnd"
                                 android:textColor="@color/pink"/>
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:gravity="center">
+                                android:gravity="end">
                                 <TextView
                                     android:id="@+id/profileFoePoints"
                                     android:layout_width="wrap_content"

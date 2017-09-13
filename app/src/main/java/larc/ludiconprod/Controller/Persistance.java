@@ -19,6 +19,7 @@ import larc.ludiconprod.Utils.Chat;
 import larc.ludiconprod.Utils.Coupon;
 import larc.ludiconprod.Utils.Event;
 import larc.ludiconprod.Utils.HappeningNowLocation;
+import larc.ludiconprod.Utils.UserPosition;
 
 /**
  * Created by ancuta on 7/12/2017.
@@ -45,7 +46,8 @@ public class Persistance {
     private final String cuponsString = "CouponsActivityCoupons";
     private final String myCuponsString = "CouponsActivityMyCoupons";
     private final String locationString = "locationsList";
-    private final String conversationString="conversationList";
+    private final String conversationString = "conversationList";
+    private final String leaderboardString = "leaderboardList";
 
     public void setUserInfo(Activity activity, User user) {
 
@@ -266,6 +268,26 @@ public class Persistance {
         SharedPreferences.Editor editor = activity.getSharedPreferences(this.myCuponsString, 0).edit();
         Gson gson = new Gson();
         editor.putString(this.myCuponsString, gson.toJson(cs));
+        editor.commit();
+    }
+
+    public ArrayList<UserPosition> getLeaderboardCache(Activity activity) {
+        System.out.println(activity + "activity");
+        SharedPreferences sharedPreferences = activity.getSharedPreferences(leaderboardString, 0);
+        String json = sharedPreferences.getString(leaderboardString, "0");
+        Gson gson = new Gson();
+        if (json.equals("0")) {
+            return new ArrayList<>();
+        }
+        Type type = new TypeToken<ArrayList<UserPosition>>() {
+        }.getType();
+        return gson.fromJson(json, type);
+    }
+
+    public void setLeaderboardCache(ArrayList<UserPosition> cs, Activity activity) {
+        SharedPreferences.Editor editor = activity.getSharedPreferences(this.leaderboardString, 0).edit();
+        Gson gson = new Gson();
+        editor.putString(this.leaderboardString, gson.toJson(cs));
         editor.commit();
     }
 }

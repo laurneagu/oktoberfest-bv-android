@@ -96,7 +96,7 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
 
-        android:background="#02b9ad"
+        android:background="@drawable/card_button_background"
         android:gravity="center"
         android:orientation="horizontal"
         android:layout_below="@+id/dataL">
@@ -126,5 +126,4 @@
             android:textColor="#fcb851"/>
 
     </LinearLayout>
-
 </RelativeLayout>

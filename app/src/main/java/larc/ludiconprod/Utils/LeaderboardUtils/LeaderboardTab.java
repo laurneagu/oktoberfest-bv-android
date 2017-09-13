@@ -14,6 +14,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -45,12 +46,6 @@ import larc.ludiconprod.Utils.UserPosition;
 
 public class LeaderboardTab extends Fragment implements Response.Listener<JSONObject>, Response.ErrorListener {
 
-    private static final ArrayList<UserPosition>[] CACHE = new ArrayList[3];
-    static {
-        CACHE[LeaderboardTab.THIS_MONTH] = new ArrayList<>();
-        CACHE[LeaderboardTab.MONTHS_3] = new ArrayList<>();
-        CACHE[LeaderboardTab.ALL_TIME] = new ArrayList<>();
-    }
     private final ArrayList<UserPosition> users = new ArrayList<>();
     private LeaderboardAdapter leaderboardAdapter;
     private int pageNumber;
@@ -78,12 +73,6 @@ public class LeaderboardTab extends Fragment implements Response.Listener<JSONOb
     }
 
     public void getLeaderboards(int page) {
-        if (page == 0) {
-            this.users.clear();
-            this.users.addAll(LeaderboardTab.CACHE[this.timeFrame]);
-            this.leaderboardAdapter.notifyDataSetChanged();
-        }
-
         HashMap<String, String> headers = new HashMap<>();
         headers.put("authKey", Persistance.getInstance().getUserInfo(getActivity()).authKey);
         String urlParams = "";
@@ -142,7 +131,6 @@ public class LeaderboardTab extends Fragment implements Response.Listener<JSONOb
             listView.setOnScrollListener(new AbsListView.OnScrollListener() {
                 @Override
                 public void onScrollStateChanged(AbsListView absListView, int i) {
-
                 }
 
                 @Override
@@ -284,9 +272,8 @@ public class LeaderboardTab extends Fragment implements Response.Listener<JSONOb
                 this.users.add(user);
             }
 
-            if (pageNumber == 0) {
-                LeaderboardTab.CACHE[this.timeFrame].clear();
-                LeaderboardTab.CACHE[this.timeFrame].addAll(this.users);
+            if (pageNumber == 0 && this.timeFrame == LeaderboardTab.THIS_MONTH) {
+                Persistance.getInstance().setLeaderboardCache(this.users, super.getActivity());
             }
 
             this.updateUserList();
@@ -315,14 +302,19 @@ public class LeaderboardTab extends Fragment implements Response.Listener<JSONOb
             this.userId = Persistance.getInstance().getUserInfo(super.getActivity()).id;
             this.users.clear();
             this.v = v;
+
             this.leaderboardAdapter = new LeaderboardAdapter(this.users, v, this.activity);
+
+            if (this.timeFrame == LeaderboardTab.THIS_MONTH) {
+                this.users.clear();
+                this.users.addAll(Persistance.getInstance().getLeaderboardCache(super.getActivity()));
+                leaderboardAdapter.notifyDataSetChanged();
+                final ListView listView = (ListView) v.findViewById(R.id.leaderList);
+                listView.setAdapter(leaderboardAdapter);
+            }
 
             this.addedSwipeleaderboards = false;
             pageNumber = 0;
-
-            this.users.clear();
-            this.users.addAll(LeaderboardTab.CACHE[this.timeFrame]);
-            this.leaderboardAdapter.notifyDataSetChanged();
 
             getLeaderboards(0);
 

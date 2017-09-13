@@ -72,12 +72,12 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
     FragmentActivity activity;
 
     public void getCoupons(String pageNumber) {
-        if (pageNumber.equals("0")) {
+        /*if (pageNumber.equals("0")) {
             this.coupons.clear();
             ArrayList<Coupon> c = Persistance.getInstance().getCouponsCache(super.getActivity());
             this.coupons.addAll(c);
             this.couponsAdapter.notifyDataSetChanged();
-        }
+        }*/
 
         HashMap<String, String> headers = new HashMap<>();
         //headers.put("Content-Type", "application/json");
@@ -125,12 +125,12 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
     }
 
     public void getMyCoupons(String pageNumber) {
-        if (pageNumber.equals("0")) {
+        /*if (pageNumber.equals("0")) {
             this.myCoupons.clear();
             ArrayList<Coupon> c = Persistance.getInstance().getMyCouponsCache(super.getActivity());
             this.myCoupons.addAll(c);
             this.myCouponsAdapter.notifyDataSetChanged();
-        }
+        }*/
 
         HashMap<String, String> headers = new HashMap<>();
         //headers.put("Content-Type", "application/json");
@@ -372,7 +372,7 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
         try {
             super.onCreate(savedInstanceState);
 
-            this.adapter = new CouponsPagerAdapter(this.getFragmentManager(), CouponsActivity.TITLES, this.tabsNumber);
+            this.adapter = new CouponsPagerAdapter(this.getFragmentManager(), CouponsActivity.TITLES, this.tabsNumber, this);
 
             pager = (ViewPager) v.findViewById(R.id.couponsPager);
             pager.setAdapter(adapter);

@@ -305,10 +305,10 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
             ImageView versusImg = (ImageView) findViewById(R.id.profileFoeImage);
 
             TextView foeLabel = (TextView) findViewById(R.id.foeLabel);
-            foeLabel.setText(u.firstName + " " + u.lastName);
+            foeLabel.setText(u.firstName);
             TextView youLabel = (TextView) findViewById(R.id.youLabel);
             User you = Persistance.getInstance().getUserInfo(this);
-            youLabel.setText(you.firstName + " " + you.lastName);
+            youLabel.setText(you.firstName);
 
             if (you.profileImage != null && !you.profileImage.isEmpty()) {
                 Bitmap im = IntroActivity.decodeBase64(you.profileImage);
