@@ -6,17 +6,13 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.ndk.CrashlyticsNdk;
@@ -31,17 +27,12 @@ import com.facebook.HttpMethod;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.login.LoginBehavior;
-import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.facebook.login.widget.ProfilePictureView;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.FacebookAuthProvider;
-import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
-import io.fabric.sdk.android.Fabric;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,12 +41,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import io.fabric.sdk.android.Fabric;
 import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
-import larc.ludiconprod.PasswordEncryptor;
 import larc.ludiconprod.R;
-import larc.ludiconprod.User;
-import larc.ludiconprod.Utils.Event;
 
 /**
  * Created by ancuta on 7/10/2017.
@@ -151,51 +140,51 @@ public class IntroActivity extends Activity {
 
 
         facebookLogin();
-                System.out.println(Persistance.getInstance().getUserInfo(IntroActivity.this).facebookId + " fbid");
-                if (Persistance.getInstance().getUserInfo(IntroActivity.this).facebookId != null && Persistance.getInstance().getUserInfo(IntroActivity.this).facebookId.equals("")) {
-                    goToActivity();
-                } else
-                    if (!go) {
-                        new GraphRequest(
-                                AccessToken.getCurrentAccessToken(),
-                                "/me/friends",
-                                null,
-                                HttpMethod.GET,
-                                new GraphRequest.Callback() {
-                                    public void onCompleted(GraphResponse response) {
-                                        final ArrayList<String> friends = new ArrayList<String>();
-                                        JSONArray friendsList;
-                                        try {
-                                            friendsList = response.getJSONObject().getJSONArray("data");
-                                            for (int l = 0; l < friendsList.length(); l++) {
-                                                friends.add(friendsList.getJSONObject(l).getString("id"));
-                                            }
-
-                                            String firstName = Persistance.getInstance().getUserInfo(IntroActivity.this).firstName;
-                                            String lastName = Persistance.getInstance().getUserInfo(IntroActivity.this).lastName;
-                                            String email = Persistance.getInstance().getUserInfo(IntroActivity.this).email;
-                                            String password = Persistance.getInstance().getUserInfo(IntroActivity.this).password;
-                                            HashMap<String, String> params = new HashMap<String, String>();
-                                            params.put("firstName", firstName);
-                                            params.put("lastName", lastName);
-                                            params.put("email", email);
-                                            params.put("password", password);
-                                            params.put("isCustom", "1");
-                                            for (int i = 0; i < friends.size(); i++) {
-                                                params.put("fbFriends[" + i + "]", friends.get(i));
-                                            }
-                                            HashMap<String, String> headers = new HashMap<String, String>();
-                                            headers.put("apiKey", "b0a83e90-4ee7-49b7-9200-fdc5af8c2d33");
-                                            HTTPResponseController.getInstance().returnResponse(params, headers, IntroActivity.this, "http://207.154.236.13/api/register/");
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
-
-
+        System.out.println(Persistance.getInstance().getUserInfo(IntroActivity.this).facebookId + " fbid");
+        if (Persistance.getInstance().getUserInfo(IntroActivity.this).facebookId != null && Persistance.getInstance().getUserInfo(IntroActivity.this).facebookId.equals("")) {
+            goToActivity();
+        } else
+            if (!go) {
+                new GraphRequest(
+                        AccessToken.getCurrentAccessToken(),
+                        "/me/friends",
+                        null,
+                        HttpMethod.GET,
+                        new GraphRequest.Callback() {
+                            public void onCompleted(GraphResponse response) {
+                                final ArrayList<String> friends = new ArrayList<String>();
+                                JSONArray friendsList;
+                                try {
+                                    friendsList = response.getJSONObject().getJSONArray("data");
+                                    for (int l = 0; l < friendsList.length(); l++) {
+                                        friends.add(friendsList.getJSONObject(l).getString("id"));
                                     }
+
+                                    String firstName = Persistance.getInstance().getUserInfo(IntroActivity.this).firstName;
+                                    String lastName = Persistance.getInstance().getUserInfo(IntroActivity.this).lastName;
+                                    String email = Persistance.getInstance().getUserInfo(IntroActivity.this).email;
+                                    String password = Persistance.getInstance().getUserInfo(IntroActivity.this).password;
+                                    HashMap<String, String> params = new HashMap<String, String>();
+                                    params.put("firstName", firstName);
+                                    params.put("lastName", lastName);
+                                    params.put("email", email);
+                                    params.put("password", password);
+                                    params.put("isCustom", "1");
+                                    for (int i = 0; i < friends.size(); i++) {
+                                        params.put("fbFriends[" + i + "]", friends.get(i));
+                                    }
+                                    HashMap<String, String> headers = new HashMap<String, String>();
+                                    headers.put("apiKey", "b0a83e90-4ee7-49b7-9200-fdc5af8c2d33");
+                                    HTTPResponseController.getInstance().returnResponse(params, headers, IntroActivity.this, "http://207.154.236.13/api/register/");
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
-                        ).executeAsync();
-                    }
+
+
+                            }
+                        }
+                ).executeAsync();
+            }
 
 
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -328,36 +317,35 @@ public class IntroActivity extends Activity {
         final HashMap<String, String> headers = new HashMap<String, String>();
         headers.put("apiKey", "b0a83e90-4ee7-49b7-9200-fdc5af8c2d33");
         Picasso.with(IntroActivity.this)
-                    .load("https://graph.facebook.com/" + password + "/picture?type=large")
-                    .into(new Target() {
-                        @Override
-                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                            image = bitmap;
-                            String imageString = ProfileDetailsActivity.encodeToBase64(image, Bitmap.CompressFormat.JPEG, 100);
-                            setImageForProfile(IntroActivity.this, imageString);
-                            logo.animate().translationY(300f);
-                            logo.animate().translationY(-300f).setDuration(1000);
-                            HTTPResponseController.getInstance().returnResponse(params, headers, IntroActivity.this, "http://207.154.236.13/api/register/");
+                .load("https://graph.facebook.com/" + password + "/picture?type=large")
+                .into(new Target() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                        image = bitmap;
+                        String imageString = ProfileDetailsActivity.encodeToBase64(image, Bitmap.CompressFormat.JPEG, 100);
+                        setImageForProfile(IntroActivity.this, imageString);
+                        logo.animate().translationY(300f);
+                        logo.animate().translationY(-300f).setDuration(1000);
+                        HTTPResponseController.getInstance().returnResponse(params, headers, IntroActivity.this, "http://207.154.236.13/api/register/");
 
-                        }
+                    }
 
 
-                        @Override
-                        public void onBitmapFailed(Drawable errorDrawable) {
-                            System.out.println("bitmapfailed");
-                        }
+                    @Override
+                    public void onBitmapFailed(Drawable errorDrawable) {
+                        System.out.println("bitmapfailed");
+                    }
 
-                        @Override
-                        public void onPrepareLoad(Drawable placeHolderDrawable) {
+                    @Override
+                    public void onPrepareLoad(Drawable placeHolderDrawable) {
 
-                            logo.animate().translationY(300f);
-                            logo.animate().translationY(-300f).setDuration(1000);
-                            HTTPResponseController.getInstance().returnResponse(params, headers, IntroActivity.this, "http://207.154.236.13/api/register/");
-                            System.out.println("bitmaponprepare");
-                        }
-                    });
-        }
-
+                        logo.animate().translationY(300f);
+                        logo.animate().translationY(-300f).setDuration(1000);
+                        HTTPResponseController.getInstance().returnResponse(params, headers, IntroActivity.this, "http://207.154.236.13/api/register/");
+                        System.out.println("bitmaponprepare");
+                    }
+                });
+    }
 
 
     @Override

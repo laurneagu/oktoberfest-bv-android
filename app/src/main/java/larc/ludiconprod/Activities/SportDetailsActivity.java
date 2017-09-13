@@ -110,14 +110,6 @@ public class SportDetailsActivity extends Activity {
 
             @Override
             public void onClick(View view) {
-               /* String profileImage = getIntent().getStringExtra("profileImage");
-                String yearBorn=getIntent().getStringExtra("yearBorn");
-                String gender=getIntent().getStringExtra("gender");
-                Intent intent = new Intent(SportDetailsActivity.this, ProfileDetailsActivity.class);
-                intent.putExtra("profileImage", profileImage);
-                intent.putExtra("yearBorn",yearBorn);
-                intent.putExtra("gender",gender);
-                SportDetailsActivity.this.startActivity(intent);*/
                finish();
             }
         });
@@ -403,10 +395,6 @@ public class SportDetailsActivity extends Activity {
                 user.ludicoins=Persistance.getInstance().getUserInfo(SportDetailsActivity.this).ludicoins;
 
 
-
-
-
-
                 Persistance.getInstance().setUserInfo(SportDetailsActivity.this,user);
 
 
@@ -426,14 +414,6 @@ public class SportDetailsActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        /*String profileImage = getIntent().getStringExtra("profileImage");
-        String yearBorn=getIntent().getStringExtra("yearBorn");
-        String gender=getIntent().getStringExtra("gender");
-        Intent intent = new Intent(SportDetailsActivity.this, ProfileDetailsActivity.class);
-        intent.putExtra("profileImage", profileImage);
-        intent.putExtra("yearBorn",yearBorn);
-        intent.putExtra("gender",gender);
-        SportDetailsActivity.this.startActivity(intent);*/
         finish();
     }
 }

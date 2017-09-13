@@ -170,6 +170,7 @@ public class HTTPResponseController {
                                 @Override
                                 public void onFinish() {
                                     Intent intent = new Intent(activity, Main.class);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
                                     activity.startActivity(intent);
                                     activity.finish();
                                 }
@@ -196,8 +197,7 @@ public class HTTPResponseController {
                     } else
                         if (activity.getLocalClassName().toString().equals("Activities.SportDetailsActivity")) {
 
-
-                            Intent intent = new Intent(activity, Main.class);
+                            Intent intent = new Intent(activity, IntroActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
                             activity.startActivity(intent);
 
@@ -782,7 +782,6 @@ public class HTTPResponseController {
                 try {
 
 
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -1082,7 +1081,7 @@ public class HTTPResponseController {
 
     public void checkin(HashMap<String, String> params, HashMap<String, String> headers, Activity activity) {
         RequestQueue requestQueue = Volley.newRequestQueue(activity);
-        setActivity(activity,"","");
+        setActivity(activity, "", "");
         CustomRequest request = new CustomRequest(Request.Method.POST, prodServer + "api/checkin", params, headers, this.checkinSuccessListener(), this.createErrorListener());
         requestQueue.add(request);
     }
