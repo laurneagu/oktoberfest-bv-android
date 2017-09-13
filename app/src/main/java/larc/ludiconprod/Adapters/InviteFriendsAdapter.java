@@ -115,6 +115,10 @@ public class InviteFriendsAdapter extends BaseAdapter implements ListAdapter {
             }
 
             view.setBackgroundColor(Color.parseColor("#f7f9fc"));
+            holder.friendProfileImage.setOnClickListener(null);
+            view.setOnClickListener(null);
+
+
 
             final View currView = view;
             if (currentFriend.numberOfOffliners != -1) {
@@ -311,7 +315,23 @@ public class InviteFriendsAdapter extends BaseAdapter implements ListAdapter {
                         }
 
             if (!currentFriend.offlineFriend && position != 0) {
+
                 view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String id = currentFriend.userID;
+                        Activity ac = activity;
+                        if (Persistance.getInstance().getUserInfo(ac).id.equals(id)) {
+                            Toast.makeText(ac, "It's you :)", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        Intent intent = new Intent(ac, UserProfileActivity.class);
+                        intent.putExtra("UserId", id);
+                        activity.startActivity(intent);
+                    }
+                });
+                holder.friendProfileImage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         String id = currentFriend.userID;

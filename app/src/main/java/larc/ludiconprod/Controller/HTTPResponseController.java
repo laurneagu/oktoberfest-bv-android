@@ -345,7 +345,7 @@ public class HTTPResponseController {
                     if (jsonObject.getJSONArray("aroundMe").length() >= 1) {
                         ActivitiesActivity.NumberOfRefreshAroundMe++;
                     }
-                    if (getFirstPageMyActivity) {
+                    if (getFirstPageAroundMe) {
                         Persistance.getInstance().setAroundMeActivities(activity, aroundMeEventList);
                     }
                     getFirstPageAroundMe = false;

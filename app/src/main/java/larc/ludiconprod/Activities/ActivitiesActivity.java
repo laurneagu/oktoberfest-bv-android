@@ -473,7 +473,6 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         }
         myEventList.clear();
         aroundMeEventList.clear();
-        FirebaseDatabase.getInstance().getReference();
 
         try {
             super.onCreate(savedInstanceState);
