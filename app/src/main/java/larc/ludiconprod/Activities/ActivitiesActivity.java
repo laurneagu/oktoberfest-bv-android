@@ -345,6 +345,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
             } else
                 if (msg.what == 1) {
                     System.out.println("eventStopped");
+                    buttonState = 0;
 
 
                     ViewGroup.LayoutParams params = happeningNowLayout.getLayoutParams();

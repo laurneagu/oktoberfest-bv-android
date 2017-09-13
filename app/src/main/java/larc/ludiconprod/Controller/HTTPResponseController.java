@@ -748,6 +748,8 @@ public class HTTPResponseController {
             public void onResponse(JSONObject jsonObject) {
                 try {
 
+                    System.out.println(" save points on succes");
+
                     PointsReceivedDialog dialog = new PointsReceivedDialog();
                     Bundle bundle = new Bundle();
                     bundle.putInt("ludicoins", jsonObject.getInt("ludicoins"));
@@ -765,7 +767,7 @@ public class HTTPResponseController {
                     editor.clear();
                     editor.commit();
                     happeningNowLocation = null;
-//                    startedEventDate=Integer.MAX_VALUE;
+ //                   startedEventDate=Integer.MAX_VALUE;
 
 
                 } catch (Exception e) {

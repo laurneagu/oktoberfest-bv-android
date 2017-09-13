@@ -15,6 +15,7 @@ import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.Base64;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -174,6 +175,9 @@ public class MyFragment extends Fragment {
                 }
             }
         });
+
+
+
 
 
         MyLinearLayout root = (MyLinearLayout) l.findViewById(R.id.root);

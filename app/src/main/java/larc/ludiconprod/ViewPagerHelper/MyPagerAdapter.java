@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -37,8 +38,10 @@ public class MyPagerAdapter extends FragmentStatePagerAdapter implements ViewPag
     @Override
     public Fragment getItem(int position) {
         // make the first pager bigger than others
-        if (position == GMapsActivity.FIRST_PAGE)
+        if (position == GMapsActivity.FIRST_PAGE) {
             scale = BIG_SCALE;
+
+        }
         else
             scale = SMALL_SCALE;
 
