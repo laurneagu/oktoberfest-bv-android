@@ -73,7 +73,48 @@
                 android:layout_width="match_parent"
                 android:layout_height="fill_parent"
                 android:layout_above="@+id/locationListView"/>
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/layoutCreator">
 
+
+                <RelativeLayout
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:background="@color/white">
+
+
+                    <TextView
+                        android:id="@+id/textCreator"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="7dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:textColor="@color/darkblue"
+                        android:text="As event creator, please make sure you book the disired interval at the selected sport venue!"/>
+
+
+                </RelativeLayout>
+                <ImageView
+                    android:id="@+id/closeCreator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_user_kick"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="7dp"
+                    android:layout_marginEnd="13dp"/>
+            </RelativeLayout>
 
         </RelativeLayout>
     </LinearLayout>

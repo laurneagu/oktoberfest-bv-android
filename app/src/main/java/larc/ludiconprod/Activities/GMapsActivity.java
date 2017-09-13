@@ -74,6 +74,7 @@ public class GMapsActivity extends FragmentActivity implements PlaceSelectionLis
     public static RelativeLayout noLocationLayout;
     Marker lastAddedMarker;
     MapFragment mapFragment;
+    RelativeLayout layoutCreator;
     private double selected_lat, selected_long;
     private LocationManager lm;
     public static Activity currentActivity;
@@ -126,6 +127,9 @@ public class GMapsActivity extends FragmentActivity implements PlaceSelectionLis
             backButton = (RelativeLayout) findViewById(R.id.backButton);
             TextView titleText=(TextView) findViewById(R.id.titleText);
             TextView noLocationText = (TextView) findViewById(R.id.noLocationText);
+            TextView textCreator = (TextView) findViewById(R.id.textCreator);
+            layoutCreator = (RelativeLayout) findViewById(R.id.layoutCreator);
+            ImageView closeCreator = (ImageView) findViewById(R.id.closeCreator);
             selectLocationButton=(Button) findViewById(R.id.selectLocationButton) ;
             noLocationLayout = (RelativeLayout) findViewById(R.id.noLocationLayout);
 
@@ -134,6 +138,7 @@ public class GMapsActivity extends FragmentActivity implements PlaceSelectionLis
             Typeface typeFace= Typeface.createFromAsset(getAssets(),"fonts/Quicksand-Medium.ttf");
             Typeface typeFaceBold= Typeface.createFromAsset(getAssets(),"fonts/Quicksand-Bold.ttf");
             noLocationText.setTypeface(typeFace);
+            textCreator.setTypeface(typeFace);
             mapFragment= (MapFragment) getFragmentManager()
                     .findFragmentById(R.id.map);
             mapFragment.getMapAsync(this);
@@ -143,6 +148,13 @@ public class GMapsActivity extends FragmentActivity implements PlaceSelectionLis
             context=this;
             fragmentManager=this.getSupportFragmentManager();
             titleText.setText("Select Location");
+
+            closeCreator.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    layoutCreator.animate().translationY(-300f).setDuration(1000);
+                }
+            });
 
 
             backButton.setOnClickListener(new View.OnClickListener(){
@@ -409,6 +421,7 @@ public class GMapsActivity extends FragmentActivity implements PlaceSelectionLis
         }
 
     }
+
     @Override
     public void onBackPressed() {
 
