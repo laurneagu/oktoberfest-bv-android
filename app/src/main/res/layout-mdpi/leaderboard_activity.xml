@@ -130,7 +130,7 @@
                         android:layout_weight="1"
                         android:button="@null"
                         android:gravity="center"
-                        android:text="Friends"
+                        android:text="Following"
                         android:textColor="#1A0c3855"/>
                 </RadioGroup>
                 <ScrollView

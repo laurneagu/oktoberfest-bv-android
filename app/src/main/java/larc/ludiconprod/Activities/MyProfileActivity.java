@@ -38,6 +38,7 @@ import java.util.HashMap;
 
 import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
+import larc.ludiconprod.Dialogs.ConfirmationDialog;
 import larc.ludiconprod.R;
 import larc.ludiconprod.User;
 import larc.ludiconprod.Utils.util.Sport;
@@ -68,16 +69,38 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
 
             Button logout = (Button) v.findViewById(R.id.profileLogout);
             logout.setOnClickListener(new View.OnClickListener() {
+                final Typeface typeFace = Typeface.createFromAsset(activity.getAssets(), "fonts/Quicksand-Medium" +
+                        ".ttf");
+                final Typeface typeFaceBold = Typeface.createFromAsset(activity.getAssets(), "fonts/Quicksand-Bold" +
+                        ".ttf");
 
                 @Override
                 public void onClick(View view) {
-                    Persistance.getInstance().deleteUserProfileInfo(activity);
-                    Log.v("logout", "am dat logout");
-                    SharedPreferences preferences = activity.getSharedPreferences("ProfileImage", 0);
-                    preferences.edit().remove("ProfileImage").apply();
-                    activity.finish();
-                    Intent intent = new Intent(mContext, IntroActivity.class);
-                    startActivity(intent);
+                    final ConfirmationDialog confirmationDialog = new ConfirmationDialog(activity);
+                    confirmationDialog.show();
+                    confirmationDialog.title.setText("Confirm?");
+                    confirmationDialog.title.setTypeface(typeFaceBold);
+                    confirmationDialog.message.setText("Are you sure you want to logout?");
+                    confirmationDialog.message.setTypeface(typeFace);
+                    confirmationDialog.confirm.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Persistance.getInstance().deleteUserProfileInfo(activity);
+                            Log.v("logout", "am dat logout");
+                            SharedPreferences preferences = activity.getSharedPreferences("ProfileImage", 0);
+                            preferences.edit().remove("ProfileImage").apply();
+                            activity.finish();
+                            Intent intent = new Intent(mContext, IntroActivity.class);
+                            startActivity(intent);
+                            confirmationDialog.dismiss();
+                        }
+                    });
+                    confirmationDialog.dismiss.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            confirmationDialog.dismiss();
+                        }
+                    });
                 }
             });
 
@@ -103,8 +126,8 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
                 this.printInfo(MyProfileActivity.cache);
             }
 
-            Typeface typeFace = Typeface.createFromAsset(super.getActivity().getAssets(),"fonts/Quicksand-Medium.ttf");
-            Typeface typeFaceBold = Typeface.createFromAsset(super.getActivity().getAssets(),"fonts/Quicksand-Bold.ttf");
+            Typeface typeFace = Typeface.createFromAsset(super.getActivity().getAssets(), "fonts/Quicksand-Medium.ttf");
+            Typeface typeFaceBold = Typeface.createFromAsset(super.getActivity().getAssets(), "fonts/Quicksand-Bold.ttf");
 
             ((TextView) v.findViewById(R.id.profileTitle)).setTypeface(typeFace);
             ((TextView) v.findViewById(R.id.profileLudicoins)).setTypeface(typeFace);

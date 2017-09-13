@@ -11,7 +11,6 @@ import android.util.Base64;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -41,8 +40,8 @@ import larc.ludiconprod.Adapters.MainActivity.AroundMeAdapter;
 import larc.ludiconprod.Adapters.MainActivity.MyAdapter;
 import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
+import larc.ludiconprod.Dialogs.ConfirmationDialog;
 import larc.ludiconprod.R;
-import larc.ludiconprod.User;
 import larc.ludiconprod.Utils.EventDetails;
 import larc.ludiconprod.Utils.Friend;
 import larc.ludiconprod.Utils.General;
@@ -130,6 +129,10 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
         super.onCreate(savedInstance);
         activity = this;
         setContentView(R.layout.activity_details_activity);
+
+        final Typeface typeFace = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Medium.ttf");
+        final Typeface typeFaceBold = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.ttf");
+
         findViewById(R.id.internetRefresh).setAlpha(0);
         backButton = (RelativeLayout) findViewById(R.id.backButton);
         TextView titleText = (TextView) findViewById(R.id.titleText);
@@ -173,7 +176,7 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
             @Override
             public void onClick(View view) {
 
-                    finish();
+                finish();
             }
         });
 
@@ -197,7 +200,7 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
         eventDetails.capacity = b.getInt("capacity");
         eventDetails.numberOfParticipants = b.getInt("numberOfParticipants");
         eventDetails.points = b.getInt("points");
-        eventDetails.chatId=b.getString("chatId");
+        eventDetails.chatId = b.getString("chatId");
         eventDetails.privacy = b.getInt("privacy");
         eventDetails.isParticipant = b.getInt("isParticipant");
         eventDetails.ludicoins = b.getInt("ludicoins");
@@ -401,13 +404,13 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
         groupChatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!eventDetails.chatId.equalsIgnoreCase("")) {
+                if (!eventDetails.chatId.equalsIgnoreCase("")) {
                     Intent intent = new Intent(activity, ChatActivity.class);
                     intent.putExtra("chatId", eventDetails.chatId);
                     intent.putExtra("groupChat", 1);
                     startActivity(intent);
-                }else{
-                    Toast.makeText(ActivityDetailsActivity.this,"Group chat isn't avaible yet for this event!",Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(ActivityDetailsActivity.this, "Group chat isn't avaible yet for this event!", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -479,13 +482,33 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
             deleteOrCancelEventButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    HashMap<String, String> params = new HashMap<String, String>();
-                    HashMap<String, String> headers = new HashMap<String, String>();
-                    headers.put("authKey", Persistance.getInstance().getUserInfo(ActivityDetailsActivity.this).authKey);
-                    params.put("eventId", eventid);
-                    params.put("userId", Persistance.getInstance().getUserInfo(ActivityDetailsActivity.this).id);
-                    HTTPResponseController.getInstance().deleteEvent(params, headers, ActivityDetailsActivity.this);
-                    deleteOrCancelEventButton.setEnabled(false);
+
+                    final ConfirmationDialog confirmationDialog = new ConfirmationDialog(activity);
+                    confirmationDialog.show();
+                    confirmationDialog.title.setText("Confirm?");
+                    confirmationDialog.title.setTypeface(typeFaceBold);
+                    confirmationDialog.message.setText("Are you sure you want to delete this event?");
+                    confirmationDialog.message.setTypeface(typeFace);
+                    confirmationDialog.confirm.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            HashMap<String, String> params = new HashMap<String, String>();
+                            HashMap<String, String> headers = new HashMap<String, String>();
+                            headers.put("authKey", Persistance.getInstance().getUserInfo(ActivityDetailsActivity.this).authKey);
+                            params.put("eventId", eventid);
+                            params.put("userId", Persistance.getInstance().getUserInfo(ActivityDetailsActivity.this).id);
+                            HTTPResponseController.getInstance().deleteEvent(params, headers, ActivityDetailsActivity.this);
+                            deleteOrCancelEventButton.setEnabled(false);
+                            confirmationDialog.dismiss();
+                        }
+                    });
+                    confirmationDialog.dismiss.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            confirmationDialog.dismiss();
+                        }
+                    });
+
                 }
             });
 
@@ -521,13 +544,31 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
                     joinOrUnjoinButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            HashMap<String, String> params = new HashMap<String, String>();
-                            HashMap<String, String> headers = new HashMap<String, String>();
-                            headers.put("authKey", Persistance.getInstance().getUserInfo(ActivityDetailsActivity.this).authKey);
-                            params.put("eventId", eventid);
-                            params.put("userId", Persistance.getInstance().getUserInfo(ActivityDetailsActivity.this).id);
-                            HTTPResponseController.getInstance().leaveEvent(params, headers, ActivityDetailsActivity.this, false);
-                            joinOrUnjoinButton.setEnabled(false);
+                            final ConfirmationDialog confirmationDialog = new ConfirmationDialog(activity);
+                            confirmationDialog.show();
+                            confirmationDialog.title.setText("Confirm?");
+                            confirmationDialog.title.setTypeface(typeFaceBold);
+                            confirmationDialog.message.setText("Are you sure you want to unjoin this event?");
+                            confirmationDialog.message.setTypeface(typeFace);
+                            confirmationDialog.confirm.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    HashMap<String, String> params = new HashMap<String, String>();
+                                    HashMap<String, String> headers = new HashMap<String, String>();
+                                    headers.put("authKey", Persistance.getInstance().getUserInfo(ActivityDetailsActivity.this).authKey);
+                                    params.put("eventId", eventid);
+                                    params.put("userId", Persistance.getInstance().getUserInfo(ActivityDetailsActivity.this).id);
+                                    HTTPResponseController.getInstance().leaveEvent(params, headers, ActivityDetailsActivity.this, false);
+                                    joinOrUnjoinButton.setEnabled(false);
+                                    confirmationDialog.dismiss();
+                                }
+                            });
+                            confirmationDialog.dismiss.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    confirmationDialog.dismiss();
+                                }
+                            });
                         }
                     });
 
@@ -637,8 +678,7 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
             MyAdapter.progressBarCard.setAlpha(0);
         }
 
-        Typeface typeFace = Typeface.createFromAsset(getAssets(),"fonts/Quicksand-Medium.ttf");
-        Typeface typeFaceBold = Typeface.createFromAsset(getAssets(),"fonts/Quicksand-Bold.ttf");
+
         creatorName.setTypeface(typeFace);
         sportPlayed.setTypeface(typeFace);
         ((TextView) findViewById(R.id.youGain)).setTypeface(typeFace);

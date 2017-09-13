@@ -88,9 +88,9 @@
                     android:fontFamily="@string/fontbold"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
-                    android:text="ADD FRIEND"
+                    android:text="FOLLOW"
                     android:textColor="#ffffff"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_height="60dp"

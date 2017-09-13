@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@drawable/curve_shape_dialog"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="text"
+        android:textSize="22dp"
+        android:textColor="@color/darkblue"/>
+
+    <TextView
+        android:id="@+id/message"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:textSize="16dp"
+        android:text="text"
+        android:textAlignment="center"
+        android:textColor="@color/lightGray"/>
+
+    <Button
+        android:id="@+id/cofirm"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/pink_button_selector"
+        android:paddingLeft="60dp"
+        android:paddingRight="60dp"
+        android:text="YES"
+        android:textColor="@color/white"/>
+
+    <Button
+        android:id="@+id/dismiss"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/white_button_selector"
+        android:paddingLeft="60dp"
+        android:paddingRight="60dp"
+        android:text="NO"
+        android:textColor="#d4498b"
+        android:layout_marginBottom="10dp"/>
+
+</LinearLayout>

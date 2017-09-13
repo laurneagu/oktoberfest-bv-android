@@ -60,7 +60,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
     public static FriendsAdapter friendsAdapter;
     public static ArrayList<Friend> friends = new ArrayList<>();
     private View v;
-    CharSequence Titles[] = {"CONVERSATIONS", "FRIENDS"};
+    CharSequence Titles[] = {"CONVERSATIONS", "FOLLOWING"};
     int Numboftabs = 2;
     ArrayList<Chat> chatList = new ArrayList<>();
     static public ChatAndFriendsActivity currentFragment;
@@ -223,7 +223,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                             for (int i = 0; i < chatList.size(); i++) {
                                 if (dataSnapshot.getKey().equalsIgnoreCase(chatList.get(i).chatId)) {
                                     chatList.remove(i);
-                                    if (chatList.size() > 0 && threadsList.size() >= i) {
+                                    if (chatList.size() > 0 && threadsList.size() > i) {
                                         threadsList.get(i).cancel();
                                         threadsList.remove(i);
                                         break;

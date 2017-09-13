@@ -34,6 +34,7 @@ import java.util.HashMap;
 
 import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
+import larc.ludiconprod.Dialogs.ConfirmationDialog;
 import larc.ludiconprod.R;
 import larc.ludiconprod.User;
 import larc.ludiconprod.Utils.util.Sport;
@@ -45,6 +46,7 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
     private final HashMap<String, Integer> foePoints = new HashMap<>();
     private String userName;
     private String userImage;
+    public String firstName;
 
     @Nullable
     @Override
@@ -74,24 +76,24 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
             chat.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent=new Intent(UserProfileActivity.this, ChatActivity.class);
+                    Intent intent = new Intent(UserProfileActivity.this, ChatActivity.class);
                     intent.putExtra("otherParticipantName", userName);
                     ArrayList<String> myList = new ArrayList<String>();
                     myList.add(userImage);
                     intent.putExtra("otherParticipantImage", myList);
                     intent.putExtra("chatId", "isNot");
-                    intent.putExtra("groupChat",0);
+                    intent.putExtra("groupChat", 0);
                     intent.putExtra("UserId", getIntent().getStringExtra("UserId"));
-                    ArrayList<String> userIdList=new ArrayList<String>();
+                    ArrayList<String> userIdList = new ArrayList<String>();
                     userIdList.add(getIntent().getStringExtra("UserId"));
-                    intent.putExtra("otherParticipantId",userIdList);
+                    intent.putExtra("otherParticipantId", userIdList);
                     UserProfileActivity.this.startActivity(intent);
                     //finish();
                 }
             });
 
-            Typeface typeFace = Typeface.createFromAsset(super.getAssets(),"fonts/Quicksand-Medium.ttf");
-            Typeface typeFaceBold = Typeface.createFromAsset(super.getAssets(),"fonts/Quicksand-Bold.ttf");
+            Typeface typeFace = Typeface.createFromAsset(super.getAssets(), "fonts/Quicksand-Medium.ttf");
+            Typeface typeFaceBold = Typeface.createFromAsset(super.getAssets(), "fonts/Quicksand-Bold.ttf");
 
             titleText.setTypeface(typeFace);
             ((TextView) findViewById(R.id.profileName)).setTypeface(typeFace);
@@ -152,6 +154,7 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
 
             u.email = jsonObject.getString("email");
             u.firstName = jsonObject.getString("firstName");
+            firstName = u.firstName;
             u.lastName = jsonObject.getString("lastName");
             u.gender = jsonObject.getString("gender");
             u.ludicoins = Integer.parseInt(jsonObject.getString("ludicoins"));
@@ -212,7 +215,7 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
             TextView position = (TextView) findViewById(R.id.profilePosition);
 
             name.setText(u.firstName + " " + u.lastName);
-            userName=u.firstName + " " + u.lastName+",";
+            userName = u.firstName + " " + u.lastName + ",";
             level.setText("" + u.level);
             points.setText("" + u.points);
             position.setText("" + u.position);
@@ -237,11 +240,32 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
 
             Button friendButton = (Button) super.findViewById(R.id.profileFriend);
             if (friend) {
-                friendButton.setText("REMOVE FRIEND");
+                friendButton.setText("UNFOLLOW");
                 friendButton.setOnClickListener(new View.OnClickListener() {
+                    final Typeface typeFace = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Medium.ttf");
+                    final Typeface typeFaceBold = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.ttf");
+
                     @Override
                     public void onClick(View view) {
-                        removeFriend();
+                        final ConfirmationDialog confirmationDialog = new ConfirmationDialog(UserProfileActivity.this);
+                        confirmationDialog.show();
+                        confirmationDialog.title.setText("Confirm?");
+                        confirmationDialog.title.setTypeface(typeFaceBold);
+                        confirmationDialog.message.setText("Are you sure you want to unfollow " + firstName + "?");
+                        confirmationDialog.message.setTypeface(typeFace);
+                        confirmationDialog.confirm.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                removeFriend();
+                                confirmationDialog.dismiss();
+                            }
+                        });
+                        confirmationDialog.dismiss.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                confirmationDialog.dismiss();
+                            }
+                        });
                     }
                 });
             } else {
@@ -392,7 +416,7 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
         params.put("action", "0");
         HashMap<String, String> headers = new HashMap<>();
         headers.put("authKey", u.authKey);
-        HTTPResponseController.getInstance().friendRequest(params, headers, this,new Response.Listener<JSONObject>() {
+        HTTPResponseController.getInstance().friendRequest(params, headers, this, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 onFriendResponse(response, false);
@@ -401,19 +425,40 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
     }
 
     public void friendAdded() {
+        final Typeface typeFace = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Medium.ttf");
+        final Typeface typeFaceBold = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.ttf");
         Button friendButton = (Button) super.findViewById(R.id.profileFriend);
-        friendButton.setText("REMOVE FRIEND");
+        friendButton.setText("UNFOLLOW");
         friendButton.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
-                removeFriend();
+                final ConfirmationDialog confirmationDialog = new ConfirmationDialog(UserProfileActivity.this);
+                confirmationDialog.show();
+                confirmationDialog.title.setText("Confirm?");
+                confirmationDialog.title.setTypeface(typeFaceBold);
+                confirmationDialog.message.setText("Are you sure you want to unfollow " + firstName + "?");
+                confirmationDialog.message.setTypeface(typeFace);
+                confirmationDialog.confirm.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        removeFriend();
+                        confirmationDialog.dismiss();
+                    }
+                });
+                confirmationDialog.dismiss.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        confirmationDialog.dismiss();
+                    }
+                });
             }
         });
     }
 
     public void friendRemoved() {
         Button friendButton = (Button) super.findViewById(R.id.profileFriend);
-        friendButton.setText("ADD FRIEND");
+        friendButton.setText("FOLLOW");
         friendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
