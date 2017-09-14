@@ -6,8 +6,10 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -100,7 +102,6 @@ public class ConversationsAdapter extends BaseAdapter implements ListAdapter {
         View view = convertView;
 
 
-
         if (list.size() > 0) {
 
             final ConversationsAdapter.ViewHolder holder;
@@ -164,9 +165,6 @@ public class ConversationsAdapter extends BaseAdapter implements ListAdapter {
             }
 
 
-
-
-
             holder.lastMessage.setText(displayMessage);
             if (!currentChat.lastMessageSeen.equalsIgnoreCase(currentChat.lastMessageId)) {
                 holder.lastMessage.setTypeface(typeFaceBold);
@@ -179,6 +177,7 @@ public class ConversationsAdapter extends BaseAdapter implements ListAdapter {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    currView.setBackgroundColor(Color.parseColor("#f5f5f5"));
                     Intent intent = new Intent(activity, ChatActivity.class);
                     intent.putExtra("chatId", currentChat.chatId);
                     intent.putExtra("otherParticipantName", currentChat.participantName);
@@ -192,14 +191,17 @@ public class ConversationsAdapter extends BaseAdapter implements ListAdapter {
 
                     activity.startActivity(intent);
                     ChatAndFriendsActivity.isOnChatPage = false;
+                    // currView.setBackgroundColor(Color.parseColor("#f7f9fc"));
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            currView.setBackgroundColor(Color.parseColor("#f7f9fc"));
+                        }
+                    }, 1000);
                     //activity.finish();
                 }
             });
-
-
-
-
-
 
 
         }

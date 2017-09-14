@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Handler;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -136,13 +138,23 @@ public class FriendsAdapter extends BaseAdapter implements ListAdapter {
             } else {
                 holder.friendsMutualFriends.setText("no mutual followings");
             }
+            final View currView = view;
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    currView.setBackgroundColor(Color.parseColor("#f5f5f5"));
                     Intent intent = new Intent(activity, UserProfileActivity.class);
                     intent.putExtra("UserId", currentFriend.userID);
                     isOnChatPage = false;
                     activity.startActivity(intent);
+                    //currView.setBackgroundColor(Color.parseColor("#f7f9fc"));
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            currView.setBackgroundColor(Color.parseColor("#f7f9fc"));
+                        }
+                    }, 1000);
                 }
             });
             holder.chatFriends.setOnClickListener(new View.OnClickListener() {

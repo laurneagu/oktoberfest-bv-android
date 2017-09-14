@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -52,6 +53,7 @@ import larc.ludiconprod.Adapters.MainActivity.MyAdapter;
 import larc.ludiconprod.BottomBarHelper.BottomBarTab;
 import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
+import larc.ludiconprod.Dialogs.ConfirmationDialog;
 import larc.ludiconprod.R;
 import larc.ludiconprod.Utils.Event;
 import larc.ludiconprod.Utils.HappeningNowLocation;
@@ -180,8 +182,8 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                         if (buttonState == 0) {
                             HashMap<String, String> params = new HashMap<String, String>();
                             HashMap<String, String> headers = new HashMap<String, String>();
-                            headers.put("authKey",Persistance.getInstance().getUserInfo(activity).authKey);
-                            params.put("eventId",currentEvent.id);
+                            headers.put("authKey", Persistance.getInstance().getUserInfo(activity).authKey);
+                            params.put("eventId", currentEvent.id);
                             HTTPResponseController.getInstance().checkin(params, headers, activity);
 
                             buttonState = 1;
@@ -229,19 +231,41 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
                         } else
                             if (buttonState == 1) {
+                                final Typeface typeFace = Typeface.createFromAsset(getActivity().getAssets(),
+                                        "fonts/Quicksand-Medium.ttf");
+                                final Typeface typeFaceBold = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Bold.ttf");
+                                final ConfirmationDialog confirmationDialog = new ConfirmationDialog(getActivity());
+                                confirmationDialog.show();
+                                confirmationDialog.title.setText("Confirm?");
+                                confirmationDialog.title.setTypeface(typeFaceBold);
+                                confirmationDialog.message.setText("Are you sure you want to stop sweating on points?");
+                                confirmationDialog.message.setTypeface(typeFace);
+                                confirmationDialog.confirm.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        //Call sendLocation
+                                        happeningNowLocation.endDate = String.valueOf(System.currentTimeMillis() / 1000);
+                                        savePoints();
 
-                                //Call sendLocation
-                                happeningNowLocation.endDate = String.valueOf(System.currentTimeMillis() / 1000);
-                                savePoints();
+                                        buttonState = 2;
+                                        ViewGroup.LayoutParams params = happeningNowLayout.getLayoutParams();
+                                        params.height = 0;
+                                        happeningNowLayout.setLayoutParams(params);
+                                        confirmationDialog.dismiss();
+                                    }
+                                });
+                                confirmationDialog.dismiss.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        confirmationDialog.dismiss();
+                                    }
+                                });
 
 
-                                buttonState = 2;
-                                ViewGroup.LayoutParams params = happeningNowLayout.getLayoutParams();
-                                params.height = 0;
-                                happeningNowLayout.setLayoutParams(params);
                             }
                     }
                 });
+
 
                 Sport sport = new Sport(currentEvent.sportCode);
                 String weWillPlayString = "";
@@ -594,8 +618,6 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
             }
 
 
-
-
             googleApiClient = new GoogleApiClient.Builder(getContext())
                     .addApi(LocationServices.API)
                     .addConnectionCallbacks(this)
@@ -885,10 +907,15 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        Toast.makeText(super.getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
-        Log.d("Response", error.toString());
-        if (error instanceof NetworkError) {
-            this.prepareError("No internet connection!");
+        try {
+            Toast.makeText(super.getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+            Log.d("Response", error.toString());
+            if (error instanceof NetworkError) {
+                this.prepareError("No internet connection!");
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         }
+
     }
 }

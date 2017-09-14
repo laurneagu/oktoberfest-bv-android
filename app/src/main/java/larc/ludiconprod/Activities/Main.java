@@ -125,7 +125,7 @@ public class Main extends FragmentActivity {
                     public void run() {
                         exit = false;
                     }
-                }, 1000);
+                }, 3000);
 
             }
         } else {
