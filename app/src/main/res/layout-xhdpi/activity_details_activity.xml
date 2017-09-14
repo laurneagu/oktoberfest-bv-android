@@ -36,6 +36,14 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
+                <com.facebook.share.widget.ShareButton
+                    android:id="@+id/share_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="37dp"
+                    android:layout_above="@+id/imageProfileParticipantsLayout"
+                    android:layout_alignParentEnd="true" />
+
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -156,12 +164,12 @@
 
                 </LinearLayout>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#400c3855"
-                android:id="@+id/line2"
-                android:layout_below="@+id/pointsLayout">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#400c3855"
+                    android:id="@+id/line2"
+                    android:layout_below="@+id/pointsLayout">
 
 
 
@@ -411,33 +419,33 @@
                     android:id="@+id/playTimeAndDate"
 
                     />
-            <RelativeLayout
-                android:id="@+id/mapLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_below="@+id/playTimeAndDate">
-
-                <include
-                    android:id="@+id/root"
-                    layout="@layout/selected_location_layout"
+                <RelativeLayout
+                    android:id="@+id/mapLayout"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    />
+                    android:layout_marginTop="16dp"
+                    android:layout_below="@+id/playTimeAndDate">
+
+                    <include
+                        android:id="@+id/root"
+                        layout="@layout/selected_location_layout"
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        />
 
 
 
 
-                <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-                    xmlns:map="http://schemas.android.com/apk/res-auto"
-                    android:name="com.google.android.gms.maps.MapFragment"
-                    android:id="@+id/map"
-                    android:layout_below="@+id/root"
-                    android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    map:mapType="normal"
-                    map:liteMode="true"
-                    >
+                    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                        xmlns:map="http://schemas.android.com/apk/res-auto"
+                        android:name="com.google.android.gms.maps.MapFragment"
+                        android:id="@+id/map"
+                        android:layout_below="@+id/root"
+                        android:layout_width="match_parent"
+                        android:layout_height="120dp"
+                        map:mapType="normal"
+                        map:liteMode="true"
+                        >
                     </fragment>
                 </RelativeLayout>
 
@@ -458,7 +466,7 @@
                     android:layout_below="@+id/description"
                     android:layout_marginTop="24dp"
                     android:layout_marginBottom="16dp">
-                    
+
                     <Button
                         android:layout_width="fill_parent"
                         android:layout_height="48dp"
@@ -507,14 +515,14 @@
                     />
 
 
-                </RelativeLayout>
+            </RelativeLayout>
 
 
 
 
-            </ScrollView>
+        </ScrollView>
 
-        </LinearLayout>
+    </LinearLayout>
 
 
 </RelativeLayout>

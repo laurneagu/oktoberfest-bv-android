@@ -6,8 +6,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -20,6 +22,13 @@ import android.widget.Toast;
 import com.android.volley.NetworkError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.share.Sharer;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareButton;
+import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -27,6 +36,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import org.w3c.dom.Text;
 
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
@@ -94,6 +105,7 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
     LinearLayout chatAndInviteLayout;
     static public String eventID = null;
     static ActivityDetailsActivity activity;
+    ShareButton shareButton;
 
     public static Bitmap decodeBase64(String input) {
         byte[] decodedBytes = Base64.decode(input, 0);
@@ -129,14 +141,60 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
         super.onCreate(savedInstance);
         activity = this;
         setContentView(R.layout.activity_details_activity);
+        //
+        CallbackManager callbackManager = CallbackManager.Factory.create();
+        final ShareDialog shareDialog = new ShareDialog(activity);
+        shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
+            @Override
+            public void onSuccess(Sharer.Result result) {
 
+            }
 
+            @Override
+            public void onCancel() {
+
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+
+            }
+        });
+
+        shareButton = (ShareButton) findViewById(R.id.share_btn);
+        // Share facebook button
+        ShareLinkContent contentLink = new ShareLinkContent.Builder()
+                .setContentUrl(Uri.parse("https://developers.facebook.com"))
+                .build();
+
+        shareButton.setShareContent(contentLink);
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.v("intra","aici");
+
+//
+//                ShareLinkContent content = new ShareLinkContent.Builder()
+//                        .setContentUrl(Uri.parse("http://ludicon.info/"))
+//                        .setImageUrl(Uri.parse("http://www.ludicon.info/img/sports/jogging.png"))
+//                        .setContentTitle("Activity on Ludicon")
+//                        .setContentDescription("I will attend an event in Ludicon ! Let's go and play ! ")
+//                        .build();
+
+                if (ShareDialog.canShow(ShareLinkContent.class)) {
+                    ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                            .setContentTitle("Activity on Ludicon")
+                            .setContentDescription(
+                                    "I will attend an event in Ludicon ! Let's go and play ! ")
+                            .setContentUrl(Uri.parse("http://ludicon.info/"))
+                            .build();
+
+                    shareDialog.show(linkContent);
+                }
+            }
+        });
         final Typeface typeFace = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Medium.ttf");
         final Typeface typeFaceBold = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.ttf");
-
-        RelativeLayout toolbar = (RelativeLayout) findViewById(R.id.tool_bar);
-        TextView title = (TextView)toolbar.findViewById(R.id.titleText);
-        title.setTypeface(typeFace);
 
         findViewById(R.id.internetRefresh).setAlpha(0);
         backButton = (RelativeLayout) findViewById(R.id.backButton);

@@ -36,6 +36,14 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
+                <com.facebook.share.widget.ShareButton
+                    android:id="@+id/share_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="37dp"
+                    android:layout_above="@+id/imageProfileParticipantsLayout"
+                    android:layout_alignParentEnd="true" />
+
 
                 <ImageView
                     android:layout_width="wrap_content"

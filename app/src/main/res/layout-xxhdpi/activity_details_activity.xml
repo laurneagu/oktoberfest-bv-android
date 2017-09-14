@@ -11,7 +11,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/joinOrUnjoinButton"
         android:orientation="vertical"
         >
 
@@ -37,6 +36,14 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
+                <com.facebook.share.widget.ShareButton
+                    android:id="@+id/share_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="37dp"
+                    android:layout_above="@+id/imageProfileParticipantsLayout"
+                    android:layout_alignParentEnd="true" />
+
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -157,12 +164,12 @@
 
                 </LinearLayout>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#400c3855"
-                android:id="@+id/line2"
-                android:layout_below="@+id/pointsLayout">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#400c3855"
+                    android:id="@+id/line2"
+                    android:layout_below="@+id/pointsLayout">
 
 
 
@@ -412,33 +419,33 @@
                     android:id="@+id/playTimeAndDate"
 
                     />
-            <RelativeLayout
-                android:id="@+id/mapLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_below="@+id/playTimeAndDate">
-
-                <include
-                    android:id="@+id/root"
-                    layout="@layout/selected_location_layout"
+                <RelativeLayout
+                    android:id="@+id/mapLayout"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    />
+                    android:layout_marginTop="16dp"
+                    android:layout_below="@+id/playTimeAndDate">
+
+                    <include
+                        android:id="@+id/root"
+                        layout="@layout/selected_location_layout"
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        />
 
 
 
 
-                <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-                    xmlns:map="http://schemas.android.com/apk/res-auto"
-                    android:name="com.google.android.gms.maps.MapFragment"
-                    android:id="@+id/map"
-                    android:layout_below="@+id/root"
-                    android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    map:mapType="normal"
-                    map:liteMode="true"
-                    >
+                    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                        xmlns:map="http://schemas.android.com/apk/res-auto"
+                        android:name="com.google.android.gms.maps.MapFragment"
+                        android:id="@+id/map"
+                        android:layout_below="@+id/root"
+                        android:layout_width="match_parent"
+                        android:layout_height="120dp"
+                        map:mapType="normal"
+                        map:liteMode="true"
+                        >
                     </fragment>
                 </RelativeLayout>
 
@@ -453,74 +460,69 @@
                     android:layout_marginTop="16dp"
                     android:id="@+id/description"/>
 
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/description"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="16dp">
+
+                    <Button
+                        android:layout_width="fill_parent"
+                        android:layout_height="48dp"
+                        android:text="EDIT"
+                        android:textColor="#ffffff"
+                        android:textSize="14dp"
+                        android:id="@+id/editEventButton"
+                        android:fontFamily="@string/fontbold"
+                        android:background="@drawable/pink_button_selector"
+                        android:layout_toLeftOf="@+id/imageViewBetween"/>
 
 
+                    <ImageView
+                        android:layout_width="8dp"
+                        android:layout_height="48dp"
+                        android:background="#000c3855"
+                        android:layout_centerHorizontal="true"
+                        android:id="@+id/imageViewBetween"
+                        />
+                    <Button
+                        android:layout_width="fill_parent"
+                        android:layout_height="48dp"
+                        android:text="DELETE"
+                        android:textColor="#d4498b"
+                        android:textSize="14dp"
+                        android:id="@+id/deleteOrCancelEventButton"
+                        android:fontFamily="@string/fontbold"
+                        android:background="@drawable/pink_stroke_rounded_button"
+                        android:layout_toRightOf="@+id/imageViewBetween"/>
 
 
                 </RelativeLayout>
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text="JOIN"
+                    android:textColor="#ffffff"
+                    android:textSize="14dp"
+                    android:layout_below="@+id/description"
+                    android:id="@+id/joinOrUnjoinButton"
+                    android:layout_marginTop="24dp"
+                    android:visibility="invisible"
+                    android:layout_marginBottom="16dp"
+                    android:fontFamily="@string/fontbold"
+                    android:background="@drawable/green_button_selector"
+                    />
+
+
+            </RelativeLayout>
 
 
 
 
-            </ScrollView>
+        </ScrollView>
 
-
-        </LinearLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="16dp">
-
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_height="48dp"
-            android:text="EDIT"
-            android:textColor="#ffffff"
-            android:textSize="14dp"
-            android:id="@+id/editEventButton"
-            android:fontFamily="@string/fontbold"
-            android:background="@drawable/pink_button_selector"
-            android:layout_toLeftOf="@+id/imageViewBetween"/>
-
-
-        <ImageView
-            android:layout_width="8dp"
-            android:layout_height="48dp"
-            android:background="#000c3855"
-            android:layout_centerHorizontal="true"
-            android:id="@+id/imageViewBetween"
-            />
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_height="48dp"
-            android:text="DELETE"
-            android:textColor="#d4498b"
-            android:textSize="14dp"
-            android:id="@+id/deleteOrCancelEventButton"
-            android:fontFamily="@string/fontbold"
-            android:background="@drawable/pink_stroke_rounded_button"
-            android:layout_toRightOf="@+id/imageViewBetween"/>
-
-
-    </RelativeLayout>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:text="JOIN"
-        android:textColor="#ffffff"
-        android:textSize="14dp"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/joinOrUnjoinButton"
-        android:layout_marginTop="24dp"
-        android:visibility="invisible"
-        android:layout_marginBottom="16dp"
-        android:fontFamily="@string/fontbold"
-        android:background="@drawable/green_button_selector"
-        />
+    </LinearLayout>
 
 
 </RelativeLayout>
