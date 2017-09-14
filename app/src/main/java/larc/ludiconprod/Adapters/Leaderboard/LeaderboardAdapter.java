@@ -4,9 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,16 +21,11 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import larc.ludiconprod.Activities.ActivityDetailsActivity;
-import larc.ludiconprod.Activities.CouponsActivity;
 import larc.ludiconprod.Activities.LeaderboardActivity;
 import larc.ludiconprod.Activities.UserProfileActivity;
-import larc.ludiconprod.Adapters.Balance.BalanceAdapter;
-import larc.ludiconprod.Adapters.CouponsActivity.CouponsAdapter;
 import larc.ludiconprod.Adapters.MainActivity.MyAdapter;
 import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
-import larc.ludiconprod.Utils.Coupon;
 import larc.ludiconprod.Utils.UserPosition;
 
 /**
@@ -75,11 +71,11 @@ public class LeaderboardAdapter extends BaseAdapter implements ListAdapter {
 
             TextView daysLeft = (TextView) view.findViewById(R.id.daysLeft);
             Calendar day = Calendar.getInstance();
-            int left =  day.getActualMaximum(Calendar.DAY_OF_MONTH) - day.get(Calendar.DAY_OF_MONTH);
+            int left = day.getActualMaximum(Calendar.DAY_OF_MONTH) - day.get(Calendar.DAY_OF_MONTH);
             daysLeft.setText(left + " days left");
 
             AssetManager assets = inflater.getContext().getAssets();// Is this the right asset?
-            Typeface typeFace= Typeface.createFromAsset(assets, "fonts/Quicksand-Medium.ttf");
+            Typeface typeFace = Typeface.createFromAsset(assets, "fonts/Quicksand-Medium.ttf");
 
             daysLeft.setTypeface(typeFace);
             ((TextView) view.findViewById(R.id.topText)).setTypeface(typeFace);
@@ -104,7 +100,7 @@ public class LeaderboardAdapter extends BaseAdapter implements ListAdapter {
             holder.points = (TextView) view.findViewById(R.id.points);
 
             AssetManager assets = inflater.getContext().getAssets();// Is this the right asset?
-            Typeface typeFace= Typeface.createFromAsset(assets, "fonts/Quicksand-Medium.ttf");
+            Typeface typeFace = Typeface.createFromAsset(assets, "fonts/Quicksand-Medium.ttf");
 
             holder.position.setTypeface(typeFace);
             holder.level.setTypeface(typeFace);
@@ -127,7 +123,7 @@ public class LeaderboardAdapter extends BaseAdapter implements ListAdapter {
                 holder.points = (TextView) view.findViewById(R.id.points);
 
                 AssetManager assets = fragment.getContext().getAssets();// Is this the right asset?
-                Typeface typeFace= Typeface.createFromAsset(assets, "fonts/Quicksand-Medium.ttf");
+                Typeface typeFace = Typeface.createFromAsset(assets, "fonts/Quicksand-Medium.ttf");
 
                 holder.position.setTypeface(typeFace);
                 holder.level.setTypeface(typeFace);
@@ -140,18 +136,18 @@ public class LeaderboardAdapter extends BaseAdapter implements ListAdapter {
 
         holder.position.setText("" + currentPosition.rank);
         switch (currentPosition.rank) {
-            case 1:
+        case 1:
             holder.position.setTextColor(0xfffcb851);
-                break;
-            case 2:
-                holder.position.setTextColor(0xffa7c7e1);
-                break;
-            case 3:
-                holder.position.setTextColor(0xffd98966);
-                break;
-            default:
-                holder.position.setTextColor(0xffacb8c1);
-                break;
+            break;
+        case 2:
+            holder.position.setTextColor(0xffa7c7e1);
+            break;
+        case 3:
+            holder.position.setTextColor(0xffd98966);
+            break;
+        default:
+            holder.position.setTextColor(0xffacb8c1);
+            break;
         }
         if (currentPosition.userId.equals(Persistance.getInstance().getUserInfo(fragment.getActivity()).id)) {
             view.setBackgroundColor(0xffffffff);
@@ -170,7 +166,8 @@ public class LeaderboardAdapter extends BaseAdapter implements ListAdapter {
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
+                view.setBackgroundColor(Color.parseColor("#f5f5f5"));
                 String id = currentPosition.userId;
                 Activity ac = fragment.getActivity();
                 if (Persistance.getInstance().getUserInfo(ac).id.equals(id)) {
@@ -180,6 +177,13 @@ public class LeaderboardAdapter extends BaseAdapter implements ListAdapter {
                 Intent intent = new Intent(fragment.getActivity(), UserProfileActivity.class);
                 intent.putExtra("UserId", currentPosition.userId);
                 fragment.getActivity().startActivity(intent);
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        view.setBackgroundColor(Color.parseColor("#f7f9fc"));
+                    }
+                }, 1000);
             }
         });
 

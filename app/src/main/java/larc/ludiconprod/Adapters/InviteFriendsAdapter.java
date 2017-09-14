@@ -7,16 +7,13 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.util.Base64;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -26,15 +23,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import larc.ludiconprod.Activities.ActivitiesActivity;
 import larc.ludiconprod.Activities.ActivityDetailsActivity;
 import larc.ludiconprod.Activities.InviteFriendsActivity;
 import larc.ludiconprod.Activities.UserProfileActivity;
-import larc.ludiconprod.Adapters.MainActivity.AroundMeAdapter;
 import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
-import larc.ludiconprod.Utils.Event;
 import larc.ludiconprod.Utils.Friend;
 
 /**
@@ -105,10 +99,16 @@ public class InviteFriendsAdapter extends BaseAdapter implements ListAdapter {
 
 
                 holder = new InviteFriendsAdapter.ViewHolder();
+                final Typeface typeFace = Typeface.createFromAsset(activity.getAssets(),
+                        "fonts/Quicksand-Medium.ttf");
+                final Typeface typeFaceBold = Typeface.createFromAsset(activity.getAssets(), "fonts/Quicksand-Bold.ttf");
                 holder.friendProfileImage = (CircleImageView) view.findViewById(R.id.profileImageInvitedFriend);
                 holder.friendName = (TextView) view.findViewById(R.id.friendName);
+                holder.friendName.setTypeface(typeFace);
                 holder.friendLevel = (TextView) view.findViewById(R.id.friendLevel);
+                holder.friendLevel.setTypeface(typeFace);
                 holder.inviteButton = (Button) view.findViewById(R.id.inviteFriendButton);
+                holder.inviteButton.setTypeface(typeFaceBold);
                 view.setTag(holder);
             } else {
                 holder = (InviteFriendsAdapter.ViewHolder) view.getTag();
