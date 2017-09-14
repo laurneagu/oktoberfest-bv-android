@@ -1089,4 +1089,10 @@ public class HTTPResponseController {
         CustomRequest request = new CustomRequest(Request.Method.POST, prodServer + "api/checkin", params, headers, this.checkinSuccessListener(), this.createErrorListener());
         requestQueue.add(request);
     }
+
+    public void valuesForUnauthorized(HashMap<String, String> headers, String urlParams, Activity activity, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+        RequestQueue requestQueue = Volley.newRequestQueue(activity);
+        CustomRequest request = new CustomRequest(Request.Method.GET, prodServer + "api/valuesForUnauthorized?" + urlParams, new HashMap<String, String>(), headers, listener, errorListener);
+        requestQueue.add(request);
+    }
 }
