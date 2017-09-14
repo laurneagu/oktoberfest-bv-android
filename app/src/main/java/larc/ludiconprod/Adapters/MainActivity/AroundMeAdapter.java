@@ -186,6 +186,7 @@ public class AroundMeAdapter extends BaseAdapter implements ListAdapter {
             holder.friends0.setImageResource(R.drawable.ph_user);
             holder.friends1.setImageResource(R.drawable.ph_user);
             holder.friends2.setImageResource(R.drawable.ph_user);
+            holder.joinButton.setEnabled(true);
 
 
             // Set name and picture for the first user of the event

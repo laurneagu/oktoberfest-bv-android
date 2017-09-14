@@ -350,9 +350,9 @@ public class GMapsActivity extends FragmentActivity implements PlaceSelectionLis
 
                 int widthOfScreen = dM.widthPixels;
                 int widthOfView = 240; //in DP
-                int spaceBetweenViews =16; // in DP
+                int spaceBetweenViews =4; // in DP
                 float offset = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, widthOfView + spaceBetweenViews, dM);
-                pager.setPageMargin((int) (0)); //for view on entire page,-witdhofScreen+offset for 3 custom vi
+                pager.setPageMargin((int) (-widthOfScreen+offset)); //for view on entire page,-witdhofScreen+offset for 3 custom vi
                 isFirstTime = true;
             } else if(authLocation.size() > 0){
                 adapter.notifyDataSetChanged();

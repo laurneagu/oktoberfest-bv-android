@@ -14,12 +14,14 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.Base64;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -80,6 +82,8 @@ public class MyFragment extends Fragment {
         phoneNumber.setText("");
         //clear adapter
 
+        View focusedView = (View) getActivity().getCurrentFocus();;
+
         SpannableStringBuilder spanTxt = new SpannableStringBuilder("");
         final String phoneNumbers[]=this.getArguments().getString("phoneNumber").split(",");
         for(int i=0;i < phoneNumbers.length;i++) {
@@ -121,8 +125,8 @@ public class MyFragment extends Fragment {
         ludicoinsNumber.setText(" +"+String.valueOf(this.getArguments().getInt("ludicoins")));
         TextView pointsNumber=(TextView)l.findViewById(R.id.pointsNumber);
         pointsNumber.setText(" +"+String.valueOf(this.getArguments().getInt("points")));
-
-        l.setOnClickListener(new View.OnClickListener() {
+        RelativeLayout itemClickLayout=(RelativeLayout)l.findViewById(R.id.itemClickLayout);
+        itemClickLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 for(int i=0;i<listOfMarkers.size();i++){
@@ -176,13 +180,13 @@ public class MyFragment extends Fragment {
             }
         });
 
-
-
-
-
         MyLinearLayout root = (MyLinearLayout) l.findViewById(R.id.root);
         float scale = this.getArguments().getFloat("scale");
         root.setScaleBoth(scale);
+
+
+
+
 
         return l;
     }

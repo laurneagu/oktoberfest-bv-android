@@ -3,6 +3,8 @@ package larc.ludiconprod.ViewPagerHelper;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
 
 public class MyLinearLayout extends LinearLayout {
