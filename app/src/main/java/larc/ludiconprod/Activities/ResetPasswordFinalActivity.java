@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -40,6 +41,9 @@ public class ResetPasswordFinalActivity extends Activity {
         emailText.setTypeface(typeFace);
         if(from.equals("register")){
             sendText.setText("We've sent you an email with confirmation code");
+            sendText.setGravity(Gravity.CENTER);
+            sendText.setPadding(30,0,30,0);
+
         }
         backButton=(RelativeLayout) findViewById(R.id.backButton);
         backToLogin=(Button) findViewById(R.id.returnLoginButton);

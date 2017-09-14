@@ -6,10 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -22,13 +20,6 @@ import android.widget.Toast;
 import com.android.volley.NetworkError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.share.Sharer;
-import com.facebook.share.model.ShareLinkContent;
-import com.facebook.share.widget.ShareButton;
-import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -36,8 +27,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-
-import org.w3c.dom.Text;
 
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
@@ -105,7 +94,6 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
     LinearLayout chatAndInviteLayout;
     static public String eventID = null;
     static ActivityDetailsActivity activity;
-    ShareButton shareButton;
 
     public static Bitmap decodeBase64(String input) {
         byte[] decodedBytes = Base64.decode(input, 0);
@@ -141,60 +129,14 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
         super.onCreate(savedInstance);
         activity = this;
         setContentView(R.layout.activity_details_activity);
-        //
-        CallbackManager callbackManager = CallbackManager.Factory.create();
-        final ShareDialog shareDialog = new ShareDialog(activity);
-        shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
-            @Override
-            public void onSuccess(Sharer.Result result) {
 
-            }
 
-            @Override
-            public void onCancel() {
-
-            }
-
-            @Override
-            public void onError(FacebookException error) {
-
-            }
-        });
-
-        shareButton = (ShareButton) findViewById(R.id.share_btn);
-        // Share facebook button
-        ShareLinkContent contentLink = new ShareLinkContent.Builder()
-                .setContentUrl(Uri.parse("https://developers.facebook.com"))
-                .build();
-
-        shareButton.setShareContent(contentLink);
-        shareButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.v("intra","aici");
-
-//
-//                ShareLinkContent content = new ShareLinkContent.Builder()
-//                        .setContentUrl(Uri.parse("http://ludicon.info/"))
-//                        .setImageUrl(Uri.parse("http://www.ludicon.info/img/sports/jogging.png"))
-//                        .setContentTitle("Activity on Ludicon")
-//                        .setContentDescription("I will attend an event in Ludicon ! Let's go and play ! ")
-//                        .build();
-
-                if (ShareDialog.canShow(ShareLinkContent.class)) {
-                    ShareLinkContent linkContent = new ShareLinkContent.Builder()
-                            .setContentTitle("Activity on Ludicon")
-                            .setContentDescription(
-                                    "I will attend an event in Ludicon ! Let's go and play ! ")
-                            .setContentUrl(Uri.parse("http://ludicon.info/"))
-                            .build();
-
-                    shareDialog.show(linkContent);
-                }
-            }
-        });
         final Typeface typeFace = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Medium.ttf");
         final Typeface typeFaceBold = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.ttf");
+
+        RelativeLayout toolbar = (RelativeLayout) findViewById(R.id.tool_bar);
+        TextView title = (TextView)toolbar.findViewById(R.id.titleText);
+        title.setTypeface(typeFace);
 
         findViewById(R.id.internetRefresh).setAlpha(0);
         backButton = (RelativeLayout) findViewById(R.id.backButton);
@@ -292,10 +234,10 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
                 sport.code.equalsIgnoreCase("GYM") || sport.code.equalsIgnoreCase("CYC"))
             weWillPlayString = "Will go to " + sport.sportName;
         else
-            if (sport.code.equalsIgnoreCase("OTH")) {
-                weWillPlayString = "Will play " + eventDetails.otherSportName;
-            } else
-                weWillPlayString = "Will play " + sport.sportName;
+        if (sport.code.equalsIgnoreCase("OTH")) {
+            weWillPlayString = "Will play " + eventDetails.otherSportName;
+        } else
+            weWillPlayString = "Will play " + sport.sportName;
 
         sportPlayed.setText(weWillPlayString);
 
@@ -525,11 +467,11 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
         if (Integer.parseInt(stringDate[1]) - 1 == todayMonth && Integer.parseInt(stringDate[2]) == todayDay) {
             date = "Today " + "at " + stringDateAndTime[1].substring(0, 5);
         } else
-            if (Integer.parseInt(stringDate[1]) - 1 == todayMonth && Integer.parseInt(stringDate[2]) - 1 == todayDay) {
-                date = "Tomorrow " + "at " + stringDateAndTime[1].substring(0, 5);
-            } else {
-                date = dayName + ", " + getMonth(Integer.parseInt(stringDate[1])) + " " + stringDate[2] + ", " + stringDate[0] + " at " + stringDateAndTime[1].substring(0, 5);
-            }
+        if (Integer.parseInt(stringDate[1]) - 1 == todayMonth && Integer.parseInt(stringDate[2]) - 1 == todayDay) {
+            date = "Tomorrow " + "at " + stringDateAndTime[1].substring(0, 5);
+        } else {
+            date = dayName + ", " + getMonth(Integer.parseInt(stringDate[1])) + " " + stringDate[2] + ", " + stringDate[0] + " at " + stringDateAndTime[1].substring(0, 5);
+        }
         playTimeAndDate.setText(date);
 
         locationName.setText(eventDetails.placeName);
@@ -583,92 +525,92 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
             });
 
         } else
-            if (eventDetails.creatorId.equals(Persistance.getInstance().getUserInfo(this).id) && eventDetails.listOfParticipants.size() >= 1) {
-                deleteOrCancelEventButton.setText("LEAVE");
-                //call join api method
+        if (eventDetails.creatorId.equals(Persistance.getInstance().getUserInfo(this).id) && eventDetails.listOfParticipants.size() >= 1) {
+            deleteOrCancelEventButton.setText("LEAVE");
+            //call join api method
 
-                final String eventid = b.getString("eventId");
-                deleteOrCancelEventButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        HashMap<String, String> params = new HashMap<String, String>();
-                        HashMap<String, String> headers = new HashMap<String, String>();
-                        headers.put("authKey", Persistance.getInstance().getUserInfo(ActivityDetailsActivity.this).authKey);
-                        params.put("eventId", eventid);
-                        params.put("userId", Persistance.getInstance().getUserInfo(ActivityDetailsActivity.this).id);
-                        HTTPResponseController.getInstance().leaveEvent(params, headers, ActivityDetailsActivity.this, false);
-                        deleteOrCancelEventButton.setEnabled(false);
-                    }
-                });
-            } else
-                if (!eventDetails.creatorId.equals(Persistance.getInstance().getUserInfo(this).id) && eventDetails.isParticipant == 1) {
-                    deleteOrCancelEventButton.setVisibility(View.INVISIBLE);
-                    editEventButton.setVisibility(View.INVISIBLE);
-                    joinOrUnjoinButton.setVisibility(View.VISIBLE);
-                    joinOrUnjoinButton.setText("UNJOIN");
-                    joinOrUnjoinButton.setBackgroundResource(R.drawable.pink_stroke_rounded_button);
-                    joinOrUnjoinButton.setTextColor(Color.parseColor("#d4498b"));
-                    //call join api method
+            final String eventid = b.getString("eventId");
+            deleteOrCancelEventButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    HashMap<String, String> params = new HashMap<String, String>();
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put("authKey", Persistance.getInstance().getUserInfo(ActivityDetailsActivity.this).authKey);
+                    params.put("eventId", eventid);
+                    params.put("userId", Persistance.getInstance().getUserInfo(ActivityDetailsActivity.this).id);
+                    HTTPResponseController.getInstance().leaveEvent(params, headers, ActivityDetailsActivity.this, false);
+                    deleteOrCancelEventButton.setEnabled(false);
+                }
+            });
+        } else
+        if (!eventDetails.creatorId.equals(Persistance.getInstance().getUserInfo(this).id) && eventDetails.isParticipant == 1) {
+            deleteOrCancelEventButton.setVisibility(View.INVISIBLE);
+            editEventButton.setVisibility(View.INVISIBLE);
+            joinOrUnjoinButton.setVisibility(View.VISIBLE);
+            joinOrUnjoinButton.setText("UNJOIN");
+            joinOrUnjoinButton.setBackgroundResource(R.drawable.pink_stroke_rounded_button);
+            joinOrUnjoinButton.setTextColor(Color.parseColor("#d4498b"));
+            //call join api method
 
-                    final String eventid = b.getString("eventId");
-                    joinOrUnjoinButton.setOnClickListener(new View.OnClickListener() {
+            final String eventid = b.getString("eventId");
+            joinOrUnjoinButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    final ConfirmationDialog confirmationDialog = new ConfirmationDialog(activity);
+                    confirmationDialog.show();
+                    confirmationDialog.title.setText("Confirm?");
+                    confirmationDialog.title.setTypeface(typeFaceBold);
+                    confirmationDialog.message.setText("Are you sure you want to unjoin this event?");
+                    confirmationDialog.message.setTypeface(typeFace);
+                    confirmationDialog.confirm.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            final ConfirmationDialog confirmationDialog = new ConfirmationDialog(activity);
-                            confirmationDialog.show();
-                            confirmationDialog.title.setText("Confirm?");
-                            confirmationDialog.title.setTypeface(typeFaceBold);
-                            confirmationDialog.message.setText("Are you sure you want to unjoin this event?");
-                            confirmationDialog.message.setTypeface(typeFace);
-                            confirmationDialog.confirm.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    HashMap<String, String> params = new HashMap<String, String>();
-                                    HashMap<String, String> headers = new HashMap<String, String>();
-                                    headers.put("authKey", Persistance.getInstance().getUserInfo(ActivityDetailsActivity.this).authKey);
-                                    params.put("eventId", eventid);
-                                    params.put("userId", Persistance.getInstance().getUserInfo(ActivityDetailsActivity.this).id);
-                                    HTTPResponseController.getInstance().leaveEvent(params, headers, ActivityDetailsActivity.this, false);
-                                    joinOrUnjoinButton.setEnabled(false);
-                                    confirmationDialog.dismiss();
-                                }
-                            });
-                            confirmationDialog.dismiss.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    confirmationDialog.dismiss();
-                                }
-                            });
+                            HashMap<String, String> params = new HashMap<String, String>();
+                            HashMap<String, String> headers = new HashMap<String, String>();
+                            headers.put("authKey", Persistance.getInstance().getUserInfo(ActivityDetailsActivity.this).authKey);
+                            params.put("eventId", eventid);
+                            params.put("userId", Persistance.getInstance().getUserInfo(ActivityDetailsActivity.this).id);
+                            HTTPResponseController.getInstance().leaveEvent(params, headers, ActivityDetailsActivity.this, false);
+                            joinOrUnjoinButton.setEnabled(false);
+                            confirmationDialog.dismiss();
                         }
                     });
+                    confirmationDialog.dismiss.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            confirmationDialog.dismiss();
+                        }
+                    });
+                }
+            });
 
-                } else
-                    if (!eventDetails.creatorId.equals(Persistance.getInstance().getUserInfo(this).id) && eventDetails.isParticipant == 0) {
-                        deleteOrCancelEventButton.setVisibility(View.INVISIBLE);
-                        editEventButton.setVisibility(View.INVISIBLE);
-                        joinOrUnjoinButton.setVisibility(View.VISIBLE);
-                        joinOrUnjoinButton.setText("JOIN");
-                        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) chatAndInviteLayout.getLayoutParams();
-                        params.height = 0;
-                        params.topMargin = 0;
-                        chatAndInviteLayout.setLayoutParams(params);
+        } else
+        if (!eventDetails.creatorId.equals(Persistance.getInstance().getUserInfo(this).id) && eventDetails.isParticipant == 0) {
+            deleteOrCancelEventButton.setVisibility(View.INVISIBLE);
+            editEventButton.setVisibility(View.INVISIBLE);
+            joinOrUnjoinButton.setVisibility(View.VISIBLE);
+            joinOrUnjoinButton.setText("JOIN");
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) chatAndInviteLayout.getLayoutParams();
+            params.height = 0;
+            params.topMargin = 0;
+            chatAndInviteLayout.setLayoutParams(params);
 
-                        final String eventid = b.getString("eventId");
-                        //call join api method
-                        joinOrUnjoinButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                HashMap<String, String> params = new HashMap<String, String>();
-                                HashMap<String, String> headers = new HashMap<String, String>();
-                                headers.put("authKey", Persistance.getInstance().getUserInfo(ActivityDetailsActivity.this).authKey);
-                                params.put("eventId", eventid);
-                                params.put("userId", Persistance.getInstance().getUserInfo(ActivityDetailsActivity.this).id);
-                                HTTPResponseController.getInstance().joinEvent(ActivityDetailsActivity.this, params, headers, eventid, ActivityDetailsActivity.this);
-                                joinOrUnjoinButton.setEnabled(false);
-                            }
-                        });
+            final String eventid = b.getString("eventId");
+            //call join api method
+            joinOrUnjoinButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    HashMap<String, String> params = new HashMap<String, String>();
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put("authKey", Persistance.getInstance().getUserInfo(ActivityDetailsActivity.this).authKey);
+                    params.put("eventId", eventid);
+                    params.put("userId", Persistance.getInstance().getUserInfo(ActivityDetailsActivity.this).id);
+                    HTTPResponseController.getInstance().joinEvent(ActivityDetailsActivity.this, params, headers, eventid, ActivityDetailsActivity.this);
+                    joinOrUnjoinButton.setEnabled(false);
+                }
+            });
 
-                    }
+        }
         if (eventDetails.creatorId.equals(Persistance.getInstance().getUserInfo(this).id)) {
             final String eventid = b.getString("eventId");
             editEventButton.setOnClickListener(new View.OnClickListener() {
@@ -686,36 +628,36 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
         }
 
         switch (sport.code) {
-        case "FOT":
-            backgroundImage.setBackgroundResource(R.drawable.bg_sport_football);
-            break;
-        case "BAS":
-            backgroundImage.setBackgroundResource(R.drawable.bg_sport_basketball);
-            break;
-        case "VOL":
-            backgroundImage.setBackgroundResource(R.drawable.bg_sport_volleyball);
-            break;
-        case "JOG":
-            backgroundImage.setBackgroundResource(R.drawable.bg_sport_jogging);
-            break;
-        case "GYM":
-            backgroundImage.setBackgroundResource(R.drawable.bg_sport_gym);
-            break;
-        case "CYC":
-            backgroundImage.setBackgroundResource(R.drawable.bg_sport_cycling);
-            break;
-        case "TEN":
-            backgroundImage.setBackgroundResource(R.drawable.bg_sport_tennis);
-            break;
-        case "PIN":
-            backgroundImage.setBackgroundResource(R.drawable.bg_sport_pingpong);
-            break;
-        case "SQU":
-            backgroundImage.setBackgroundResource(R.drawable.bg_sport_squash);
-            break;
-        case "OTH":
-            backgroundImage.setBackgroundResource(R.drawable.bg_sport_others);
-            break;
+            case "FOT":
+                backgroundImage.setBackgroundResource(R.drawable.bg_sport_football);
+                break;
+            case "BAS":
+                backgroundImage.setBackgroundResource(R.drawable.bg_sport_basketball);
+                break;
+            case "VOL":
+                backgroundImage.setBackgroundResource(R.drawable.bg_sport_volleyball);
+                break;
+            case "JOG":
+                backgroundImage.setBackgroundResource(R.drawable.bg_sport_jogging);
+                break;
+            case "GYM":
+                backgroundImage.setBackgroundResource(R.drawable.bg_sport_gym);
+                break;
+            case "CYC":
+                backgroundImage.setBackgroundResource(R.drawable.bg_sport_cycling);
+                break;
+            case "TEN":
+                backgroundImage.setBackgroundResource(R.drawable.bg_sport_tennis);
+                break;
+            case "PIN":
+                backgroundImage.setBackgroundResource(R.drawable.bg_sport_pingpong);
+                break;
+            case "SQU":
+                backgroundImage.setBackgroundResource(R.drawable.bg_sport_squash);
+                break;
+            case "OTH":
+                backgroundImage.setBackgroundResource(R.drawable.bg_sport_others);
+                break;
         }
 
         isAuthorizedPlace = eventDetails.isAuthorized;
@@ -797,27 +739,27 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
                             .position(new LatLng(latitude, longitude)).icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_1_selected)));
                 } else {
                     switch (authorizedLevel) {
-                    case 0:
-                        m_gmap.addMarker(new MarkerOptions()
-                                .position(new LatLng(latitude, longitude))
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_1_selected)));
-                        break;
-                    case 1:
-                        m_gmap.addMarker(new MarkerOptions()
-                                .position(new LatLng(latitude, longitude))
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_2_selected)));
-                        break;
-                    case 2:
-                        m_gmap.addMarker(new MarkerOptions()
-                                .position(new LatLng(latitude, longitude))
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_3_selected)));
-                        break;
+                        case 0:
+                            m_gmap.addMarker(new MarkerOptions()
+                                    .position(new LatLng(latitude, longitude))
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_1_selected)));
+                            break;
+                        case 1:
+                            m_gmap.addMarker(new MarkerOptions()
+                                    .position(new LatLng(latitude, longitude))
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_2_selected)));
+                            break;
+                        case 2:
+                            m_gmap.addMarker(new MarkerOptions()
+                                    .position(new LatLng(latitude, longitude))
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_3_selected)));
+                            break;
 
-                    case 3:
-                        m_gmap.addMarker(new MarkerOptions()
-                                .position(new LatLng(latitude, longitude))
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_4_selected)));
-                        break;
+                        case 3:
+                            m_gmap.addMarker(new MarkerOptions()
+                                    .position(new LatLng(latitude, longitude))
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_4_selected)));
+                            break;
 
 
                     }
