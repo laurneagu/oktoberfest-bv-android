@@ -1,6 +1,7 @@
 package larc.ludiconprod.Utils.MainPageUtils;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -40,9 +41,15 @@ public class Tab1 extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         v =inflater.inflate(R.layout.tab1,container,false);
 
+
+
         aroundMeEventList= Persistance.getInstance().getAroundMeActivities(getActivity());
         fradapter = new AroundMeAdapter(aroundMeEventList, getActivity().getApplicationContext(), getActivity(), getResources());
         updateListOfEventsAroundMe();
+
+        Typeface typeFace = Typeface.createFromAsset(super.getActivity().getAssets(), "fonts/Quicksand-Medium.ttf");
+        noActivitiesTextFieldAroundMe.setTypeface(typeFace);
+        pressPlusButtonTextFieldAroundMe.setTypeface(typeFace);
 
         return v;
     }

@@ -1,5 +1,6 @@
 package larc.ludiconprod.Utils.CouponsUtils;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -41,6 +42,14 @@ public class CouponsTab1 extends Fragment {
             coupons = Persistance.getInstance().getCouponsCache(super.getActivity());
             fradapter = new CouponsAdapter(coupons, getActivity().getApplicationContext(), getActivity(), getResources(), fragment);
             updateCoupons();
+
+            Typeface typeFace= Typeface.createFromAsset(super.getActivity().getAssets(), "fonts/Quicksand-Medium.ttf");
+
+            TextView tv = (TextView) v.findViewById(R.id.noCoupons);
+            tv.setTypeface(typeFace);
+            tv = (TextView) v.findViewById(R.id.noCouponsText);
+            tv.setTypeface(typeFace);
+            ((Button) v.findViewById(R.id.noCouponsButton)).setTypeface(typeFace);
         } catch (Exception e) {
             e.printStackTrace();
         }

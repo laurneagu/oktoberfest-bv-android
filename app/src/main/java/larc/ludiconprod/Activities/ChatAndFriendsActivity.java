@@ -309,8 +309,6 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
 
     public void setAdapter() {
         try {
-
-
             chatAdapter.notifyDataSetChanged();
 
             chatLoading.setAlpha(0f);
@@ -354,8 +352,6 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                                         progressBarChats.setAlpha(1f);
                                         getPage();
                                     }
-
-
                                 }
                             }
                         }
@@ -388,7 +384,6 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     public void setFriendsAdapter() {
