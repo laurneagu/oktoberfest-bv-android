@@ -4,7 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="64dp">
+    android:paddingBottom="56dp">
 
     <RelativeLayout
         android:id="@+id/myProfileTop"
@@ -31,7 +31,7 @@
                 android:id="@+id/ludicoinsLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="32dp"
-                android:background="@drawable/round_textview"
+                android:background="@drawable/round_ludicoins"
                 android:orientation="horizontal"
                 android:layout_gravity="center">
                 <ImageView
@@ -46,7 +46,8 @@
                     android:gravity="center"
                     android:textSize="16sp"
                     android:fontFamily="@string/fontmedium"
-                    android:layout_marginRight="8dp"/>
+                    android:layout_marginRight="8dp"
+                    android:textColor="@color/yellow"/>
             </LinearLayout>
             <ImageView
                 android:id="@+id/settings"
@@ -58,11 +59,7 @@
         </LinearLayout>
     </RelativeLayout>
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="12dp"
-        android:background="@drawable/shadow_top_to_bottom"
-        android:layout_below="@+id/myProfileTop"/>
+
 
     <LinearLayout
         android:id="@+id/noConnectionTop"
@@ -78,6 +75,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="80dp"
         android:scrollbars="none"
         android:fillViewport="true"
         android:layout_below="@+id/noConnectionTop"
@@ -142,7 +140,8 @@
                     android:layout_width="wrap_content"
                     android:fontFamily="@string/fontmedium"
                     android:text="23.567"
-                    android:textSize="14sp"/>
+                    android:textSize="14sp"
+                    android:textColor="@color/blue"/>
                 <ImageView
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
@@ -153,12 +152,14 @@
                     android:layout_width="wrap_content"
                     android:text="to next level"
                     android:textSize="14sp"
-                    android:fontFamily="@string/fontmedium"/>
+                    android:fontFamily="@string/fontmedium"
+                    android:textColor="@color/lightGray"/>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_height="60dp"
                 android:layout_width="match_parent"
+                android:layout_marginTop="24dp"
                 android:background="#ffffff"
                 android:orientation="horizontal">
                 <LinearLayout
@@ -170,7 +171,7 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:src="@drawable/ic_ludicoins"/>
+                        android:src="@drawable/ic_user_level"/>
                     <LinearLayout
                         android:layout_height="match_parent"
                         android:layout_width="match_parent"
@@ -183,14 +184,16 @@
                             android:layout_width="match_parent"
                             android:text="12"
                             android:fontFamily="@string/fontmedium"
-                            android:textSize="16sp"/>
+                            android:textSize="16sp"
+                            android:textColor="@color/green"/>
                         <TextView
                             android:id="@+id/profileLevelText"
                             android:layout_height="wrap_content"
                             android:layout_width="match_parent"
                             android:text="Level"
                             android:fontFamily="@string/fontmedium"
-                            android:textSize="12sp"/>
+                            android:textSize="12sp"
+                            android:textColor="@color/lightGray"/>
                     </LinearLayout>
                 </LinearLayout>
                 <LinearLayout
@@ -219,16 +222,18 @@
                             android:id="@+id/profilePoints"
                             android:layout_height="wrap_content"
                             android:layout_width="match_parent"
-                            android:text="12"
+                            android:text="12.500"
                             android:fontFamily="@string/fontmedium"
-                            android:textSize="16sp"/>
+                            android:textSize="16sp"
+                            android:textColor="@color/blue"/>
                         <TextView
                             android:id="@+id/profilePointsText"
                             android:layout_height="wrap_content"
                             android:layout_width="match_parent"
                             android:text="Points"
                             android:fontFamily="@string/fontmedium"
-                            android:textSize="12sp"/>
+                            android:textSize="12sp"
+                            android:textColor="@color/lightGray"/>
                     </LinearLayout>
                 </LinearLayout>
                 <LinearLayout
@@ -257,16 +262,18 @@
                             android:id="@+id/profilePosition"
                             android:layout_height="wrap_content"
                             android:layout_width="match_parent"
-                            android:text="12"
+                            android:text="46"
                             android:fontFamily="@string/fontmedium"
-                            android:textSize="16sp"/>
+                            android:textSize="16sp"
+                            android:textColor="@color/pink"/>
                         <TextView
                             android:id="@+id/profilePositionText"
                             android:layout_height="wrap_content"
                             android:layout_width="match_parent"
                             android:text="Position"
                             android:fontFamily="@string/fontmedium"
-                            android:textSize="12sp"/>
+                            android:textSize="12sp"
+                            android:textColor="@color/lightGray"/>
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -281,7 +288,8 @@
                     android:text="PRACTICED SPORTS"
                     android:fontFamily="@string/fontbold"
                     android:textSize="14sp"
-                    android:gravity="left"/>
+                    android:gravity="left"
+                    android:textColor="@color/black"/>
                 <TextView
                     android:id="@+id/profilePracticeSportsCountLabel"
                     android:layout_width="match_parent"
@@ -289,7 +297,8 @@
                     android:text="2/12"
                     android:fontFamily="@string/fontmedium"
                     android:textSize="14sp"
-                    android:gravity="right"/>
+                    android:gravity="right"
+                    android:textColor="@color/lightGray"/>
             </RelativeLayout>
             <HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
@@ -301,11 +310,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal">
-
                 </LinearLayout>
             </HorizontalScrollView>
-
-
         </LinearLayout>
     </ScrollView>
     <ProgressBar
@@ -318,17 +324,33 @@
         android:layout_marginTop="56dp"
         android:indeterminate="true"/>
 
-    <Button
-        android:id="@+id/profileLogout"
+    <ImageView
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:text="LOGOUT"
-        android:layout_alignParentBottom="true"
-        android:textColor="#ffffff"
-        android:layout_marginBottom="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_height="12dp"
+        android:background="@drawable/shadow_top_to_bottom"
+        android:layout_below="@+id/myProfileTop"/>
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="12dp"
+        android:background="@drawable/shadow_bottom_to_top"
+        android:layout_alignParentBottom="true"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:paddingBottom="16dp"
+        android:layout_marginTop="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:textSize="14sp"
-        android:background="@drawable/pink_button_selector"/>
+        android:layout_alignParentBottom="true">
+        <Button
+            android:id="@+id/profileLogout"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="LOGOUT"
+            android:textColor="#ffffff"
+            android:textSize="14sp"
+            android:background="@drawable/pink_button_selector"/>
+    </RelativeLayout>
+
 </RelativeLayout>

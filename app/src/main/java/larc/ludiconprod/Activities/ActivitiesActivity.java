@@ -144,7 +144,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
                 HPShouldBeVisible = true;
                 if (isFirstTimeMyEvents) {
-                    myEventList.remove(0);
+                    //myEventList.remove(0);
                     myAdapter.notifyDataSetChanged();
                 }
                 System.out.println("eventStarted");
@@ -174,12 +174,9 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                 Gson gson = new Gson();
                 currentEvent = gson.fromJson(json, Event.class);
 
-
                 checkinButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
-
                         if (buttonState == 0) {
                             HashMap<String, String> params = new HashMap<String, String>();
                             HashMap<String, String> headers = new HashMap<String, String>();
@@ -245,14 +242,6 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                             }
                     }
                 });
-
-
-
-
-
-
-
-
 
                 Sport sport = new Sport(currentEvent.sportCode);
                 String weWillPlayString = "";
@@ -329,40 +318,32 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                     if (!currentEvent.participansProfilePicture.get(i).equals("") && i == 0) {
                         Bitmap bitmap = decodeBase64(currentEvent.participansProfilePicture.get(i));
                         friends0.setImageBitmap(bitmap);
-                    } else
-                        if (!currentEvent.participansProfilePicture.get(i).equals("") && i == 1) {
+                    } else if (!currentEvent.participansProfilePicture.get(i).equals("") && i == 1) {
                             Bitmap bitmap = decodeBase64(currentEvent.participansProfilePicture.get(i));
                             friends1.setImageBitmap(bitmap);
-                        } else
-                            if (!currentEvent.participansProfilePicture.get(i).equals("") && i == 2) {
-                                Bitmap bitmap = decodeBase64(currentEvent.participansProfilePicture.get(i));
-                                friends2.setImageBitmap(bitmap);
-                            }
-
-                }
-
-
-            } else
-                if (msg.what == 1) {
-                    System.out.println("eventStopped");
-                    buttonState = 0;
-
-
-                    ViewGroup.LayoutParams params = happeningNowLayout.getLayoutParams();
-                    params.height = 0;
-                    happeningNowLayout.setLayoutParams(params);
-                    if (buttonSetter != null) {
-                        buttonSetter.cancel();
-                    }
-
-                    HPShouldBeVisible = false;
-
-                    if (googleApiClient.isConnected()) {
-                        googleApiClient.disconnect();
+                    } else if (!currentEvent.participansProfilePicture.get(i).equals("") && i == 2) {
+                        Bitmap bitmap = decodeBase64(currentEvent.participansProfilePicture.get(i));
+                        friends2.setImageBitmap(bitmap);
                     }
                 }
+            } else if (msg.what == 1) {
+                System.out.println("eventStopped");
+                buttonState = 0;
 
 
+                ViewGroup.LayoutParams params = happeningNowLayout.getLayoutParams();
+                params.height = 0;
+                happeningNowLayout.setLayoutParams(params);
+                if (buttonSetter != null) {
+                    buttonSetter.cancel();
+                }
+
+                HPShouldBeVisible = false;
+
+                if (googleApiClient.isConnected()) {
+                    googleApiClient.disconnect();
+                }
+            }
         }
     };
 
@@ -571,9 +552,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                                 editor.commit();
 
                                 handler.sendEmptyMessage(0);
-
                             }
-
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -835,18 +814,15 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         isFirstTimeMyEvents = true;
     }
 
-
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         // requestLocationUpdates();
     }
 
-
     @Override
     public void onConnectionSuspended(int i) {
         System.out.println("Connection suspended");
     }
-
 
     private void requestLocationUpdates() {
         /*if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -873,8 +849,6 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         System.out.println(location.getLatitude() + " new api");
         happeningNowLocation.locationList.add(location);
         Persistance.getInstance().setLocation(activity, happeningNowLocation);
-
-
     }
 
     private void onInternetRefresh() {

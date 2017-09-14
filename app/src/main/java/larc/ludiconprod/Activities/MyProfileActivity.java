@@ -77,10 +77,8 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
 
             Button logout = (Button) v.findViewById(R.id.profileLogout);
             logout.setOnClickListener(new View.OnClickListener() {
-                final Typeface typeFace = Typeface.createFromAsset(activity.getAssets(), "fonts/Quicksand-Medium" +
-                        ".ttf");
-                final Typeface typeFaceBold = Typeface.createFromAsset(activity.getAssets(), "fonts/Quicksand-Bold" +
-                        ".ttf");
+                final Typeface typeFace = Typeface.createFromAsset(activity.getAssets(), "fonts/Quicksand-Medium.ttf");
+                final Typeface typeFaceBold = Typeface.createFromAsset(activity.getAssets(), "fonts/Quicksand-Bold.ttf");
 
                 @Override
                 public void onClick(View view) {
