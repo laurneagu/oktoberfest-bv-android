@@ -63,6 +63,9 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
             TextView titleText = (TextView) findViewById(R.id.titleText);
             titleText.setText("Player profile");
 
+            final Typeface typeFace = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Medium.ttf");
+            titleText.setTypeface(typeFace);
+
             backButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -92,7 +95,7 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
                 }
             });
 
-            Typeface typeFace = Typeface.createFromAsset(super.getAssets(), "fonts/Quicksand-Medium.ttf");
+
             Typeface typeFaceBold = Typeface.createFromAsset(super.getAssets(), "fonts/Quicksand-Bold.ttf");
 
             titleText.setTypeface(typeFace);

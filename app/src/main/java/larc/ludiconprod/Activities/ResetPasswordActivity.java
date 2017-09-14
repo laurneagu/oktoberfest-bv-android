@@ -65,6 +65,7 @@ public class ResetPasswordActivity extends Activity {
         Typeface typeFaceBold = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.ttf");
         TextView titleText = (TextView) findViewById(R.id.titleText);
         titleText.setText("Reset Password");
+        titleText.setTypeface(typeFace);
         backButton = (RelativeLayout) findViewById(R.id.backButton);
         resetPassword = (Button) findViewById(R.id.resetPasswordButton);
         resetPassword.setTypeface(typeFaceBold);

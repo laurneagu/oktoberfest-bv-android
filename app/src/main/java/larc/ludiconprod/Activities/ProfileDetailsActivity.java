@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -70,6 +71,13 @@ public class ProfileDetailsActivity extends Activity {
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         setContentView(R.layout.profile_details_activity);
+        final Typeface typeFace = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Medium.ttf");
+        final Typeface typeFaceBold = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.ttf");
+
+        RelativeLayout toolbar = (RelativeLayout) findViewById(R.id.tool_bar);
+        TextView title = (TextView)toolbar.findViewById(R.id.titleText);
+        title.setTypeface(typeFace);
+
         backButton = findViewById(R.id.backButton);
         backButton.setAlpha(0f);
         backButton.setClickable(false);
@@ -83,8 +91,6 @@ public class ProfileDetailsActivity extends Activity {
         imgProfilePicture = (ImageView) findViewById(R.id.imgProfilePicture);
         TextView descriptionText = (TextView) findViewById(R.id.textView5);
 
-        Typeface typeFace = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Medium.ttf");
-        Typeface typeFaceBold = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.ttf");
         descriptionText.setTypeface(typeFace);
         male.setTypeface(typeFace);
         female.setTypeface(typeFace);

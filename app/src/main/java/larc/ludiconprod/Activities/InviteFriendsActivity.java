@@ -2,14 +2,11 @@ package larc.ludiconprod.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -22,7 +19,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import larc.ludiconprod.Adapters.InviteFriendsAdapter;
-import larc.ludiconprod.Adapters.MainActivity.MyAdapter;
 import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
@@ -49,6 +45,13 @@ public class InviteFriendsActivity extends Activity {
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         setContentView(R.layout.invite_friends_activity);
+
+        final Typeface typeFace = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Medium.ttf");
+        final Typeface typeFaceBold = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.ttf");
+        RelativeLayout toolbar = (RelativeLayout) findViewById(R.id.tool_bar);
+        TextView title = (TextView) toolbar.findViewById(R.id.titleText);
+        title.setTypeface(typeFace);
+
         backButton = (RelativeLayout) findViewById(R.id.backButton);
         TextView titleText = (TextView) findViewById(R.id.titleText);
         friendsListView = (ListView) findViewById(R.id.inviteFriendsListView);

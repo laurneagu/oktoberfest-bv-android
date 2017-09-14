@@ -28,6 +28,7 @@ public class ResetPasswordFinalActivity extends Activity {
         Typeface typeFaceBold= Typeface.createFromAsset(getAssets(),"fonts/Quicksand-Bold.ttf");
         Typeface typeFace = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Medium.ttf");
         TextView titleText=(TextView) findViewById(R.id.titleText);
+        titleText.setTypeface(typeFace);
         TextView sendText = (TextView) findViewById(R.id.textViewSent);
         TextView emailText = (TextView) findViewById(R.id.textViewEmail);
         if(from.equals("reset")) {

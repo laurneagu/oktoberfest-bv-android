@@ -3,15 +3,10 @@ package larc.ludiconprod.Activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Base64;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -19,15 +14,11 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 import larc.ludiconprod.Controller.HTTPResponseController;
@@ -87,12 +78,19 @@ public class LoginActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
+
+        final Typeface typeFace = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Medium.ttf");
+        final Typeface typeFaceBold = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.ttf");
+
+        RelativeLayout toolbar = (RelativeLayout) findViewById(R.id.tool_bar);
+        TextView title = (TextView)toolbar.findViewById(R.id.titleText);
+        title.setTypeface(typeFace);
+
         backButton = (RelativeLayout) findViewById(R.id.backButton);
         forgotPasswordText=(TextView) findViewById(R.id.forgotPasswordText);
         TextView titleText=(TextView) findViewById(R.id.titleText);
         titleText.setText("Login");
-        Typeface typeFace= Typeface.createFromAsset(getAssets(),"fonts/Quicksand-Medium.ttf");
-        Typeface typeFaceBold= Typeface.createFromAsset(getAssets(),"fonts/Quicksand-Bold.ttf");
+        titleText.setTypeface(typeFace);
 
         password=(EditText) findViewById(R.id.password) ;
         password.setTypeface(typeFace);

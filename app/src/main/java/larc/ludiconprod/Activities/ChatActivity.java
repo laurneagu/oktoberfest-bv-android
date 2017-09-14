@@ -3,6 +3,7 @@ package larc.ludiconprod.Activities;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Base64;
@@ -116,6 +117,14 @@ public class ChatActivity extends Activity {
     public void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
         setContentView(R.layout.chat_activity);
+
+        final Typeface typeFace = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Medium.ttf");
+        final Typeface typeFaceBold = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.ttf");
+
+        RelativeLayout toolbar = (RelativeLayout) findViewById(R.id.tool_bar);
+        TextView title = (TextView)toolbar.findViewById(R.id.titleText);
+        title.setTypeface(typeFace);
+
         sendButton = (Button)findViewById(R.id.sendButton);
         messageInput = (EditText)findViewById(R.id.messageInput);
         chatLoading = (ProgressBar)findViewById(R.id.chatLoading);

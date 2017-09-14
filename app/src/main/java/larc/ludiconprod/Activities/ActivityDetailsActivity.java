@@ -28,8 +28,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import org.w3c.dom.Text;
-
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -132,8 +130,13 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
         activity = this;
         setContentView(R.layout.activity_details_activity);
 
+
         final Typeface typeFace = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Medium.ttf");
         final Typeface typeFaceBold = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.ttf");
+
+        RelativeLayout toolbar = (RelativeLayout) findViewById(R.id.tool_bar);
+        TextView title = (TextView)toolbar.findViewById(R.id.titleText);
+        title.setTypeface(typeFace);
 
         findViewById(R.id.internetRefresh).setAlpha(0);
         backButton = (RelativeLayout) findViewById(R.id.backButton);

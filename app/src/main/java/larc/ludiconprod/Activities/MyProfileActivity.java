@@ -67,6 +67,14 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
         try {
             super.onCreate(savedInstanceState);
 
+            TextView profileTitle = (TextView) v.findViewById(R.id.profileTitle);
+            final Typeface typeFace = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Medium.ttf");
+            final Typeface typeFaceBold = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Bold" +
+                    ".ttf");
+            profileTitle.setTypeface(typeFace);
+            profileTitle.setTextColor(getResources().getColor(R.color.darkblue));
+
+
             Button logout = (Button) v.findViewById(R.id.profileLogout);
             logout.setOnClickListener(new View.OnClickListener() {
                 final Typeface typeFace = Typeface.createFromAsset(activity.getAssets(), "fonts/Quicksand-Medium" +
@@ -125,9 +133,6 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
             if (MyProfileActivity.cache != null) {
                 this.printInfo(MyProfileActivity.cache);
             }
-
-            Typeface typeFace = Typeface.createFromAsset(super.getActivity().getAssets(), "fonts/Quicksand-Medium.ttf");
-            Typeface typeFaceBold = Typeface.createFromAsset(super.getActivity().getAssets(), "fonts/Quicksand-Bold.ttf");
 
             ((TextView) v.findViewById(R.id.profileTitle)).setTypeface(typeFace);
             ((TextView) v.findViewById(R.id.profileLudicoins)).setTypeface(typeFace);

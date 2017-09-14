@@ -74,6 +74,7 @@ public class SportDetailsActivity extends Activity {
         progressText=(TextView) findViewById(R.id.rangeTextView);
         Typeface typeFace= Typeface.createFromAsset(getAssets(),"fonts/Quicksand-Medium.ttf");
         Typeface typeFaceBold= Typeface.createFromAsset(getAssets(),"fonts/Quicksand-Bold.ttf");
+        titleText.setTypeface(typeFace);
         savePreferincesButton.setTypeface(typeFaceBold);
         for(int i=0;i<sportsArray.length;i++){
             sports.add(sportsArray[i]);

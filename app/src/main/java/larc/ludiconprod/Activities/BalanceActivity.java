@@ -81,6 +81,10 @@ public class BalanceActivity extends AppCompatActivity implements Response.Liste
             AssetManager assets = super.getAssets();
             Typeface typeFace = Typeface.createFromAsset(assets, "fonts/Quicksand-Medium.ttf");
 
+            RelativeLayout toolbar = (RelativeLayout) findViewById(R.id.tool_bar);
+            TextView title = (TextView)toolbar.findViewById(R.id.titleText);
+            title.setTypeface(typeFace);
+
             ((TextView) findViewById(R.id.activityLabel)).setTypeface(typeFace);
             ((TextView) findViewById(R.id.dateLabel)).setTypeface(typeFace);
             ((TextView) findViewById(R.id.ludicoinsLabel)).setTypeface(typeFace);

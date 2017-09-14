@@ -1,7 +1,6 @@
 package larc.ludiconprod.Activities;
 
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -79,6 +78,13 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
 
             super.setContentView(R.layout.edit_profile_activity);
 
+            final Typeface typeFace = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Medium.ttf");
+            final Typeface typeFaceBold = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.ttf");
+
+            RelativeLayout toolbar = (RelativeLayout) findViewById(R.id.tool_bar);
+            TextView title = (TextView)toolbar.findViewById(R.id.titleText);
+            title.setTypeface(typeFace);
+
             findViewById(R.id.internetRefresh).setAlpha(0);
 
             View backButton = findViewById(R.id.backButton);
@@ -124,9 +130,6 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                 }
             });
 
-            AssetManager assets = getAssets();// Is this the right asset?
-            Typeface typeFace = Typeface.createFromAsset(assets, "fonts/Quicksand-Medium.ttf");
-            Typeface typeFaceBold = Typeface.createFromAsset(assets, "fonts/Quicksand-Bold.ttf");
 
             titleText.setTypeface(typeFace);
         } catch (Exception e) {

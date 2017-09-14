@@ -17,7 +17,6 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -36,7 +35,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -147,6 +145,13 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
         super.onCreate(savedInstance);
 
         setContentView(R.layout.create_new_activity);
+
+        final Typeface typeFace = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Medium.ttf");
+        final Typeface typeFaceBold = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.ttf");
+
+        RelativeLayout toolbar = (RelativeLayout) findViewById(R.id.tool_bar);
+        TextView title = (TextView) toolbar.findViewById(R.id.titleText);
+        title.setTypeface(typeFace);
 
         findViewById(R.id.internetRefresh).setAlpha(0);
 
@@ -302,8 +307,6 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
         } else {
             titleText.setText("Edit Activity");
         }
-        Typeface typeFace = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Medium.ttf");
-        Typeface typeFaceBold = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.ttf");
 
 
         sportSpinner.setOnItemSelectedListener(this);

@@ -98,6 +98,7 @@ public class RegisterActivity extends FragmentActivity {
         Typeface typeFaceBold = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.ttf");
         TextView titleText = (TextView) findViewById(R.id.titleText);
         titleText.setText("Register");
+        titleText.setTypeface(typeFace);
         backButton = (RelativeLayout) findViewById(R.id.backButton);
         createAccountButton = (Button) findViewById(R.id.createAccountButton);
         createAccountButton.setTypeface(typeFaceBold);

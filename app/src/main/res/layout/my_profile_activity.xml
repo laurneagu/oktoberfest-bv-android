@@ -15,7 +15,7 @@
             android:id="@+id/profileTitle"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:textColor="@color/tab_text_color"
+            android:textColor="@color/darkblue"
             android:text="My profile"
             android:textSize="20sp"
             android:gravity="center|left"

@@ -3,16 +3,11 @@ package larc.ludiconprod.Activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
@@ -20,9 +15,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -35,18 +28,12 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.VisibleRegion;
-import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
-import com.google.maps.android.clustering.view.DefaultClusterRenderer;
-import com.google.maps.android.ui.IconGenerator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,7 +45,6 @@ import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
 import larc.ludiconprod.Utils.GMapsCluster.AuthPlace;
-import larc.ludiconprod.Utils.GMapsCluster.MultiDrawable;
 import larc.ludiconprod.Utils.Location.ActivitiesLocationListener;
 import larc.ludiconprod.Utils.util.AuthorizedLocation;
 import larc.ludiconprod.ViewPagerHelper.MyFragment;
@@ -124,6 +110,14 @@ public class GMapsActivity extends FragmentActivity implements PlaceSelectionLis
             currentActivity=this;
             super.onCreate(savedInstanceState);
             setContentView(R.layout.gmaps_activity);
+
+            final Typeface typeFace = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Medium.ttf");
+            final Typeface typeFaceBold = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.ttf");
+
+            RelativeLayout toolbar = (RelativeLayout) findViewById(R.id.tool_bar);
+            TextView title = (TextView)toolbar.findViewById(R.id.titleText);
+            title.setTypeface(typeFace);
+
             backButton = (RelativeLayout) findViewById(R.id.backButton);
             TextView titleText=(TextView) findViewById(R.id.titleText);
             TextView noLocationText = (TextView) findViewById(R.id.noLocationText);
@@ -135,8 +129,6 @@ public class GMapsActivity extends FragmentActivity implements PlaceSelectionLis
 
 
             Log.v("titlul e",titleText.getText().toString());
-            Typeface typeFace= Typeface.createFromAsset(getAssets(),"fonts/Quicksand-Medium.ttf");
-            Typeface typeFaceBold= Typeface.createFromAsset(getAssets(),"fonts/Quicksand-Bold.ttf");
             noLocationText.setTypeface(typeFace);
             textCreator.setTypeface(typeFace);
             mapFragment= (MapFragment) getFragmentManager()
