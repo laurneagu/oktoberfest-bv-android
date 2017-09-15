@@ -308,51 +308,51 @@ public class HTTPResponseController {
             @Override
             public void onResponse(JSONObject jsonObject) {
                 System.out.println(jsonObject + " ceva");
-                if (getFirstPageAroundMe) {
-                    aroundMeEventList.clear();
-                }
-                try {
-                    for (int i = 0; i < jsonObject.getJSONArray("aroundMe").length(); i++) {
-                        Event event = new Event();
-                        event.id = jsonObject.getJSONArray("aroundMe").getJSONObject(i).getString("id");
-                        int date = jsonObject.getJSONArray("aroundMe").getJSONObject(i).getInt("eventDate");
-                        java.util.Date date1 = new java.util.Date((long) date * 1000);
-                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-                        String displayDate = formatter.format(date1);
-                        event.eventDate = displayDate;
-                        event.placeName = jsonObject.getJSONArray("aroundMe").getJSONObject(i).getString("placeName");
-                        event.sportCode = jsonObject.getJSONArray("aroundMe").getJSONObject(i).getString("sportName");
-                        if (event.sportCode.equalsIgnoreCase("OTH")) {
-                            event.otherSportName = jsonObject.getJSONArray("aroundMe").getJSONObject(i).getString
-                                    ("otherSportName");
-                        }
-                        event.capacity = jsonObject.getJSONArray("aroundMe").getJSONObject(i).getInt("capacity");
-                        event.creatorName = jsonObject.getJSONArray("aroundMe").getJSONObject(i).getString("creatorName");
-                        event.creatorId = jsonObject.getJSONArray("aroundMe").getJSONObject(i).getString("creatorId");
-                        event.creatorLevel = jsonObject.getJSONArray("aroundMe").getJSONObject(i).getInt("creatorLevel");
-                        event.creatorProfilePicture = jsonObject.getJSONArray("aroundMe").getJSONObject(i).getString("creatorProfilePicture");
-                        event.numberOfParticipants = jsonObject.getJSONArray("aroundMe").getJSONObject(i).getInt("numberOfParticipants");
-                        event.points = jsonObject.getJSONArray("aroundMe").getJSONObject(i).getInt("points");
-                        event.ludicoins = jsonObject.getJSONArray("aroundMe").getJSONObject(i).getInt("ludicoins");
-                        for (int j = 0; j < jsonObject.getJSONArray("aroundMe").getJSONObject(i).getJSONArray("participantsProfilePicture").length(); j++) {
-                            event.participansProfilePicture.add(jsonObject.getJSONArray("aroundMe").getJSONObject(i).getJSONArray("participantsProfilePicture").getString(j));
-                        }
-                        System.out.println(event.id + " eventid:" + i + "  " + event.numberOfParticipants + " profilepicture" + jsonObject.getJSONArray("aroundMe").getJSONObject(i).getJSONArray("participantsProfilePicture").length());
-                        aroundMeEventList.add(event);
-
-
-                    }
-                    ActivitiesActivity.currentFragment.updateListOfEventsAroundMe(false);
-                    if (jsonObject.getJSONArray("aroundMe").length() >= 1) {
-                        ActivitiesActivity.NumberOfRefreshAroundMe++;
-                    }
                     if (getFirstPageAroundMe) {
-                        Persistance.getInstance().setAroundMeActivities(activity, aroundMeEventList);
+                        aroundMeEventList.clear();
                     }
-                    getFirstPageAroundMe = false;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                    try {
+                        for (int i = 0; i < jsonObject.getJSONArray("aroundMe").length(); i++) {
+                            Event event = new Event();
+                            event.id = jsonObject.getJSONArray("aroundMe").getJSONObject(i).getString("id");
+                            int date = jsonObject.getJSONArray("aroundMe").getJSONObject(i).getInt("eventDate");
+                            java.util.Date date1 = new java.util.Date((long) date * 1000);
+                            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                            String displayDate = formatter.format(date1);
+                            event.eventDate = displayDate;
+                            event.placeName = jsonObject.getJSONArray("aroundMe").getJSONObject(i).getString("placeName");
+                            event.sportCode = jsonObject.getJSONArray("aroundMe").getJSONObject(i).getString("sportName");
+                            if (event.sportCode.equalsIgnoreCase("OTH")) {
+                                event.otherSportName = jsonObject.getJSONArray("aroundMe").getJSONObject(i).getString
+                                        ("otherSportName");
+                            }
+                            event.capacity = jsonObject.getJSONArray("aroundMe").getJSONObject(i).getInt("capacity");
+                            event.creatorName = jsonObject.getJSONArray("aroundMe").getJSONObject(i).getString("creatorName");
+                            event.creatorId = jsonObject.getJSONArray("aroundMe").getJSONObject(i).getString("creatorId");
+                            event.creatorLevel = jsonObject.getJSONArray("aroundMe").getJSONObject(i).getInt("creatorLevel");
+                            event.creatorProfilePicture = jsonObject.getJSONArray("aroundMe").getJSONObject(i).getString("creatorProfilePicture");
+                            event.numberOfParticipants = jsonObject.getJSONArray("aroundMe").getJSONObject(i).getInt("numberOfParticipants");
+                            event.points = jsonObject.getJSONArray("aroundMe").getJSONObject(i).getInt("points");
+                            event.ludicoins = jsonObject.getJSONArray("aroundMe").getJSONObject(i).getInt("ludicoins");
+                            for (int j = 0; j < jsonObject.getJSONArray("aroundMe").getJSONObject(i).getJSONArray("participantsProfilePicture").length(); j++) {
+                                event.participansProfilePicture.add(jsonObject.getJSONArray("aroundMe").getJSONObject(i).getJSONArray("participantsProfilePicture").getString(j));
+                            }
+                            System.out.println(event.id + " eventid:" + i + "  " + event.numberOfParticipants + " profilepicture" + jsonObject.getJSONArray("aroundMe").getJSONObject(i).getJSONArray("participantsProfilePicture").length());
+                            aroundMeEventList.add(event);
+
+
+                        }
+                        ActivitiesActivity.currentFragment.updateListOfEventsAroundMe(false);
+                        if (jsonObject.getJSONArray("aroundMe").length() >= 1) {
+                            ActivitiesActivity.NumberOfRefreshAroundMe++;
+                        }
+                        if (getFirstPageAroundMe) {
+                            Persistance.getInstance().setAroundMeActivities(activity, aroundMeEventList);
+                        }
+                        getFirstPageAroundMe = false;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 ActivitiesActivity.v1.setAlpha(0);
             }
         };
@@ -363,55 +363,54 @@ public class HTTPResponseController {
             @Override
             public void onResponse(JSONObject jsonObject) {
                 System.out.println(jsonObject + " myevent");
-                if (getFirstPageMyActivity) {
-                    myEventList.clear();
-                }
-                try {
-                    for (int i = 0; i < jsonObject.getJSONArray("myEvents").length(); i++) {
-                        Event event = new Event();
-                        event.id = jsonObject.getJSONArray("myEvents").getJSONObject(i).getString("id");
-                        int date = jsonObject.getJSONArray("myEvents").getJSONObject(i).getInt("eventDate");
-                        event.eventDateTimeStamp = date;
-                        java.util.Date date1 = new java.util.Date((long) date * 1000);
-                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-                        String displayDate = formatter.format(date1);
-                        event.eventDate = displayDate;
-                        event.placeName = jsonObject.getJSONArray("myEvents").getJSONObject(i).getString("placeName");
-                        event.sportCode = jsonObject.getJSONArray("myEvents").getJSONObject(i).getString("sportName");
-                        if (event.sportCode.equalsIgnoreCase("OTH")) {
-                            event.otherSportName = jsonObject.getJSONArray("myEvents").getJSONObject(i).getString
-                                    ("otherSportName");
-                        }
-                        event.capacity = jsonObject.getJSONArray("myEvents").getJSONObject(i).getInt("capacity");
-                        event.creatorName = jsonObject.getJSONArray("myEvents").getJSONObject(i).getString("creatorName");
-                        event.creatorLevel = jsonObject.getJSONArray("myEvents").getJSONObject(i).getInt("creatorLevel");
-                        event.creatorId = jsonObject.getJSONArray("myEvents").getJSONObject(i).getString("creatorId");
-                        event.numberOfParticipants = jsonObject.getJSONArray("myEvents").getJSONObject(i).getInt("numberOfParticipants");
-                        event.points = jsonObject.getJSONArray("myEvents").getJSONObject(i).getInt("points");
-                        event.creatorProfilePicture = jsonObject.getJSONArray("myEvents").getJSONObject(i).getString("creatorProfilePicture");
-                        event.ludicoins = jsonObject.getJSONArray("myEvents").getJSONObject(i).getInt("ludicoins");
-                        for (int j = 0; j < jsonObject.getJSONArray("myEvents").getJSONObject(i).getJSONArray("participantsProfilePicture").length(); j++) {
-                            event.participansProfilePicture.add(jsonObject.getJSONArray("myEvents").getJSONObject(i).getJSONArray("participantsProfilePicture").getString(j));
-
-                        }
-                        myEventList.add(event);
-
-                    }
-                    ActivitiesActivity.currentFragment.updateListOfMyEvents(false);
-                    if (jsonObject.getJSONArray("myEvents").length() >= 1) {
-                        ActivitiesActivity.NumberOfRefreshMyEvents++;
-                    }
+                synchronized (myEventList) {
                     if (getFirstPageMyActivity) {
-                        ArrayList<Event> localEventList = new ArrayList<>();
-                        localEventList.addAll(myEventList);
-                        Persistance.getInstance().setMyActivities(activity, localEventList);
+                        myEventList.clear();
                     }
+                    try {
+                        for (int i = 0; i < jsonObject.getJSONArray("myEvents").length(); i++) {
+                            Event event = new Event();
+                            event.id = jsonObject.getJSONArray("myEvents").getJSONObject(i).getString("id");
+                            int date = jsonObject.getJSONArray("myEvents").getJSONObject(i).getInt("eventDate");
+                            event.eventDateTimeStamp = date;
+                            java.util.Date date1 = new java.util.Date((long) date * 1000);
+                            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                            String displayDate = formatter.format(date1);
+                            event.eventDate = displayDate;
+                            event.placeName = jsonObject.getJSONArray("myEvents").getJSONObject(i).getString("placeName");
+                            event.sportCode = jsonObject.getJSONArray("myEvents").getJSONObject(i).getString("sportName");
+                            if (event.sportCode.equalsIgnoreCase("OTH")) {
+                                event.otherSportName = jsonObject.getJSONArray("myEvents").getJSONObject(i).getString
+                                        ("otherSportName");
+                            }
+                            event.capacity = jsonObject.getJSONArray("myEvents").getJSONObject(i).getInt("capacity");
+                            event.creatorName = jsonObject.getJSONArray("myEvents").getJSONObject(i).getString("creatorName");
+                            event.creatorLevel = jsonObject.getJSONArray("myEvents").getJSONObject(i).getInt("creatorLevel");
+                            event.creatorId = jsonObject.getJSONArray("myEvents").getJSONObject(i).getString("creatorId");
+                            event.numberOfParticipants = jsonObject.getJSONArray("myEvents").getJSONObject(i).getInt("numberOfParticipants");
+                            event.points = jsonObject.getJSONArray("myEvents").getJSONObject(i).getInt("points");
+                            event.creatorProfilePicture = jsonObject.getJSONArray("myEvents").getJSONObject(i).getString("creatorProfilePicture");
+                            event.ludicoins = jsonObject.getJSONArray("myEvents").getJSONObject(i).getInt("ludicoins");
+                            for (int j = 0; j < jsonObject.getJSONArray("myEvents").getJSONObject(i).getJSONArray("participantsProfilePicture").length(); j++) {
+                                event.participansProfilePicture.add(jsonObject.getJSONArray("myEvents").getJSONObject(i).getJSONArray("participantsProfilePicture").getString(j));
 
-                    getFirstPageMyActivity = false;
-                } catch (Exception e) {
-                    e.printStackTrace();
+                            }
+                            myEventList.add(event);
+
+                        }
+                        ActivitiesActivity.currentFragment.updateListOfMyEvents(false);
+                        if (jsonObject.getJSONArray("myEvents").length() >= 1) {
+                            ActivitiesActivity.NumberOfRefreshMyEvents++;
+                        }
+                        if (getFirstPageMyActivity) {
+                            ArrayList<Event> localEventList = new ArrayList<>();
+                            localEventList.addAll(myEventList);
+                            Persistance.getInstance().setMyActivities(activity, localEventList);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-
             }
         };
     }
