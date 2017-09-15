@@ -169,12 +169,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                 TextView allFriends = (TextView) v.findViewById(R.id.friendsNumberHN);
                 checkinButton = (Button) v.findViewById(R.id.checkinHN);
 
-                final Event currentEvent;
-
-                SharedPreferences sharedPreferences = activity.getSharedPreferences("HappeningNowEvent", 0);
-                String json = sharedPreferences.getString("HappeningNowEvent", "0");
-                Gson gson = new Gson();
-                currentEvent = gson.fromJson(json, Event.class);
+                final Event currentEvent = Persistance.getInstance().getHappeningNow(getActivity());
 
                 checkinButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -375,10 +370,10 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         System.out.println(" save points called");
         Event currentEvent;
 
-        SharedPreferences sharedPreferences = activity.getSharedPreferences("HappeningNowEvent", 0);
-        String json = sharedPreferences.getString("HappeningNowEvent", "0");
-        Gson gson = new Gson();
-        currentEvent = gson.fromJson(json, Event.class);
+        currentEvent = Persistance.getInstance().getHappeningNow(getActivity());
+        if (currentEvent == null) {
+            return;
+        }
 
         HashMap<String, String> params = new HashMap<String, String>();
         HashMap<String, String> headers = new HashMap<String, String>();
@@ -537,9 +532,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                 happeningNowLocation = Persistance.getInstance().getLocation(activity);
                 happeningNowLocation.endDate = String.valueOf(System.currentTimeMillis() / 1000);
                 savePoints();
-
             }
-
 
             myAdapter = new MyAdapter(myEventList, activity.getApplicationContext(), activity, getResources(), currentFragment);
             fradapter = new AroundMeAdapter(aroundMeEventList, activity.getApplicationContext(), activity, getResources(), currentFragment);
@@ -556,6 +549,17 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                 @Override
                 public void run() {
                     try {
+                        Event currentEvent = Persistance.getInstance().getHappeningNow(getActivity());
+                        if (currentEvent != null) {
+                            long timeToNextEvent = (currentEvent.eventDateTimeStamp - System.currentTimeMillis() / 1000);
+                            if ((timeToNextEvent > -3600 && buttonState == 0) || (timeToNextEvent > -7200 && buttonState == 1)) {
+                                googleApiClient.connect();
+                                startedEventDate = currentEvent.eventDateTimeStamp;
+                                handler.sendEmptyMessage(0);
+                                return;
+                            }
+                        }
+
                         if (myEventList.size() >= 1) {
                             long timeToNextEvent = (myEventList.get(0).eventDateTimeStamp - System.currentTimeMillis() / 1000);
                             while (timeToNextEvent >= 0) {
@@ -617,7 +621,6 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                 startHappeningNow = new Thread(runnableStart);
             }
 
-
             googleApiClient = new GoogleApiClient.Builder(getContext())
                     .addApi(LocationServices.API)
                     .addConnectionCallbacks(this)
@@ -632,7 +635,6 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                 googleApiClient.connect();
                 handler.sendEmptyMessage(0);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -657,7 +659,6 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         progressBarAroundMe = (ProgressBar) v.findViewById(R.id.progressBarAroundMe);
         progressBarAroundMe.setIndeterminate(true);
         progressBarAroundMe.setAlpha(0f);
-
 
         noActivitiesTextFieldAroundMe = (TextView) v.findViewById(R.id.noActivitiesTextFieldAroundMe);
         pressPlusButtonTextFieldAroundMe = (TextView) v.findViewById(R.id.pressPlusButtonTextFieldAroundMe);
@@ -703,8 +704,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                                 // mSwipeRefreshLayout1.setRefreshing(true);
                                 progressBarAroundMe.setAlpha(1f);
 
-
-//                                Log.v("numar de elemete",String.valueOf(frlistView.getAdapter().getCount()));
+                                //Log.v("numar de elemete",String.valueOf(frlistView.getAdapter().getCount()));
                                 //(new Handler()).postDelayed(new Runnable() {
                                 ////@Override
                                 // public void run() {
@@ -739,11 +739,9 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
             addedSwipeAroundMe = true;
         }
 
-
         progressBarAroundMe.setAlpha(0f);
 
         isFirstTimeAroundMe = true;
-
     }
 
     public void updateListOfMyEvents(final boolean eventHappeningNow) {
@@ -781,7 +779,6 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         });
 
         if (!isFirstTimeMyEvents) {
-
             mylistView.setAdapter(myAdapter);
         }
         if (myEventList.size() == 0) {
@@ -799,15 +796,12 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                 public boolean onTouch(final View v, MotionEvent event) {
                     if (v != null && mylistView.getChildCount() > 0) {
                         if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
-
-
                             if (mylistView.getLastVisiblePosition() == mylistView.getAdapter().getCount() - 1 &&
                                     mylistView.getChildAt(mylistView.getChildCount() - 1).getBottom() <= mylistView.getHeight()) {
 
                                 // mSwipeRefreshLayout1.setRefreshing(true);
                                 progressBarMyEvents.setAlpha(1f);
                                 getMyEvents(String.valueOf(NumberOfRefreshMyEvents));
-
                             }
                         }
                     }
@@ -916,6 +910,5 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
-
     }
 }

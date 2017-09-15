@@ -48,6 +48,7 @@ public class Persistance {
     private final String locationString = "locationsList";
     private final String conversationString = "conversationList";
     private final String leaderboardString = "leaderboardList";
+    private final String happeningNowEvent = "HappeningNowEvent";
 
     public void setUserInfo(Activity activity, User user) {
 
@@ -288,6 +289,27 @@ public class Persistance {
         SharedPreferences.Editor editor = activity.getSharedPreferences(this.leaderboardString, 0).edit();
         Gson gson = new Gson();
         editor.putString(this.leaderboardString, gson.toJson(cs));
+        editor.commit();
+    }
+
+    public Event getHappeningNow(Activity activity) {
+        SharedPreferences sharedPreferences = activity.getSharedPreferences(this.happeningNowEvent, 0);
+        String json = sharedPreferences.getString(this.happeningNowEvent, "0");
+        if (json.equals("0")) {
+            return null;
+        }
+        Gson gson = new Gson();
+        return gson.fromJson(json, Event.class);
+    }
+
+    public void setHappeningNow(Event event, Activity activity) {
+        SharedPreferences.Editor editor = activity.getSharedPreferences(this.happeningNowEvent, 0).edit();
+        Gson gson = new Gson();
+        if (event != null) {
+            editor.putString(this.happeningNowEvent, gson.toJson(event));
+        } else {
+            editor.clear();
+        }
         editor.commit();
     }
 }

@@ -99,6 +99,7 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
                             Intent intent = new Intent(mContext, IntroActivity.class);
                             startActivity(intent);
                             confirmationDialog.dismiss();
+                            Persistance.getInstance().setHappeningNow(null, getActivity());
                         }
                     });
                     confirmationDialog.dismiss.setOnClickListener(new View.OnClickListener() {
