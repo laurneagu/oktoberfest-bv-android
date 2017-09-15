@@ -16,6 +16,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import larc.ludiconprod.Adapters.MainActivity.AroundMeAdapter;
+import larc.ludiconprod.Adapters.MainActivity.SimpleDividerItemDecoration;
 import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
 import larc.ludiconprod.Utils.Event;
@@ -37,14 +38,13 @@ public class Tab1 extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.tab1, container, false);
 
-
         aroundMeEventList = Persistance.getInstance().getAroundMeActivities(getActivity());
         fradapter = new AroundMeAdapter(aroundMeEventList, getActivity().getApplicationContext(), getActivity(), getResources());
         updateListOfEventsAroundMe();
-
         Typeface typeFace = Typeface.createFromAsset(super.getActivity().getAssets(), "fonts/Quicksand-Medium.ttf");
         noActivitiesTextFieldAroundMe.setTypeface(typeFace);
         pressPlusButtonTextFieldAroundMe.setTypeface(typeFace);
+
 
         return v;
     }
@@ -52,6 +52,7 @@ public class Tab1 extends Fragment {
     public void updateListOfEventsAroundMe() {
         fradapter.notifyDataSetChanged();
         frlistView = (RecyclerView) v.findViewById(R.id.events_listView2);
+        frlistView.addItemDecoration(new SimpleDividerItemDecoration(getContext()));
         heartImageAroundMe = (ImageView) v.findViewById(R.id.heartImageAroundMe);
         progressBarAroundMe = (ProgressBar) v.findViewById(R.id.progressBarAroundMe);
         noActivitiesTextFieldAroundMe = (TextView) v.findViewById(R.id.noActivitiesTextFieldAroundMe);

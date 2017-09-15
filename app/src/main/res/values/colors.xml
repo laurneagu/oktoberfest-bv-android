@@ -26,4 +26,5 @@
     <color name="greenAlpha">#4002b9ad</color>
     <color name="yellow">#fcb851</color>
     <color name="lightGray">#acb8c1</color>
+    <color name="background">#f7f9fc</color>
 </resources>

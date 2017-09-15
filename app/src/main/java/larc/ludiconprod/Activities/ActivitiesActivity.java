@@ -104,7 +104,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
     ImageView heartImageMyActivity;
     TextView noActivitiesTextFieldMyActivity;
     TextView pressPlusButtonTextFieldMyActivity;
-    LinearLayoutManager layoutManager;
+    static LinearLayoutManager layoutManager;
     ProgressBar progressBarMyEvents;
     ProgressBar progressBarAroundMe;
     public static int NumberOfRefreshMyEvents = 0;
@@ -142,6 +142,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
     static public int startedEventDate = Integer.MAX_VALUE;
     CallbackManager callbackManager;
     ShareDialog shareDialog;
+    int nrElements = 4;
 
 
     public ActivitiesActivity() {
@@ -476,13 +477,16 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         if (myAdapter != null) myAdapter.notifyDataSetChanged();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mContext = inflater.getContext();
         isOnActivityPage = true;
+        aroundMeEventList.clear();
 
         v = inflater.inflate(R.layout.activities_acitivity, container, false);
+        nrElements = 4;
         while (activity == null) {
             activity = getActivity();
         }
@@ -552,6 +556,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
             fradapter = new AroundMeAdapter(aroundMeEventList, activity.getApplicationContext(), activity, getResources(), currentFragment);
 
             getAroundMeEvents("0", latitude, longitude);
+
             getMyEvents("0");
 
             NumberOfRefreshMyEvents = 0;
@@ -741,7 +746,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void updateListOfEventsAroundMe(final boolean eventHappeningNow) {
 
-        System.out.println(isGetingPage +" aici");
+        System.out.println(isGetingPage + " aici");
         RelativeLayout ll = (RelativeLayout) v.findViewById(R.id.noInternetLayout);
         ll.getLayoutParams().height = 0;
         isGetingPage = false;
@@ -753,23 +758,11 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
         // stop swiping on my events
         final SwipeRefreshLayout mSwipeRefreshLayout2 = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh2);
-        if(!isFirstTimeAroundMe) {
+        if (!isFirstTimeAroundMe) {
             layoutManager = new LinearLayoutManager(getContext());
         }
-        // mSwipeRefreshLayout2.setEnabled(false);
-        // mSwipeRefreshLayout2.setFocusable(false);
-        //fradapter.notifyDataSetChanged();
-        //fradapter.setListOfEvents(new ArrayList<Event>());
-
-        // TEST
-        //aroundMeEventList.add(null);
-        //fradapter.notifyItemChanged(aroundMeEventList.size() - 1);
-        //Load more data for reyclerview
-        //aroundMeEventList.remove(aroundMeEventList.size() - 1);
-        //fradapter.notifyItemRemoved(aroundMeEventList.size());
 
         fradapter.notifyDataSetChanged();
-        //fradapter.setLoaded();
 
         if (!isFirstTimeAroundMe) {
             frlistView = (RecyclerView) v.findViewById(R.id.events_listView2);
@@ -794,13 +787,6 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         });
 
         if (!isFirstTimeAroundMe) {
-            //  if (
-            //      friendsEventsList.size() == 0 &&
-            //          !eventHappeningNow) {
-            // place holder no events created
-            //  }
-            //else frlistView.setBackgroundColor(Color.parseColor("#FFFFFF"));
-
             frlistView.setAdapter(fradapter);
         }
 
@@ -815,19 +801,14 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         }
 
 
-
-
-
         if (frlistView != null) {
 
             frlistView.setOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
-                    System.out.println(layoutManager.toString()+ " aici2");
-                    if (layoutManager.findLastVisibleItemPosition() == fradapter.getItemCount() - 1 && !isGetingPage) {
-                    /*Toast.makeText(getContext(),"dsads", Toast.LENGTH_SHORT).show();
-                    Log.v("da", "da");*/
+                    if (layoutManager.findLastVisibleItemPosition() >= nrElements && !isGetingPage) {
+                        nrElements = nrElements + 10;
                         isGetingPage = true;
                         progressBarAroundMe.setAlpha(1f);
                         System.out.println(layoutManager.findLastVisibleItemPosition() + " aici");
@@ -837,39 +818,6 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
                 }
             });
-
-
-            /*frlistView.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(final View v, MotionEvent event) {
-                    if (v != null && frlistView.getChildCount() > 0) {
-                        if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
-                            if (((LinearLayoutManager) frlistView.getLayoutManager()).findFirstVisibleItemPosition() == frlistView.getAdapter().getItemCount() - 1 &&
-                                    frlistView.getChildAt(frlistView.getChildCount() - 1).getBottom() <= frlistView.getHeight()) {
-
-                                // mSwipeRefreshLayout1.setRefreshing(true);
-                                progressBarAroundMe.setAlpha(1f);
-
-                                //Log.v("numar de elemete",String.valueOf(frlistView.getAdapter().getCount()));
-                                //(new Handler()).postDelayed(new Runnable() {
-                                ////@Override
-                                // public void run() {
-                                getAroundMeEvents(String.valueOf(NumberOfRefreshAroundMe), latitude, longitude);
-
-                                // }
-                                // }, 1000);
-                                //
-                            }
-
-                        }
-
-                    }
-
-                    return false;
-                }
-            });
-
-            });*/
         }
 
         if (!addedSwipeAroundMe) {
@@ -880,6 +828,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                     getFirstPageAroundMe = true;
                     mSwipeRefreshLayout2.setRefreshing(false);
                     NumberOfRefreshAroundMe = 0;
+                    nrElements = 4;
                 }
             });
             addedSwipeAroundMe = true;
