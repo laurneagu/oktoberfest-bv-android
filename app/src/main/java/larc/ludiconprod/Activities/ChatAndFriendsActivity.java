@@ -311,11 +311,13 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
         try {
             chatAdapter.notifyDataSetChanged();
             chatLoading = (ProgressBar) v.findViewById(R.id.chatLoading);
+            progressBarChats = (ProgressBar) v.findViewById(R.id.progressBarChats);
+            progressBarChats.setAlpha(0f);
 
             chatLoading.setAlpha(0f);
             final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refreshChat);
             chatListView = (ListView) v.findViewById(R.id.chat_listView);
-            progressBarChats = (ProgressBar) v.findViewById(R.id.progressBarChats);
+
 
             if (!isFirstTimeSetChat) {
                 chatListView.setAdapter(chatAdapter);
@@ -453,7 +455,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
 
     public void getFirstPage() {
         final DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(activity).id).child("chats");
-        Query query = firebaseRef.orderByChild("last_message_date").limitToLast(4);
+        Query query = firebaseRef.orderByChild("last_message_date").limitToLast(16);
         numberOfChatsPage = 1;
         chatList.clear();
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -525,7 +527,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                                     chat.lastMessage = child.child("message").getValue().toString();
                                     chat.lastMessageId = child.getKey().toString();
                                 }
-                                if (counterOfChats > 0 || numberOfTotalChatsArrived < 4) {
+                                if (counterOfChats > 0 || numberOfTotalChatsArrived < 16) {
                                     chatList.add(0, chat);
                                     counterOfChats++;
                                 } else {
@@ -533,7 +535,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                                     keyOfLastChat = chat.chatId;
                                     valueOfLastChat = chat.lastMessageTime;
                                 }
-                                if (numberOfTotalChatsArrived < 4) {
+                                if (numberOfTotalChatsArrived < 16) {
                                     if (numberOfTotalChatsArrived == counterOfChats) {
                                         isLastPage = true;
                                     }
@@ -549,6 +551,9 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
 
                             }
                         });
+                    }else{
+                        isLastPage = true;
+                        setAdapter();
                     }
                 }
                 if(numberOfTotalChatsArrived == 0){
@@ -567,7 +572,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
         if (shouldRequestPage) {
             shouldRequestPage = false;
             final DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(activity).id).child("chats");
-            Query query = firebaseRef.orderByChild("last_message_date").limitToLast(4).endAt(valueOfLastChat, keyOfLastChat);
+            Query query = firebaseRef.orderByChild("last_message_date").limitToLast(16).endAt(valueOfLastChat, keyOfLastChat);
             counterOfChats = 0;
             query.addListenerForSingleValueEvent(new ValueEventListener() {
 
@@ -626,46 +631,47 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                             if (chats.hasChild("seen")) {
                                 chat.lastMessageSeen = chats.child("seen").getValue().toString();
                             }
-
-                            chat.lastMessageTime = Double.valueOf(chats.child("last_message_date").getValue().toString());
-                            DatabaseReference lastMessageRef = chats.child("messages").getRef();
-                            Query lastMessage = lastMessageRef.orderByKey().limitToLast(1);
-                            lastMessage.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    for (DataSnapshot child : dataSnapshot.getChildren()) {
-                                        chat.lastMessage = child.child("message").getValue().toString();
-                                        chat.lastMessageId = child.getKey().toString();
-                                    }
-                                    if (counterOfChats > 0 || numberOfTotalChatsArrived < 4) {
-                                        chatList.add(numberOfChatsPage * 3, chat);
-                                        counterOfChats++;
-                                    } else {
-                                        counterOfChats++;
-                                        keyOfLastChat = chat.chatId;
-                                        valueOfLastChat = chat.lastMessageTime;
-
-                                        progressBarChats.setAlpha(0f);
-                                    }
-                                    if (counterOfChats == 4) {
-                                        numberOfChatsPage++;
-                                    }
-                                    if (numberOfTotalChatsArrived < 4) {
+                                chat.lastMessageTime = Double.valueOf(chats.child("last_message_date").getValue().toString());
+                                DatabaseReference lastMessageRef = chats.child("messages").getRef();
+                                Query lastMessage = lastMessageRef.orderByKey().limitToLast(1);
+                                lastMessage.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                            chat.lastMessage = child.child("message").getValue().toString();
+                                            chat.lastMessageId = child.getKey().toString();
+                                        }
+                                        if (counterOfChats > 0 || numberOfTotalChatsArrived < 16) {
+                                            chatList.add(numberOfChatsPage * 15, chat);
+                                            counterOfChats++;
+                                        } else {
+                                            counterOfChats++;
+                                            keyOfLastChat = chat.chatId;
+                                            valueOfLastChat = chat.lastMessageTime;
+                                        }
+                                        if (counterOfChats == 16) {
+                                            numberOfChatsPage++;
+                                        }
+                                        if (numberOfTotalChatsArrived < 16) {
+                                            if (numberOfTotalChatsArrived == counterOfChats) {
+                                                isLastPage = true;
+                                            }
+                                        }
                                         if (numberOfTotalChatsArrived == counterOfChats) {
-                                            progressBarChats.setAlpha(0f);
-                                            isLastPage = true;
+                                            setAdapter();
                                         }
                                     }
-                                    if (numberOfTotalChatsArrived == counterOfChats) {
-                                        setAdapter();
-                                    }
-                                }
 
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-                                }
-                            });
-                        }
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+                                    }
+                                });
+
+
+                    }else{
+                        isLastPage = true;
+                        setAdapter();
+                    }
                     }
                 }
 
