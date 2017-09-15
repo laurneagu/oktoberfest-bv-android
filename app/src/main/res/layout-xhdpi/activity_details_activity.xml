@@ -186,6 +186,7 @@
                     android:orientation="horizontal">
 
                     <RelativeLayout
+                        android:id="@+id/participant0L"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp">
@@ -226,6 +227,7 @@
                             android:background="@drawable/ic_user_kick" />
                     </RelativeLayout>
                     <RelativeLayout
+                        android:id="@+id/participant1L"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
@@ -267,6 +269,7 @@
                             android:background="@drawable/ic_user_kick" />
                     </RelativeLayout>
                     <RelativeLayout
+                        android:id="@+id/participant2L"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
@@ -308,6 +311,7 @@
                             android:background="@drawable/ic_user_kick" />
                     </RelativeLayout>
                     <RelativeLayout
+                        android:id="@+id/participant3L"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
@@ -348,7 +352,6 @@
                             android:layout_toRightOf="@id/imageView3"
                             android:background="@drawable/ic_user_kick" />
                     </RelativeLayout>
-
 
                     <TextView
                         android:layout_width="48dp"

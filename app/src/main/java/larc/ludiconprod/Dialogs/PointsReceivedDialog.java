@@ -50,7 +50,11 @@ public class PointsReceivedDialog extends DialogFragment {
         int ludicoins=getArguments().getInt("ludicoins");
         int points=getArguments().getInt("points");
         int level=getArguments().getInt("level");
-        if(level == Persistance.getInstance().getUserInfo(getActivity()).level){
+        String message = getArguments().getString("message");
+
+
+
+        if(level == Persistance.getInstance().getUserInfo(getActivity()).level || message != null){
             levelUPText.setText("You gained:");
             ViewGroup.LayoutParams paramsludicoinsForNoUP = ludicoinsForNoUP.getLayoutParams();
             paramsludicoinsForNoUP.height = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -69,16 +73,25 @@ public class PointsReceivedDialog extends DialogFragment {
             paramsludicoinsImage.width =0;
             ludicoinsImage.setLayoutParams(paramsludicoinsImage);
 
-            ludicoinsForNoUP.setText("+"+String.valueOf(ludicoins));
-            gainedText.setText("And:  ");
-            pointsText.setText("+"+points+" ");
-
-        }else {
-
+            if (message == null) {
+                ludicoinsForNoUP.setText("+" + String.valueOf(ludicoins));
+                gainedText.setText("And:  ");
+                pointsText.setText("+" + points + " ");
+            } else {
+                paramsludicoinsImageForNoUp.height = 0;
+                ludicoinsForNoUP.setText("+" + String.valueOf(ludicoins));
+            }
+        } else {
             ludicoinsText.setText("+"+String.valueOf(ludicoins));
             pointsText.setText("+"+String.valueOf(points));
         }
-        levelText.setText("Level "+String.valueOf(level));
+        if (message == null) {
+            levelText.setText("Level " + String.valueOf(level));
+            pointsText.getLayoutParams().height = 0;
+            pointsImage.getLayoutParams().height = 0;
+        } else {
+            levelText.setText(message);
+        }
         okayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
