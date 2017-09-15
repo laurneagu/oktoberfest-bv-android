@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.support.annotation.RequiresApi;
 import android.support.v4.content.IntentCompat;
 import android.util.Base64;
 import android.util.Log;
@@ -155,7 +157,6 @@ public class HTTPResponseController {
                                 @Override
                                 public void onFinish() {
                                     Intent intent = new Intent(activity, ProfileDetailsActivity.class);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
                                     activity.startActivity(intent);
                                     activity.finish();
                                 }
@@ -170,7 +171,6 @@ public class HTTPResponseController {
                                 @Override
                                 public void onFinish() {
                                     Intent intent = new Intent(activity, Main.class);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
                                     activity.startActivity(intent);
                                     activity.finish();
                                 }
@@ -305,6 +305,7 @@ public class HTTPResponseController {
 
     private Response.Listener<JSONObject> createAroundMeEventSuccesListener() {
         return new Response.Listener<JSONObject>() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onResponse(JSONObject jsonObject) {
                 System.out.println(jsonObject + " ceva");
@@ -339,8 +340,6 @@ public class HTTPResponseController {
                             }
                             System.out.println(event.id + " eventid:" + i + "  " + event.numberOfParticipants + " profilepicture" + jsonObject.getJSONArray("aroundMe").getJSONObject(i).getJSONArray("participantsProfilePicture").length());
                             aroundMeEventList.add(event);
-
-
                         }
                         ActivitiesActivity.currentFragment.updateListOfEventsAroundMe(false);
                         if (jsonObject.getJSONArray("aroundMe").length() >= 1) {

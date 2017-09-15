@@ -25,7 +25,7 @@
                 android:layout_height="fill_parent"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:divider="@android:color/transparent"
+                android:divider="@android:color/black"
                 android:dividerHeight="8.0dp"
                 android:scrollbars="none"
                 android:paddingTop="16dp"

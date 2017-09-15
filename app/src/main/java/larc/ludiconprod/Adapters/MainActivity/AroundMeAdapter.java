@@ -50,6 +50,7 @@ public class AroundMeAdapter extends RecyclerView.Adapter<AroundMeAdapter.ViewHo
         return date.substring(0, 1).toUpperCase().concat(date.substring(1, 3));
     }
 
+
     class ViewHolder extends RecyclerView.ViewHolder {
 
         CircleImageView profileImage;
@@ -173,6 +174,16 @@ public class AroundMeAdapter extends RecyclerView.Adapter<AroundMeAdapter.ViewHo
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         // Event details redirect
+        // Clean up layout
+        holder.friends0.setVisibility(View.INVISIBLE);
+        holder.friends1.setVisibility(View.INVISIBLE);
+        holder.friends2.setVisibility(View.INVISIBLE);
+        holder.friendsNumber.setVisibility(View.INVISIBLE);
+        holder.profileImage.setImageResource(R.drawable.ph_user);
+        holder.friends0.setImageResource(R.drawable.ph_user);
+        holder.friends1.setImageResource(R.drawable.ph_user);
+        holder.friends2.setImageResource(R.drawable.ph_user);
+        holder.joinButton.setEnabled(true);
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -192,6 +203,7 @@ public class AroundMeAdapter extends RecyclerView.Adapter<AroundMeAdapter.ViewHo
                 HTTPResponseController.getInstance().getEventDetails(params, headers, activity, urlParams);
             }
         });
+
 
         // Set user event creator name and picture
         holder.creatorName.setText(list.get(position).creatorName);
@@ -365,5 +377,18 @@ public class AroundMeAdapter extends RecyclerView.Adapter<AroundMeAdapter.ViewHo
     public int getItemCount() {
         return list.size();
     }
+
+    /*public void setLoaded() {
+        loading = false;
+    }
+
+    public void setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener) {
+        this.onLoadMoreListener = onLoadMoreListener;
+    }
+
+    public interface OnLoadMoreListener {
+        void onLoadMore();
+    }*/
+
 }
 

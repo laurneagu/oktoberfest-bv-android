@@ -7,8 +7,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.location.Location;
-import android.os.Build;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -55,7 +55,6 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -105,6 +104,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
     ImageView heartImageMyActivity;
     TextView noActivitiesTextFieldMyActivity;
     TextView pressPlusButtonTextFieldMyActivity;
+    LinearLayoutManager layoutManager;
     ProgressBar progressBarMyEvents;
     ProgressBar progressBarAroundMe;
     public static int NumberOfRefreshMyEvents = 0;
@@ -113,6 +113,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
     public static ListView mylistView;
     Boolean isFirstTimeAroundMe = false;
     Boolean isFirstTimeMyEvents = false;
+    Boolean isGetingPage = false;
     Boolean dataComeArundeMe = false;
     Boolean dataComeMy = false;
     public static ProgressBar v1;
@@ -559,7 +560,6 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
             happeningNowLayout = (RelativeLayout) v.findViewById(R.id.generalHappeningNowLayout);
 
 
-
             //
             // for facebook share
             final ShareButton shareButton;
@@ -569,10 +569,9 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
             shareDialog = new ShareDialog(activity);
             shareButton = (ShareButton) v.findViewById(R.id.share_btn);
             String facebookId = Persistance.getInstance().getUserInfo(super.getActivity()).facebookId;
-            if(facebookId.equals(""))
-            {
+            if (facebookId.equals("")) {
                 shareButton.getLayoutParams().height = 0;
-            }else {
+            } else {
                 ShareLinkContent contentLink = new ShareLinkContent.Builder()
                         .setContentUrl(Uri.parse("https://developers.facebook.com"))
                         .build();
@@ -742,8 +741,12 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void updateListOfEventsAroundMe(final boolean eventHappeningNow) {
+
+        System.out.println(isGetingPage +" aici");
         RelativeLayout ll = (RelativeLayout) v.findViewById(R.id.noInternetLayout);
         ll.getLayoutParams().height = 0;
+        isGetingPage = false;
+
         ll.setLayoutParams(ll.getLayoutParams());
         if (this.noGps) {
             this.prepareError("No location services available!");
@@ -751,17 +754,34 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
         // stop swiping on my events
         final SwipeRefreshLayout mSwipeRefreshLayout2 = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh2);
+        if(!isFirstTimeAroundMe) {
+            layoutManager = new LinearLayoutManager(getContext());
+        }
         // mSwipeRefreshLayout2.setEnabled(false);
         // mSwipeRefreshLayout2.setFocusable(false);
+        //fradapter.notifyDataSetChanged();
+        //fradapter.setListOfEvents(new ArrayList<Event>());
+
+        // TEST
+        //aroundMeEventList.add(null);
+        //fradapter.notifyItemChanged(aroundMeEventList.size() - 1);
+        //Load more data for reyclerview
+        //aroundMeEventList.remove(aroundMeEventList.size() - 1);
+        //fradapter.notifyItemRemoved(aroundMeEventList.size());
+
         fradapter.notifyDataSetChanged();
-        frlistView = (RecyclerView) v.findViewById(R.id.events_listView2);
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        frlistView.setLayoutManager(layoutManager);
-        heartImageAroundMe = (ImageView) v.findViewById(R.id.heartImageAroundMe);
-        progressBarAroundMe = (ProgressBar) v.findViewById(R.id.progressBarAroundMe);
-        progressBarAroundMe.setIndeterminate(true);
-        progressBarAroundMe.setAlpha(0f);
+        //fradapter.setLoaded();
+
+        if (!isFirstTimeAroundMe) {
+            frlistView = (RecyclerView) v.findViewById(R.id.events_listView2);
+            layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+            frlistView.setLayoutManager(layoutManager);
+            heartImageAroundMe = (ImageView) v.findViewById(R.id.heartImageAroundMe);
+            progressBarAroundMe = (ProgressBar) v.findViewById(R.id.progressBarAroundMe);
+            progressBarAroundMe.setIndeterminate(true);
+            progressBarAroundMe.setAlpha(0f);
+        }
+
 
         noActivitiesTextFieldAroundMe = (TextView) v.findViewById(R.id.noActivitiesTextFieldAroundMe);
         pressPlusButtonTextFieldAroundMe = (TextView) v.findViewById(R.id.pressPlusButtonTextFieldAroundMe);
@@ -796,16 +816,22 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         }
 
 
+
+
+
         if (frlistView != null) {
 
             frlistView.setOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
-                    if (layoutManager.findLastVisibleItemPosition() == fradapter.getItemCount() - 1) {
+                    System.out.println(layoutManager.toString()+ " aici2");
+                    if (layoutManager.findLastVisibleItemPosition() == fradapter.getItemCount() - 1 && !isGetingPage) {
                     /*Toast.makeText(getContext(),"dsads", Toast.LENGTH_SHORT).show();
                     Log.v("da", "da");*/
+                        isGetingPage = true;
                         progressBarAroundMe.setAlpha(1f);
+                        System.out.println(layoutManager.findLastVisibleItemPosition() + " aici");
                         getAroundMeEvents(String.valueOf(NumberOfRefreshAroundMe), latitude, longitude);
                     }
 
@@ -1037,9 +1063,12 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         }
 
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
+
+
 }
