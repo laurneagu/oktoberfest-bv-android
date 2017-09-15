@@ -33,6 +33,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Set;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -365,24 +366,35 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
 
         }
         if (eventDetails.listOfParticipants.size() + (eventDetails.numberOfParticipants - eventDetails.listOfParticipants.size() - 1) >= 1) {
-
             participant0.setVisibility(View.VISIBLE);
+        } else {
+            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) findViewById(R.id.participant0L).getLayoutParams();
+            lp.width = 0;
+            lp.setMargins(0, 0, 0, 0);
         }
         if (eventDetails.listOfParticipants.size() + (eventDetails.numberOfParticipants - eventDetails.listOfParticipants.size() - 1) >= 2) {
-
             participant1.setVisibility(View.VISIBLE);
+        } else {
+            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) findViewById(R.id.participant1L).getLayoutParams();
+            lp.width = 0;
+            lp.setMargins(0, 0, 0, 0);
         }
         if (eventDetails.listOfParticipants.size() + (eventDetails.numberOfParticipants - eventDetails.listOfParticipants.size() - 1) >= 3) {
-
             participant2.setVisibility(View.VISIBLE);
+        } else {
+            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) findViewById(R.id.participant2L).getLayoutParams();
+            lp.width = 0;
+            lp.setMargins(0, 0, 0, 0);
         }
         if (eventDetails.listOfParticipants.size() + (eventDetails.numberOfParticipants - eventDetails.listOfParticipants.size() - 1) >= 4) {
-
             participant3.setVisibility(View.VISIBLE);
-
+        } else {
+            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) findViewById(R.id.participant3L).getLayoutParams();
+            lp.width = 0;
+            lp.setMargins(0, 0, 0, 0);
         }
 
-        if (eventDetails.numberOfParticipants > 5) {
+        if (eventDetails.numberOfParticipants > 0) {
             allParticipants.setVisibility(View.VISIBLE);
         }
 
@@ -461,8 +473,8 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
 
         Calendar cal = Calendar.getInstance();
         cal.set(Integer.valueOf(stringDate[0]), Integer.valueOf(stringDate[1]) - 1, Integer.valueOf(stringDate[2]));
-        String dayName = new DateFormatSymbols().getWeekdays()[cal
-                .get(Calendar.DAY_OF_WEEK)];
+        DateFormatSymbols dfs = new DateFormatSymbols(Locale.ENGLISH);
+        String dayName = dfs.getWeekdays()[cal.get(Calendar.DAY_OF_WEEK)];
 
         if (Integer.parseInt(stringDate[1]) - 1 == todayMonth && Integer.parseInt(stringDate[2]) == todayDay) {
             date = "Today " + "at " + stringDateAndTime[1].substring(0, 5);

@@ -662,7 +662,6 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                             long timeToNextEvent = (firstEvent().eventDateTimeStamp - System.currentTimeMillis() / 1000);
                             while (timeToNextEvent >= 0) {
                                 Thread.sleep(1000);
-                                Log.d("runnableStart", "Running: " + timeToNextEvent);
                                 timeToNextEvent = (firstEvent().eventDateTimeStamp - System.currentTimeMillis() / 1000);
                             }
 

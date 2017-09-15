@@ -222,7 +222,6 @@ public class RegisterActivity extends FragmentActivity {
                         HashMap<String, String> headers = new HashMap<String, String>();
                         headers.put("apiKey", "b0a83e90-4ee7-49b7-9200-fdc5af8c2d33");
                         HTTPResponseController.getInstance().returnResponse(params, headers, RegisterActivity.this, "http://207.154.236.13/api/register/");
-
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

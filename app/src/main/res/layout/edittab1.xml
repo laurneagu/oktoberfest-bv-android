@@ -8,7 +8,6 @@
     android:background="#f7f9fc">
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/editScroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -235,6 +234,7 @@
                 android:id="@+id/editRangeBar"
                 android:layout_width="match_parent"
                 android:layout_height="24dp"
+                android:progress="4"
                 android:layout_marginTop="16dp"
                 android:layout_below="@+id/textViewEditRange"
                 android:max="19"/>
