@@ -3,20 +3,18 @@ package larc.ludiconprod.Adapters.MainActivity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -31,7 +29,6 @@ import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import larc.ludiconprod.Activities.ActivitiesActivity;
-import larc.ludiconprod.Activities.ActivityDetailsActivity;
 import larc.ludiconprod.Activities.UserProfileActivity;
 import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
@@ -41,7 +38,7 @@ import larc.ludiconprod.Utils.General;
 import larc.ludiconprod.Utils.util.Sport;
 
 
-public class AroundMeAdapter extends BaseAdapter implements ListAdapter {
+public class AroundMeAdapter extends RecyclerView.Adapter<AroundMeAdapter.ViewHolder> {
 
     public static Bitmap decodeBase64(String input) {
         byte[] decodedBytes = Base64.decode(input, 0);
@@ -53,7 +50,7 @@ public class AroundMeAdapter extends BaseAdapter implements ListAdapter {
         return date.substring(0, 1).toUpperCase().concat(date.substring(1, 3));
     }
 
-    class ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
 
         CircleImageView profileImage;
         TextView creatorName;
@@ -72,7 +69,65 @@ public class AroundMeAdapter extends BaseAdapter implements ListAdapter {
         ImageView imageViewBackground;
         TextView creatorLevelAroundMe;
         ProgressBar progressBar;
+        View view;
 
+        public ViewHolder(View view) {
+            super(view);
+            this.view = view;
+            this.profileImage = (CircleImageView) view.findViewById(R.id.profileImage);
+            this.creatorName = (TextView) view.findViewById(R.id.creatorName);
+            this.sportName = (TextView) view.findViewById(R.id.sportName);
+            this.sportLabel = (TextView) view.findViewById(R.id.sportNameLabel);
+            this.ludicoinsNumber = (TextView) view.findViewById(R.id.ludicoinsNumber);
+            this.pointsNumber = (TextView) view.findViewById(R.id.pointsNumber);
+            this.eventDate = (TextView) view.findViewById(R.id.eventDate);
+            this.locationEvent = (TextView) view.findViewById(R.id.locationEvent);
+            this.playersNumber = (TextView) view.findViewById(R.id.playersNumber);
+            this.friends0 = (CircleImageView) view.findViewById(R.id.friends0);
+            this.friends1 = (CircleImageView) view.findViewById(R.id.friends1);
+            this.friends2 = (CircleImageView) view.findViewById(R.id.friends2);
+            this.friendsNumber = (TextView) view.findViewById(R.id.friendsNumber);
+            this.joinButton = (Button) view.findViewById(R.id.joinButton);
+            this.imageViewBackground = (ImageView) view.findViewById(R.id.imageViewBackground);
+            this.creatorLevelAroundMe = (TextView) view.findViewById(R.id.creatorLevelAroundMe);
+            this.progressBar = (ProgressBar) view.findViewById(R.id.cardProgressBar);
+            this.progressBar.setAlpha(0);
+
+            Typeface typeFace = Typeface.createFromAsset(activity.getAssets(), "fonts/Quicksand-Medium.ttf");
+            Typeface typeFaceBold = Typeface.createFromAsset(activity.getAssets(), "fonts/Quicksand-Bold.ttf");
+
+            this.creatorName.setTypeface(typeFace);
+            this.sportName.setTypeface(typeFace);
+            this.sportLabel.setTypeface(typeFace);
+            this.ludicoinsNumber.setTypeface(typeFace);
+            this.pointsNumber.setTypeface(typeFace);
+            this.eventDate.setTypeface(typeFace);
+            this.locationEvent.setTypeface(typeFace);
+            this.playersNumber.setTypeface(typeFace);
+            this.friendsNumber.setTypeface(typeFace);
+            this.joinButton.setTypeface(typeFaceBold);
+            this.creatorLevelAroundMe.setTypeface(typeFace);
+
+
+            // Clean up layout
+            this.friends0.setVisibility(View.INVISIBLE);
+            this.friends1.setVisibility(View.INVISIBLE);
+            this.friends2.setVisibility(View.INVISIBLE);
+            this.friendsNumber.setVisibility(View.INVISIBLE);
+            this.profileImage.setImageResource(R.drawable.ph_user);
+            this.friends0.setImageResource(R.drawable.ph_user);
+            this.friends1.setImageResource(R.drawable.ph_user);
+            this.friends2.setImageResource(R.drawable.ph_user);
+            this.joinButton.setEnabled(true);
+
+
+            // Set name and picture for the first user of the event
+            view.setBackgroundColor(Color.parseColor("#FFFFFF"));
+
+            final View currView = view;
+
+
+        }
     }
 
     private ArrayList<Event> list = new ArrayList<>();
@@ -108,274 +163,207 @@ public class AroundMeAdapter extends BaseAdapter implements ListAdapter {
 
 
     @Override
-    public int getCount() {
-        return list.size();
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view;
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        view = inflater.inflate(R.layout.around_me_card, null);
+        return new ViewHolder(view);
     }
 
     @Override
-    public Object getItem(int pos) {
-        return list.get(pos);
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
+        // Event details redirect
+        holder.view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.view.setBackgroundColor(Color.parseColor("#f5f5f5"));
+                //getEventDetails & show progress bar when loading data
+                holder.progressBar.setAlpha(1);
+                progressBarCard = holder.progressBar;
+                HashMap<String, String> params = new HashMap<String, String>();
+                HashMap<String, String> headers = new HashMap<String, String>();
+                HashMap<String, String> urlParams = new HashMap<String, String>();
+                headers.put("authKey", Persistance.getInstance().getUserInfo(activity).authKey);
+
+                //set urlParams
+
+                urlParams.put("eventId", list.get(position).id);
+                urlParams.put("userId", Persistance.getInstance().getUserInfo(activity).id);
+                HTTPResponseController.getInstance().getEventDetails(params, headers, activity, urlParams);
+            }
+        });
+
+        // Set user event creator name and picture
+        holder.creatorName.setText(list.get(position).creatorName);
+        if (!list.get(position).creatorProfilePicture.equals("")) {
+            Bitmap bitmap = decodeBase64(list.get(position).creatorProfilePicture);
+            holder.profileImage.setImageBitmap(bitmap);
+        }
+
+        // Redirect to user profile on picture tap
+        holder.profileImage.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                String id = list.get(position).creatorId;
+                if (Persistance.getInstance().getUserInfo(activity).id.equals(id)) {
+                    Toast.makeText(activity, "It's you :)", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                Intent intent = new Intent(activity, UserProfileActivity.class);
+                intent.putExtra("UserId", list.get(position).creatorId);
+                activity.startActivity(intent);
+            }
+        });
+
+
+        // Event details set message for sport played
+        Sport sport = new Sport(list.get(position).sportCode);
+        String weWillPlayString = "";
+        String sportName = "";
+
+        if (list.get(position).sportCode.equalsIgnoreCase("JOG") || list.get(position).sportCode.equalsIgnoreCase("GYM") || list.get(position).sportCode.equalsIgnoreCase("CYC")) {
+            weWillPlayString = "Will go to ";
+            sportName = sport.sportName;
+        } else {
+            if (list.get(position).sportCode.equalsIgnoreCase("OTH")) {
+                weWillPlayString = "Will play ";
+                sportName = list.get(position).otherSportName;
+            } else {
+                weWillPlayString = "Will play ";
+                sportName = sport.sportName;
+            }
+        }
+
+        sportName = sportName.substring(0, 1).toUpperCase() + sportName.substring(1);
+
+        holder.sportLabel.setText(weWillPlayString);
+        holder.sportName.setText(sportName);
+
+        holder.ludicoinsNumber.setText("  +" + String.valueOf(list.get(position).ludicoins));
+        holder.pointsNumber.setText("  +" + String.valueOf(list.get(position).points));
+
+
+        holder.locationEvent.setText(list.get(position).placeName);
+        holder.playersNumber.setText(list.get(position).numberOfParticipants + "/" + list.get(position).capacity);
+        if (list.get(position).numberOfParticipants - 1 >= 1) {
+            holder.friends0.setVisibility(View.VISIBLE);
+        }
+        if (list.get(position).numberOfParticipants - 1 >= 2) {
+            holder.friends1.setVisibility(View.VISIBLE);
+        }
+        if (list.get(position).numberOfParticipants - 1 >= 3) {
+            holder.friends2.setVisibility(View.VISIBLE);
+        }
+        if (list.get(position).numberOfParticipants - 1 >= 4) {
+            holder.friendsNumber.setVisibility(View.VISIBLE);
+            holder.friendsNumber.setText("+" + String.valueOf(list.get(position).numberOfParticipants - 4));
+
+        }
+        for (int i = 0; i < list.get(position).participansProfilePicture.size(); i++) {
+            if (!list.get(position).participansProfilePicture.get(i).equals("") && i == 0) {
+                Bitmap bitmap = decodeBase64(list.get(position).participansProfilePicture.get(i));
+                holder.friends0.setImageBitmap(bitmap);
+            } else
+                if (!list.get(position).participansProfilePicture.get(i).equals("") && i == 1) {
+                    Bitmap bitmap = decodeBase64(list.get(position).participansProfilePicture.get(i));
+                    holder.friends1.setImageBitmap(bitmap);
+                } else
+                    if (!list.get(position).participansProfilePicture.get(i).equals("") && i == 2) {
+                        Bitmap bitmap = decodeBase64(list.get(position).participansProfilePicture.get(i));
+                        holder.friends2.setImageBitmap(bitmap);
+                    }
+        }
+
+        switch (list.get(position).sportCode) {
+        case "FOT":
+            holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_football);
+            break;
+        case "BAS":
+            holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_basketball);
+            break;
+        case "VOL":
+            holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_volleyball);
+            break;
+        case "JOG":
+            holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_jogging);
+            break;
+        case "GYM":
+            holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_gym);
+            break;
+        case "CYC":
+            holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_cycling);
+            break;
+        case "TEN":
+            holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_tennis);
+            break;
+        case "PIN":
+            holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_pingpong);
+            break;
+        case "SQU":
+            holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_squash);
+            break;
+        case "OTH":
+            holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_others);
+            break;
+        }
+
+        holder.creatorLevelAroundMe.setText(String.valueOf(list.get(position).creatorLevel));
+
+        // Event details set message for date and time
+        Calendar c = Calendar.getInstance();
+        Date today = c.getTime();
+        int todayDay = General.getDayOfMonth(today);
+        int todayMonth = today.getMonth();
+        int todayYear = c.get(Calendar.YEAR);
+        String displayDate = "";
+        String[] stringDateAndTime = list.get(position).eventDate.split(" ");
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            displayDate = formatter.format(formatter.parse(stringDateAndTime[0]));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        String[] stringDate = displayDate.split("-");
+        int year = Integer.parseInt(stringDate[0]);
+        String date = "";
+        if (year <= todayYear && Integer.parseInt(stringDate[1]) - 1 == todayMonth && Integer.parseInt(stringDate[2]) == todayDay) {
+            date = "Today, " + stringDateAndTime[1].substring(0, 5);
+        } else
+            if (year <= todayYear && Integer.parseInt(stringDate[1]) - 1 == todayMonth && Integer.parseInt(stringDate[2]) - 1 == todayDay) {
+                date = "Tomorrow, " + stringDateAndTime[1].substring(0, 5);
+            } else
+                if (year <= todayYear) {
+                    date = getMonth(Integer.parseInt(stringDate[1])) + " " + stringDate[2] + ", " + stringDateAndTime[1].substring(0, 5);
+                } else {
+                    date = stringDate[2] + " " + getMonth(Integer.parseInt(stringDate[1])) + " " + year + ", " + stringDateAndTime[1].substring(0, 5);
+                }
+        holder.eventDate.setText(date);
+
+        // Event details set action on join button
+        holder.joinButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HashMap<String, String> params = new HashMap<String, String>();
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("authKey", Persistance.getInstance().getUserInfo(activity).authKey);
+                params.put("eventId", list.get(position).id);
+                params.put("userId", Persistance.getInstance().getUserInfo(activity).id);
+                HTTPResponseController.getInstance().joinEvent(activity, params, headers, list.get(position).id, fragment);
+                holder.joinButton.setEnabled(false);
+            }
+        });
+        System.out.println(list.get(position).id + " eventid:" + position + "  " + list.get(position).numberOfParticipants + " profilepicture" + list.get(position).participansProfilePicture.size());
     }
+
 
     @Override
     public long getItemId(int pos) {
-        return 0;
+        return Long.valueOf(list.get(pos).id);
     }
 
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
-        View view = convertView;
-        if (list.size() > 0) {
-
-            final ViewHolder holder;
-
-            final Event currentEvent = list.get(position);
-
-            // Initialize the view
-            if (view == null) {
-                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(R.layout.around_me_card, null);
-
-                holder = new ViewHolder();
-                holder.profileImage = (CircleImageView) view.findViewById(R.id.profileImage);
-                holder.creatorName = (TextView) view.findViewById(R.id.creatorName);
-                holder.sportName = (TextView) view.findViewById(R.id.sportName);
-                holder.sportLabel = (TextView) view.findViewById(R.id.sportNameLabel);
-                holder.ludicoinsNumber = (TextView) view.findViewById(R.id.ludicoinsNumber);
-                holder.pointsNumber = (TextView) view.findViewById(R.id.pointsNumber);
-                holder.eventDate = (TextView) view.findViewById(R.id.eventDate);
-                holder.locationEvent = (TextView) view.findViewById(R.id.locationEvent);
-                holder.playersNumber = (TextView) view.findViewById(R.id.playersNumber);
-                holder.friends0 = (CircleImageView) view.findViewById(R.id.friends0);
-                holder.friends1 = (CircleImageView) view.findViewById(R.id.friends1);
-                holder.friends2 = (CircleImageView) view.findViewById(R.id.friends2);
-                holder.friendsNumber = (TextView) view.findViewById(R.id.friendsNumber);
-                holder.joinButton = (Button) view.findViewById(R.id.joinButton);
-                holder.imageViewBackground = (ImageView) view.findViewById(R.id.imageViewBackground);
-                holder.creatorLevelAroundMe = (TextView) view.findViewById(R.id.creatorLevelAroundMe);
-                holder.progressBar = (ProgressBar) view.findViewById(R.id.cardProgressBar);
-                holder.progressBar.setAlpha(0);
-
-                AssetManager assets = inflater.getContext().getAssets();
-                Typeface typeFace = Typeface.createFromAsset(assets,"fonts/Quicksand-Medium.ttf");
-                Typeface typeFaceBold = Typeface.createFromAsset(assets,"fonts/Quicksand-Bold.ttf");
-
-                holder.creatorName.setTypeface(typeFace);
-                holder.sportName.setTypeface(typeFace);
-                holder.sportLabel.setTypeface(typeFace);
-                holder.ludicoinsNumber.setTypeface(typeFace);
-                holder.pointsNumber.setTypeface(typeFace);
-                holder.eventDate.setTypeface(typeFace);
-                holder.locationEvent.setTypeface(typeFace);
-                holder.playersNumber.setTypeface(typeFace);
-                holder.friendsNumber.setTypeface(typeFace);
-                holder.joinButton.setTypeface(typeFaceBold);
-                holder.creatorLevelAroundMe.setTypeface(typeFace);
-
-                view.setTag(holder);
-            } else {
-                holder = (ViewHolder) view.getTag();
-            }
-
-            // Clean up layout
-            holder.friends0.setVisibility(View.INVISIBLE);
-            holder.friends1.setVisibility(View.INVISIBLE);
-            holder.friends2.setVisibility(View.INVISIBLE);
-            holder.friendsNumber.setVisibility(View.INVISIBLE);
-            holder.profileImage.setImageResource(R.drawable.ph_user);
-            holder.friends0.setImageResource(R.drawable.ph_user);
-            holder.friends1.setImageResource(R.drawable.ph_user);
-            holder.friends2.setImageResource(R.drawable.ph_user);
-            holder.joinButton.setEnabled(true);
-
-
-            // Set name and picture for the first user of the event
-            view.setBackgroundColor(Color.parseColor("#FFFFFF"));
-
-            final View currView = view;
-
-            // Event details redirect
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    currView.setBackgroundColor(Color.parseColor("#f5f5f5"));
-                    //getEventDetails & show progress bar when loading data
-                    holder.progressBar.setAlpha(1);
-                    progressBarCard = holder.progressBar;
-                    HashMap<String, String> params = new HashMap<String, String>();
-                    HashMap<String, String> headers = new HashMap<String, String>();
-                    HashMap<String, String> urlParams = new HashMap<String, String>();
-                    headers.put("authKey", Persistance.getInstance().getUserInfo(activity).authKey);
-
-                    //set urlParams
-
-                    urlParams.put("eventId", currentEvent.id);
-                    urlParams.put("userId", Persistance.getInstance().getUserInfo(activity).id);
-                    HTTPResponseController.getInstance().getEventDetails(params, headers, activity, urlParams);
-                }
-            });
-
-            // Set user event creator name and picture
-            holder.creatorName.setText(currentEvent.creatorName);
-            if (!currentEvent.creatorProfilePicture.equals("")) {
-                Bitmap bitmap = decodeBase64(currentEvent.creatorProfilePicture);
-                holder.profileImage.setImageBitmap(bitmap);
-            }
-
-            // Redirect to user profile on picture tap
-            holder.profileImage.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    String id = currentEvent.creatorId;
-                    if (Persistance.getInstance().getUserInfo(activity).id.equals(id)) {
-                        Toast.makeText(activity, "It's you :)", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    Intent intent = new Intent(activity, UserProfileActivity.class);
-                    intent.putExtra("UserId", currentEvent.creatorId);
-                    activity.startActivity(intent);
-                }
-            });
-
-
-            // Event details set message for sport played
-            Sport sport = new Sport(currentEvent.sportCode);
-            String weWillPlayString = "";
-            String sportName = "";
-
-            if (currentEvent.sportCode.equalsIgnoreCase("JOG") || currentEvent.sportCode.equalsIgnoreCase("GYM") || currentEvent.sportCode.equalsIgnoreCase("CYC")) {
-                weWillPlayString = "Will go to ";
-                sportName =  sport.sportName;
-            } else {
-                if (currentEvent.sportCode.equalsIgnoreCase("OTH")) {
-                    weWillPlayString = "Will play ";
-                    sportName = currentEvent.otherSportName;
-                } else {
-                    weWillPlayString = "Will play ";
-                    sportName = sport.sportName;
-                }
-            }
-
-            sportName = sportName.substring(0, 1).toUpperCase() + sportName.substring(1);
-
-            holder.sportLabel.setText(weWillPlayString);
-            holder.sportName.setText(sportName);
-
-            holder.ludicoinsNumber.setText("  +" + String.valueOf(currentEvent.ludicoins));
-            holder.pointsNumber.setText("  +" + String.valueOf(currentEvent.points));
-
-
-            holder.locationEvent.setText(currentEvent.placeName);
-            holder.playersNumber.setText(currentEvent.numberOfParticipants + "/" + currentEvent.capacity);
-            if (currentEvent.numberOfParticipants - 1 >= 1) {
-                holder.friends0.setVisibility(View.VISIBLE);
-            }
-            if (currentEvent.numberOfParticipants - 1 >= 2) {
-                holder.friends1.setVisibility(View.VISIBLE);
-            }
-            if (currentEvent.numberOfParticipants - 1 >= 3) {
-                holder.friends2.setVisibility(View.VISIBLE);
-            }
-            if (currentEvent.numberOfParticipants - 1 >= 4) {
-                holder.friendsNumber.setVisibility(View.VISIBLE);
-                holder.friendsNumber.setText("+" + String.valueOf(currentEvent.numberOfParticipants - 4));
-
-            }
-            for (int i = 0; i < currentEvent.participansProfilePicture.size(); i++) {
-                if (!currentEvent.participansProfilePicture.get(i).equals("") && i == 0) {
-                    Bitmap bitmap = decodeBase64(currentEvent.participansProfilePicture.get(i));
-                    holder.friends0.setImageBitmap(bitmap);
-                } else
-                    if (!currentEvent.participansProfilePicture.get(i).equals("") && i == 1) {
-                        Bitmap bitmap = decodeBase64(currentEvent.participansProfilePicture.get(i));
-                        holder.friends1.setImageBitmap(bitmap);
-                    } else
-                        if (!currentEvent.participansProfilePicture.get(i).equals("") && i == 2) {
-                            Bitmap bitmap = decodeBase64(currentEvent.participansProfilePicture.get(i));
-                            holder.friends2.setImageBitmap(bitmap);
-                        }
-            }
-
-            switch (currentEvent.sportCode) {
-            case "FOT":
-                holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_football);
-                break;
-            case "BAS":
-                holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_basketball);
-                break;
-            case "VOL":
-                holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_volleyball);
-                break;
-            case "JOG":
-                holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_jogging);
-                break;
-            case "GYM":
-                holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_gym);
-                break;
-            case "CYC":
-                holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_cycling);
-                break;
-            case "TEN":
-                holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_tennis);
-                break;
-            case "PIN":
-                holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_pingpong);
-                break;
-            case "SQU":
-                holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_squash);
-                break;
-            case "OTH":
-                holder.imageViewBackground.setBackgroundResource(R.drawable.bg_sport_others);
-                break;
-            }
-
-            holder.creatorLevelAroundMe.setText(String.valueOf(currentEvent.creatorLevel));
-
-            // Event details set message for date and time
-            Calendar c = Calendar.getInstance();
-            Date today = c.getTime();
-            int todayDay = General.getDayOfMonth(today);
-            int todayMonth = today.getMonth();
-            int todayYear = c.get(Calendar.YEAR);
-            String displayDate = "";
-            String[] stringDateAndTime = currentEvent.eventDate.split(" ");
-            try {
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-                displayDate = formatter.format(formatter.parse(stringDateAndTime[0]));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            String[] stringDate = displayDate.split("-");
-            int year = Integer.parseInt(stringDate[0]);
-            String date = "";
-            if (year <= todayYear && Integer.parseInt(stringDate[1]) - 1 == todayMonth && Integer.parseInt(stringDate[2]) == todayDay) {
-                date = "Today, " + stringDateAndTime[1].substring(0, 5);
-            } else if (year <= todayYear && Integer.parseInt(stringDate[1]) - 1 == todayMonth && Integer.parseInt(stringDate[2]) - 1 == todayDay) {
-                date = "Tomorrow, " + stringDateAndTime[1].substring(0, 5);
-            } else if (year <= todayYear) {
-                date = getMonth(Integer.parseInt(stringDate[1])) + " " + stringDate[2] + ", " + stringDateAndTime[1].substring(0, 5);
-            } else {
-                date = stringDate[2] + " " + getMonth(Integer.parseInt(stringDate[1])) + " " + year + ", " + stringDateAndTime[1].substring(0, 5);
-            }
-            holder.eventDate.setText(date);
-
-            // Event details set action on join button
-            holder.joinButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    HashMap<String, String> params = new HashMap<String, String>();
-                    HashMap<String, String> headers = new HashMap<String, String>();
-                    headers.put("authKey", Persistance.getInstance().getUserInfo(activity).authKey);
-                    params.put("eventId", currentEvent.id);
-                    params.put("userId", Persistance.getInstance().getUserInfo(activity).id);
-                    HTTPResponseController.getInstance().joinEvent(activity, params, headers, currentEvent.id, fragment);
-                    holder.joinButton.setEnabled(false);
-                }
-            });
-            System.out.println(currentEvent.id + " eventid:" + position + "  " + currentEvent.numberOfParticipants + " profilepicture" + currentEvent.participansProfilePicture.size());
-        }
-
-        return view;
+    public int getItemCount() {
+        return list.size();
     }
 }
 

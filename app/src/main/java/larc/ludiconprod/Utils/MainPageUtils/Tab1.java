@@ -1,25 +1,20 @@
 package larc.ludiconprod.Utils.MainPageUtils;
 
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import larc.ludiconprod.Activities.CreateNewActivity;
 import larc.ludiconprod.Adapters.MainActivity.AroundMeAdapter;
 import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
@@ -35,15 +30,15 @@ public class Tab1 extends Fragment {
     TextView pressPlusButtonTextFieldAroundMe;
     ProgressBar progressBarAroundMe;
     public AroundMeAdapter fradapter;
-    public  ListView frlistView;
+    public RecyclerView frlistView;
     public ArrayList<Event> aroundMeEventList = new ArrayList<Event>();
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        v =inflater.inflate(R.layout.tab1,container,false);
+        v = inflater.inflate(R.layout.tab1, container, false);
 
 
-
-        aroundMeEventList= Persistance.getInstance().getAroundMeActivities(getActivity());
+        aroundMeEventList = Persistance.getInstance().getAroundMeActivities(getActivity());
         fradapter = new AroundMeAdapter(aroundMeEventList, getActivity().getApplicationContext(), getActivity(), getResources());
         updateListOfEventsAroundMe();
 
@@ -56,11 +51,14 @@ public class Tab1 extends Fragment {
 
     public void updateListOfEventsAroundMe() {
         fradapter.notifyDataSetChanged();
-        frlistView = (ListView) v.findViewById(R.id.events_listView2);
+        frlistView = (RecyclerView) v.findViewById(R.id.events_listView2);
         heartImageAroundMe = (ImageView) v.findViewById(R.id.heartImageAroundMe);
         progressBarAroundMe = (ProgressBar) v.findViewById(R.id.progressBarAroundMe);
         noActivitiesTextFieldAroundMe = (TextView) v.findViewById(R.id.noActivitiesTextFieldAroundMe);
         pressPlusButtonTextFieldAroundMe = (TextView) v.findViewById(R.id.pressPlusButtonTextFieldAroundMe);
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        frlistView.setLayoutManager(layoutManager);
         frlistView.setAdapter(fradapter);
         heartImageAroundMe.setVisibility(View.INVISIBLE);
         noActivitiesTextFieldAroundMe.setVisibility(View.INVISIBLE);

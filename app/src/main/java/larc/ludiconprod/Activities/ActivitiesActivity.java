@@ -7,17 +7,21 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.location.Location;
+import android.os.Build;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -105,7 +109,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
     ProgressBar progressBarAroundMe;
     public static int NumberOfRefreshMyEvents = 0;
     public static int NumberOfRefreshAroundMe = 0;
-    public static ListView frlistView;
+    public static RecyclerView frlistView;
     public static ListView mylistView;
     Boolean isFirstTimeAroundMe = false;
     Boolean isFirstTimeMyEvents = false;
@@ -348,32 +352,35 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                     if (!currentEvent.participansProfilePicture.get(i).equals("") && i == 0) {
                         Bitmap bitmap = decodeBase64(currentEvent.participansProfilePicture.get(i));
                         friends0.setImageBitmap(bitmap);
-                    } else if (!currentEvent.participansProfilePicture.get(i).equals("") && i == 1) {
+                    } else
+                        if (!currentEvent.participansProfilePicture.get(i).equals("") && i == 1) {
                             Bitmap bitmap = decodeBase64(currentEvent.participansProfilePicture.get(i));
                             friends1.setImageBitmap(bitmap);
-                    } else if (!currentEvent.participansProfilePicture.get(i).equals("") && i == 2) {
-                        Bitmap bitmap = decodeBase64(currentEvent.participansProfilePicture.get(i));
-                        friends2.setImageBitmap(bitmap);
+                        } else
+                            if (!currentEvent.participansProfilePicture.get(i).equals("") && i == 2) {
+                                Bitmap bitmap = decodeBase64(currentEvent.participansProfilePicture.get(i));
+                                friends2.setImageBitmap(bitmap);
+                            }
+                }
+            } else
+                if (msg.what == 1) {
+                    System.out.println("eventStopped");
+                    buttonState = 0;
+
+
+                    ViewGroup.LayoutParams params = happeningNowLayout.getLayoutParams();
+                    params.height = 0;
+                    happeningNowLayout.setLayoutParams(params);
+                    if (buttonSetter != null) {
+                        buttonSetter.cancel();
+                    }
+
+                    HPShouldBeVisible = false;
+
+                    if (googleApiClient.isConnected()) {
+                        googleApiClient.disconnect();
                     }
                 }
-            } else if (msg.what == 1) {
-                System.out.println("eventStopped");
-                buttonState = 0;
-
-
-                ViewGroup.LayoutParams params = happeningNowLayout.getLayoutParams();
-                params.height = 0;
-                happeningNowLayout.setLayoutParams(params);
-                if (buttonSetter != null) {
-                    buttonSetter.cancel();
-                }
-
-                HPShouldBeVisible = false;
-
-                if (googleApiClient.isConnected()) {
-                    googleApiClient.disconnect();
-                }
-            }
         }
     };
 
@@ -536,7 +543,9 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                 happeningNowLocation = Persistance.getInstance().getLocation(activity);
                 happeningNowLocation.endDate = String.valueOf(System.currentTimeMillis() / 1000);
                 savePoints();
+
             }
+
 
             myAdapter = new MyAdapter(myEventList, activity.getApplicationContext(), activity, getResources(), currentFragment);
             fradapter = new AroundMeAdapter(aroundMeEventList, activity.getApplicationContext(), activity, getResources(), currentFragment);
@@ -696,6 +705,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                             }
                             //happening now stoped
                             handler.sendEmptyMessage(1);
+
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -730,6 +740,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         return v;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public void updateListOfEventsAroundMe(final boolean eventHappeningNow) {
         RelativeLayout ll = (RelativeLayout) v.findViewById(R.id.noInternetLayout);
         ll.getLayoutParams().height = 0;
@@ -743,7 +754,10 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         // mSwipeRefreshLayout2.setEnabled(false);
         // mSwipeRefreshLayout2.setFocusable(false);
         fradapter.notifyDataSetChanged();
-        frlistView = (ListView) v.findViewById(R.id.events_listView2);
+        frlistView = (RecyclerView) v.findViewById(R.id.events_listView2);
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        frlistView.setLayoutManager(layoutManager);
         heartImageAroundMe = (ImageView) v.findViewById(R.id.heartImageAroundMe);
         progressBarAroundMe = (ProgressBar) v.findViewById(R.id.progressBarAroundMe);
         progressBarAroundMe.setIndeterminate(true);
@@ -781,13 +795,31 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
             pressPlusButtonTextFieldAroundMe.setVisibility(View.INVISIBLE);
         }
 
+
         if (frlistView != null) {
-            frlistView.setOnTouchListener(new View.OnTouchListener() {
+
+            frlistView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    if (layoutManager.findLastVisibleItemPosition() == fradapter.getItemCount() - 1) {
+                    /*Toast.makeText(getContext(),"dsads", Toast.LENGTH_SHORT).show();
+                    Log.v("da", "da");*/
+                        progressBarAroundMe.setAlpha(1f);
+                        getAroundMeEvents(String.valueOf(NumberOfRefreshAroundMe), latitude, longitude);
+                    }
+
+
+                }
+            });
+
+
+            /*frlistView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(final View v, MotionEvent event) {
                     if (v != null && frlistView.getChildCount() > 0) {
                         if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
-                            if (frlistView.getLastVisiblePosition() == frlistView.getAdapter().getCount() - 1 &&
+                            if (((LinearLayoutManager) frlistView.getLayoutManager()).findFirstVisibleItemPosition() == frlistView.getAdapter().getItemCount() - 1 &&
                                     frlistView.getChildAt(frlistView.getChildCount() - 1).getBottom() <= frlistView.getHeight()) {
 
                                 // mSwipeRefreshLayout1.setRefreshing(true);
@@ -803,12 +835,16 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                                 // }, 1000);
                                 //
                             }
+
                         }
+
                     }
 
                     return false;
                 }
             });
+
+            });*/
         }
 
         if (!addedSwipeAroundMe) {
@@ -864,6 +900,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         });
 
         if (!isFirstTimeMyEvents) {
+
             mylistView.setAdapter(myAdapter);
         }
         if (myEventList.size() == 0) {
@@ -881,12 +918,15 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                 public boolean onTouch(final View v, MotionEvent event) {
                     if (v != null && mylistView.getChildCount() > 0) {
                         if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
+
+
                             if (mylistView.getLastVisiblePosition() == mylistView.getAdapter().getCount() - 1 &&
                                     mylistView.getChildAt(mylistView.getChildCount() - 1).getBottom() <= mylistView.getHeight()) {
 
                                 // mSwipeRefreshLayout1.setRefreshing(true);
                                 progressBarMyEvents.setAlpha(1f);
                                 getMyEvents(String.valueOf(NumberOfRefreshMyEvents));
+
                             }
                         }
                     }
@@ -995,6 +1035,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
+
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
