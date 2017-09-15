@@ -1,13 +1,16 @@
 package larc.ludiconprod.Activities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Base64;
+import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -222,12 +225,26 @@ public class ChatActivity extends Activity {
                 }
             }
         });
+        RelativeLayout goToUserProfile=(RelativeLayout)findViewById(R.id.goToUserProfile);
 
         if(!ChatId.equalsIgnoreCase("isNot") && isGroupChat == 0) {
             listenForChanges();
             Runnable getPage = getFirstPage();
             Thread listener = new Thread(getPage);
             listener.start();
+            ViewGroup.LayoutParams params = goToUserProfile.getLayoutParams();
+            params.height =(int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 56, getResources().getDisplayMetrics());
+            params.width = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 56, getResources().getDisplayMetrics());
+            goToUserProfile.setLayoutParams(params);
+            goToUserProfile.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(ChatActivity.this, UserProfileActivity.class);
+                    intent.putExtra("UserId", otherUsersId.get(0));
+                    startActivity(intent);
+                }
+            });
+
         }
         if(!ChatId.equalsIgnoreCase("isNot") && isGroupChat == 1){
             if(otherUsersId != null) {
@@ -242,6 +259,7 @@ public class ChatActivity extends Activity {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     String names="";
+                    int counterOfNames = 0;
                     for(DataSnapshot users : dataSnapshot.getChildren()){
                         if(!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(ChatActivity.this).id)){
                             if(users.hasChild("image")) {
@@ -250,11 +268,30 @@ public class ChatActivity extends Activity {
                                 otherUsersImage.add("");
                             }
                             otherUsersId.add(users.getKey().toString());
-                            if(users.hasChild("name")) {
-                                names += users.child("name").getValue().toString() + ",";
-                            }
-                            else{
-                                names += "Unknown" + ",";
+                            if(counterOfNames == 0) {
+                                if (users.hasChild("name")) {
+                                    names += users.child("name").getValue().toString() + ",";
+                                    counterOfNames++;
+                                } else {
+                                    names += "Unknown" + ",";
+                                    counterOfNames++;
+                                }
+                            }else if(counterOfNames == 1){
+                                if (users.hasChild("name")) {
+                                    if(dataSnapshot.getChildrenCount() > 3) {
+                                        names += users.child("name").getValue().toString() + "....";
+                                    }else{
+                                        names += users.child("name").getValue().toString() + ",";
+                                    }
+                                    counterOfNames++;
+                                } else {
+                                    if(dataSnapshot.getChildrenCount() > 3) {
+                                        names += "Unknown" + "....";
+                                    }else{
+                                        names += "Unknown" + ",";
+                                    }
+                                    counterOfNames++;
+                                }
                             }
 
                         }

@@ -136,7 +136,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
 
             final float scale = mContext.getResources().getDisplayMetrics().density;
             this.dp56 = (int) (56 * scale + 0.5f);
-            chatLoading = (ProgressBar) v.findViewById(R.id.chatLoading);
+
 
             DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
             connectedRef.addValueEventListener(new ValueEventListener() {
@@ -310,6 +310,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
     public void setAdapter() {
         try {
             chatAdapter.notifyDataSetChanged();
+            chatLoading = (ProgressBar) v.findViewById(R.id.chatLoading);
 
             chatLoading.setAlpha(0f);
             final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refreshChat);
@@ -473,12 +474,34 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                         } else {
                             names = "";
                         }
+                        int counterOfNames=0;
                         for (DataSnapshot users : chats.child("users").getChildren()) {
+
                             if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(activity).id)) {
-                                if (users.hasChild("name")) {
-                                    names += users.child("name").getValue().toString() + ",";
-                                } else {
-                                    names += "Unknown" + ",";
+                                if(counterOfNames == 0) {
+                                        if (users.hasChild("name")) {
+                                            names += users.child("name").getValue().toString() + ",";
+                                            counterOfNames++;
+                                        } else {
+                                            names += "Unknown" + ",";
+                                            counterOfNames++;
+                                        }
+                                    }else if(counterOfNames == 1){
+                                        if (users.hasChild("name")) {
+                                            if(chats.child("users").getChildrenCount() > 3) {
+                                                names += users.child("name").getValue().toString() + "....";
+                                            }else{
+                                                names += users.child("name").getValue().toString() + ",";
+                                            }
+                                            counterOfNames++;
+                                        } else {
+                                            if(chats.child("users").getChildrenCount() > 3) {
+                                                names += "Unknown" + "....";
+                                            }else{
+                                                names += "Unknown" + ",";
+                                            }
+                                            counterOfNames++;
+                                        }
                                 }
                                 if (users.hasChild("image")) {
                                     chat.image.add(users.child("image").getValue().toString());
@@ -528,6 +551,9 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                         });
                     }
                 }
+                if(numberOfTotalChatsArrived == 0){
+                    setAdapter();
+                }
             }
 
             @Override
@@ -561,12 +587,33 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                             } else {
                                 names = "";
                             }
+                            int counterOfNames = 0;
                             for (DataSnapshot users : chats.child("users").getChildren()) {
                                 if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(activity).id)) {
-                                    if (users.hasChild("name")) {
-                                        names += users.child("name").getValue().toString() + ",";
-                                    } else {
-                                        names += "Unknown" + ",";
+                                    if(counterOfNames == 0) {
+                                        if (users.hasChild("name")) {
+                                            names += users.child("name").getValue().toString() + ",";
+                                            counterOfNames++;
+                                        } else {
+                                            names += "Unknown" + ",";
+                                            counterOfNames++;
+                                        }
+                                    }else if(counterOfNames == 1){
+                                        if (users.hasChild("name")) {
+                                            if(chats.child("users").getChildrenCount() > 3) {
+                                                names += users.child("name").getValue().toString() + "....";
+                                            }else{
+                                                names += users.child("name").getValue().toString() + ",";
+                                            }
+                                            counterOfNames++;
+                                        } else {
+                                            if(chats.child("users").getChildrenCount() > 3) {
+                                                names += "Unknown" + "....";
+                                            }else{
+                                                names += "Unknown" + ",";
+                                            }
+                                            counterOfNames++;
+                                        }
                                     }
 
                                     if (users.hasChild("image")) {

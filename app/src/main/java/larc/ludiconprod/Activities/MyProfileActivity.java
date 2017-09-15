@@ -25,6 +25,8 @@ import android.widget.TextView;
 import com.android.volley.NetworkError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -91,6 +93,8 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
                     confirmationDialog.confirm.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            DatabaseReference userNode = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(activity).id);
+                            userNode.child("activeToken").setValue(false);
                             Persistance.getInstance().deleteUserProfileInfo(activity);
                             Log.v("logout", "am dat logout");
                             SharedPreferences preferences = activity.getSharedPreferences("ProfileImage", 0);

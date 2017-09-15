@@ -29,12 +29,19 @@
         android:textColor="@color/darkblue"
         android:textSize="20sp"
         android:textStyle="bold"/>
+    <RelativeLayout
+        android:id="@+id/goToUserProfile"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_alignParentRight="true"
+        android:gravity="center_vertical|center_horizontal">
 
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_user"/>
+    </RelativeLayout>
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
 
 </RelativeLayout>
 
