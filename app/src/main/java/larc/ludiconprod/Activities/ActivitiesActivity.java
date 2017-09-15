@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -34,6 +35,14 @@ import android.widget.Toast;
 import com.android.volley.NetworkError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.share.Sharer;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareButton;
+import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderApi;
@@ -126,6 +135,8 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
     static public HappeningNowLocation happeningNowLocation = new HappeningNowLocation();
     static public FragmentActivity activity;
     static public int startedEventDate = Integer.MAX_VALUE;
+    CallbackManager callbackManager;
+    ShareDialog shareDialog;
 
 
     public ActivitiesActivity() {
@@ -538,6 +549,85 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
             happeningNowLayout = (RelativeLayout) v.findViewById(R.id.generalHappeningNowLayout);
 
+
+
+            //
+            // for facebook share
+            final ShareButton shareButton;
+
+            FacebookSdk.sdkInitialize(activity);
+            callbackManager = CallbackManager.Factory.create();
+            shareDialog = new ShareDialog(activity);
+            shareButton = (ShareButton) v.findViewById(R.id.share_btn);
+            String facebookId = Persistance.getInstance().getUserInfo(super.getActivity()).facebookId;
+            if(facebookId.equals(""))
+            {
+                shareButton.getLayoutParams().height = 0;
+            }else {
+                ShareLinkContent contentLink = new ShareLinkContent.Builder()
+                        .setContentUrl(Uri.parse("https://developers.facebook.com"))
+                        .build();
+
+                shareButton.setShareContent(contentLink);
+                shareButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (ShareDialog.canShow(ShareLinkContent.class)) {
+                            ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                                    .setContentTitle("Activity on Ludicon")
+                                    .setContentDescription(
+                                            "I will attend an event in Ludicon ! Let's go and play ! ")
+                                    .setContentUrl(Uri.parse("http://ludicon.ro/"))
+                                    .build();
+
+                            shareDialog.show(linkContent, ShareDialog.Mode.AUTOMATIC);
+
+                        }
+                    }
+                });
+
+                shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
+                    @Override
+                    public void onSuccess(Sharer.Result result) {
+                        Toast.makeText(activity, "This post was shared! ", Toast.LENGTH_SHORT).show();
+                        getActivity().onBackPressed();
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
+
+                    @Override
+                    public void onError(FacebookException error) {
+
+
+                    }
+                });
+
+//                        ShareOpenGraphObject object = new ShareOpenGraphObject.Builder()
+//
+//                                .putString("og:title", "I will attend an event in Ludicon ! Let's go and play !")
+//                                .putString("og:url", "http://ludicon.ro/")
+//                                .putString("og:image", "http://www.ludicon.info/img/sports/jogging.png")
+//                                .putString("og:description",
+//                                        "I will attend an event in Ludicon ! Let's go and play ! ").build();
+//                        // Create an action
+//                        ShareOpenGraphAction action = new ShareOpenGraphAction.Builder()
+//                                .setActionType("fitness.runs")
+//                                .putObject("badge", object).build();
+//                        // Create the content
+//                        ShareOpenGraphContent content = new ShareOpenGraphContent.Builder()
+//                                .setAction(action)
+//                                .build();
+//
+
+            }
+
+            //
+
+
             Runnable runnableStart = new Runnable() {
                 private Event firstEvent() {
                     synchronized (myEventList) {
@@ -905,5 +995,10 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 }
