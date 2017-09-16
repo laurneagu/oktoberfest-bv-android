@@ -122,8 +122,8 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
     Boolean dataComeArundeMe = false;
     Boolean dataComeMy = false;
     public static ProgressBar v1;
-    public double longitude = 0;
-    public double latitude = 0;
+    static public double longitude = 0;
+    static public double latitude = 0;
     public static Thread startHN;
     public static Thread stopHN;
     static Boolean isOnActivityPage = false;
@@ -429,16 +429,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         headers.put("authKey", Persistance.getInstance().getUserInfo(activity).authKey);
 
         GPSTracker gps = new GPSTracker(activity.getApplicationContext(), activity);
-        if (gps.canGetLocation()) {
-            this.latitude = gps.getLatitude();
-            this.longitude = gps.getLongitude();
-
-            latitude = this.latitude;
-            longitude = this.longitude;
-
-            gps.stopUsingGPS();
-            this.noGps = false;
-        } else {
+         if (!gps.canGetLocation()) {
             this.noGps = true;
             this.prepareError("No location services available!");
             return;
@@ -491,6 +482,19 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        googleApiClient = new GoogleApiClient.Builder(getContext())
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+        locationRequest = new LocationRequest();
+        locationRequest.setInterval(300 * 1000);
+        locationRequest.setFastestInterval(5 * 1000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+
+        googleApiClient.connect();
+
         mContext = inflater.getContext();
         isOnActivityPage = true;
         aroundMeEventList.clear();
@@ -540,47 +544,20 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
             // Setting the ViewPager For the SlidingTabsLayout
             tabs.setViewPager(pager);
 
-            // Initialize Crashlytics (Fabric)
-            //Fabric.with(getActivity(), new Crashlytics());
-            // logUser();
-
-            //dialog = ProgressDialog.show(getActivity(), "", "Loading. Please wait", true);
-
-            // Check if there are any unsaved points and save them
-            /*
-            pointsPersistence = PointsPersistence.getInstance();
-            Map<String,Integer> unsavedPointsMap = pointsPersistence.getUnsavedPoints(getActivity());
-            for (final Map.Entry<String, Integer> entry : unsavedPointsMap.entrySet()) {
-                if (entry.getValue() == 0) continue;
-            }*/
-
             if (Persistance.getInstance().getLocation(activity).locationList.size() > 0 && !HPShouldBeVisible) {
                 happeningNowLocation = Persistance.getInstance().getLocation(activity);
                 happeningNowLocation.endDate = String.valueOf(System.currentTimeMillis() / 1000);
                 savePoints();
 
             }
-            /*
-            Sponsors sponsors1=new Sponsors();
-            Sponsors sponsors2=new Sponsors();
-            Sponsors sponsors3=new Sponsors();
-            Sponsors sponsors4=new Sponsors();
-            Sponsors sponsors5=new Sponsors();
-            sponsors1.logo=encodeToBase64(BitmapFactory.decodeResource(getResources(),R.drawable.desaturated_basketball),Bitmap.CompressFormat.JPEG, 50);
-            sponsors2.logo=encodeToBase64(BitmapFactory.decodeResource(getResources(),R.drawable.desaturated_basketball),Bitmap.CompressFormat.JPEG, 50);
-            sponsors3.logo=encodeToBase64(BitmapFactory.decodeResource(getResources(),R.drawable.desaturated_basketball),Bitmap.CompressFormat.JPEG, 50);
-            sponsors4.logo=encodeToBase64(BitmapFactory.decodeResource(getResources(),R.drawable.desaturated_basketball),Bitmap.CompressFormat.JPEG, 50);
-            sponsors5.logo=encodeToBase64(BitmapFactory.decodeResource(getResources(),R.drawable.desaturated_basketball),Bitmap.CompressFormat.JPEG, 50);
-            sponsorsList.add(sponsors1);
-            sponsorsList.add(sponsors2);
-            sponsorsList.add(sponsors3);
-            sponsorsList.add(sponsors4);
-            sponsorsList.add(sponsors5);*/
+
+
+
 
             myAdapter = new MyAdapter(myEventList,sponsorsList, activity.getApplicationContext(), activity, getResources(), currentFragment);
             fradapter = new AroundMeAdapter(aroundMeEventList,sponsorsList, activity.getApplicationContext(), activity, getResources(), currentFragment);
 
-            getAroundMeEvents("0", latitude, longitude);
+
 
             getMyEvents("0");
 
@@ -644,26 +621,10 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                     }
                 });
 
-//                        ShareOpenGraphObject object = new ShareOpenGraphObject.Builder()
-//
-//                                .putString("og:title", "I will attend an event in Ludicon ! Let's go and play !")
-//                                .putString("og:url", "http://ludicon.ro/")
-//                                .putString("og:image", "http://www.ludicon.info/img/sports/jogging.png")
-//                                .putString("og:description",
-//                                        "I will attend an event in Ludicon ! Let's go and play ! ").build();
-//                        // Create an action
-//                        ShareOpenGraphAction action = new ShareOpenGraphAction.Builder()
-//                                .setActionType("fitness.runs")
-//                                .putObject("badge", object).build();
-//                        // Create the content
-//                        ShareOpenGraphContent content = new ShareOpenGraphContent.Builder()
-//                                .setAction(action)
-//                                .build();
-//
+
 
             }
 
-            //
 
 
             Runnable runnableStart = new Runnable() {
@@ -748,15 +709,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                 startHappeningNow = new Thread(runnableStart);
             }
 
-            googleApiClient = new GoogleApiClient.Builder(getContext())
-                    .addApi(LocationServices.API)
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .build();
-            locationRequest = new LocationRequest();
-            locationRequest.setInterval(300 * 1000);
-            locationRequest.setFastestInterval(5 * 1000);
-            locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+
 
             if (HPShouldBeVisible) {
                 googleApiClient.connect();
@@ -833,8 +786,6 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
                     if (layoutManagerAroundMe.findLastCompletelyVisibleItemPosition() == aroundMeEventList.size()-1) {
-                        //nrElements = nrElements + 10;
-                        //isGetingPage = true;
                         progressBarAroundMe.setAlpha(1f);
                         System.out.println(layoutManagerAroundMe.findLastVisibleItemPosition() + " aici");
                         getAroundMeEvents(String.valueOf(NumberOfRefreshAroundMe), latitude, longitude);
@@ -875,9 +826,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
 
         // stop swiping on my events
-        final SwipeRefreshLayout mSwipeRefreshLayout1 = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh1);
-        // mSwipeRefreshLayout2.setEnabled(false);
-        // mSwipeRefreshLayout2.setFocusable(false);
+        final SwipeRefreshLayout mSwipeRefreshLayout1 = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh1);;
         myAdapter.notifyDataSetChanged();
         mylistView = (RecyclerView) v.findViewById(R.id.events_listView1);
         heartImageMyActivity = (ImageView) v.findViewById(R.id.heartImageMyActivity);
@@ -964,7 +913,12 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        // requestLocationUpdates();
+        Location location=LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+        System.out.println(location.getLatitude()+ " locatie");
+        latitude=location.getLatitude();
+
+        longitude=location.getLongitude();
+        getAroundMeEvents("0", latitude, longitude);
     }
 
     @Override

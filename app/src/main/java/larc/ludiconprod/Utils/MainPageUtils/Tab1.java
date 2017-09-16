@@ -41,7 +41,7 @@ public class Tab1 extends Fragment {
 
         aroundMeEventList = Persistance.getInstance().getAroundMeActivities(getActivity());
         ArrayList<Sponsors> sponsorsList=new ArrayList<>();
-        sponsorsList=Persistance.getInstance().getSponsors(getActivity());
+        //sponsorsList=Persistance.getInstance().getSponsors(getActivity());
         fradapter = new AroundMeAdapter(aroundMeEventList,sponsorsList, getActivity().getApplicationContext(), getActivity(), getResources());
         updateListOfEventsAroundMe();
         Typeface typeFace = Typeface.createFromAsset(super.getActivity().getAssets(), "fonts/Quicksand-Medium.ttf");

@@ -52,6 +52,8 @@ import larc.ludiconprod.Utils.EventDetails;
 import larc.ludiconprod.Utils.Friend;
 import larc.ludiconprod.Utils.Location.GPSTracker;
 
+import static larc.ludiconprod.Activities.ActivitiesActivity.latitude;
+import static larc.ludiconprod.Activities.ActivitiesActivity.longitude;
 import static larc.ludiconprod.Activities.IntroActivity.decodeBase64;
 import static larc.ludiconprod.Activities.InviteFriendsActivity.numberOfOfflineFriends;
 
@@ -77,8 +79,6 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
     ImageView minusButton;
     ImageView plusButton;
     private GoogleMap m_gmap;
-    double longitude = 0;
-    double latitude = 0;
     RelativeLayout backButton;
     TextView tapHereTextView;
     public static Button createActivityButton;
@@ -838,13 +838,6 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
         final MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
 
-        GPSTracker gps = new GPSTracker(getApplicationContext(), CreateNewActivity.this);
-        if (gps.canGetLocation()) {
-            latitude = gps.getLatitude();
-            longitude = gps.getLongitude();
-
-            gps.stopUsingGPS();
-        }
 
 
         mapFragment.getMapAsync(new OnMapReadyCallback() {
