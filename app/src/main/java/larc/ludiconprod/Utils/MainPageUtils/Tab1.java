@@ -20,6 +20,7 @@ import larc.ludiconprod.Adapters.MainActivity.SimpleDividerItemDecoration;
 import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
 import larc.ludiconprod.Utils.Event;
+import larc.ludiconprod.Utils.util.Sponsors;
 
 /**
  * Created by hp1 on 21-01-2015.
@@ -39,7 +40,9 @@ public class Tab1 extends Fragment {
         v = inflater.inflate(R.layout.tab1, container, false);
 
         aroundMeEventList = Persistance.getInstance().getAroundMeActivities(getActivity());
-        fradapter = new AroundMeAdapter(aroundMeEventList, getActivity().getApplicationContext(), getActivity(), getResources());
+        ArrayList<Sponsors> sponsorsList=new ArrayList<>();
+        sponsorsList=Persistance.getInstance().getSponsors(getActivity());
+        fradapter = new AroundMeAdapter(aroundMeEventList,sponsorsList, getActivity().getApplicationContext(), getActivity(), getResources());
         updateListOfEventsAroundMe();
         Typeface typeFace = Typeface.createFromAsset(super.getActivity().getAssets(), "fonts/Quicksand-Medium.ttf");
         noActivitiesTextFieldAroundMe.setTypeface(typeFace);

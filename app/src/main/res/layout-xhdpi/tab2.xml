@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:elevation="1dp"
             android:theme="@android:style/Widget.Holo.ProgressBar">
-            <ListView
+            <android.support.v7.widget.RecyclerView
                 android:id="@+id/events_listView1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

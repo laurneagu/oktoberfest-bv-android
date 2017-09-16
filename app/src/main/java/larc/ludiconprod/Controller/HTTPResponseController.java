@@ -50,6 +50,7 @@ import larc.ludiconprod.User;
 import larc.ludiconprod.Utils.Event;
 import larc.ludiconprod.Utils.Friend;
 import larc.ludiconprod.Utils.util.AuthorizedLocation;
+import larc.ludiconprod.Utils.util.Sponsors;
 import larc.ludiconprod.Utils.util.Sport;
 
 import static larc.ludiconprod.Activities.ActivitiesActivity.aroundMeEventList;
@@ -58,6 +59,7 @@ import static larc.ludiconprod.Activities.ActivitiesActivity.getFirstPageAroundM
 import static larc.ludiconprod.Activities.ActivitiesActivity.getFirstPageMyActivity;
 import static larc.ludiconprod.Activities.ActivitiesActivity.happeningNowLocation;
 import static larc.ludiconprod.Activities.ActivitiesActivity.myEventList;
+import static larc.ludiconprod.Activities.ActivitiesActivity.sponsorsList;
 
 /**
  * Created by ancuta on 7/12/2017.
@@ -310,6 +312,7 @@ public class HTTPResponseController {
                 System.out.println(jsonObject + " ceva");
                     if (getFirstPageAroundMe) {
                         aroundMeEventList.clear();
+                        sponsorsList.clear();
                     }
                     try {
                         for (int i = 0; i < jsonObject.getJSONArray("aroundMe").length(); i++) {
@@ -340,11 +343,22 @@ public class HTTPResponseController {
                             System.out.println(event.id + " eventid:" + i + "  " + event.numberOfParticipants + " profilepicture" + jsonObject.getJSONArray("aroundMe").getJSONObject(i).getJSONArray("participantsProfilePicture").length());
                             aroundMeEventList.add(event);
                         }
+                        if(getFirstPageAroundMe) {
+                            for (int i = 0; i < jsonObject.getJSONArray("sponsors").length(); i++) {
+                                Sponsors sponsors = new Sponsors();
+                                sponsors.id = jsonObject.getJSONArray("sponsors").getJSONObject(i).getInt("id");
+                                sponsors.logo = jsonObject.getJSONArray("sponsors").getJSONObject(i).getString("logo");
+                                sponsorsList.add(sponsors);
+
+                            }
+                        }
+
                         ActivitiesActivity.currentFragment.updateListOfEventsAroundMe(false);
                         if (jsonObject.getJSONArray("aroundMe").length() >= 1) {
                             ActivitiesActivity.NumberOfRefreshAroundMe++;
                         }
                         if (getFirstPageAroundMe) {
+                            Persistance.getInstance().setSponsors(activity,sponsorsList);
                             Persistance.getInstance().setAroundMeActivities(activity, aroundMeEventList);
                         }
                         getFirstPageAroundMe = false;

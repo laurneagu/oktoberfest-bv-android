@@ -56,12 +56,14 @@ import com.google.android.gms.location.LocationServices;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import larc.ludiconprod.Adapters.MainActivity.AroundMeAdapter;
 import larc.ludiconprod.Adapters.MainActivity.MyAdapter;
+import larc.ludiconprod.Adapters.MainActivity.SimpleDividerItemDecoration;
 import larc.ludiconprod.BottomBarHelper.BottomBarTab;
 import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
@@ -72,6 +74,7 @@ import larc.ludiconprod.Utils.HappeningNowLocation;
 import larc.ludiconprod.Utils.Location.GPSTracker;
 import larc.ludiconprod.Utils.MainPageUtils.ViewPagerAdapter;
 import larc.ludiconprod.Utils.ui.SlidingTabLayout;
+import larc.ludiconprod.Utils.util.Sponsors;
 import larc.ludiconprod.Utils.util.Sport;
 
 import static larc.ludiconprod.Activities.Main.bottomBar;
@@ -97,6 +100,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
     static public MyAdapter myAdapter;
     static public ActivitiesActivity currentFragment;
     public static ArrayList<Event> aroundMeEventList = new ArrayList<Event>();
+    static public ArrayList<Sponsors> sponsorsList =new ArrayList<>();
     public static final ArrayList<Event> myEventList = new ArrayList<Event>();
     ImageView heartImageAroundMe;
     TextView noActivitiesTextFieldAroundMe;
@@ -104,13 +108,14 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
     ImageView heartImageMyActivity;
     TextView noActivitiesTextFieldMyActivity;
     TextView pressPlusButtonTextFieldMyActivity;
-    static LinearLayoutManager layoutManager;
+    static LinearLayoutManager layoutManagerAroundMe;
+    static LinearLayoutManager layoutManagerMyActivities;
     ProgressBar progressBarMyEvents;
     ProgressBar progressBarAroundMe;
     public static int NumberOfRefreshMyEvents = 0;
     public static int NumberOfRefreshAroundMe = 0;
     public static RecyclerView frlistView;
-    public static ListView mylistView;
+    public static RecyclerView mylistView;
     Boolean isFirstTimeAroundMe = false;
     Boolean isFirstTimeMyEvents = false;
     Boolean isGetingPage = false;
@@ -153,6 +158,11 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
     public Bitmap decodeBase64(String input) {
         byte[] decodedBytes = Base64.decode(input, 0);
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+    }
+    public String encodeToBase64(Bitmap image, Bitmap.CompressFormat compressFormat, int quality) {
+        ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
+        image.compress(compressFormat, quality, byteArrayOS);
+        return Base64.encodeToString(byteArrayOS.toByteArray(), Base64.DEFAULT);
     }
 
     Handler handler = new Handler() {
@@ -550,10 +560,25 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                 savePoints();
 
             }
+            /*
+            Sponsors sponsors1=new Sponsors();
+            Sponsors sponsors2=new Sponsors();
+            Sponsors sponsors3=new Sponsors();
+            Sponsors sponsors4=new Sponsors();
+            Sponsors sponsors5=new Sponsors();
+            sponsors1.logo=encodeToBase64(BitmapFactory.decodeResource(getResources(),R.drawable.desaturated_basketball),Bitmap.CompressFormat.JPEG, 50);
+            sponsors2.logo=encodeToBase64(BitmapFactory.decodeResource(getResources(),R.drawable.desaturated_basketball),Bitmap.CompressFormat.JPEG, 50);
+            sponsors3.logo=encodeToBase64(BitmapFactory.decodeResource(getResources(),R.drawable.desaturated_basketball),Bitmap.CompressFormat.JPEG, 50);
+            sponsors4.logo=encodeToBase64(BitmapFactory.decodeResource(getResources(),R.drawable.desaturated_basketball),Bitmap.CompressFormat.JPEG, 50);
+            sponsors5.logo=encodeToBase64(BitmapFactory.decodeResource(getResources(),R.drawable.desaturated_basketball),Bitmap.CompressFormat.JPEG, 50);
+            sponsorsList.add(sponsors1);
+            sponsorsList.add(sponsors2);
+            sponsorsList.add(sponsors3);
+            sponsorsList.add(sponsors4);
+            sponsorsList.add(sponsors5);*/
 
-
-            myAdapter = new MyAdapter(myEventList, activity.getApplicationContext(), activity, getResources(), currentFragment);
-            fradapter = new AroundMeAdapter(aroundMeEventList, activity.getApplicationContext(), activity, getResources(), currentFragment);
+            myAdapter = new MyAdapter(myEventList,sponsorsList, activity.getApplicationContext(), activity, getResources(), currentFragment);
+            fradapter = new AroundMeAdapter(aroundMeEventList,sponsorsList, activity.getApplicationContext(), activity, getResources(), currentFragment);
 
             getAroundMeEvents("0", latitude, longitude);
 
@@ -759,15 +784,15 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         // stop swiping on my events
         final SwipeRefreshLayout mSwipeRefreshLayout2 = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh2);
         if (!isFirstTimeAroundMe) {
-            layoutManager = new LinearLayoutManager(getContext());
+            layoutManagerAroundMe = new LinearLayoutManager(getContext());
         }
 
         fradapter.notifyDataSetChanged();
 
         if (!isFirstTimeAroundMe) {
             frlistView = (RecyclerView) v.findViewById(R.id.events_listView2);
-            layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-            frlistView.setLayoutManager(layoutManager);
+            layoutManagerAroundMe.setOrientation(LinearLayoutManager.VERTICAL);
+            frlistView.setLayoutManager(layoutManagerAroundMe);
             heartImageAroundMe = (ImageView) v.findViewById(R.id.heartImageAroundMe);
             progressBarAroundMe = (ProgressBar) v.findViewById(R.id.progressBarAroundMe);
             progressBarAroundMe.setIndeterminate(true);
@@ -807,11 +832,11 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                 @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
-                    if (layoutManager.findLastVisibleItemPosition() >= nrElements && !isGetingPage) {
-                        nrElements = nrElements + 10;
-                        isGetingPage = true;
+                    if (layoutManagerAroundMe.findLastCompletelyVisibleItemPosition() == aroundMeEventList.size()-1) {
+                        //nrElements = nrElements + 10;
+                        //isGetingPage = true;
                         progressBarAroundMe.setAlpha(1f);
-                        System.out.println(layoutManager.findLastVisibleItemPosition() + " aici");
+                        System.out.println(layoutManagerAroundMe.findLastVisibleItemPosition() + " aici");
                         getAroundMeEvents(String.valueOf(NumberOfRefreshAroundMe), latitude, longitude);
                     }
 
@@ -838,7 +863,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
         isFirstTimeAroundMe = true;
     }
-
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public void updateListOfMyEvents(final boolean eventHappeningNow) {
         RelativeLayout ll = (RelativeLayout) v.findViewById(R.id.noInternetLayout);
         ll.getLayoutParams().height = 0;
@@ -846,16 +871,15 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         if (this.noGps) {
             this.prepareError("No location services available!");
         }
-        //if(HPShouldBeVisible){
-        // myEventList.remove(0);
-        // }
+
+
 
         // stop swiping on my events
         final SwipeRefreshLayout mSwipeRefreshLayout1 = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh1);
         // mSwipeRefreshLayout2.setEnabled(false);
         // mSwipeRefreshLayout2.setFocusable(false);
         myAdapter.notifyDataSetChanged();
-        mylistView = (ListView) v.findViewById(R.id.events_listView1);
+        mylistView = (RecyclerView) v.findViewById(R.id.events_listView1);
         heartImageMyActivity = (ImageView) v.findViewById(R.id.heartImageMyActivity);
         noActivitiesTextFieldMyActivity = (TextView) v.findViewById(R.id.noActivitiesTextFieldMyActivity);
         pressPlusButtonTextFieldMyActivity = (TextView) v.findViewById(R.id.pressPlusButtonTextFieldMyActivity);
@@ -863,6 +887,19 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
         progressBarMyEvents.setIndeterminate(true);
         progressBarMyEvents.setAlpha(0f);
+
+
+        if (!isFirstTimeMyEvents) {
+            layoutManagerMyActivities = new LinearLayoutManager(getContext());
+        }
+
+        if (!isFirstTimeMyEvents) {
+
+            layoutManagerMyActivities.setOrientation(LinearLayoutManager.VERTICAL);
+            mylistView.setLayoutManager(layoutManagerMyActivities);
+            mylistView.addItemDecoration(new SimpleDividerItemDecoration(getContext()));
+
+        }
 
         final FloatingActionButton createNewActivityFloatingButtonMyActivity = (FloatingActionButton) v.findViewById(R.id.floatingButton1);
         createNewActivityFloatingButtonMyActivity.setOnClickListener(new View.OnClickListener() {
@@ -874,9 +911,10 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         });
 
         if (!isFirstTimeMyEvents) {
-
             mylistView.setAdapter(myAdapter);
         }
+
+
         if (myEventList.size() == 0) {
             heartImageMyActivity.setVisibility(View.VISIBLE);
             noActivitiesTextFieldMyActivity.setVisibility(View.VISIBLE);
@@ -886,25 +924,20 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
             noActivitiesTextFieldMyActivity.setVisibility(View.INVISIBLE);
             pressPlusButtonTextFieldMyActivity.setVisibility(View.INVISIBLE);
         }
+
+
         if (mylistView != null) {
-            mylistView.setOnTouchListener(new View.OnTouchListener() {
+
+            mylistView.setOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
-                public boolean onTouch(final View v, MotionEvent event) {
-                    if (v != null && mylistView.getChildCount() > 0) {
-                        if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
-
-
-                            if (mylistView.getLastVisiblePosition() == mylistView.getAdapter().getCount() - 1 &&
-                                    mylistView.getChildAt(mylistView.getChildCount() - 1).getBottom() <= mylistView.getHeight()) {
-
-                                // mSwipeRefreshLayout1.setRefreshing(true);
-                                progressBarMyEvents.setAlpha(1f);
-                                getMyEvents(String.valueOf(NumberOfRefreshMyEvents));
-
-                            }
-                        }
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    if (layoutManagerMyActivities.findLastCompletelyVisibleItemPosition() == myEventList.size()-1) {
+                        progressBarMyEvents.setAlpha(1f);
+                        getMyEvents(String.valueOf(NumberOfRefreshMyEvents));
                     }
-                    return false;
+
+
                 }
             });
         }

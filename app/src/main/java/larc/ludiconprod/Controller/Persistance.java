@@ -20,6 +20,7 @@ import larc.ludiconprod.Utils.Coupon;
 import larc.ludiconprod.Utils.Event;
 import larc.ludiconprod.Utils.HappeningNowLocation;
 import larc.ludiconprod.Utils.UserPosition;
+import larc.ludiconprod.Utils.util.Sponsors;
 
 /**
  * Created by ancuta on 7/12/2017.
@@ -49,6 +50,7 @@ public class Persistance {
     private final String conversationString = "conversationList";
     private final String leaderboardString = "leaderboardList";
     private final String happeningNowEvent = "HappeningNowEvent";
+    private final String SponsorsString = "Sponsors";
 
     public void setUserInfo(Activity activity, User user) {
 
@@ -123,6 +125,28 @@ public class Persistance {
             chatList = new Gson().fromJson(json, type);
         }
         return  chatList;
+    }
+
+    public void setSponsors(Activity activity, ArrayList<Sponsors> sponsorsList){
+        SharedPreferences.Editor editor = activity.getSharedPreferences(this.SponsorsString, 0).edit();
+        Gson gson = new Gson();
+        editor.putString(this.SponsorsString, gson.toJson(sponsorsList));
+        editor.commit();
+    }
+
+    public ArrayList<Sponsors> getSponsors(Activity activity){
+        SharedPreferences sharedPreferences = activity.getSharedPreferences(this.SponsorsString, 0);
+        String json = sharedPreferences.getString(this.SponsorsString, "0");
+        ArrayList<Sponsors> sponsorsList = new ArrayList<>();;
+
+        Type type = new TypeToken<ArrayList<Sponsors>>() {
+        }.getType();
+        if (json.equals("0")) {
+            sponsorsList = new ArrayList<>();
+        } else {
+            sponsorsList = new Gson().fromJson(json, type);
+        }
+        return  sponsorsList;
     }
 
 
