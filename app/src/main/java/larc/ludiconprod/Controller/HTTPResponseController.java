@@ -1,6 +1,8 @@
 package larc.ludiconprod.Controller;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -93,6 +95,7 @@ public class HTTPResponseController {
     int position;
     boolean flag = false;
     Activity oldActivity;
+    Boolean isEdit=false;
 
 
     public static Bitmap decodeBase64(String input) {
@@ -213,21 +216,23 @@ public class HTTPResponseController {
         return new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
-                if (activity.getLocalClassName().toString().equals("Activities.InviteFriendsActivity")) {
+                if (activity.getLocalClassName().toString().equals("Activities.InviteFriendsActivity") || isEdit) {
                     HashMap<String, String> params = new HashMap<String, String>();
                     HashMap<String, String> headers = new HashMap<String, String>();
                     HashMap<String, String> urlParams = new HashMap<String, String>();
                     headers.put("authKey", Persistance.getInstance().getUserInfo(activity).authKey);
 
                     //set urlParams
+                        activity.finish();
 
                     urlParams.put("eventId", eventid);
                     urlParams.put("userId", Persistance.getInstance().getUserInfo(activity).id);
                     HTTPResponseController.getInstance().getEventDetails(params, headers, activity, urlParams);
 
+
                 } else {
-                    //Intent intent = new Intent(activity, Main.class);
-                    // activity.startActivity(intent);
+                    Intent intent = new Intent(activity, Main.class);
+                    activity.startActivity(intent);
                     activity.finish();
                 }
             }
@@ -240,11 +245,29 @@ public class HTTPResponseController {
             public void onResponse(JSONObject jsonObject) {
                 if (!deleteAnotherUser) {
                     Toast.makeText(activity, "You leave the event successfully!", Toast.LENGTH_SHORT).show();
+
+                    HashMap<String, String> params = new HashMap<String, String>();
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    HashMap<String, String> urlParams = new HashMap<String, String>();
+                    headers.put("authKey", Persistance.getInstance().getUserInfo(activity).authKey);
+
+                    //set urlParams
+
+                    urlParams.put("eventId", eventid);
+                    urlParams.put("userId", Persistance.getInstance().getUserInfo(activity).id);
+                    flag = true;
+                    HTTPResponseController.getInstance().getEventDetails(params, headers, activity, urlParams);
+
+                    oldActivity = activity;
+
+                    myEventList.clear();
+                    ActivitiesActivity.currentFragment.getMyEvents("0");
+
                     Intent intent = new Intent(activity, Main.class);
                     activity.startActivity(intent);
                     activity.finish();
                 } else {
-                    Toast.makeText(activity, "You exclude that user!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity, "You successfully removed the user from event!", Toast.LENGTH_SHORT).show();
                     HashMap<String, String> params = new HashMap<String, String>();
                     HashMap<String, String> headers = new HashMap<String, String>();
                     HashMap<String, String> urlParams = new HashMap<String, String>();
@@ -255,6 +278,7 @@ public class HTTPResponseController {
                     urlParams.put("eventId", eventid);
                     urlParams.put("userId", userId);
                     HTTPResponseController.getInstance().getEventDetails(params, headers, activity, urlParams);
+                    activity.finish();
                 }
 
             }
@@ -265,7 +289,7 @@ public class HTTPResponseController {
         return new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
-                Toast.makeText(activity, "You exclude that user!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "You successfully removed the user from event!", Toast.LENGTH_SHORT).show();
                 for (int i = InviteFriendsActivity.participantList.size() - 1; i >= 0; i--) {
                     if (InviteFriendsActivity.participantList.get(i).userID.equals(userId)) {
                         InviteFriendsActivity.participantList.remove(i);
@@ -282,7 +306,7 @@ public class HTTPResponseController {
         return new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
-                Toast.makeText(activity, "You exclude that user offline!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "You successfully removed the offline friend from event!", Toast.LENGTH_SHORT).show();
                 InviteFriendsActivity.participantList.remove(position);
                 InviteFriendsActivity.inviteFriendsAdapter.notifyDataSetChanged();
 
@@ -296,6 +320,24 @@ public class HTTPResponseController {
             @Override
             public void onResponse(JSONObject jsonObject) {
                 Toast.makeText(activity, "You cancel the event successfully!", Toast.LENGTH_SHORT).show();
+
+                HashMap<String, String> params = new HashMap<String, String>();
+                HashMap<String, String> headers = new HashMap<String, String>();
+                HashMap<String, String> urlParams = new HashMap<String, String>();
+                headers.put("authKey", Persistance.getInstance().getUserInfo(activity).authKey);
+
+                //set urlParams
+
+                urlParams.put("eventId", eventid);
+                urlParams.put("userId", Persistance.getInstance().getUserInfo(activity).id);
+                flag = true;
+                HTTPResponseController.getInstance().getEventDetails(params, headers, activity, urlParams);
+
+                oldActivity = activity;
+
+                myEventList.clear();
+                ActivitiesActivity.currentFragment.getMyEvents("0");
+
                 Intent intent = new Intent(activity, Main.class);
                 activity.startActivity(intent);
                 activity.finish();
@@ -372,6 +414,7 @@ public class HTTPResponseController {
 
     private Response.Listener<JSONObject> createMyEventSuccesListener() {
         return new Response.Listener<JSONObject>() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onResponse(JSONObject jsonObject) {
                 System.out.println(jsonObject + " myevent");
@@ -542,8 +585,10 @@ public class HTTPResponseController {
                         Intent intent = new Intent(activity, InviteFriendsActivity.class);
                         intent.putExtra("isParticipant", true);
                         intent.putExtra("isEdit", false);
+                        intent.putExtra("mustRedirect",true);
                         InviteFriendsActivity.isFirstTimeInviteFriends = false;
                         activity.startActivity(intent);
+                        activity.finish();
                     } else {
                         InviteFriendsActivity.inviteFriendsAdapter.notifyDataSetChanged();
                     }
@@ -647,13 +692,15 @@ public class HTTPResponseController {
                     if (flag == true) {
                         oldActivity.finish();
                         flag = false;
+                    }else{
+                        Intent intent = new Intent(activity, ActivityDetailsActivity.class);
+                        //intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                        intent.putExtras(b);
+                        activity.startActivity(intent);
                     }
 
 
-                    Intent intent = new Intent(activity, ActivityDetailsActivity.class);
-                    //intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                    intent.putExtras(b);
-                    activity.startActivity(intent);
+
                     if (ChatActivity.chatLoading != null) {
                         ChatActivity.chatLoading.setAlpha(0f);
                     }
@@ -762,12 +809,14 @@ public class HTTPResponseController {
                     System.out.println(" save points on succes");
 
                     PointsReceivedDialog dialog = new PointsReceivedDialog();
+
                     Bundle bundle = new Bundle();
                     bundle.putInt("ludicoins", jsonObject.getInt("ludicoins"));
                     bundle.putInt("points", jsonObject.getInt("points"));
                     bundle.putInt("level", jsonObject.getInt("level"));
                     dialog.setArguments(bundle);
                     dialog.show(activity.getFragmentManager(), "tag");
+
 
                     System.out.println(jsonObject.getInt("points") + " points");
 
@@ -860,11 +909,12 @@ public class HTTPResponseController {
         this.password = password;
     }
 
-    public void setEventId(String eventId, boolean deleteAnotherUser, String userId, int position) {
+    public void setEventId(String eventId, boolean deleteAnotherUser, String userId, int position,Boolean isEdit) {
         this.eventid = eventId;
         this.position = position;
         this.deleteAnotherUser = deleteAnotherUser;
         this.userId = userId;
+        this.isEdit=isEdit;
     }
 
     public void displayMessage(String toastString) {
@@ -933,9 +983,9 @@ public class HTTPResponseController {
         requestQueue.add(jsObjRequest);
     }
 
-    public void createEvent(HashMap<String, String> params, HashMap<String, String> headers, Activity activity, String eventid, Response.ErrorListener errorListener) {
+    public void createEvent(HashMap<String, String> params, HashMap<String, String> headers, Activity activity, String eventid, Response.ErrorListener errorListener,Boolean isEdit) {
         setActivity(activity, params.get("email"), params.get("password"));
-        setEventId(eventid, false, null, 0);
+        setEventId(eventid, false, null, 0,isEdit);
         if (errorListener == null) {
             errorListener = this.createErrorListener();
         }
@@ -946,7 +996,7 @@ public class HTTPResponseController {
 
     public void getEventDetails(HashMap<String, String> params, HashMap<String, String> headers, Activity activity, HashMap<String, String> urlParams) {
         setActivity(activity, params.get("email"), params.get("password"));
-        setEventId(urlParams.get("eventId"), false, "", -1);
+        setEventId(urlParams.get("eventId"), false, "", -1,false);
         RequestQueue requestQueue = Volley.newRequestQueue(activity);
         CustomRequest jsObjRequest = new CustomRequest(Request.Method.GET, prodServer + "api/event?eventId=" + urlParams.get("eventId") + "&userId=" + urlParams.get("userId"), params, headers, this.getEventDetailsSuccesListener(), this.createRequestErrorListener());
         requestQueue.add(jsObjRequest);
@@ -954,7 +1004,7 @@ public class HTTPResponseController {
 
     public void leaveEvent(HashMap<String, String> params, HashMap<String, String> headers, Activity activity, boolean deleteAnotherUser) {
         setActivity(activity, params.get("email"), params.get("password"));
-        setEventId(params.get("eventId"), deleteAnotherUser, params.get("userId"), -1);
+        setEventId(params.get("eventId"), deleteAnotherUser, params.get("userId"), -1,false);
         RequestQueue requestQueue = Volley.newRequestQueue(activity);
         CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, prodServer + "api/leaveEvent", params, headers, this.leaveEventSuccesListener(), (Response.ErrorListener) activity);
         requestQueue.add(jsObjRequest);
@@ -1004,7 +1054,7 @@ public class HTTPResponseController {
 
     public void kickUser(HashMap<String, String> params, HashMap<String, String> headers, Activity activity, int position) {
         setActivity(activity, params.get("email"), params.get("password"));
-        setEventId(params.get("eventId"), deleteAnotherUser, params.get("userId"), position);
+        setEventId(params.get("eventId"), deleteAnotherUser, params.get("userId"), position,false);
         RequestQueue requestQueue = Volley.newRequestQueue(activity);
         CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, prodServer + "api/leaveEvent", params, headers, this.kickUserSuccesListener(), this.createRequestErrorListener());
         requestQueue.add(jsObjRequest);
@@ -1012,7 +1062,7 @@ public class HTTPResponseController {
 
     public void removeOffline(HashMap<String, String> params, HashMap<String, String> headers, Activity activity, int position) {
         setActivity(activity, params.get("email"), params.get("password"));
-        setEventId(params.get("eventId"), deleteAnotherUser, params.get("userId"), position);
+        setEventId(params.get("eventId"), deleteAnotherUser, params.get("userId"), position,false);
         RequestQueue requestQueue = Volley.newRequestQueue(activity);
         CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, prodServer + "api/updateOfflineFriends/", params, headers, this.removeOfflineSuccesListener(), this.createRequestErrorListener());
         requestQueue.add(jsObjRequest);

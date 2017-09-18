@@ -418,8 +418,10 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
                     Intent intent = new Intent(ActivityDetailsActivity.this, InviteFriendsActivity.class);
                     intent.putExtra("isParticipant", true);
                     intent.putExtra("isEdit", false);
+                    intent.putExtra("mustRedirect",true);
                     InviteFriendsActivity.isFirstTimeInviteFriends = false;
                     startActivity(intent);
+                    finish();
                 }
 
             }
@@ -448,7 +450,10 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
                 goToNextActivity.putExtra("isCustomInvite", true);
                 goToNextActivity.putExtra("eventId", eventID);
                 goToNextActivity.putExtra("eventId", getIntent().getStringExtra("eventId"));
+                goToNextActivity.putExtra("mustRedirect",true);
                 startActivity(goToNextActivity);
+
+                finish();
             }
         });
 
@@ -635,6 +640,7 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
                     intent.putExtra("eventId", eventid);
                     intent.putExtras(b);
                     startActivity(intent);
+                    finish();
                 }
             });
         }

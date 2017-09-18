@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -247,6 +248,11 @@ public class MessageAdapter extends BaseAdapter implements ListAdapter {
                 ViewGroup.LayoutParams paramsMy = holder.myLayout.getLayoutParams();
                 paramsMy.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 holder.myLayout.setLayoutParams(paramsMy);
+
+                java.util.Date date1 = new java.util.Date(currentMessage.date.longValue() * 1000);
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MMM-dd,HH:mm");
+                String displayDate = formatter.format(date1);
+                holder.myMessageTime.setText(displayDate);
             }
             else if(currentMessage.authorId != null && !currentMessage.authorId.equalsIgnoreCase(Persistance.getInstance().getUserInfo(activity).id) && !currentMessage.setTopImage){
                 holder.otherParticipantLayout.setVisibility(View.VISIBLE);
@@ -314,6 +320,11 @@ public class MessageAdapter extends BaseAdapter implements ListAdapter {
 
                 holder.otherParticipantMessage.setMovementMethod(LinkMovementMethod.getInstance());
                 holder.otherParticipantMessage.setText(spanTxt, TextView.BufferType.SPANNABLE);
+
+                java.util.Date date1 = new java.util.Date(currentMessage.date.longValue() * 1000);
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MMM-dd,HH:mm");
+                String displayDate = formatter.format(date1);
+                holder.otherParticipantMessageTime.setText(displayDate);
 
                 //holder.otherParticipantMessage.setText(currentMessage.message);
                 if(currentMessage.otherUserImage != null){

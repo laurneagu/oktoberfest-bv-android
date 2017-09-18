@@ -220,7 +220,7 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                                 counterOfInvitedFriends++;
                             }
                         }
-                        HTTPResponseController.getInstance().createEvent(params, headers, CreateNewActivity.this, null, CreateNewActivity.this);
+                        HTTPResponseController.getInstance().createEvent(params, headers, CreateNewActivity.this, null, CreateNewActivity.this,false);
 
                     } else {
                         Toast.makeText(CreateNewActivity.this, "Saving...", Toast.LENGTH_LONG).show();
@@ -272,7 +272,7 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                                 }
                             }
                         }
-                        HTTPResponseController.getInstance().createEvent(params, headers, CreateNewActivity.this, null, CreateNewActivity.this);
+                        HTTPResponseController.getInstance().createEvent(params, headers, CreateNewActivity.this, params.get("eventId"), CreateNewActivity.this,true);
                     }
 
 

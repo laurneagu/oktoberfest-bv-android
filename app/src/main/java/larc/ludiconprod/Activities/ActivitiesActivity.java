@@ -168,6 +168,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
     Handler handler = new Handler() {
         @Override
         public void handleMessage(android.os.Message msg) {
+            happeningNowLayout = (RelativeLayout) v.findViewById(R.id.generalHappeningNowLayout);
             if (msg.what == 0) {
 
 
@@ -179,9 +180,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                 System.out.println("eventStarted");
 
 
-                ViewGroup.LayoutParams params = happeningNowLayout.getLayoutParams();
-                params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                happeningNowLayout.setLayoutParams(params);
+
 
                 //set happening now field
                 TextView weWillplay = (TextView) v.findViewById(R.id.HNPlay);
@@ -273,6 +272,10 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                                         ViewGroup.LayoutParams params = happeningNowLayout.getLayoutParams();
                                         params.height = 0;
                                         happeningNowLayout.setLayoutParams(params);
+
+                                        if (googleApiClient.isConnected()) {
+                                            googleApiClient.disconnect();
+                                        }
                                         confirmationDialog.dismiss();
                                     }
                                 });
@@ -374,6 +377,11 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                                 friends2.setImageBitmap(bitmap);
                             }
                 }
+
+                ViewGroup.LayoutParams params = happeningNowLayout.getLayoutParams();
+                params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                happeningNowLayout.setLayoutParams(params);
+                System.out.println(params.height+" inaltime");
             } else
                 if (msg.what == 1) {
                     System.out.println("eventStopped");
@@ -564,7 +572,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
             NumberOfRefreshMyEvents = 0;
             NumberOfRefreshAroundMe = 0;
 
-            happeningNowLayout = (RelativeLayout) v.findViewById(R.id.generalHappeningNowLayout);
+
 
 
             //
@@ -663,7 +671,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                                     startedEventDate = myEventList.get(0).eventDateTimeStamp;
                                     myEventList.remove(0);
 
-                                    Persistance.getInstance().setHappeningNow(Persistance.getInstance().getMyActivities(activity).get(0), getActivity());
+                                    Persistance.getInstance().setHappeningNow(Persistance.getInstance().getMyActivities(activity).get(0), activity);
 
                                     handler.sendEmptyMessage(0);
                                 }

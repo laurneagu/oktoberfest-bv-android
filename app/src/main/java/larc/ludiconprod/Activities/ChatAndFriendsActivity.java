@@ -332,6 +332,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                 joinActivitiesTV.setVisibility(View.VISIBLE);
                 discoverActivitiesButton.setVisibility(View.VISIBLE);
                 chatImage.setVisibility(View.VISIBLE);
+                chatListView.setVisibility(View.INVISIBLE);
             } else {
                 noConversationTV.setVisibility(View.INVISIBLE);
                 joinActivitiesTV.setVisibility(View.INVISIBLE);

@@ -4,13 +4,15 @@
     android:layout_height="wrap_content"
     android:background="@drawable/bg_modal_gradient"
     >
+
+    <!--
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_modal_ludicoins"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="8dp">
+        android:layout_alignParentStart="true">
+        -->
 
 
         <TextView
@@ -111,7 +113,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#1573ba"
+                android:textColor="#ffffff"
                 android:layout_marginLeft="4dp"
                 android:text="+25 "
                 android:textSize="14dp"
@@ -121,7 +123,7 @@
             <ImageView
                 android:layout_width="12dp"
                 android:layout_height="12dp"
-                android:background="@drawable/ic_points_small"
+                android:background="@drawable/points_white"
                 android:layout_toRightOf="@+id/pointsText"
                 android:id="@+id/pointsImage"
                 android:layout_centerInParent="true"/>
@@ -143,7 +145,7 @@
             android:paddingRight="60dp"
             android:textSize="14dp"/>
 
-    </RelativeLayout>
+   <!-- </RelativeLayout> -->
 
 
     </RelativeLayout>
