@@ -4,13 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#f7f9fc">
-<!--
-    <ImageView
-        android:layout_marginTop="56dp"
-        android:layout_width="match_parent"
-        android:layout_height="12dp"
-        android:background="@drawable/shadow_top_to_bottom"/>
-        -->
+
 
 
     <LinearLayout
@@ -23,7 +17,7 @@
             android:id="@+id/tool_bar"
             layout="@layout/header_login"
             android:layout_width="match_parent"
-            android:layout_height="56dp" />
+            android:layout_height="56dp"/>
 
         <ListView
             android:id="@+id/inviteFriendsListView"
@@ -31,9 +25,7 @@
             android:layout_height="fill_parent"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:scrollbars="none"
-            />
-
+            android:scrollbars="none"/>
 
     </LinearLayout>
     <Button
@@ -51,4 +43,10 @@
         android:background="@drawable/green_button_selector"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"/>
+
+    <ImageView
+        android:layout_marginTop="56dp"
+        android:layout_width="match_parent"
+        android:layout_height="12dp"
+        android:background="@drawable/shadow_top_to_bottom"/>
 </RelativeLayout>

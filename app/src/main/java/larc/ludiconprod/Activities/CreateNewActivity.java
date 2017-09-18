@@ -486,7 +486,6 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                 }, hour, minute, true);//Yes 24 hour time
                 mTimePicker.setTitle("Select Time");
                 mTimePicker.show();
-
             }
         });
         minusButton.setOnClickListener(new View.OnClickListener() {
@@ -589,7 +588,7 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
             playersNumber.setText(String.valueOf(eventDetails.capacity));
 
             Calendar editCalendar = Calendar.getInstance();
-            ;
+
             editCalendar.setTimeInMillis((long) eventDetails.eventDate * 1000);
 
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -607,7 +606,6 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
             ViewGroup.LayoutParams params = selected_location_layout.getLayoutParams();
             params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
             selected_location_layout.setLayoutParams(params);
-
 
             ImageView companyImage = (ImageView) findViewById(R.id.companyImage);
 
@@ -813,11 +811,7 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                         startActivityForResult(goToNextActivity, ASK_FRIENDS);
                     }
                 });
-
-
             }
-
-
         }
     }
 
@@ -839,7 +833,6 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                 .findFragmentById(R.id.map);
 
 
-
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
@@ -849,7 +842,6 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
 
                     tapHereTextView.setText("");
                     LatLng latLng = new LatLng(eventDetails.latitude, eventDetails.longitude);
-
 
                     if (!eventDetails.authorizeLevel.equals("")) {
 
@@ -876,18 +868,14 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                                     .position(latLng)
                                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_4_selected)));
                             break;
-
-
                         }
                     } else {
                         GMapsActivity.markerSelected = m_gmap.addMarker(new MarkerOptions()
                                 .position(latLng)
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_1_selected)));
-
                     }
                     m_gmap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
                 }
-
 
                 googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                     @Override
@@ -934,15 +922,12 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                     ludicoins = data.getIntExtra("ludicoins", 0);
                     points = data.getIntExtra("points", 0);
                 }
-
-
             }
 
             View selected_location_layout = findViewById(R.id.root);
             ViewGroup.LayoutParams params = selected_location_layout.getLayoutParams();
             params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
             selected_location_layout.setLayoutParams(params);
-
 
             ImageView companyImage = (ImageView) findViewById(R.id.companyImage);
 
@@ -1001,14 +986,11 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                         .position(latLng)
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_3_selected)));
                 break;
-
             case 3:
                 m_gmap.addMarker(new MarkerOptions()
                         .position(latLng)
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_4_selected)));
                 break;
-
-
             }
             m_gmap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
         } else
@@ -1033,13 +1015,11 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                 invitedFriends1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
                     }
                 });
                 invitedFriends2.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
                     }
                 });
                 friendsNumber.setOnClickListener(new View.OnClickListener() {
@@ -1237,7 +1217,9 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
             int pixels = (int) (56 * scale + 0.5f);
             ll.getLayoutParams().height = pixels;
             ll.setLayoutParams(ll.getLayoutParams());
+            return;
         }
+        createActivityButton.setEnabled(true);
     }
 }
 

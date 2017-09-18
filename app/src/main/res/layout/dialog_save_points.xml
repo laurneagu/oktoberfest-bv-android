@@ -33,8 +33,7 @@
             android:textSize="16dp"
             android:id="@+id/congratulationsText"
             android:gravity="center_horizontal"
-            android:layout_below="@+id/levelText"
-            />
+            android:layout_below="@+id/levelText"/>
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -48,8 +47,7 @@
             android:textColor="#ffffff"
             android:text="You Leveled Up!"
             android:textSize="20dp"
-            android:id="@+id/levelUPText"
-            />
+            android:id="@+id/levelUPText"/>
 
         <TextView
             android:layout_width="0dp"
@@ -60,8 +58,7 @@
             android:textSize="20dp"
             android:layout_marginLeft="8dp"
             android:id="@+id/ludicoinsForNoUP"
-            android:layout_toRightOf="@+id/levelUPText"
-            />
+            android:layout_toRightOf="@+id/levelUPText"/>
 
             <ImageView
                 android:layout_width="0dp"

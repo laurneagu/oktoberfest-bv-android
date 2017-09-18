@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,6 +16,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -61,6 +63,7 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mContext = inflater.getContext();
+
         v = inflater.inflate(R.layout.my_profile_activity, container, false);
         while (activity == null) {
             activity = getActivity();
@@ -116,14 +119,6 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
             });
 
             this.settings = (ImageView) v.findViewById(R.id.settings);
-            this.settings.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(mContext, EditProfileActivity.class);
-                    startActivity(intent);
-                }
-            });
 
             v.findViewById(R.id.ludicoinsLayout).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -267,6 +262,15 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
             tv.setAlpha(1);
             tv = v.findViewById(R.id.profileProgressBar);
             tv.setAlpha(0);
+
+            this.settings.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(mContext, EditProfileActivity.class);
+                    startActivity(intent);
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }

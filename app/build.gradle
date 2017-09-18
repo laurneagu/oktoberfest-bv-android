@@ -78,7 +78,6 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:2.1.0'
 }
 
-
 repositories {
     maven { url "https://jitpack.io" }
     maven { url 'https://maven.fabric.io/public' }
