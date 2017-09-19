@@ -15,6 +15,7 @@ import java.util.Arrays;
 
 import larc.ludiconprod.Activities.BalanceActivity;
 import larc.ludiconprod.User;
+import larc.ludiconprod.UserProfile;
 import larc.ludiconprod.Utils.Chat;
 import larc.ludiconprod.Utils.Coupon;
 import larc.ludiconprod.Utils.Event;
@@ -97,7 +98,7 @@ public class Persistance {
         return user;
     }
 
-    public void setProfileInfo(Activity activity, User user) {
+    public void setProfileInfo(Activity activity, UserProfile user) {
         SharedPreferences.Editor editor = activity.getSharedPreferences(this.profileDetailsString, 0).edit();
         Gson gson = new Gson();
         editor.putString(this.profileDetailsString, gson.toJson(user));
@@ -194,15 +195,15 @@ public class Persistance {
         return  eventList;
     }
 
-    public User getProfileInfo(Activity activity) {
+    public UserProfile getProfileInfo(Activity activity) {
         SharedPreferences sharedPreferences = activity.getSharedPreferences(this.profileDetailsString, 0);
         String json = sharedPreferences.getString(this.profileDetailsString, "0");
         Gson gson = new Gson();
-        User user;
+        UserProfile user;
         if (json.equals("0")) {
-            user = new User();
+            user = new UserProfile();
         } else {
-            user = gson.fromJson(json, User.class);
+            user = gson.fromJson(json, UserProfile.class);
         }
         return user;
     }

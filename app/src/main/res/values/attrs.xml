@@ -43,4 +43,12 @@
         <attr name="bb_titleTypeFace" format="string" />
         <attr name="bb_showShadow" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="Bar">
+        <attr name="progress" format="float" />
+        <attr name="text" format="string" />
+    </declare-styleable>
+    <declare-styleable name="TopGraph">
+        <attr name="backgroundLayout" format="reference" />
+    </declare-styleable>
 </resources>

@@ -37,6 +37,7 @@ import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.PasswordEncryptor;
 import larc.ludiconprod.R;
 import larc.ludiconprod.User;
+import larc.ludiconprod.UserProfile;
 import larc.ludiconprod.Utils.MyProfileUtils.EditViewPagerAdapter;
 import larc.ludiconprod.Utils.ui.SlidingTabLayout;
 import larc.ludiconprod.Utils.util.Sport;
@@ -138,7 +139,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     }
 
     public boolean sameProfileInfo() {
-        User old = Persistance.getInstance().getProfileInfo(this);
+        UserProfile old = Persistance.getInstance().getProfileInfo(this);
 
         old.gender = "" + this.sex;
         old.firstName = this.firstName.getText().toString();
@@ -311,7 +312,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             image.setImageBitmap(bitmap);
             String b64i = ProfileDetailsActivity.encodeToBase64(bitmap, Bitmap.CompressFormat.JPEG, 50);
             Log.d("B64 picture", b64i);
-            User user = Persistance.getInstance().getProfileInfo(this);
+            UserProfile user = Persistance.getInstance().getProfileInfo(this);
             user.profileImage = b64i;
             Persistance.getInstance().setProfileInfo(this, user);
             this.imageChanged = true;

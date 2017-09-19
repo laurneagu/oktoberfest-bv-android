@@ -330,17 +330,63 @@
                 android:textColor="@color/black"/>
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@color/white">
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                    <TextView
+                    <LinearLayout
+                        android:layout_alignParentLeft="true"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="asd"/>
-                </LinearLayout>
+                        android:orientation="horizontal">
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+                            <TextView
+                                android:id="@+id/profileTotalEventsLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Total activities:"
+                                android:textColor="@color/lightGray"/>
+                            <TextView
+                                android:id="@+id/profileTotalPointsLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Total points:"
+                                android:textColor="@color/lightGray"/>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+                            <TextView
+                                android:id="@+id/profileTotalEvents"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="456"
+                                android:textColor="@color/pink"/>
+                            <TextView
+                                android:id="@+id/profileTotalPoints"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="12.500"
+                                android:textColor="@color/blue"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                    <Spinner
+                        android:id="@+id/allSports"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentRight="true"
+                        android:alpha="0"/>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/lightGray"/>
                 <include
                     layout="@layout/my_profile_graph"/>
             </LinearLayout>

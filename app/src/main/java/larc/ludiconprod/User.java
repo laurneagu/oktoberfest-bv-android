@@ -11,7 +11,7 @@ import larc.ludiconprod.Utils.util.Sport;
 public class User {
     public String authKey;
     public String id;
-    public  String email;
+    public String email;
     public String firstName;
     public String lastName;
     public String gender;

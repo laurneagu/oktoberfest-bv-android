@@ -29,6 +29,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.JsonArray;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,15 +37,20 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.Dialogs.ConfirmationDialog;
 import larc.ludiconprod.R;
 import larc.ludiconprod.User;
+import larc.ludiconprod.UserProfile;
+import larc.ludiconprod.Utils.MyProfileUtils.Bar;
+import larc.ludiconprod.Utils.MyProfileUtils.TopGraph;
 import larc.ludiconprod.Utils.util.Sport;
 
 /**
@@ -57,7 +63,7 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
     protected View v;
     protected ImageView settings;
     static public FragmentActivity activity;
-    private static User cache;
+    private static UserProfile cache;
 
     @Nullable
     @Override
@@ -145,6 +151,19 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
 
             ((TextView) v.findViewById(R.id.profilePracticeSportsLabel)).setTypeface(typeFaceBold);
             ((TextView) v.findViewById(R.id.profilePracticeSportsCountLabel)).setTypeface(typeFace);
+            ((TextView) v.findViewById(R.id.versusLabel)).setTypeface(typeFaceBold);
+
+            ((TextView) v.findViewById(R.id.profileTotalEventsLabel)).setTypeface(typeFace);
+            ((TextView) v.findViewById(R.id.profileTotalPointsLabel)).setTypeface(typeFace);
+            ((TextView) v.findViewById(R.id.profileTotalEvents)).setTypeface(typeFace);
+            ((TextView) v.findViewById(R.id.profileTotalPoints)).setTypeface(typeFace);
+
+            LinearLayout monthsLayout = (LinearLayout) v.findViewById(R.id.months);
+            int size = monthsLayout.getChildCount();
+            for (int i = 0; i < size; ++i) {
+                TextView tv = (TextView) monthsLayout.getChildAt(i);
+                tv.setTypeface(typeFace);
+            }
 
             ((Button) v.findViewById(R.id.profileLogout)).setTypeface(typeFaceBold);
         } catch (Exception e) {
@@ -171,7 +190,7 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
 
         User u = Persistance.getInstance().getUserInfo(super.getActivity());
 
-        User set = new User();
+        UserProfile set = new UserProfile();
 
         set.authKey = u.authKey;
         set.id = u.id;
@@ -184,7 +203,72 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
         HTTPResponseController.getInstance().getUserProfile(params, headers, u.id, activity, this, this);
     }
 
-    public void printInfo(User u) {
+    private void printGraphInfo(UserProfile u) {
+        LinearLayout monthsLayout = (LinearLayout) v.findViewById(R.id.months);
+        int size = monthsLayout.getChildCount();
+        ArrayList<String> monthsStrings = new ArrayList<>(u.eventsM.keySet());
+        for (int i = 0; i < size && i < monthsStrings.size(); ++i) {
+            TextView tv = (TextView) monthsLayout.getChildAt(i);
+            tv.setText(monthsStrings.get(i));
+        }
+        TopGraph tg = (TopGraph) v.findViewById(R.id.topGraph);
+
+        Collection<Integer> events = u.eventsM.values();
+        int index = 0;
+        int max = 0;
+        for (Integer e : events) {
+            tg.setText(index, "" + e);
+            ++index;
+            if (max < e) {
+                max = e;
+            }
+        }
+
+        index = 0;
+        for (Integer e : events) {
+            if (max == 0) {
+                tg.setProgress(index, 0);
+            } else {
+                tg.setProgress(index, e * 100 / max);
+            }
+            ++index;
+        }
+
+        LinearLayout barsLayout = (LinearLayout) v.findViewById(R.id.barGraph);
+        size = barsLayout.getChildCount();
+        ArrayList<Integer> points = new ArrayList<>(u.pointsM.values());
+        Bar bar;
+        max = 0;
+        ArrayList<Bar> bars = new ArrayList<>();
+        for (int i = 0; i < size && i < points.size(); ++i) {
+            int p = points.get(i);
+            RelativeLayout rl = (RelativeLayout) barsLayout.getChildAt(i);
+            bar = (Bar) rl.getChildAt(0);
+            bar.setText("" + p);
+            if (max < p) {
+                max = p;
+            }
+            bars.add(bar);
+        }
+
+        for (int i = 0; i < size && i < bars.size(); ++i) {
+            int p = points.get(i);
+            bar = bars.get(i);
+            if (max == 0) {
+                bar.setProgress(0);
+                continue;
+            }
+            bar.setProgress(p * 100 / max);
+        }
+
+        TextView pointsText = (TextView) v.findViewById(R.id.profileTotalPoints);
+        TextView eventsText = (TextView) v.findViewById(R.id.profileTotalEvents);
+
+        pointsText.setText("" + u.points);
+        eventsText.setText("" + u.events);
+    }
+
+    public void printInfo(UserProfile u) {
         try {
             RelativeLayout ll = (RelativeLayout) v.findViewById(R.id.noInternetLayout);
             ll.getLayoutParams().height = 0;
@@ -258,6 +342,8 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
                 sportsLayout.addView(sportImage, lp);
             }
 
+            this.printGraphInfo(u);
+
             View tv = v.findViewById(R.id.profileContent);
             tv.setAlpha(1);
             tv = v.findViewById(R.id.profileProgressBar);
@@ -308,7 +394,7 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
         }
 
         try {
-            User u = Persistance.getInstance().getProfileInfo(activity);
+            UserProfile u = Persistance.getInstance().getProfileInfo(activity);
 
             u.email = jsonObject.getString("email");
             u.firstName = jsonObject.getString("firstName");
@@ -329,6 +415,18 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
             u.sports.clear();
             for (int i = 0; i < sports.length(); ++i) {
                 u.sports.add(new Sport(sports.getString(i)));
+            }
+
+            JSONObject stat = jsonObject.getJSONObject("statistics");
+            u.eventsM.clear();
+            u.pointsM.clear();
+            Iterator<String> months = stat.keys();
+            while (months.hasNext()) {
+                String m = months.next();
+                int e = Integer.parseInt(stat.getJSONObject(m).getString("events"));
+                int p = Integer.parseInt(stat.getJSONObject(m).getString("points"));
+                u.eventsM.put(m, e);
+                u.pointsM.put(m, p);
             }
 
             MyProfileActivity.cache = u;
