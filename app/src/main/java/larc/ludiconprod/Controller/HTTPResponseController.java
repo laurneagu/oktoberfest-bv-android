@@ -51,6 +51,7 @@ import larc.ludiconprod.R;
 import larc.ludiconprod.User;
 import larc.ludiconprod.Utils.Event;
 import larc.ludiconprod.Utils.Friend;
+import larc.ludiconprod.Utils.HappeningNowLocation;
 import larc.ludiconprod.Utils.util.AuthorizedLocation;
 import larc.ludiconprod.Utils.util.Sponsors;
 import larc.ludiconprod.Utils.util.Sport;
@@ -62,6 +63,7 @@ import static larc.ludiconprod.Activities.ActivitiesActivity.getFirstPageMyActiv
 import static larc.ludiconprod.Activities.ActivitiesActivity.happeningNowLocation;
 import static larc.ludiconprod.Activities.ActivitiesActivity.myEventList;
 import static larc.ludiconprod.Activities.ActivitiesActivity.sponsorsList;
+import static larc.ludiconprod.Activities.ActivitiesActivity.startedEventDate;
 
 /**
  * Created by ancuta on 7/12/2017.
@@ -827,7 +829,8 @@ public class HTTPResponseController {
                     editor.clear();
                     editor.commit();
                     happeningNowLocation = null;
- //                   startedEventDate=Integer.MAX_VALUE;
+                    happeningNowLocation=new HappeningNowLocation();
+                    startedEventDate=Integer.MAX_VALUE;
 
 
                 } catch (Exception e) {

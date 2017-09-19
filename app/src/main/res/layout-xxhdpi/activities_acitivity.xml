@@ -20,7 +20,6 @@
         <include
             layout="@layout/no_connection_bar"/>
 
-
         <RelativeLayout
             android:id="@+id/generalHappeningNowLayout"
             android:layout_width="match_parent"
@@ -253,7 +252,11 @@
                 android:textColor="#ffffff"
 
                 android:textSize="14dp" />
+
+
+
         </RelativeLayout>
+
 
         <android.support.v4.view.ViewPager
             android:id="@+id/pager"

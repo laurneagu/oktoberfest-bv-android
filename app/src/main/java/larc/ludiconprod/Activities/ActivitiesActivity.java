@@ -30,6 +30,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -145,9 +146,12 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
     static public HappeningNowLocation happeningNowLocation = new HappeningNowLocation();
     static public FragmentActivity activity;
     static public int startedEventDate = Integer.MAX_VALUE;
+    int pastEvent=Integer.MAX_VALUE;
+    Event eventShouldHappen;
     CallbackManager callbackManager;
     ShareDialog shareDialog;
     int nrElements = 4;
+    ViewGroup.LayoutParams params;
 
 
     public ActivitiesActivity() {
@@ -168,7 +172,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
     Handler handler = new Handler() {
         @Override
         public void handleMessage(android.os.Message msg) {
-            happeningNowLayout = (RelativeLayout) v.findViewById(R.id.generalHappeningNowLayout);
+
             if (msg.what == 0) {
 
 
@@ -195,9 +199,9 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                 TextView allFriends = (TextView) v.findViewById(R.id.friendsNumberHN);
                 checkinButton = (Button) v.findViewById(R.id.checkinHN);
 
-                final Event currentEvent = Persistance.getInstance().getHappeningNow(getActivity());
+                final Event currentEvent = Persistance.getInstance().getHappeningNow(activity);
 
-                checkinButton.setOnClickListener(new View.OnClickListener() {
+               checkinButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         if (buttonState == 0) {
@@ -378,16 +382,16 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                             }
                 }
 
-                ViewGroup.LayoutParams params = happeningNowLayout.getLayoutParams();
-                params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                happeningNowLayout.setLayoutParams(params);
-                System.out.println(params.height+" inaltime");
+
+
+
+
             } else
                 if (msg.what == 1) {
                     System.out.println("eventStopped");
                     buttonState = 0;
 
-
+                    happeningNowLayout = (RelativeLayout) v.findViewById(R.id.generalHappeningNowLayout);
                     ViewGroup.LayoutParams params = happeningNowLayout.getLayoutParams();
                     params.height = 0;
                     happeningNowLayout.setLayoutParams(params);
@@ -491,6 +495,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+
         googleApiClient = new GoogleApiClient.Builder(getContext())
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
@@ -511,6 +516,12 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         nrElements = 4;
         while (activity == null) {
             activity = getActivity();
+        }
+
+        if(Persistance.getInstance().getMyActivities(activity) !=null && !Persistance.getInstance().getMyActivities(activity).equals("0") && Persistance.getInstance().getMyActivities(activity).size() > 1) {
+
+            eventShouldHappen=Persistance.getInstance().getMyActivities(activity).get(0);
+            pastEvent = eventShouldHappen.eventDateTimeStamp;
         }
         v1 = (ProgressBar) v.findViewById(R.id.activityProgressBar);
 
@@ -558,6 +569,10 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                 savePoints();
 
             }
+
+            happeningNowLayout = (RelativeLayout) v.findViewById(R.id.generalHappeningNowLayout);
+            params = happeningNowLayout.getLayoutParams();
+
 
 
 
@@ -646,33 +661,50 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                 public void run() {
                     Log.d("runnableStart", "Started");
                     try {
-                        Event currentEvent = Persistance.getInstance().getHappeningNow(getActivity());
+                        Event currentEvent = Persistance.getInstance().getHappeningNow(activity);
                         if (currentEvent != null) {
                             long timeToNextEvent = (currentEvent.eventDateTimeStamp - System.currentTimeMillis() / 1000);
                             if ((timeToNextEvent > -3600 && buttonState == 0) || (timeToNextEvent > -7200 && buttonState == 1)) {
                                 googleApiClient.connect();
                                 startedEventDate = currentEvent.eventDateTimeStamp;
+                                params.height=ViewGroup.LayoutParams.WRAP_CONTENT;
+                                activity.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        happeningNowLayout.setLayoutParams(params);
+                                    }
+                                });
                                 handler.sendEmptyMessage(0);
                                 return;
                             }
                         }
 
-                        if (myEventList.size() >= 1) {
-                            long timeToNextEvent = (firstEvent().eventDateTimeStamp - System.currentTimeMillis() / 1000);
-                            while (timeToNextEvent >= 0) {
+                        if (Persistance.getInstance().getMyActivities(activity).size() > 1) {
+                            long timeToNextEvent = (pastEvent - System.currentTimeMillis() / 1000);
+                            while (timeToNextEvent >= 0 || timeToNextEvent < -3600) {
                                 Thread.sleep(1000);
-                                timeToNextEvent = (firstEvent().eventDateTimeStamp - System.currentTimeMillis() / 1000);
+                                pastEvent =Persistance.getInstance().getMyActivities(activity).get(0).eventDateTimeStamp;
+                                eventShouldHappen =Persistance.getInstance().getMyActivities(activity).get(0);
+                                timeToNextEvent = (Persistance.getInstance().getMyActivities(activity).get(0).eventDateTimeStamp - System.currentTimeMillis() / 1000);
                             }
 
                             synchronized (myEventList) {
                                 //happening now started
                                 if ((timeToNextEvent > -3600 && buttonState == 0) || (timeToNextEvent > -7200 && buttonState == 1)) {
                                     googleApiClient.connect();
-                                    startedEventDate = myEventList.get(0).eventDateTimeStamp;
-                                    myEventList.remove(0);
+                                    startedEventDate = pastEvent;
+                                    if(pastEvent == myEventList.get(0).eventDateTimeStamp) {
+                                        myEventList.remove(0);
+                                    }
 
-                                    Persistance.getInstance().setHappeningNow(Persistance.getInstance().getMyActivities(activity).get(0), activity);
-
+                                    Persistance.getInstance().setHappeningNow(eventShouldHappen, activity);
+                                    params.height=ViewGroup.LayoutParams.WRAP_CONTENT;
+                                    activity.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            happeningNowLayout.setLayoutParams(params);
+                                        }
+                                    });
                                     handler.sendEmptyMessage(0);
                                 }
                             }

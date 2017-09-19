@@ -10,6 +10,7 @@
         android:scrollbars="none"
         android:id="@+id/scrollView"
         android:background="#ffffff"
+        android:clickable="false"
         android:fillViewport="true">
         <LinearLayout
             android:id="@+id/sponsors"
@@ -20,5 +21,6 @@
             android:orientation="horizontal">
         </LinearLayout>
     </HorizontalScrollView>
+
 
 </RelativeLayout>

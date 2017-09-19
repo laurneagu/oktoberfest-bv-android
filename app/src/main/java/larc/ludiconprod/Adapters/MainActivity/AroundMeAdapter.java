@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -43,6 +44,8 @@ import larc.ludiconprod.Utils.Event;
 import larc.ludiconprod.Utils.General;
 import larc.ludiconprod.Utils.util.Sponsors;
 import larc.ludiconprod.Utils.util.Sport;
+
+import static android.view.View.OVER_SCROLL_NEVER;
 
 
 public class AroundMeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -245,6 +248,14 @@ public class AroundMeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         layoutMargins.setMargins(0, 0, margins, 0);
                     }
                     ((ViewHolderSponsors)holder).sponsors.addView(imageView,layoutMargins);
+                    ((ViewHolderSponsors)holder).scrollView.setOnTouchListener(new View.OnTouchListener() {
+
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event) {
+                            // TODO Auto-generated method stub
+                            return true;
+                        }
+                    });
                 }
 
                 ViewTreeObserver vto 		=	((ViewHolderSponsors)holder).sponsors.getViewTreeObserver();
@@ -256,6 +267,7 @@ public class AroundMeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         startAutoScrolling(((ViewHolderSponsors)holder).scrollView);
                     }
                 });
+
 
                 break;
             case 1:
@@ -472,7 +484,8 @@ public class AroundMeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void getScrollMaxAmount(HorizontalScrollView horizontalScrollView){
-        int actualWidth = (horizontalScrollView.getMeasuredWidth()-512);
+        int actualWidth = (horizontalScrollView.getMaxScrollAmount());
+
         scrollMax   = actualWidth;
     }
 
