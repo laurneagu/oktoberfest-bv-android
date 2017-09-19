@@ -100,8 +100,6 @@ public class PointsReceivedDialog extends DialogFragment {
         }
         if (message == null) {
             levelText.setText("Level " + String.valueOf(level));
-            pointsText.getLayoutParams().height = 0;
-            pointsImage.getLayoutParams().height = 0;
         } else {
             levelText.setText(message);
         }

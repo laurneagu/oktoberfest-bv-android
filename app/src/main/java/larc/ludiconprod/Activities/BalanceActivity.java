@@ -175,9 +175,30 @@ public class BalanceActivity extends AppCompatActivity implements Response.Liste
         pageNumber = 0;
     }
 
+    public String trimMessage(String json, String key) {
+        String trimmedString = null;
+
+        try {
+            JSONObject obj = new JSONObject(json);
+            trimmedString = obj.getString(key);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return trimmedString;
+    }
+
     @Override
     public void onErrorResponse(VolleyError error) {
-        Toast.makeText(this, error.getMessage(), Toast.LENGTH_LONG).show();
+        if(error.getMessage().contains("error")) {
+            String json = trimMessage(error.getMessage(), "error");
+            if (json != null){
+                Toast.makeText(this, json, Toast.LENGTH_LONG).show();
+            }
+        }else {
+            Toast.makeText(this, error.getMessage(), Toast.LENGTH_LONG).show();
+        }
         if (error instanceof NetworkError) {
             findViewById(R.id.internetRefresh).setOnClickListener(new View.OnClickListener() {
                 @Override

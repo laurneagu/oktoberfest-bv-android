@@ -308,7 +308,14 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        Toast.makeText(super.getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+        if(error.getMessage().contains("error")) {
+            String json = trimMessage(error.getMessage(), "error");
+            if (json != null){
+                Toast.makeText(super.getContext(), json, Toast.LENGTH_LONG).show();
+            }
+        }else {
+            Toast.makeText(super.getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+        }
         if (error instanceof NetworkError) {
             this.prepareError("No internet connection!");
         } else {
@@ -316,6 +323,20 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
             ll.getLayoutParams().height = 0;
             ll.setLayoutParams(ll.getLayoutParams());
         }
+    }
+
+    public String trimMessage(String json, String key) {
+        String trimmedString = null;
+
+        try {
+            JSONObject obj = new JSONObject(json);
+            trimmedString = obj.getString(key);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return trimmedString;
     }
 
     private void prepareError(String message) {

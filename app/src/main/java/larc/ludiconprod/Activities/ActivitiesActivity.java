@@ -57,6 +57,9 @@ import com.google.android.gms.location.LocationServices;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -529,7 +532,6 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
         BottomBarTab nearby = bottomBar.getTabWithId(R.id.tab_friends);
         nearby.setBadgeCount(NumberOfUnseen);
-
         //set activeToken in firebase node for notification
         final DatabaseReference userNode = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(activity).id);
         SharedPreferences sharedPreferences = activity.getSharedPreferences("regId", 0);
@@ -1028,7 +1030,14 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
     @Override
     public void onErrorResponse(VolleyError error) {
         try {
-            Toast.makeText(super.getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+            if(error.getMessage().contains("error")) {
+                String json = trimMessage(error.getMessage(), "error");
+                if (json != null){
+                    Toast.makeText(super.getContext(), json, Toast.LENGTH_LONG).show();
+                }
+            }else {
+                Toast.makeText(super.getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+            }
             Log.d("Response", error.toString());
             if (error instanceof NetworkError) {
                 this.prepareError("No internet connection!");
@@ -1037,6 +1046,20 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
             e.printStackTrace();
         }
 
+    }
+
+    public String trimMessage(String json, String key) {
+        String trimmedString = null;
+
+        try {
+            JSONObject obj = new JSONObject(json);
+            trimmedString = obj.getString(key);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return trimmedString;
     }
 
     @Override

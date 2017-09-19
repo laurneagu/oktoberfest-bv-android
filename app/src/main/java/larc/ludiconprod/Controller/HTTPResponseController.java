@@ -821,7 +821,6 @@ public class HTTPResponseController {
 
 
                     System.out.println(jsonObject.getInt("points") + " points");
-
                     SharedPreferences.Editor editor = activity.getSharedPreferences("HappeningNowEvent", 0).edit();
                     editor.clear();
                     editor.commit();
@@ -831,6 +830,14 @@ public class HTTPResponseController {
                     happeningNowLocation = null;
                     happeningNowLocation=new HappeningNowLocation();
                     startedEventDate=Integer.MAX_VALUE;
+                    ArrayList<Event> recacheList=new ArrayList<>();
+                    for(int i=0;i < myEventList.size();i++){
+                        recacheList.add(myEventList.get(i));
+                        if(i == 9){
+                            break;
+                        }
+                    }
+                    Persistance.getInstance().setMyActivities(activity,recacheList);
 
 
                 } catch (Exception e) {

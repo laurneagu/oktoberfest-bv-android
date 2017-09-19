@@ -32,6 +32,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -738,9 +741,30 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
         ll.setLayoutParams(ll.getLayoutParams());
     }
 
+    public String trimMessage(String json, String key) {
+        String trimmedString = null;
+
+        try {
+            JSONObject obj = new JSONObject(json);
+            trimmedString = obj.getString(key);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return trimmedString;
+    }
+
     @Override
     public void onErrorResponse(VolleyError error) {
-        Toast.makeText(super.getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+        if(error.getMessage().contains("error")) {
+            String json = trimMessage(error.getMessage(), "error");
+            if (json != null){
+                Toast.makeText(super.getContext(), json, Toast.LENGTH_LONG).show();
+            }
+        }else {
+            Toast.makeText(super.getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+        }
         Log.d("Response", error.toString());
         if (error instanceof NetworkError) {
             this.onInternetLost();

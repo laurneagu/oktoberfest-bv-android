@@ -21,6 +21,7 @@ import com.android.volley.NetworkError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.security.NoSuchAlgorithmException;
@@ -325,7 +326,14 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        Toast.makeText(this, error.getMessage(), Toast.LENGTH_LONG).show();
+        if(error.getMessage().contains("error")) {
+            String json = trimMessage(error.getMessage(), "error");
+            if (json != null){
+                Toast.makeText(this, json, Toast.LENGTH_LONG).show();
+            }
+        }else {
+            Toast.makeText(this, error.getMessage(), Toast.LENGTH_LONG).show();
+        }
         if (error instanceof NetworkError) {
             RelativeLayout ll = (RelativeLayout) findViewById(R.id.noInternetLayout);
             final float scale = super.getResources().getDisplayMetrics().density;
@@ -333,6 +341,20 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             ll.getLayoutParams().height = pixels;
             ll.setLayoutParams(ll.getLayoutParams());
         }
+    }
+
+    public String trimMessage(String json, String key) {
+        String trimmedString = null;
+
+        try {
+            JSONObject obj = new JSONObject(json);
+            trimmedString = obj.getString(key);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return trimmedString;
     }
 
     @Override

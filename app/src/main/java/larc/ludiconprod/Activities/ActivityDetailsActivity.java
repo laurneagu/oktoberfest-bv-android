@@ -28,6 +28,9 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -788,7 +791,14 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        Toast.makeText(this, error.getMessage(), Toast.LENGTH_LONG).show();
+        if(error.getMessage().contains("error")) {
+            String json = trimMessage(error.getMessage(), "error");
+            if (json != null){
+                Toast.makeText(activity, json, Toast.LENGTH_LONG).show();
+            }
+        }else {
+            Toast.makeText(activity, error.getMessage(), Toast.LENGTH_LONG).show();
+        }
         if (error instanceof NetworkError) {
             joinOrUnjoinButton.setEnabled(true);
             RelativeLayout ll = (RelativeLayout) findViewById(R.id.noInternetLayout);
@@ -797,5 +807,19 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
             ll.getLayoutParams().height = pixels;
             ll.setLayoutParams(ll.getLayoutParams());
         }
+    }
+
+    public String trimMessage(String json, String key) {
+        String trimmedString = null;
+
+        try {
+            JSONObject obj = new JSONObject(json);
+            trimmedString = obj.getString(key);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return trimmedString;
     }
 }

@@ -367,7 +367,7 @@ public class SportDetailsActivity extends Activity {
         savePreferincesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                User user=new User();
+                User user=Persistance.getInstance().getUserInfo(SportDetailsActivity.this);
                 HashMap<String, String> params = new HashMap<String, String>();
                 params.put("userId", Persistance.getInstance().getUserInfo(SportDetailsActivity.this).id);
                 params.put("gender", getIntent().getStringExtra("gender"));
@@ -386,14 +386,7 @@ public class SportDetailsActivity extends Activity {
 
                 user.gender=params.get("gender");
                 user.age=Integer.valueOf(params.get("yearBorn"));
-                user.id= Persistance.getInstance().getUserInfo(SportDetailsActivity.this).id;
-                user.authKey=Persistance.getInstance().getUserInfo(SportDetailsActivity.this).authKey;
-                user.firstName=Persistance.getInstance().getUserInfo(SportDetailsActivity.this).firstName;
-                user.lastName=Persistance.getInstance().getUserInfo(SportDetailsActivity.this).lastName;
-                user.facebookId=Persistance.getInstance().getUserInfo(SportDetailsActivity.this).facebookId;
-                user.email=Persistance.getInstance().getUserInfo(SportDetailsActivity.this).email;
-                user.password=Persistance.getInstance().getUserInfo(SportDetailsActivity.this).password;
-                user.ludicoins=Persistance.getInstance().getUserInfo(SportDetailsActivity.this).ludicoins;
+                user.range=params.get("range");
 
 
                 Persistance.getInstance().setUserInfo(SportDetailsActivity.this,user);
