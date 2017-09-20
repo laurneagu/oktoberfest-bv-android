@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v4.content.IntentCompat;
 import android.util.Base64;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +51,8 @@ import larc.ludiconprod.Utils.EventDetails;
 import larc.ludiconprod.Utils.Friend;
 import larc.ludiconprod.Utils.General;
 import larc.ludiconprod.Utils.util.Sport;
+
+import static larc.ludiconprod.Activities.ActivitiesActivity.deleteCachedInfo;
 
 /**
  * Created by ancuta on 8/9/2017.
@@ -815,6 +818,12 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
         try {
             JSONObject obj = new JSONObject(json);
             trimmedString = obj.getString(key);
+            if(trimmedString.equalsIgnoreCase("Invalid Auth Key provided.")){
+                deleteCachedInfo();
+                Intent intent =new Intent(activity,LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
+                activity.startActivity(intent);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
             return null;

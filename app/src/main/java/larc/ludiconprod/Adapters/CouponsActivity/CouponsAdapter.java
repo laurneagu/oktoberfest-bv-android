@@ -28,6 +28,7 @@ import larc.ludiconprod.Activities.CouponsActivity;
 import larc.ludiconprod.Adapters.MainActivity.MyAdapter;
 import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
+import larc.ludiconprod.Dialogs.ConfirmationDialog;
 import larc.ludiconprod.R;
 import larc.ludiconprod.Utils.Coupon;
 
@@ -110,19 +111,44 @@ public class CouponsAdapter extends BaseAdapter implements ListAdapter {
             }
 
             final View currView = view;
+            final Typeface typeFace = Typeface.createFromAsset(activity.getAssets(), "fonts/Quicksand-Medium.ttf");
+            final Typeface typeFaceBold = Typeface.createFromAsset(activity.getAssets(), "fonts/Quicksand-Bold.ttf");
 
             view.findViewById(R.id.couponGetIt).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     currView.setBackgroundColor(Color.parseColor("#f5f5f5"));
 
-                    HashMap<String, String> params = new HashMap<String, String>();
-                    HashMap<String, String> headers = new HashMap<String, String>();
-                    headers.put("apiKey", HTTPResponseController.API_KEY);
+                    final ConfirmationDialog confirmationDialog = new ConfirmationDialog(activity);
+                    confirmationDialog.show();
+                    confirmationDialog.title.setText("Confirm?");
+                    confirmationDialog.title.setTypeface(typeFaceBold);
+                    confirmationDialog.message.setText("Are you sure you want to reedem this coupon?");
+                    confirmationDialog.message.setTypeface(typeFace);
 
-                    params.put("userId", Persistance.getInstance().getUserInfo(activity).id);
-                    params.put("couponBlockId", currentCoupon.couponBlockId);
-                    HTTPResponseController.getInstance().redeemCoupon(params, headers, activity, fragment, fragment);
+                    confirmationDialog.confirm.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            HashMap<String, String> params = new HashMap<String, String>();
+                            HashMap<String, String> headers = new HashMap<String, String>();
+                            headers.put("apiKey", HTTPResponseController.API_KEY);
+
+                            params.put("userId", Persistance.getInstance().getUserInfo(activity).id);
+                            params.put("couponBlockId", currentCoupon.couponBlockId);
+                            HTTPResponseController.getInstance().redeemCoupon(params, headers, activity, fragment, fragment);
+                            confirmationDialog.dismiss();
+                        }
+                    });
+
+
+
+
+                    confirmationDialog.dismiss.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            confirmationDialog.dismiss();
+                        }
+                    });
                 }
             });
 

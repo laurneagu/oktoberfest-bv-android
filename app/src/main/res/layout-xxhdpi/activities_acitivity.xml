@@ -3,6 +3,7 @@
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:paddingBottom="56dp"
+
     android:background="#f7f9fc">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

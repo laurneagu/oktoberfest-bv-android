@@ -57,6 +57,7 @@ import larc.ludiconprod.Utils.util.Sponsors;
 import larc.ludiconprod.Utils.util.Sport;
 
 import static larc.ludiconprod.Activities.ActivitiesActivity.aroundMeEventList;
+import static larc.ludiconprod.Activities.ActivitiesActivity.deleteCachedInfo;
 import static larc.ludiconprod.Activities.ActivitiesActivity.fradapter;
 import static larc.ludiconprod.Activities.ActivitiesActivity.getFirstPageAroundMe;
 import static larc.ludiconprod.Activities.ActivitiesActivity.getFirstPageMyActivity;
@@ -448,6 +449,8 @@ public class HTTPResponseController {
                             event.points = jsonObject.getJSONArray("myEvents").getJSONObject(i).getInt("points");
                             event.creatorProfilePicture = jsonObject.getJSONArray("myEvents").getJSONObject(i).getString("creatorProfilePicture");
                             event.ludicoins = jsonObject.getJSONArray("myEvents").getJSONObject(i).getInt("ludicoins");
+                            event.latitude=jsonObject.getJSONArray("myEvents").getJSONObject(i).getDouble("latitude");
+                            event.longitude=jsonObject.getJSONArray("myEvents").getJSONObject(i).getDouble("longitude");
                             for (int j = 0; j < jsonObject.getJSONArray("myEvents").getJSONObject(i).getJSONArray("participantsProfilePicture").length(); j++) {
                                 event.participansProfilePicture.add(jsonObject.getJSONArray("myEvents").getJSONObject(i).getJSONArray("participantsProfilePicture").getString(j));
 
@@ -872,6 +875,13 @@ public class HTTPResponseController {
         try {
             JSONObject obj = new JSONObject(json);
             trimmedString = obj.getString(key);
+
+            if(trimmedString.equalsIgnoreCase("Invalid Auth Key provided.")){
+                deleteCachedInfo();
+                Intent intent =new Intent(activity,LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
+                activity.startActivity(intent);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
@@ -889,6 +899,8 @@ public class HTTPResponseController {
                     String json = error.getMessage();
                     json = trimMessage(json, "error");
                     if (json != null) displayMessage(json);
+
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

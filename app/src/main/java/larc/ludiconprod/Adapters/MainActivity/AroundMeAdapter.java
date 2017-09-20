@@ -8,6 +8,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.util.TypedValue;
@@ -42,6 +44,7 @@ import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
 import larc.ludiconprod.Utils.Event;
 import larc.ludiconprod.Utils.General;
+import larc.ludiconprod.Utils.util.ShadowEffect;
 import larc.ludiconprod.Utils.util.Sponsors;
 import larc.ludiconprod.Utils.util.Sport;
 
@@ -227,6 +230,7 @@ public class AroundMeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return viewHolder;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         // Event details redirect
@@ -346,6 +350,7 @@ public class AroundMeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 ((ViewHolder)holder).sportLabel.setText(weWillPlayString);
                 ((ViewHolder)holder).sportName.setText(sportName);
 
+
                 ((ViewHolder)holder).ludicoinsNumber.setText("  +" + String.valueOf(list.get(position).ludicoins));
                 ((ViewHolder)holder).pointsNumber.setText("  +" + String.valueOf(list.get(position).points));
 
@@ -455,6 +460,9 @@ public class AroundMeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         ((ViewHolder)holder).joinButton.setEnabled(false);
                     }
                 });
+
+                ((ViewHolder)holder).joinButton.setOutlineProvider(new ShadowEffect(24));
+                ((ViewHolder)holder).joinButton.setClipToOutline(true);
                 System.out.println(list.get(position).id + " eventid:" + position + "  " + list.get(position).numberOfParticipants + " profilepicture" + list.get(position).participansProfilePicture.size());
                 break;
         }

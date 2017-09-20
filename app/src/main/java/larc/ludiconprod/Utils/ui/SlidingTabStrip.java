@@ -111,6 +111,7 @@ class SlidingTabStrip extends LinearLayout {
             }
 
             mSelectedIndicatorPaint.setColor(color);
+            final float density = getResources().getDisplayMetrics().density;
 
             //canvas.drawRect(left, height - mSelectedIndicatorThickness, right,
             //        height, mSelectedIndicatorPaint);
@@ -118,10 +119,10 @@ class SlidingTabStrip extends LinearLayout {
             int currBarSize = right-left;
             if(currBarSize > mLastBarSize) {
                 mLastBarSize = currBarSize;
-                mBestDifference = right - left - 200;
+                mBestDifference = right - left;
             }
 
-            canvas.drawRect(left + 40, height - mSelectedIndicatorThickness, left + mBestDifference,
+            canvas.drawRect(left + TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics()), height - mSelectedIndicatorThickness, left+TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 56, getResources().getDisplayMetrics()),
                     height, mSelectedIndicatorPaint);
         }
 

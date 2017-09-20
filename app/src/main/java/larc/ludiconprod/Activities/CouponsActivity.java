@@ -1,11 +1,13 @@
 package larc.ludiconprod.Activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.IntentCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
@@ -41,6 +43,8 @@ import larc.ludiconprod.Utils.CouponsUtils.CouponsPagerAdapter;
 import larc.ludiconprod.Utils.Location.GPSTracker;
 import larc.ludiconprod.Utils.ui.SlidingTabLayout;
 import larc.ludiconprod.Utils.util.Sport;
+
+import static larc.ludiconprod.Activities.ActivitiesActivity.deleteCachedInfo;
 
 public class CouponsActivity extends Fragment implements Response.ErrorListener, Response.Listener<JSONObject> {
 
@@ -331,6 +335,12 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
         try {
             JSONObject obj = new JSONObject(json);
             trimmedString = obj.getString(key);
+            if(trimmedString.equalsIgnoreCase("Invalid Auth Key provided.")){
+                deleteCachedInfo();
+                Intent intent =new Intent(activity,LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
+                activity.startActivity(intent);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
             return null;

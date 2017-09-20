@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.IntentCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -42,6 +43,8 @@ import larc.ludiconprod.UserProfile;
 import larc.ludiconprod.Utils.MyProfileUtils.EditViewPagerAdapter;
 import larc.ludiconprod.Utils.ui.SlidingTabLayout;
 import larc.ludiconprod.Utils.util.Sport;
+
+import static larc.ludiconprod.Activities.ActivitiesActivity.deleteCachedInfo;
 
 /**
  * Created by alex_ on 10.08.2017.
@@ -349,6 +352,12 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         try {
             JSONObject obj = new JSONObject(json);
             trimmedString = obj.getString(key);
+            if(trimmedString.equalsIgnoreCase("Invalid Auth Key provided.")){
+                deleteCachedInfo();
+                Intent intent =new Intent(this,LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
+                this.startActivity(intent);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
             return null;

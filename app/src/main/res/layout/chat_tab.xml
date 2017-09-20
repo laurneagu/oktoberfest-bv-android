@@ -5,11 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/chat_listview"
     android:background="#f7f9fc">
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="12dp"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/shadow_bottom_to_top"/>
+
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -105,4 +101,10 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="5dp" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="12dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/shadow_bottom_to_top"/>
 </RelativeLayout>

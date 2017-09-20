@@ -94,7 +94,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
         mTitleOffset = (int) (TITLE_OFFSET_DIPS * getResources().getDisplayMetrics().density);
 
         mTabStrip = new SlidingTabStrip(context);
-        addView(mTabStrip, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        addView(mTabStrip, LayoutParams.MATCH_PARENT, (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 56, getResources().getDisplayMetrics()));
     }
 
     /**
@@ -224,7 +224,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
             }
             tabTitleView.setTextColor(getResources().getColorStateList(R.color.tab_text_color));
             tabTitleView.setTextSize(14);
-            final Typeface typeFace = Typeface.createFromAsset(getContext().getAssets(), "fonts/Quicksand-Medium.ttf");
+            final Typeface typeFace = Typeface.createFromAsset(getContext().getAssets(), "fonts/Quicksand-Bold.ttf");
             tabTitleView.setTypeface(typeFace);
             if (i == mViewPager.getCurrentItem()) {
                 tabView.setSelected(true);

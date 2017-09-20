@@ -39,20 +39,21 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
 
 
-
-        ArrayList<String> numberOfChatUnseen=Persistance.getInstance().getUnseenChats(getApplicationContext());
-        Boolean chatIsAlreadyUnseen=false;
-        for(int i=0;i < numberOfChatUnseen.size();i++){
-            if(remoteMessage.getData().get("chat").equalsIgnoreCase(numberOfChatUnseen.get(i))){
-                chatIsAlreadyUnseen=true;
-                break;
+        if(remoteMessage.getData().get("type").equalsIgnoreCase("chat")) {
+            ArrayList<String> numberOfChatUnseen = Persistance.getInstance().getUnseenChats(getApplicationContext());
+            Boolean chatIsAlreadyUnseen = false;
+            for (int i = 0; i < numberOfChatUnseen.size(); i++) {
+                if (remoteMessage.getData().get("chat").equalsIgnoreCase(numberOfChatUnseen.get(i))) {
+                    chatIsAlreadyUnseen = true;
+                    break;
+                }
             }
-        }
-        if(!chatIsAlreadyUnseen){
-            numberOfChatUnseen.add(remoteMessage.getData().get("chat"));
-        }
+            if (!chatIsAlreadyUnseen) {
+                numberOfChatUnseen.add(remoteMessage.getData().get("chat"));
+            }
 
-        Persistance.getInstance().setUnseenChats(getApplicationContext(),numberOfChatUnseen);
+            Persistance.getInstance().setUnseenChats(getApplicationContext(), numberOfChatUnseen);
+        }
 
         if(!isAppRunning(getApplicationContext())){
             sendNotification(remoteMessage.getData().get("title"),remoteMessage.getData().get("body"),remoteMessage.getData().get("chat"));

@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
@@ -69,6 +70,25 @@ public class IntroActivity extends Activity {
     LoginResult loginRslt;
     LoginButton facebookButton;
 
+    public void animateProfileImage(Boolean isMain) {
+        String image;
+        if (isMain) {
+            image = Persistance.getInstance().getUserInfo(IntroActivity.this).profileImage;
+        } else {
+            SharedPreferences sharedPreferences = getSharedPreferences("ProfileImage", 0);
+            image = sharedPreferences.getString("ProfileImage", "0");
+        }
+
+        if (image != null && !image.equals("0")) {
+            Bitmap bitmap = decodeBase64(image);
+            IntroActivity.profileImage.setImageBitmap(bitmap);
+            IntroActivity.profileImage.setAlpha(0.3f);
+            IntroActivity.profileImage.animate().alpha(1f).setDuration(1000);
+        }
+
+
+    }
+
 
     public void goToActivity() {
         if (!go) {
@@ -78,6 +98,11 @@ public class IntroActivity extends Activity {
             HashMap<String, String> headers = new HashMap<String, String>();
             headers.put("apiKey", "b0a83e90-4ee7-49b7-9200-fdc5af8c2d33");
             HTTPResponseController.getInstance().returnResponse(params, headers, IntroActivity.this, "http://207.154.236.13/api/login/");
+
+
+
+
+
         }
     }
 

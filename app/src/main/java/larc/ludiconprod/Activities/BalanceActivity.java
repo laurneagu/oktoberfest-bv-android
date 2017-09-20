@@ -1,9 +1,11 @@
 package larc.ludiconprod.Activities;
 
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.IntentCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -31,6 +33,8 @@ import larc.ludiconprod.Adapters.Balance.BalanceAdapter;
 import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
+
+import static larc.ludiconprod.Activities.ActivitiesActivity.deleteCachedInfo;
 
 public class BalanceActivity extends AppCompatActivity implements Response.Listener<JSONObject>, Response.ErrorListener {
 
@@ -181,6 +185,12 @@ public class BalanceActivity extends AppCompatActivity implements Response.Liste
         try {
             JSONObject obj = new JSONObject(json);
             trimmedString = obj.getString(key);
+            if(trimmedString.equalsIgnoreCase("Invalid Auth Key provided.")){
+                deleteCachedInfo();
+                Intent intent =new Intent(this,LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
+                this.startActivity(intent);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
             return null;

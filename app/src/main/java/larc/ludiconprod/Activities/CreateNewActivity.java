@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v4.content.IntentCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -52,6 +53,7 @@ import larc.ludiconprod.Utils.EventDetails;
 import larc.ludiconprod.Utils.Friend;
 import larc.ludiconprod.Utils.Location.GPSTracker;
 
+import static larc.ludiconprod.Activities.ActivitiesActivity.deleteCachedInfo;
 import static larc.ludiconprod.Activities.ActivitiesActivity.latitude;
 import static larc.ludiconprod.Activities.ActivitiesActivity.longitude;
 import static larc.ludiconprod.Activities.IntroActivity.decodeBase64;
@@ -1235,6 +1237,12 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
         try {
             JSONObject obj = new JSONObject(json);
             trimmedString = obj.getString(key);
+            if(trimmedString.equalsIgnoreCase("Invalid Auth Key provided.")){
+                deleteCachedInfo();
+                Intent intent =new Intent(this,LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
             return null;

@@ -1,11 +1,13 @@
 package larc.ludiconprod.Activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.IntentCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
@@ -48,6 +50,7 @@ import larc.ludiconprod.Utils.ChatAndFriends.ChatAndFriendsViewPagerAdapter;
 import larc.ludiconprod.Utils.Friend;
 import larc.ludiconprod.Utils.ui.SlidingTabLayout;
 
+import static larc.ludiconprod.Activities.ActivitiesActivity.deleteCachedInfo;
 import static larc.ludiconprod.Activities.ChatActivity.isOnChat1to1;
 
 /**
@@ -747,6 +750,12 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
         try {
             JSONObject obj = new JSONObject(json);
             trimmedString = obj.getString(key);
+            if(trimmedString.equalsIgnoreCase("Invalid Auth Key provided.")){
+                deleteCachedInfo();
+                Intent intent =new Intent(activity,LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
+                activity.startActivity(intent);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
             return null;

@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.IntentCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -54,6 +56,7 @@ import com.google.android.gms.location.FusedLocationProviderApi;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -172,6 +175,22 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         return Base64.encodeToString(byteArrayOS.toByteArray(), Base64.DEFAULT);
     }
 
+    public boolean checkedLocation(Event currentEvent){
+        Boolean isInLocation=false;
+        Location location=LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+        System.out.println(location.getLatitude()+ " locatie");
+        latitude=location.getLatitude();
+        longitude=location.getLongitude();
+        Location eventLocation=new Location(LocationManager.GPS_PROVIDER);
+        eventLocation.setLatitude(currentEvent.latitude);
+        eventLocation.setLongitude(currentEvent.longitude);
+        System.out.println(location.distanceTo(eventLocation) +" distanta");
+        if(location.distanceTo(eventLocation) < 20){
+            isInLocation =true;
+        }
+        return isInLocation;
+    }
+
     Handler handler = new Handler() {
         @Override
         public void handleMessage(android.os.Message msg) {
@@ -208,53 +227,57 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                     @Override
                     public void onClick(View view) {
                         if (buttonState == 0) {
-                            HashMap<String, String> params = new HashMap<String, String>();
-                            HashMap<String, String> headers = new HashMap<String, String>();
-                            headers.put("authKey", Persistance.getInstance().getUserInfo(activity).authKey);
-                            params.put("eventId", currentEvent.id);
-                            HTTPResponseController.getInstance().checkin(params, headers, activity);
+                            if(!checkedLocation(currentEvent)) {
+                                HashMap<String, String> params = new HashMap<String, String>();
+                                HashMap<String, String> headers = new HashMap<String, String>();
+                                headers.put("authKey", Persistance.getInstance().getUserInfo(activity).authKey);
+                                params.put("eventId", currentEvent.id);
+                                HTTPResponseController.getInstance().checkin(params, headers, activity);
 
-                            buttonState = 1;
-                            buttonSetter = new CountDownTimer(7200000, 1000) {
-                                int minutes = 0;
-                                int seconds = 0;
+                                buttonState = 1;
+                                buttonSetter = new CountDownTimer(7200000, 1000) {
+                                    int minutes = 0;
+                                    int seconds = 0;
 
-                                @Override
-                                public void onTick(long l) {
-                                    System.out.println("ontick");
-                                    String minutesValue = "";
-                                    String secondsValue = "";
-                                    seconds++;
-                                    if (seconds == 60) {
-                                        seconds = 0;
-                                        minutes++;
+                                    @Override
+                                    public void onTick(long l) {
+                                        System.out.println("ontick");
+                                        String minutesValue = "";
+                                        String secondsValue = "";
+                                        seconds++;
+                                        if (seconds == 60) {
+                                            seconds = 0;
+                                            minutes++;
+                                        }
+                                        if (minutes > 9) {
+                                            minutesValue = String.valueOf(minutes);
+                                        } else {
+                                            minutesValue = "0" + String.valueOf(minutes);
+                                        }
+                                        if (seconds > 9) {
+                                            secondsValue = String.valueOf(seconds);
+                                        } else {
+                                            secondsValue = "0" + String.valueOf(seconds);
+                                        }
+                                        System.out.println(isOnActivityPage + " booleana " + checkinButton);
+                                        if (isOnActivityPage) {
+                                            checkinButton.setText("CHECK-OUT " + minutesValue + ":" + secondsValue);
+                                        }
+
+
                                     }
-                                    if (minutes > 9) {
-                                        minutesValue = String.valueOf(minutes);
-                                    } else {
-                                        minutesValue = "0" + String.valueOf(minutes);
+
+                                    @Override
+                                    public void onFinish() {
+
                                     }
-                                    if (seconds > 9) {
-                                        secondsValue = String.valueOf(seconds);
-                                    } else {
-                                        secondsValue = "0" + String.valueOf(seconds);
-                                    }
-                                    System.out.println(isOnActivityPage + " booleana " + checkinButton);
-                                    if (isOnActivityPage) {
-                                        checkinButton.setText("CHECK-OUT " + minutesValue + ":" + secondsValue);
-                                    }
+                                }.start();
 
-
-                                }
-
-                                @Override
-                                public void onFinish() {
-
-                                }
-                            }.start();
-
-                            requestLocationUpdates();
-                            happeningNowLocation.startDate = String.valueOf(System.currentTimeMillis() / 1000);
+                                requestLocationUpdates();
+                                happeningNowLocation.startDate = String.valueOf(System.currentTimeMillis() / 1000);
+                            }else{
+                                Toast.makeText(activity, "Go to event location to start sweating on points!", Toast.LENGTH_LONG).show();
+                            }
 
 
                         } else
@@ -571,6 +594,12 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                 savePoints();
 
             }
+            if(HPShouldBeVisible){
+                happeningNowLayout = (RelativeLayout) v.findViewById(R.id.generalHappeningNowLayout);
+                params = happeningNowLayout.getLayoutParams();
+                params.height=ViewGroup.LayoutParams.WRAP_CONTENT;
+                happeningNowLayout.setLayoutParams(params);
+            }
 
             happeningNowLayout = (RelativeLayout) v.findViewById(R.id.generalHappeningNowLayout);
             params = happeningNowLayout.getLayoutParams();
@@ -765,96 +794,100 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void updateListOfEventsAroundMe(final boolean eventHappeningNow) {
+        try {
 
-        System.out.println(isGetingPage + " aici");
-        RelativeLayout ll = (RelativeLayout) v.findViewById(R.id.noInternetLayout);
-        ll.getLayoutParams().height = 0;
-        isGetingPage = false;
+            System.out.println(isGetingPage + " aici");
+            RelativeLayout ll = (RelativeLayout) v.findViewById(R.id.noInternetLayout);
+            ll.getLayoutParams().height = 0;
+            isGetingPage = false;
 
-        ll.setLayoutParams(ll.getLayoutParams());
-        if (this.noGps) {
-            this.prepareError("No location services available!");
-        }
-
-        // stop swiping on my events
-        final SwipeRefreshLayout mSwipeRefreshLayout2 = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh2);
-        if (!isFirstTimeAroundMe) {
-            layoutManagerAroundMe = new LinearLayoutManager(getContext());
-        }
-
-        fradapter.notifyDataSetChanged();
-
-        if (!isFirstTimeAroundMe) {
-            frlistView = (RecyclerView) v.findViewById(R.id.events_listView2);
-            layoutManagerAroundMe.setOrientation(LinearLayoutManager.VERTICAL);
-            frlistView.setLayoutManager(layoutManagerAroundMe);
-            heartImageAroundMe = (ImageView) v.findViewById(R.id.heartImageAroundMe);
-            progressBarAroundMe = (ProgressBar) v.findViewById(R.id.progressBarAroundMe);
-            progressBarAroundMe.setIndeterminate(true);
-            progressBarAroundMe.setAlpha(0f);
-        }
-
-
-        noActivitiesTextFieldAroundMe = (TextView) v.findViewById(R.id.noActivitiesTextFieldAroundMe);
-        pressPlusButtonTextFieldAroundMe = (TextView) v.findViewById(R.id.pressPlusButtonTextFieldAroundMe);
-        final FloatingActionButton createNewActivityFloatingButtonAroundMe = (FloatingActionButton) v.findViewById(R.id.floatingButton2);
-        createNewActivityFloatingButtonAroundMe.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(activity, CreateNewActivity.class);
-                startActivity(intent);
+            ll.setLayoutParams(ll.getLayoutParams());
+            if (this.noGps) {
+                this.prepareError("No location services available!");
             }
-        });
 
-        if (!isFirstTimeAroundMe) {
-            frlistView.setAdapter(fradapter);
-        }
+            // stop swiping on my events
+            final SwipeRefreshLayout mSwipeRefreshLayout2 = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh2);
+            if (!isFirstTimeAroundMe) {
+                layoutManagerAroundMe = new LinearLayoutManager(getContext());
+            }
 
-        if (aroundMeEventList.size() == 0) {
-            heartImageAroundMe.setVisibility(View.VISIBLE);
-            noActivitiesTextFieldAroundMe.setVisibility(View.VISIBLE);
-            pressPlusButtonTextFieldAroundMe.setVisibility(View.VISIBLE);
-        } else {
-            heartImageAroundMe.setVisibility(View.INVISIBLE);
-            noActivitiesTextFieldAroundMe.setVisibility(View.INVISIBLE);
-            pressPlusButtonTextFieldAroundMe.setVisibility(View.INVISIBLE);
-        }
+            fradapter.notifyDataSetChanged();
+
+            if (!isFirstTimeAroundMe) {
+                frlistView = (RecyclerView) v.findViewById(R.id.events_listView2);
+                layoutManagerAroundMe.setOrientation(LinearLayoutManager.VERTICAL);
+                frlistView.setLayoutManager(layoutManagerAroundMe);
+                heartImageAroundMe = (ImageView) v.findViewById(R.id.heartImageAroundMe);
+                progressBarAroundMe = (ProgressBar) v.findViewById(R.id.progressBarAroundMe);
+                progressBarAroundMe.setIndeterminate(true);
+                progressBarAroundMe.setAlpha(0f);
+            }
 
 
-        if (frlistView != null) {
-
-            frlistView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            noActivitiesTextFieldAroundMe = (TextView) v.findViewById(R.id.noActivitiesTextFieldAroundMe);
+            pressPlusButtonTextFieldAroundMe = (TextView) v.findViewById(R.id.pressPlusButtonTextFieldAroundMe);
+            final FloatingActionButton createNewActivityFloatingButtonAroundMe = (FloatingActionButton) v.findViewById(R.id.floatingButton2);
+            createNewActivityFloatingButtonAroundMe.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                    super.onScrolled(recyclerView, dx, dy);
-                    if (layoutManagerAroundMe.findLastCompletelyVisibleItemPosition() == aroundMeEventList.size()-1) {
-                        progressBarAroundMe.setAlpha(1f);
-                        System.out.println(layoutManagerAroundMe.findLastVisibleItemPosition() + " aici");
-                        getAroundMeEvents(String.valueOf(NumberOfRefreshAroundMe), latitude, longitude);
+                public void onClick(View v) {
+                    Intent intent = new Intent(activity, CreateNewActivity.class);
+                    startActivity(intent);
+                }
+            });
+
+            if (!isFirstTimeAroundMe) {
+                frlistView.setAdapter(fradapter);
+            }
+
+            if (aroundMeEventList.size() == 0) {
+                heartImageAroundMe.setVisibility(View.VISIBLE);
+                noActivitiesTextFieldAroundMe.setVisibility(View.VISIBLE);
+                pressPlusButtonTextFieldAroundMe.setVisibility(View.VISIBLE);
+            } else {
+                heartImageAroundMe.setVisibility(View.INVISIBLE);
+                noActivitiesTextFieldAroundMe.setVisibility(View.INVISIBLE);
+                pressPlusButtonTextFieldAroundMe.setVisibility(View.INVISIBLE);
+            }
+
+
+            if (frlistView != null) {
+
+                frlistView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+                    @Override
+                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                        super.onScrolled(recyclerView, dx, dy);
+                        if (layoutManagerAroundMe.findLastCompletelyVisibleItemPosition() == aroundMeEventList.size() - 1) {
+                            progressBarAroundMe.setAlpha(1f);
+                            System.out.println(layoutManagerAroundMe.findLastVisibleItemPosition() + " aici");
+                            getAroundMeEvents(String.valueOf(NumberOfRefreshAroundMe), latitude, longitude);
+                        }
+
+
                     }
+                });
+            }
 
+            if (!addedSwipeAroundMe) {
+                mSwipeRefreshLayout2.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        getAroundMeEvents("0", latitude, longitude);
+                        getFirstPageAroundMe = true;
+                        mSwipeRefreshLayout2.setRefreshing(false);
+                        NumberOfRefreshAroundMe = 0;
+                        nrElements = 4;
+                    }
+                });
+                addedSwipeAroundMe = true;
+            }
 
-                }
-            });
+            progressBarAroundMe.setAlpha(0f);
+
+            isFirstTimeAroundMe = true;
+        }catch (Exception e){
+            e.printStackTrace();
         }
-
-        if (!addedSwipeAroundMe) {
-            mSwipeRefreshLayout2.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-                    getAroundMeEvents("0", latitude, longitude);
-                    getFirstPageAroundMe = true;
-                    mSwipeRefreshLayout2.setRefreshing(false);
-                    NumberOfRefreshAroundMe = 0;
-                    nrElements = 4;
-                }
-            });
-            addedSwipeAroundMe = true;
-        }
-
-        progressBarAroundMe.setAlpha(0f);
-
-        isFirstTimeAroundMe = true;
     }
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void updateListOfMyEvents(final boolean eventHappeningNow) {
@@ -1054,12 +1087,28 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         try {
             JSONObject obj = new JSONObject(json);
             trimmedString = obj.getString(key);
+            if(trimmedString.equalsIgnoreCase("Invalid Auth Key provided.")){
+                deleteCachedInfo();
+                Intent intent =new Intent(activity,LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
+                activity.startActivity(intent);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
         }
 
         return trimmedString;
+    }
+
+    public static void deleteCachedInfo(){
+        DatabaseReference userNode = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(activity).id);
+        userNode.child("activeToken").setValue(false);
+        Persistance.getInstance().deleteUserProfileInfo(activity);
+        Log.v("logout", "am dat logout");
+        SharedPreferences preferences = activity.getSharedPreferences("ProfileImage", 0);
+        preferences.edit().remove("ProfileImage").apply();
+        Persistance.getInstance().setHappeningNow(null, activity);
     }
 
     @Override

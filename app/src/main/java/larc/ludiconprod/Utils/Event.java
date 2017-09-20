@@ -23,6 +23,8 @@ public class Event {
     public int numberOfParticipants;
     public int points;
     public int ludicoins;
+    public double latitude;
+    public double longitude;
     public ArrayList<String> participansProfilePicture = new ArrayList<String>();
 
 }
