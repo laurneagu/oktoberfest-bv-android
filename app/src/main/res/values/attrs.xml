@@ -46,7 +46,7 @@
 
     <declare-styleable name="Bar">
         <attr name="progress" format="float" />
-        <attr name="text" format="string" />
+        <attr name="value" format="integer" />
     </declare-styleable>
     <declare-styleable name="TopGraph">
         <attr name="backgroundLayout" format="reference" />

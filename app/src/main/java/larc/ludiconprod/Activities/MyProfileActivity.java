@@ -1,11 +1,13 @@
 package larc.ludiconprod.Activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -22,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.android.volley.NetworkError;
@@ -50,6 +53,7 @@ import larc.ludiconprod.R;
 import larc.ludiconprod.User;
 import larc.ludiconprod.UserProfile;
 import larc.ludiconprod.Utils.MyProfileUtils.Bar;
+import larc.ludiconprod.Utils.MyProfileUtils.Iterable;
 import larc.ludiconprod.Utils.MyProfileUtils.TopGraph;
 import larc.ludiconprod.Utils.util.Sport;
 
@@ -57,13 +61,12 @@ import larc.ludiconprod.Utils.util.Sport;
  * Created by alex_ on 10.08.2017.
  */
 
-public class MyProfileActivity extends Fragment implements Response.Listener<JSONObject>, Response.ErrorListener {
+public class MyProfileActivity extends Fragment implements Response.Listener<JSONObject>, Response.ErrorListener, Runnable {
 
     protected Context mContext;
     protected View v;
     protected ImageView settings;
     static public FragmentActivity activity;
-    private static UserProfile cache;
 
     @Nullable
     @Override
@@ -84,7 +87,6 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
                     ".ttf");
             profileTitle.setTypeface(typeFace);
             profileTitle.setTextColor(getResources().getColor(R.color.darkblue));
-
 
             Button logout = (Button) v.findViewById(R.id.profileLogout);
             logout.setOnClickListener(new View.OnClickListener() {
@@ -134,8 +136,9 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
                 }
             });
 
-            if (MyProfileActivity.cache != null) {
-                this.printInfo(MyProfileActivity.cache);
+            UserProfile up = Persistance.getInstance().getProfileInfo(super.getActivity());
+            if (up != null) {
+                this.printInfo(up);
             }
 
             ((TextView) v.findViewById(R.id.profileTitle)).setTypeface(typeFace);
@@ -170,6 +173,16 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
             e.printStackTrace();
         }
 
+        /*RelativeLayout rl = (RelativeLayout) v.findViewById(R.id.profileGraphs);
+        rl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });*/
+
+
+
         return v;
     }
 
@@ -177,11 +190,23 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
     public void onResume() {
         super.onResume();
 
+        if (animation == null || !animation.isAlive()) {
+            animation = new Thread(MyProfileActivity.this);
+            animation.start();
+        }
+
         this.requestInfo();
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        this.runningTime = 0;
+    }
+
     private void requestInfo() {
-        if (MyProfileActivity.cache == null) {
+        UserProfile up = Persistance.getInstance().getProfileInfo(super.getActivity());
+        if (up == null) {
             View tv = v.findViewById(R.id.profileContent);
             tv.setAlpha(0);
             tv = v.findViewById(R.id.profileProgressBar);
@@ -244,7 +269,7 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
             int p = points.get(i);
             RelativeLayout rl = (RelativeLayout) barsLayout.getChildAt(i);
             bar = (Bar) rl.getChildAt(0);
-            bar.setText("" + p);
+            bar.setValue(p);
             if (max < p) {
                 max = p;
             }
@@ -266,6 +291,24 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
 
         pointsText.setText("" + u.points);
         eventsText.setText("" + u.events);
+
+        /*tg.setText(0, "37");
+        tg.setText(1, "56");
+        tg.setText(2, "20");
+        tg.setText(3, "24");
+        tg.setText(4, "14");
+        tg.setText(5, "48");
+        tg.setText(6, "16");
+        tg.setText(7, "22");
+
+        tg.setProgress(0, 70);
+        tg.setProgress(1, 100);
+        tg.setProgress(2, 60);
+        tg.setProgress(3, 65);
+        tg.setProgress(4, 30);
+        tg.setProgress(5, 80);
+        tg.setProgress(6, 35);
+        tg.setProgress(7, 50);*/
     }
 
     public void printInfo(UserProfile u) {
@@ -429,7 +472,7 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
                 u.pointsM.put(m, p);
             }
 
-            MyProfileActivity.cache = u;
+            Persistance.getInstance().setProfileInfo(super.getActivity(), u);
 
             User t = Persistance.getInstance().getUserInfo(activity);
             t.age = Calendar.getInstance().get(Calendar.YEAR) - Integer.parseInt(jsonObject.getString("yearBorn"));
@@ -466,5 +509,75 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
     public void onInternetRefresh() {
         v.findViewById(R.id.internetRefresh).setOnClickListener(null);
         requestInfo();
+    }
+
+    private final ArrayList<Iterable> animations = new ArrayList<>();
+    private float runningTime;
+    private Thread animation;
+    @Override
+    public void run() {
+        runningTime = 2;
+        final View graphs = v.findViewById(R.id.profileGraphs);
+        this.animations.clear();
+
+        {
+            LinearLayout barsLayout = (LinearLayout) graphs.findViewById(R.id.barGraph);
+            int size = barsLayout.getChildCount();
+            Bar bar;
+            for (int i = 0; i < size; ++i) {
+                RelativeLayout rl = (RelativeLayout) barsLayout.getChildAt(i);
+                bar = (Bar) rl.getChildAt(0);
+                this.animations.add(bar);
+            }
+        }
+        {
+            TopGraph tg = (TopGraph) graphs.findViewById(R.id.topGraph);
+            this.animations.add(tg);
+        }
+
+        try {
+            ScrollView scrollView = (ScrollView) v.findViewById(R.id.profileContent);
+            Rect scrollBounds = new Rect();
+            while (true) {
+                scrollView.getHitRect(scrollBounds);
+                if (graphs.getLocalVisibleRect(scrollBounds)) {
+                    break;
+                }
+                Thread.sleep(500);
+            }
+        } catch (InterruptedException ex) {
+        }
+
+        Runnable inv = new Runnable() {
+            @Override
+            public void run() {
+                graphs.invalidate();
+            }
+        };
+        long last = System.currentTimeMillis();
+        long now;
+        float tpf;
+        Activity ac;
+        try {
+            while (this.runningTime > 0) {
+                Thread.sleep(10);
+                now = System.currentTimeMillis();
+                tpf = (float) (now - last) / 1000f;
+                last = now;
+                for (Iterable i : this.animations) {
+                    i.iterate(tpf);
+                }
+                ac = super.getActivity();
+                if (ac == null) {
+                    this.runningTime = 0;
+                    return;
+                }
+                ac.runOnUiThread(inv);
+                this.runningTime -= tpf;
+            }
+        } catch (InterruptedException ex) {
+        }
+
+        this.runningTime = 0;
     }
 }

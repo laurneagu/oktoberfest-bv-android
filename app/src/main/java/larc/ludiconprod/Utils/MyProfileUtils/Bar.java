@@ -11,13 +11,15 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 
+import java.util.Iterator;
+
 import larc.ludiconprod.R;
 
 /**
  * Created by alex_ on 18.09.2017.
  */
 
-public class Bar extends View {
+public class Bar extends View implements Iterable {
 
     private static final Paint PINK = new Paint(Paint.ANTI_ALIAS_FLAG);
     private static final Paint PINK_ALPHA = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -32,8 +34,10 @@ public class Bar extends View {
         WHITE.setTextAlign(Paint.Align.CENTER);
     }
 
-    private double progress;
-    private String text = "";
+    private float animationTime = 1.5f;
+    private float animation;
+    private float progress;
+    private int value;
 
     public Bar(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -42,7 +46,7 @@ public class Bar extends View {
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.Bar, 0, 0);
 
         try {
-            this.text = a.getString(R.styleable.Bar_text);
+            this.value = a.getInteger(R.styleable.Bar_value, 0);
             this.progress = a.getFloat(R.styleable.Bar_progress, 0);
         } finally {
             a.recycle();
@@ -53,16 +57,27 @@ public class Bar extends View {
         return progress;
     }
 
-    public void setProgress(double progress) {
+    public void setProgress(float progress) {
         this.progress = progress;
     }
 
-    public String getText() {
-        return text;
+    public int getValue() {
+        return value;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setValue(int value) {
+        this.value = value;
+    }
+
+    public void iterate(float tpf) {
+        if (this.animation >= this.animationTime) {
+            return;
+        }
+
+        this.animation += tpf;
+        if (this.animation > this.animationTime) {
+            this.animation = this.animationTime;
+        }
     }
 
     @Override
@@ -79,9 +94,11 @@ public class Bar extends View {
         canvas.drawRect(0, hrs, w, h - hrs, Bar.PINK_ALPHA);
         canvas.drawArc(new RectF(0, 0, w, roundStart), 180, 180, true, Bar.PINK_ALPHA);
 
-
-        if (this.progress > 0) {
-            int up = (int) (hrs + (h - roundStart) * (1 - this.progress / 100d));
+        if (this.progress > 0 && this.animation > 0) {
+            float pr = this.progress;
+            pr = pr * this.animation / this.animationTime;
+            float up = (1 - pr / 100f);
+            up = (int) (hrs + (h - roundStart) * up);
 
             canvas.drawArc(new RectF(0, h - roundStart, w, h), 0, 180, true, Bar.PINK);
             canvas.drawRect(0, up, w, h - hrs, Bar.PINK);
@@ -89,6 +106,7 @@ public class Bar extends View {
         }
 
         float t = ((WHITE.descent() + WHITE.ascent()) / 2);
-        canvas.drawText(this.text, (float) (w / 2), (float) (h - WHITE.getTextSize() * 1.5), WHITE);
+        int val = Math.round((float) this.value * this.animation / this.animationTime);
+        canvas.drawText("" + val, (float) (w / 2), (float) (h - WHITE.getTextSize() * 1.5), WHITE);
     }
 }
