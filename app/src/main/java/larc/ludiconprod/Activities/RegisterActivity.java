@@ -228,16 +228,13 @@ public class RegisterActivity extends FragmentActivity {
                 } else {
                     if (firstName.getText().length() == 0 || lastName.getText().length() == 0) {
                         Toast.makeText(RegisterActivity.this, "Please provide first and last name.", Toast.LENGTH_LONG).show();
-                    } else
-                        if (emailAdress.getText().length() == 0) {
-                            Toast.makeText(RegisterActivity.this, "Please provide email.", Toast.LENGTH_LONG).show();
-                        } else
-                            if (password.getText().length() == 0 || passwordRepeat.getText().length() == 0) {
-                                Toast.makeText(RegisterActivity.this, "Please provide password.", Toast.LENGTH_LONG).show();
-                            } else
-                                if (password.getText().length() < 7 || passwordRepeat.getText().length() < 7 || !password.getText().toString().equals(passwordRepeat.getText().toString())) {
-                                    Toast.makeText(RegisterActivity.this, "Password must have at least 7 characters and must be the same.", Toast.LENGTH_LONG).show();
-                                }
+                    } else if (emailAdress.getText().length() == 0) {
+                        Toast.makeText(RegisterActivity.this, "Please provide email.", Toast.LENGTH_LONG).show();
+                    } else if (password.getText().length() == 0 || passwordRepeat.getText().length() == 0) {
+                        Toast.makeText(RegisterActivity.this, "Please provide password.", Toast.LENGTH_LONG).show();
+                    } else if (password.getText().length() < 7 || passwordRepeat.getText().length() < 7 || !password.getText().toString().equals(passwordRepeat.getText().toString())) {
+                        Toast.makeText(RegisterActivity.this, "Password must have at least 7 characters and must be the same.", Toast.LENGTH_LONG).show();
+                    }
                 }
             }
         });

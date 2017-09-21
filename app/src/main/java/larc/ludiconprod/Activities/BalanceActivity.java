@@ -144,6 +144,12 @@ public class BalanceActivity extends AppCompatActivity implements Response.Liste
         }
         progressBar.setAlpha(0f);
         this.firstTimeBalance = true;
+
+        int last = listView.getLastVisiblePosition();
+        int count = balanceAdapter.getCount();
+        if (last + 1 < count) {
+            listView.smoothScrollToPosition(last + 1);
+        }
     }
 
     @Override

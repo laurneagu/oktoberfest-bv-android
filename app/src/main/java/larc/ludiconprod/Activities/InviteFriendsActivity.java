@@ -155,13 +155,16 @@ public class InviteFriendsActivity extends Activity {
     }
 
     public void updateListOfFriends() {
-
-
         if (!isFirstTimeInviteFriends) {
             isFirstTimeInviteFriends = true;
             friendsListView.setAdapter(inviteFriendsAdapter);
         }
 
+        int last = friendsListView.getLastVisiblePosition();
+        int count = inviteFriendsAdapter.getCount();
+        if (last + 1 < count) {
+            friendsListView.smoothScrollToPosition(last + 1);
+        }
     }
 
     @Override

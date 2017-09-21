@@ -230,6 +230,12 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
         }
         progressBar.setAlpha(0f);
         this.firstTimeCoupons = true;
+
+        int last = listView.getLastVisiblePosition();
+        int count = couponsAdapter.getCount();
+        if (last + 1 < count) {
+            listView.smoothScrollToPosition(last + 1);
+        }
     }
 
     public void updateMyCouponsList() {
@@ -308,6 +314,12 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
         }
         progressBar.setAlpha(0f);
         this.firstTimeMyCoupons = true;
+
+        int last = listView.getLastVisiblePosition();
+        int count = myCouponsAdapter.getCount();
+        if (last + 1 < count) {
+            listView.smoothScrollToPosition(last + 1);
+        }
     }
 
     @Override

@@ -153,6 +153,12 @@ public class LeaderboardTab extends Fragment implements Response.Listener<JSONOb
         progressBar.setAlpha(0f);
 
         this.checkYourScroll(listView);
+
+        int last = listView.getLastVisiblePosition();
+        int count = leaderboardAdapter.getCount();
+        if (last + 1 < count) {
+            listView.smoothScrollToPosition(last + 1);
+        }
     }
 
     private void updateYourCard(View card, UserPosition up) {

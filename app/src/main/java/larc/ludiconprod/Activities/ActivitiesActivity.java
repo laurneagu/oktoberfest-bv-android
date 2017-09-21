@@ -885,6 +885,12 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
             progressBarAroundMe.setAlpha(0f);
 
             isFirstTimeAroundMe = true;
+
+            int last = layoutManagerAroundMe.findLastCompletelyVisibleItemPosition();
+            int count = fradapter.getItemCount();
+            if (last + 1 < count) {
+                layoutManagerAroundMe.smoothScrollToPosition(frlistView, null, last + 1);
+            }
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -984,6 +990,12 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         }
 
         isFirstTimeMyEvents = true;
+
+        int last = layoutManagerMyActivities.findLastCompletelyVisibleItemPosition();
+        int count = myAdapter.getItemCount();
+        if (last + 1 < count) {
+            layoutManagerMyActivities.smoothScrollToPosition(mylistView, null, last + 1);
+        }
     }
 
     @Override

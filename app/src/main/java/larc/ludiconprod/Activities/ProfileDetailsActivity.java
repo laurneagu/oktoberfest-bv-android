@@ -201,8 +201,6 @@ public class ProfileDetailsActivity extends Activity {
                 }
             }
         });
-
-
     }
 
     @Override

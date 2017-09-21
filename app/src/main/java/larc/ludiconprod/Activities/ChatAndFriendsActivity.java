@@ -454,6 +454,12 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                     }
                 });
                 addedSwipeFriends = true;
+
+                int last = friendsListView.getLastVisiblePosition();
+                int count = friendsAdapter.getCount();
+                if (last + 1 < count) {
+                    friendsListView.smoothScrollToPosition(last + 1);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
