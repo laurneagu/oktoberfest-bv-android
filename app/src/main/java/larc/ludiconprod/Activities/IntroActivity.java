@@ -3,16 +3,19 @@ package larc.ludiconprod.Activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.text.Html;
 import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
@@ -229,7 +232,10 @@ public class IntroActivity extends Activity {
             }
         });
 
-
+        typeFace = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Medium.ttf");
+        termsAndPrivacyPolicy.setTypeface(typeFace);
+        infoTextView.setTypeface(typeFace);
+        termsAndPrivacyPolicy.setText(Html.fromHtml("By continuing you agree to our<br/><font color='#d4498b'>Terms</font> &amp; <font color='#d4498b'>Privacy Policy</font>"), TextView.BufferType.SPANNABLE);
     }
 
     public ArrayList<String> updateFriends() {
