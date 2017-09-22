@@ -26,68 +26,68 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
             android:orientation="horizontal">
 
             <ImageView
+                android:id="@+id/locationImage"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:src="@drawable/ph_company"
-                android:id="@+id/locationImage"/>
+                android:src="@drawable/ph_company" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_marginLeft="12dp"
-                android:orientation="vertical"
-                android:layout_gravity="center">
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="18sp"
-                    android:textColor="#d4498b"
+                    android:fontFamily="@string/fontmedium"
                     android:text="20% OFF"
-                    android:fontFamily="@string/fontmedium"/>
+                    android:textColor="#d4498b"
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/location"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
+                    android:text="Smart Football Club"
                     android:textColor="#02b9ad"
-                    android:text="Smart Football Club" />
+                    android:textSize="14sp" />
             </LinearLayout>
 
         </LinearLayout>
 
         <TextView
             android:id="@+id/description"
-            android:textColor="@color/darkblue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:textSize="14sp"
+            android:layout_marginTop="16dp"
             android:fontFamily="@string/fontmedium"
-            android:text="Use this voucher to recive 1% OFF for all football activities from Monday yo Friday"/>
+            android:text="Use this voucher to recive 1% OFF for all football activities from Monday yo Friday"
+            android:textColor="@color/darkblue"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/validDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:layout_marginBottom="16dp"
-            android:textColor="#400c3855"
-            android:textSize="14sp"
+            android:layout_marginTop="16dp"
             android:fontFamily="@string/fontmedium"
-            android:text="Valid till 20 July 2017"/>
+            android:text="Valid till 20 July 2017"
+            android:textColor="#400c3855"
+            android:textSize="14sp" />
 
     </LinearLayout>
 
