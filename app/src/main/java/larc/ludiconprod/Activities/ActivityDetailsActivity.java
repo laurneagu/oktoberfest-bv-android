@@ -51,6 +51,7 @@ import larc.ludiconprod.Utils.EventDetails;
 import larc.ludiconprod.Utils.Friend;
 import larc.ludiconprod.Utils.General;
 import larc.ludiconprod.Utils.util.Sport;
+import me.anwarshahriar.calligrapher.Calligrapher;
 
 import static larc.ludiconprod.Activities.ActivitiesActivity.deleteCachedInfo;
 
@@ -144,6 +145,9 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
         RelativeLayout toolbar = (RelativeLayout) findViewById(R.id.tool_bar);
         TextView title = (TextView)toolbar.findViewById(R.id.titleText);
         title.setTypeface(typeFace);
+
+        Calligrapher calligrapher = new Calligrapher(this);
+        calligrapher.setFont(this, "fonts/Quicksand-Medium.ttf", true);
 
         findViewById(R.id.internetRefresh).setAlpha(0);
         backButton = (RelativeLayout) findViewById(R.id.backButton);

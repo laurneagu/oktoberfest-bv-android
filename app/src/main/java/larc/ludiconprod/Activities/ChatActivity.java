@@ -34,6 +34,7 @@ import larc.ludiconprod.Adapters.ChatAndFriends.MessageAdapter;
 import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
 import larc.ludiconprod.Utils.Message;
+import me.anwarshahriar.calligrapher.Calligrapher;
 
 /**
  * Created by ancuta on 8/22/2017.
@@ -127,6 +128,9 @@ public class ChatActivity extends Activity {
         RelativeLayout toolbar = (RelativeLayout) findViewById(R.id.tool_bar);
         TextView title = (TextView)toolbar.findViewById(R.id.titleText);
         title.setTypeface(typeFace);
+
+        Calligrapher calligrapher = new Calligrapher(this);
+        calligrapher.setFont(this, "fonts/Quicksand-Medium.ttf", true);
 
         sendButton = (Button)findViewById(R.id.sendButton);
         messageInput = (EditText)findViewById(R.id.messageInput);

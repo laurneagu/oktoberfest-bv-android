@@ -14,6 +14,7 @@ import larc.ludiconprod.BottomBarHelper.OnTabSelectListener;
 import larc.ludiconprod.Dialogs.PointsReceivedDialog;
 import larc.ludiconprod.Layer.DataPersistence.ChatPersistence;
 import larc.ludiconprod.R;
+import me.anwarshahriar.calligrapher.Calligrapher;
 
 
 public class Main extends FragmentActivity {
@@ -24,6 +25,9 @@ public class Main extends FragmentActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_five_tabs);
+
+        Calligrapher calligrapher = new Calligrapher(this);
+        calligrapher.setFont(this, "fonts/Quicksand-Medium.ttf", true);
 
         // Initialize bottom bar
         this.bottomBar = (BottomBar) findViewById(R.id.bottomBar);

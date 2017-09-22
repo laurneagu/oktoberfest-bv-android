@@ -52,6 +52,7 @@ import larc.ludiconprod.R;
 import larc.ludiconprod.Utils.EventDetails;
 import larc.ludiconprod.Utils.Friend;
 import larc.ludiconprod.Utils.Location.GPSTracker;
+import me.anwarshahriar.calligrapher.Calligrapher;
 
 import static larc.ludiconprod.Activities.ActivitiesActivity.deleteCachedInfo;
 import static larc.ludiconprod.Activities.ActivitiesActivity.latitude;
@@ -182,6 +183,9 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
         eventDetails = new EventDetails();
 
         //check if is a Create or Edit
+
+        Calligrapher calligrapher = new Calligrapher(this);
+        calligrapher.setFont(this, "fonts/Quicksand-Medium.ttf", true);
 
 
         createActivityButton.setOnClickListener(new View.OnClickListener() {

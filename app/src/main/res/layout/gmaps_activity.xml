@@ -57,8 +57,7 @@
                 android:layout_alignParentBottom="true"
                 android:fontFamily="@string/fontbold"
                 android:textColor="#ffffff"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
+                android:layout_margin="16dp"
                 />
 
             <android.support.v4.view.ViewPager

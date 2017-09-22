@@ -64,6 +64,8 @@
                         android:layout_alignTop="@+id/HNTV"
                         android:layout_alignParentEnd="true" />
 
+
+
                     <TextView
                         android:id="@+id/HNPlay"
                         android:layout_width="wrap_content"
@@ -253,6 +255,7 @@
                 android:textColor="#ffffff"
 
                 android:textSize="14dp" />
+
 
 
 

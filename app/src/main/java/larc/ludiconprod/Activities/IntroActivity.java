@@ -49,6 +49,7 @@ import io.fabric.sdk.android.Fabric;
 import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
+import me.anwarshahriar.calligrapher.Calligrapher;
 
 /**
  * Created by ancuta on 7/10/2017.
@@ -127,6 +128,10 @@ public class IntroActivity extends Activity {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics(), new CrashlyticsNdk());
         FacebookSdk.sdkInitialize(getApplicationContext());
+
+
+        Calligrapher calligrapher = new Calligrapher(this);
+        calligrapher.setFont(this, "fonts/Quicksand-Medium.ttf", true);
 
 
         setContentView(R.layout.intro_activity);

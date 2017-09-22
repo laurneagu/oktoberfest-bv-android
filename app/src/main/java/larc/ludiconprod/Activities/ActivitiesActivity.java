@@ -220,7 +220,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
                 final Event currentEvent = Persistance.getInstance().getHappeningNow(activity);
 
-               checkinButton.setOnClickListener(new View.OnClickListener() {
+              checkinButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         if (buttonState == 0) {
