@@ -81,6 +81,7 @@ import larc.ludiconprod.Utils.ui.SlidingTabLayout;
 import larc.ludiconprod.Utils.util.Sponsors;
 import larc.ludiconprod.Utils.util.Sport;
 
+import static com.facebook.FacebookSdk.getApplicationContext;
 import static larc.ludiconprod.Activities.Main.bottomBar;
 
 /**
@@ -517,6 +518,8 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        FacebookSdk.sdkInitialize(getActivity());
 
 
         googleApiClient = new GoogleApiClient.Builder(getContext())
