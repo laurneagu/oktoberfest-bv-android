@@ -102,11 +102,6 @@ public class Main extends FragmentActivity {
             }
         });
 
-        bottomBar.setOnTabReselectListener(new OnTabReselectListener() {
-            @Override
-            public void onTabReSelected(@IdRes int tabId) { // Reselect action
-            }
-        });
 
         if (super.getIntent().getBooleanExtra("FirstTime", false)) {
             PointsReceivedDialog dialog = new PointsReceivedDialog();

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle" >
+
+
+    <!-- Background -->
+
+    <item android:drawable="@drawable/bg_modal_gradient">
+
+        <shape android:shape="rectangle">
+
+        </shape>
+    </item>
+</layer-list>

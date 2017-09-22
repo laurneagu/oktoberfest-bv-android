@@ -146,6 +146,7 @@
                     android:drawableLeft="@drawable/ic_calendar"
                     android:ems="10"
                     android:textSize="16sp"
+                    android:maxLength="3"
                     android:paddingLeft="15dp"
                     android:layout_marginTop="8dp"
                     android:inputType="numberDecimal"

@@ -152,7 +152,7 @@ public class LeaderboardAdapter extends BaseAdapter implements ListAdapter {
         if (currentPosition.userId.equals(Persistance.getInstance().getUserInfo(fragment.getActivity()).id)) {
             view.setBackgroundColor(0xffffffff);
         } else {
-            view.setBackgroundColor(0x0);
+            view.setBackgroundColor(0x00000000);
         }
         if (!currentPosition.profileImage.equals("")) {
             Bitmap bitmap = MyAdapter.decodeBase64(currentPosition.profileImage);

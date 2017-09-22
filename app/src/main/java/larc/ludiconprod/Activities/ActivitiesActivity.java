@@ -27,13 +27,10 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -719,6 +716,14 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                                 timeToNextEvent = (Persistance.getInstance().getMyActivities(activity).get(0).eventDateTimeStamp - System.currentTimeMillis() / 1000);
                             }
 
+                            params.height=ViewGroup.LayoutParams.WRAP_CONTENT;
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    happeningNowLayout.setLayoutParams(params);
+                                }
+                            });
+
                             synchronized (myEventList) {
                                 //happening now started
                                 if ((timeToNextEvent > -3600 && buttonState == 0) || (timeToNextEvent > -7200 && buttonState == 1)) {
@@ -729,13 +734,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                                     }
 
                                     Persistance.getInstance().setHappeningNow(eventShouldHappen, activity);
-                                    params.height=ViewGroup.LayoutParams.WRAP_CONTENT;
-                                    activity.runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            happeningNowLayout.setLayoutParams(params);
-                                        }
-                                    });
+
                                     handler.sendEmptyMessage(0);
                                 }
                             }

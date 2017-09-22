@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_modal_gradient"
-    >
+    tools:theme="@android:style/Theme.Dialog">
 
     <!--
     <RelativeLayout
@@ -15,137 +16,138 @@
         -->
 
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:textColor="#ffffff"
-            android:text="Level 24"
-            android:gravity="center"
-            android:layout_marginTop="160dp"
-            android:id="@+id/levelText"
-            android:textSize="30dp"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#ffffff"
-            android:text="Congratulations!"
-            android:layout_marginTop="40dp"
-            android:layout_centerHorizontal="true"
-            android:textSize="16dp"
-            android:id="@+id/congratulationsText"
-            android:gravity="center_horizontal"
-            android:layout_below="@+id/levelText"
-            />
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/congratulationsText"
-            android:id="@+id/levelUpLayout"
-            android:gravity="center_horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#ffffff"
-            android:text="You Leveled Up!"
-            android:textSize="20dp"
-            android:id="@+id/levelUPText"
-            />
+    <TextView
+        android:id="@+id/levelText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="160dp"
+        android:gravity="center"
+        android:text="Level 24"
+        android:textColor="#ffffff"
+        android:textSize="30dp" />
+
+    <TextView
+        android:id="@+id/congratulationsText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/levelText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:gravity="center_horizontal"
+        android:text="Congratulations!"
+        android:textColor="#ffffff"
+        android:textSize="16dp" />
+
+    <RelativeLayout
+        android:id="@+id/levelUpLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/congratulationsText"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal">
 
         <TextView
+            android:id="@+id/levelUPText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="You Leveled Up!"
+            android:textColor="#ffffff"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/ludicoinsForNoUP"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:textColor="#fcb851"
-            android:text="+25"
             android:layout_centerHorizontal="true"
-            android:textSize="20dp"
             android:layout_marginLeft="8dp"
-            android:id="@+id/ludicoinsForNoUP"
             android:layout_toRightOf="@+id/levelUPText"
-            />
+            android:text="+25"
+            android:textColor="#fcb851"
+            android:textSize="20dp" />
 
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:background="@drawable/ic_ludicoins_small"
-                android:layout_toRightOf="@+id/ludicoinsForNoUP"
-                android:layout_marginLeft="4dp"
-                android:id="@+id/ludicoinsImageForNoUp"
-                android:layout_centerInParent="true"/>
-        </RelativeLayout>
-        <RelativeLayout
+        <ImageView
+            android:id="@+id/ludicoinsImageForNoUp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="4dp"
+            android:layout_toRightOf="@+id/ludicoinsForNoUP"
+            android:background="@drawable/ic_ludicoins_small" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/ludicoinsLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/levelUpLayout"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:id="@+id/gainedText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/levelUpLayout"
-            android:id="@+id/ludicoinsLayout"
-            android:gravity="center_horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#ffffff"
-                android:text="And gained:  "
-                android:textSize="14dp"
-                android:id="@+id/gainedText"
-                android:gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:text="And gained:  "
+            android:textColor="#ffffff"
+            android:textSize="14dp"
 
-                />
+            />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#fcb851"
-                android:text="+25 "
-                android:textSize="14dp"
-                android:layout_toRightOf="@+id/gainedText"
-                android:id="@+id/ludicoinsText"
-                />
-            <ImageView
-                android:layout_width="12dp"
-                android:layout_height="12dp"
-                android:background="@drawable/ic_ludicoins_small"
-                android:layout_toRightOf="@+id/ludicoinsText"
-                android:id="@+id/ludicoinsImage"
-                android:layout_centerInParent="true"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#ffffff"
-                android:layout_marginLeft="4dp"
-                android:text="+25 "
-                android:textSize="14dp"
-                android:layout_toRightOf="@+id/ludicoinsImage"
-                android:id="@+id/pointsText"
-                />
-            <ImageView
-                android:layout_width="12dp"
-                android:layout_height="12dp"
-                android:background="@drawable/points_white"
-                android:layout_toRightOf="@+id/pointsText"
-                android:id="@+id/pointsImage"
-                android:layout_centerInParent="true"/>
-
-
-        </RelativeLayout>
-
-        <Button
+        <TextView
+            android:id="@+id/ludicoinsText"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:background="@drawable/white_button_selector"
-            android:text="OKAY"
-            android:textColor="#d4498b"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="60dp"
-            android:layout_below="@+id/ludicoinsLayout"
-            android:id="@+id/okayButton"
-            android:paddingLeft="60dp"
-            android:paddingRight="60dp"
-            android:textSize="14dp"/>
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/gainedText"
+            android:text="+25 "
+            android:textColor="#fcb851"
+            android:textSize="14dp" />
 
-   <!-- </RelativeLayout> -->
+        <ImageView
+            android:id="@+id/ludicoinsImage"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_centerInParent="true"
+            android:layout_toRightOf="@+id/ludicoinsText"
+            android:background="@drawable/ic_ludicoins_small" />
+
+        <TextView
+            android:id="@+id/pointsText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_toRightOf="@+id/ludicoinsImage"
+            android:text="+25 "
+            android:textColor="#ffffff"
+            android:textSize="14dp" />
+
+        <ImageView
+            android:id="@+id/pointsImage"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_centerInParent="true"
+            android:layout_toRightOf="@+id/pointsText"
+            android:background="@drawable/points_white" />
 
 
     </RelativeLayout>
+
+    <Button
+        android:id="@+id/okayButton"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_below="@+id/ludicoinsLayout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="60dp"
+        android:background="@drawable/white_button_selector"
+        android:paddingLeft="60dp"
+        android:paddingRight="60dp"
+        android:text="OKAY"
+        android:textColor="#d4498b"
+        android:textSize="14dp" />
+
+    <!-- </RelativeLayout> -->
+
+
+</RelativeLayout>
