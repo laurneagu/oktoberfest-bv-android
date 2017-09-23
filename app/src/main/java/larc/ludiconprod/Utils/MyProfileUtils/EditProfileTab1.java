@@ -24,7 +24,7 @@ import larc.ludiconprod.R;
 import larc.ludiconprod.User;
 import larc.ludiconprod.Utils.util.Sport;
 
-public class EditProfileTab1 extends Fragment implements View.OnClickListener, SeekBar.OnSeekBarChangeListener {
+public class EditProfileTab1 extends Fragment implements View.OnClickListener {
 
     private int counter;
     private ArrayList<String> sports;
@@ -47,7 +47,6 @@ public class EditProfileTab1 extends Fragment implements View.OnClickListener, S
 
             User u = Persistance.getInstance().getProfileInfo(super.getActivity());
             SeekBar seekBar = (SeekBar) v.findViewById(R.id.editRangeBar);
-            seekBar.setOnSeekBarChangeListener(this);
             Button save = (Button) v.findViewById(R.id.saveChangesButton2);
             this.progressText = (TextView) v.findViewById(R.id.editRangeTextView);
 
@@ -55,7 +54,7 @@ public class EditProfileTab1 extends Fragment implements View.OnClickListener, S
             epa.setRange(seekBar);
             this.sports.clear();
 
-            int progress = Integer.parseInt(u.range);
+            progress = Integer.parseInt(u.range);
             seekBar.setProgress(progress - 1);
 
             codes.put(R.id.editFootball, "FOT");
@@ -112,7 +111,39 @@ public class EditProfileTab1 extends Fragment implements View.OnClickListener, S
                 }
             }
 
+
             save.setOnClickListener(epa);
+
+            seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progressValue, boolean b) {
+                    if (epa.sameProfileInfo()) {
+                        epa.findViewById(R.id.saveChangesButton).setAlpha(0);
+                        epa.findViewById(R.id.saveChangesButton2).setAlpha(0);
+                    } else {
+                        epa.findViewById(R.id.saveChangesButton).setAlpha(1);
+                        epa.findViewById(R.id.saveChangesButton2).setAlpha(1);
+                    }
+                    if(seekBar.getProgress() >= 1) {
+                        progress = progressValue+1;
+                        progressText.setText(progress + " km");
+                    } else{
+                        progressText.setText("1" + " km");
+                        progress=1;
+
+                    }
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+
+                }
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+
+                }
+            });
 
             ((TextView) v.findViewById(R.id.selectLabel)).setTypeface(typeFace);
             ((TextView) v.findViewById(R.id.textViewEditRange)).setTypeface(typeFace);
@@ -153,6 +184,9 @@ public class EditProfileTab1 extends Fragment implements View.OnClickListener, S
         Log.d("New sports", this.sports.toString());
     }
 
+
+/*
+
     @Override
     public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
         if(seekBar.getProgress() >= 1) {
@@ -161,6 +195,7 @@ public class EditProfileTab1 extends Fragment implements View.OnClickListener, S
         } else{
             progressText.setText("1" + " km");
             progress=1;
+
         }
     }
 
@@ -171,4 +206,5 @@ public class EditProfileTab1 extends Fragment implements View.OnClickListener, S
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
     }
+    */
 }

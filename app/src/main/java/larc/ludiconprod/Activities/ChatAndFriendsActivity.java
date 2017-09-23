@@ -567,6 +567,9 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                     }else{
                         isLastPage = true;
                         setAdapter();
+                        if (numberOfTotalChatsArrived == counterOfChats) {
+                            isLastPage = true;
+                        }
                     }
                 }
                 if(numberOfTotalChatsArrived == 0){
@@ -684,6 +687,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                     }else{
                         isLastPage = true;
                         setAdapter();
+
                     }
                     }
                 }

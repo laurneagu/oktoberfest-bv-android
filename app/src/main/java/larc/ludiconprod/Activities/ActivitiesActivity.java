@@ -891,7 +891,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
             int last = layoutManagerAroundMe.findLastCompletelyVisibleItemPosition();
             int count = fradapter.getItemCount();
             if (last + 1 < count) {
-                layoutManagerAroundMe.smoothScrollToPosition(frlistView, null, last + 1);
+                layoutManagerAroundMe.scrollToPositionWithOffset(last,30);
             }
         }catch (Exception e){
             e.printStackTrace();

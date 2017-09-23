@@ -274,6 +274,13 @@ public class AroundMeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                 break;
             case 1:
+                final int pos;
+                if(sponsorsList.size() >= 1){
+                    pos=position-1;
+
+                }else{
+                    pos=position;
+                }
                 ((ViewHolder)holder).friends0.setVisibility(View.INVISIBLE);
                 ((ViewHolder)holder).friends1.setVisibility(View.INVISIBLE);
                 ((ViewHolder)holder).friends2.setVisibility(View.INVISIBLE);
@@ -296,7 +303,7 @@ public class AroundMeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                         //set urlParams
 
-                        urlParams.put("eventId", list.get(position).id);
+                        urlParams.put("eventId", list.get(pos).id);
                         urlParams.put("userId", Persistance.getInstance().getUserInfo(activity).id);
                         HTTPResponseController.getInstance().getEventDetails(params, headers, activity, urlParams);
                     }
@@ -304,40 +311,40 @@ public class AroundMeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
 
                 // Set user event creator name and picture
-                ((ViewHolder)holder).creatorName.setText(list.get(position).creatorName);
-                if (!list.get(position).creatorProfilePicture.equals("")) {
-                    Bitmap bitmap = decodeBase64(list.get(position).creatorProfilePicture);
+                ((ViewHolder)holder).creatorName.setText(list.get(pos).creatorName);
+                if (!list.get(pos).creatorProfilePicture.equals("")) {
+                    Bitmap bitmap = decodeBase64(list.get(pos).creatorProfilePicture);
                     ((ViewHolder)holder).profileImage.setImageBitmap(bitmap);
                 }
 
                 // Redirect to user profile on picture tap
                 ((ViewHolder)holder).profileImage.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
-                        String id = list.get(position).creatorId;
+                        String id = list.get(pos).creatorId;
                         if (Persistance.getInstance().getUserInfo(activity).id.equals(id)) {
                             Toast.makeText(activity, "It's you :)", Toast.LENGTH_SHORT).show();
                             return;
                         }
 
                         Intent intent = new Intent(activity, UserProfileActivity.class);
-                        intent.putExtra("UserId", list.get(position).creatorId);
+                        intent.putExtra("UserId", list.get(pos).creatorId);
                         activity.startActivity(intent);
                     }
                 });
 
 
                 // Event details set message for sport played
-                Sport sport = new Sport(list.get(position).sportCode);
+                Sport sport = new Sport(list.get(pos).sportCode);
                 String weWillPlayString = "";
                 String sportName = "";
 
-                if (list.get(position).sportCode.equalsIgnoreCase("JOG") || list.get(position).sportCode.equalsIgnoreCase("GYM") || list.get(position).sportCode.equalsIgnoreCase("CYC")) {
+                if (list.get(pos).sportCode.equalsIgnoreCase("JOG") || list.get(pos).sportCode.equalsIgnoreCase("GYM") || list.get(position).sportCode.equalsIgnoreCase("CYC")) {
                     weWillPlayString = "Will go to ";
                     sportName = sport.sportName;
                 } else {
-                    if (list.get(position).sportCode.equalsIgnoreCase("OTH")) {
+                    if (list.get(pos).sportCode.equalsIgnoreCase("OTH")) {
                         weWillPlayString = "Will play ";
-                        sportName = list.get(position).otherSportName;
+                        sportName = list.get(pos).otherSportName;
                     } else {
                         weWillPlayString = "Will play ";
                         sportName = sport.sportName;
@@ -350,40 +357,40 @@ public class AroundMeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 ((ViewHolder)holder).sportName.setText(sportName);
 
 
-                ((ViewHolder)holder).ludicoinsNumber.setText("  +" + String.valueOf(list.get(position).ludicoins));
-                ((ViewHolder)holder).pointsNumber.setText("  +" + String.valueOf(list.get(position).points));
+                ((ViewHolder)holder).ludicoinsNumber.setText("  +" + String.valueOf(list.get(pos).ludicoins));
+                ((ViewHolder)holder).pointsNumber.setText("  +" + String.valueOf(list.get(pos).points));
 
 
-                ((ViewHolder)holder).locationEvent.setText(list.get(position).placeName);
-                ((ViewHolder)holder).playersNumber.setText(list.get(position).numberOfParticipants + "/" + list.get(position).capacity);
-                if (list.get(position).numberOfParticipants - 1 >= 1) {
+                ((ViewHolder)holder).locationEvent.setText(list.get(pos).placeName);
+                ((ViewHolder)holder).playersNumber.setText(list.get(pos).numberOfParticipants + "/" + list.get(pos).capacity);
+                if (list.get(pos).numberOfParticipants - 1 >= 1) {
                     ((ViewHolder)holder).friends0.setVisibility(View.VISIBLE);
                 }
-                if (list.get(position).numberOfParticipants - 1 >= 2) {
+                if (list.get(pos).numberOfParticipants - 1 >= 2) {
                     ((ViewHolder)holder).friends1.setVisibility(View.VISIBLE);
                 }
-                if (list.get(position).numberOfParticipants - 1 >= 3) {
+                if (list.get(pos).numberOfParticipants - 1 >= 3) {
                     ((ViewHolder)holder).friends2.setVisibility(View.VISIBLE);
                 }
-                if (list.get(position).numberOfParticipants - 1 >= 4) {
+                if (list.get(pos).numberOfParticipants - 1 >= 4) {
                     ((ViewHolder)holder).friendsNumber.setVisibility(View.VISIBLE);
-                    ((ViewHolder)holder).friendsNumber.setText("+" + String.valueOf(list.get(position).numberOfParticipants - 4));
+                    ((ViewHolder)holder).friendsNumber.setText("+" + String.valueOf(list.get(pos).numberOfParticipants - 4));
 
                 }
-                for (int i = 0; i < list.get(position).participansProfilePicture.size(); i++) {
-                    if (!list.get(position).participansProfilePicture.get(i).equals("") && i == 0) {
-                        Bitmap bitmap = decodeBase64(list.get(position).participansProfilePicture.get(i));
+                for (int i = 0; i < list.get(pos).participansProfilePicture.size(); i++) {
+                    if (!list.get(pos).participansProfilePicture.get(i).equals("") && i == 0) {
+                        Bitmap bitmap = decodeBase64(list.get(pos).participansProfilePicture.get(i));
                         ((ViewHolder)holder).friends0.setImageBitmap(bitmap);
-                    } else if (!list.get(position).participansProfilePicture.get(i).equals("") && i == 1) {
-                        Bitmap bitmap = decodeBase64(list.get(position).participansProfilePicture.get(i));
+                    } else if (!list.get(pos).participansProfilePicture.get(i).equals("") && i == 1) {
+                        Bitmap bitmap = decodeBase64(list.get(pos).participansProfilePicture.get(i));
                         ((ViewHolder)holder).friends1.setImageBitmap(bitmap);
-                    } else if (!list.get(position).participansProfilePicture.get(i).equals("") && i == 2) {
-                        Bitmap bitmap = decodeBase64(list.get(position).participansProfilePicture.get(i));
+                    } else if (!list.get(pos).participansProfilePicture.get(i).equals("") && i == 2) {
+                        Bitmap bitmap = decodeBase64(list.get(pos).participansProfilePicture.get(i));
                         ((ViewHolder)holder).friends2.setImageBitmap(bitmap);
                     }
                 }
 
-                switch (list.get(position).sportCode) {
+                switch (list.get(pos).sportCode) {
                     case "FOT":
                         ((ViewHolder)holder).imageViewBackground.setBackgroundResource(R.drawable.bg_sport_football);
                         break;
@@ -416,7 +423,7 @@ public class AroundMeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         break;
                 }
 
-                ((ViewHolder)holder).creatorLevelAroundMe.setText(String.valueOf(list.get(position).creatorLevel));
+                ((ViewHolder)holder).creatorLevelAroundMe.setText(String.valueOf(list.get(pos).creatorLevel));
 
                 // Event details set message for date and time
                 Calendar c = Calendar.getInstance();
@@ -425,7 +432,7 @@ public class AroundMeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 int todayMonth = today.getMonth();
                 int todayYear = c.get(Calendar.YEAR);
                 String displayDate = "";
-                String[] stringDateAndTime = list.get(position).eventDate.split(" ");
+                String[] stringDateAndTime = list.get(pos).eventDate.split(" ");
                 try {
                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
                     displayDate = formatter.format(formatter.parse(stringDateAndTime[0]));
@@ -453,14 +460,14 @@ public class AroundMeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         HashMap<String, String> params = new HashMap<String, String>();
                         HashMap<String, String> headers = new HashMap<String, String>();
                         headers.put("authKey", Persistance.getInstance().getUserInfo(activity).authKey);
-                        params.put("eventId", list.get(position).id);
+                        params.put("eventId", list.get(pos).id);
                         params.put("userId", Persistance.getInstance().getUserInfo(activity).id);
-                        HTTPResponseController.getInstance().joinEvent(activity, params, headers, list.get(position).id, fragment);
+                        HTTPResponseController.getInstance().joinEvent(activity, params, headers, list.get(pos).id, fragment);
                         ((ViewHolder)holder).joinButton.setEnabled(false);
                     }
                 });
 
-                System.out.println(list.get(position).id + " eventid:" + position + "  " + list.get(position).numberOfParticipants + " profilepicture" + list.get(position).participansProfilePicture.size());
+                System.out.println(list.get(pos).id + " eventid:" + pos + "  " + list.get(pos).numberOfParticipants + " profilepicture" + list.get(position).participansProfilePicture.size());
                 break;
         }
     }

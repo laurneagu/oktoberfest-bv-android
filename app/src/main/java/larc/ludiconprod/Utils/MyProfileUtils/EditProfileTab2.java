@@ -165,6 +165,14 @@ public class EditProfileTab2 extends Fragment {
                         female.setTextColor(Color.parseColor("#ffffff"));
                         epa.setSex(1);
                     }
+
+                    if (epa.sameProfileInfo()) {
+                        epa.findViewById(R.id.saveChangesButton).setAlpha(0);
+                        epa.findViewById(R.id.saveChangesButton2).setAlpha(0);
+                    } else {
+                        epa.findViewById(R.id.saveChangesButton).setAlpha(1);
+                        epa.findViewById(R.id.saveChangesButton2).setAlpha(1);
+                    }
                 }
             });
 
