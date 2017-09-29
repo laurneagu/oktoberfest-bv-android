@@ -88,6 +88,7 @@ public class GMapsActivity extends FragmentActivity implements PlaceSelectionLis
     static FragmentManager fragmentManager;
     static public boolean isFirstTime=false;
     Button selectLocationButton;
+    TextView textTapLong;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,6 +127,9 @@ public class GMapsActivity extends FragmentActivity implements PlaceSelectionLis
             ImageView closeCreator = (ImageView) findViewById(R.id.closeCreator);
             selectLocationButton=(Button) findViewById(R.id.selectLocationButton) ;
             noLocationLayout = (RelativeLayout) findViewById(R.id.noLocationLayout);
+            textTapLong=(TextView)findViewById(R.id.textTapLong);
+            textTapLong.setTypeface(typeFace);
+            selectLocationButton.setTypeface(typeFaceBold);
 
 
             Log.v("titlul e",titleText.getText().toString());
@@ -262,6 +266,62 @@ public class GMapsActivity extends FragmentActivity implements PlaceSelectionLis
                             getAuthLocation(sW, nE);
                         }
                         locationSelected=false;
+                    }
+                });
+                m_gmap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                    @Override
+                    public boolean onMarkerClick(Marker marker) {
+                        for(int i=0;i < listOfMarkers.size();i++){
+                            if(listOfMarkers.get(i).getPosition().latitude == marker.getPosition().latitude && listOfMarkers.get(i).getPosition().longitude == marker.getPosition().longitude){
+                                m_gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 15));
+                                GMapsActivity.locationSelected=true;
+                                if(myUnauthorizedMarker != null) {
+                                    myUnauthorizedMarker.remove();
+
+                                }
+                                pager.setCurrentItem(i);
+
+                                switch (authLocation.get(i).authorizeLevel) {
+                                    case 0:
+                                        listOfMarkers.get(i).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.pin_1_selected));
+                                        MyFragment.valueOfAuthorizedPlace=0;
+                                        break;
+                                    case 1:
+                                        listOfMarkers.get(i).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.pin_2_selected));
+                                        MyFragment.valueOfAuthorizedPlace=1;
+                                        break;
+                                    case 2:
+                                        listOfMarkers.get(i).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.pin_3_selected));
+                                        MyFragment.valueOfAuthorizedPlace=2;
+                                        break;
+                                    case 3:
+                                        listOfMarkers.get(i).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.pin_4_selected));
+                                        MyFragment.valueOfAuthorizedPlace=3;
+                                        break;
+                                }
+                                markerSelected=listOfMarkers.get(i);
+                            }
+                            else{
+                                for(int j=0;j<authLocation.size();j++){
+                                    int authLevel=authLocation.get(i).authorizeLevel;
+                                    switch (authLevel) {
+                                        case 0:
+                                            listOfMarkers.get(i).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.pin_1_normal));
+                                            break;
+                                        case 1:
+                                            listOfMarkers.get(i).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.pin_2_normal));
+                                            break;
+                                        case 2:
+                                            listOfMarkers.get(i).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.pin_3_normal));
+                                            break;
+                                        case 3:
+                                            listOfMarkers.get(i).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.pin_4_normal));
+                                            break;
+                                    }
+                                }
+                            }
+                        }
+                        return false;
                     }
                 });
 

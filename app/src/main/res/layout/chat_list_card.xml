@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#f7f9fc"
+    android:background="@drawable/conversation_card_selector"
     android:id="@+id/chatListLayout">
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -53,7 +53,7 @@
         android:text=""
         android:textSize="14dp"
         android:gravity="right"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:textColor="#400c3855"
         android:layout_alignParentRight="true"
         android:layout_marginRight="16dp"

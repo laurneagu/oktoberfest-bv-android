@@ -42,20 +42,27 @@
                     android:layout_width="30dp"
                     android:layout_height="48dp"
                     android:id="@+id/imageView"/>
-                <TextView
+                <RelativeLayout
                     android:layout_width="20dp"
                     android:layout_height="20dp"
+                    android:layout_toRightOf="@id/imageView"
+                    android:layout_alignBottom="@id/imageView"
                     android:background="@drawable/round_textview_green"
+                    android:layout_marginBottom="4dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
                     android:textSize="12sp"
                     android:text="12"
                     android:id="@+id/creatorLevelAroundMe"
                     android:textColor="#ffffff"
-                    android:layout_toRightOf="@id/imageView"
-                    android:layout_alignBottom="@id/imageView"
+                    android:gravity="center"
                     android:textAlignment="center"
-                    android:paddingTop="1dp"
-                    android:layout_marginBottom="4dp"
+
                     />
+
+                </RelativeLayout>
             </RelativeLayout>
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -184,8 +191,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
-                    android:textColor="#0c3855"
-                    android:alpha="0.4"
+                    android:textColor="@color/lightGray"
                     android:text="Date" />
 
                 <TextView
@@ -236,8 +242,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
-                android:textColor="#0c3855"
-                android:alpha="0.4"
+                android:textColor="@color/lightGray"
                 android:text="Players  " />
 
             <TextView
@@ -286,19 +291,25 @@
                 android:background="@drawable/ph_user"
                 />
 
-            <TextView
-                android:id="@+id/friendsNumber"
+
+            <RelativeLayout
                 android:layout_width="32dp"
                 android:layout_height="32dp"
+                android:layout_marginLeft="4dp"
+                android:id="@+id/friendsNumberLayout"
+                android:background="@drawable/round_textview">
+            <TextView
+                android:id="@+id/friendsNumber"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:textAlignment="center"
-                android:paddingTop="5dp"
                 android:textSize="14dp"
                 android:textColor="#02b9ad"
-                android:layout_marginLeft="4dp"
                 android:visibility="visible"
-                android:layout_gravity="center"
-                android:background="@drawable/round_textview"
+                android:gravity="center"
                 android:text="+3" />
+
+            </RelativeLayout>
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

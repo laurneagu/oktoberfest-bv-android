@@ -7,6 +7,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:layout_width="48dp"
@@ -16,6 +19,28 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             android:layout_marginRight="16dp"/>
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="16dp"
+            android:id="@+id/imageView"/>
+        <TextView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/round_textview_green"
+            android:textSize="12sp"
+            android:text="12"
+            android:id="@+id/friendLevel"
+            android:textColor="#ffffff"
+            android:layout_toRightOf="@id/imageView"
+            android:layout_alignBottom="@id/imageView"
+            android:textAlignment="center"
+            android:paddingTop="1dp"
+            android:layout_marginBottom="4dp"
+            />
+
+        </RelativeLayout>
 
 
 
@@ -33,13 +58,6 @@
                 android:textSize="18sp"
                 android:id="@+id/friendName"
                 android:textColor="#d4498b"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Level 6"
-                android:textSize="10sp"
-                android:id="@+id/friendLevel"
-                android:textColor="#02b9ad"/>
 
         </LinearLayout>
         <RelativeLayout

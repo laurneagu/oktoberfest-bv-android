@@ -106,6 +106,8 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
     Spinner sportSpinner;
     int numberOfTotalParticipants = 0;
     EventDetails eventDetails;
+    Double lat = Double.MAX_VALUE;
+    Double lng = Double.MAX_VALUE;
 
     public static String getMonth(int month) {
         String date = new DateFormatSymbols().getMonths()[month - 1];
@@ -128,7 +130,7 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                 Toast.makeText(getApplicationContext(), "Please enter a time!", Toast.LENGTH_SHORT).show();
                 return true;
             } else
-                if (GMapsActivity.markerSelected == null) {
+                if (lat == Double.MAX_VALUE) {
                     Toast.makeText(getApplicationContext(), "Please select a location!", Toast.LENGTH_SHORT).show();
                     return true;
                 } else
@@ -205,8 +207,8 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                         params.put("eventDate", String.valueOf(myCalendar.getTimeInMillis() / 1000));
                         params.put("creationDate", String.valueOf(System.currentTimeMillis() / 1000));
                         params.put("description", descriptionEditText.getText().toString());
-                        params.put("latitude", String.valueOf(GMapsActivity.markerSelected.getPosition().latitude));
-                        params.put("longitude", String.valueOf(GMapsActivity.markerSelected.getPosition().longitude));
+                        params.put("latitude", lat.toString());
+                        params.put("longitude", lng.toString());
                         if (!locationName.getText().toString().equals("Unauthorized location")) {
                             params.put("placeName", locationName.getText().toString());
                         } else {
@@ -908,8 +910,8 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == CreateNewActivity.ASK_COORDS_DONE) {
-            Double lat = 0.0;
-            Double lng = 0.0;
+            lat = 0.0;
+            lng = 0.0;
             String addressName = "";
             String placeName = "";
             String image = "";

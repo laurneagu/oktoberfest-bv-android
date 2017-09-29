@@ -7,7 +7,12 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Handler;
+import android.text.SpannableStringBuilder;
+import android.text.TextPaint;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +22,8 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -71,14 +78,32 @@ public class LeaderboardAdapter extends BaseAdapter implements ListAdapter {
 
             TextView daysLeft = (TextView) view.findViewById(R.id.daysLeft);
             Calendar day = Calendar.getInstance();
+            TextView valuesRefresh =(TextView)view.findViewById(R.id.valuesRefresh);
+
+
             int left = day.getActualMaximum(Calendar.DAY_OF_MONTH) - day.get(Calendar.DAY_OF_MONTH);
             daysLeft.setText(left + " days left");
 
             AssetManager assets = inflater.getContext().getAssets();// Is this the right asset?
             Typeface typeFace = Typeface.createFromAsset(assets, "fonts/Quicksand-Medium.ttf");
+            valuesRefresh.setTypeface(typeFace);
 
             daysLeft.setTypeface(typeFace);
             ((TextView) view.findViewById(R.id.topText)).setTypeface(typeFace);
+
+            SpannableStringBuilder spanTxt = new SpannableStringBuilder("");
+            spanTxt.append("Be on ");
+            spanTxt.setSpan(new ForegroundColorSpan(Color.parseColor("#0c3855")), 0, 6,0);
+            spanTxt.append("Top 50 ");
+            spanTxt.setSpan(new ForegroundColorSpan(Color.parseColor("#d4498b")), 6, 12,0);
+
+            spanTxt.append("at the end of the month\nand earn");
+            spanTxt.setSpan(new ForegroundColorSpan(Color.parseColor("#0c3855")), 12, 45,0);
+            spanTxt.append(" Ludicoins");
+            spanTxt.setSpan(new ForegroundColorSpan(Color.parseColor("#fcb851")), 45, 55,0);
+            ((TextView) view.findViewById(R.id.topText)).setText(spanTxt, TextView.BufferType.SPANNABLE);
+
+
 
             view.setTag(null);
             return view;
@@ -98,6 +123,7 @@ public class LeaderboardAdapter extends BaseAdapter implements ListAdapter {
             holder.level = (TextView) view.findViewById(R.id.level);
             holder.name = (TextView) view.findViewById(R.id.name);
             holder.points = (TextView) view.findViewById(R.id.points);
+
 
             AssetManager assets = inflater.getContext().getAssets();// Is this the right asset?
             Typeface typeFace = Typeface.createFromAsset(assets, "fonts/Quicksand-Medium.ttf");

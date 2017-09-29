@@ -21,6 +21,7 @@ import java.util.HashMap;
 
 import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.R;
+import me.anwarshahriar.calligrapher.Calligrapher;
 
 
 /**
@@ -66,6 +67,9 @@ public class ResetPasswordActivity extends Activity {
         TextView titleText = (TextView) findViewById(R.id.titleText);
         titleText.setText("Reset Password");
         titleText.setTypeface(typeFace);
+
+        Calligrapher calligrapher = new Calligrapher(this);
+        calligrapher.setFont(this, "fonts/Quicksand-Medium.ttf", true);
         backButton = (RelativeLayout) findViewById(R.id.backButton);
         resetPassword = (Button) findViewById(R.id.resetPasswordButton);
         resetPassword.setTypeface(typeFaceBold);
@@ -115,6 +119,7 @@ public class ResetPasswordActivity extends Activity {
         HashMap<String, String> head = new HashMap<>();
         head.put("apiKey", HTTPResponseController.API_KEY);
         HTTPResponseController.getInstance().resetPassword(params, head, this);
+        finish();
     }
 
     @Override

@@ -26,6 +26,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,6 +81,7 @@ import larc.ludiconprod.Utils.MainPageUtils.ViewPagerAdapter;
 import larc.ludiconprod.Utils.ui.SlidingTabLayout;
 import larc.ludiconprod.Utils.util.Sponsors;
 import larc.ludiconprod.Utils.util.Sport;
+import me.anwarshahriar.calligrapher.Calligrapher;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 import static larc.ludiconprod.Activities.Main.bottomBar;
@@ -202,6 +204,15 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                     myAdapter.notifyDataSetChanged();
                 }
                 System.out.println("eventStarted");
+
+                ActivitiesActivity.this.getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        params.height=(int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 218, getResources().getDisplayMetrics());
+                        happeningNowLayout.requestLayout();
+                    }
+                });
 
 
 
@@ -534,6 +545,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
         googleApiClient.connect();
 
+
         mContext = inflater.getContext();
         isOnActivityPage = true;
         aroundMeEventList.clear();
@@ -543,6 +555,9 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         while (activity == null) {
             activity = getActivity();
         }
+
+        Calligrapher calligrapher = new Calligrapher(activity);
+        calligrapher.setFont(activity, "fonts/Quicksand-Medium.ttf", true);
 
         if(Persistance.getInstance().getMyActivities(activity) !=null && !Persistance.getInstance().getMyActivities(activity).equals("0") && Persistance.getInstance().getMyActivities(activity).size() > 1) {
 
@@ -603,6 +618,9 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
             happeningNowLayout = (RelativeLayout) v.findViewById(R.id.generalHappeningNowLayout);
             params = happeningNowLayout.getLayoutParams();
+            params.height=0;
+            happeningNowLayout.requestLayout();
+
 
 
 
@@ -623,6 +641,8 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
             //
             // for facebook share
+
+
             final ShareButton shareButton;
 
             FacebookSdk.sdkInitialize(activity);
@@ -719,13 +739,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                                 timeToNextEvent = (Persistance.getInstance().getMyActivities(activity).get(0).eventDateTimeStamp - System.currentTimeMillis() / 1000);
                             }
 
-                            params.height=ViewGroup.LayoutParams.WRAP_CONTENT;
-                            activity.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    happeningNowLayout.setLayoutParams(params);
-                                }
-                            });
+
 
                             synchronized (myEventList) {
                                 //happening now started
@@ -811,7 +825,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
             // stop swiping on my events
             final SwipeRefreshLayout mSwipeRefreshLayout2 = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh2);
             if (!isFirstTimeAroundMe) {
-                layoutManagerAroundMe = new LinearLayoutManager(getContext());
+                layoutManagerAroundMe = new LinearLayoutManager(activity);
             }
 
             fradapter.notifyDataSetChanged();

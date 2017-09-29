@@ -52,8 +52,6 @@ public class ResetPasswordFinalActivity extends Activity {
 
             @Override
             public void onClick(View view) {
-                /*Intent intent = new Intent(getApplicationContext(), IntroActivity.class);
-                startActivity(intent);*/
                 finish();
             }
         });
@@ -63,10 +61,16 @@ public class ResetPasswordFinalActivity extends Activity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 
 }

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/couponsRelativeLayout"
@@ -90,39 +91,39 @@
 
     </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/couponGetIt"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
+    <LinearLayout
+        android:id="@+id/couponGetIt"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
 
-            android:background="@drawable/card_button_background"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:layout_below="@+id/dataL">
+        android:background="@drawable/card_button_background"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_below="@+id/dataL">
 
-            <TextView
-                android:id="@+id/getItText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@string/fontbold"
-                android:text="GET IN NOW! only "
-                android:textColor="#ffffff"
-                android:textSize="14sp" />
+        <TextView
+            android:id="@+id/getItText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@string/fontbold"
+            android:text="GET IN NOW! only "
+            android:textColor="#ffffff"
+            android:textSize="14sp" />
 
-            <TextView
-                android:id="@+id/ludicoins"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="25 "
-                android:textSize="14sp"
-                android:fontFamily="@string/fontmedium"
-                android:textColor="#fcb851"/>
+        <TextView
+            android:id="@+id/ludicoins"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="25 "
+            android:textSize="14sp"
+            android:fontFamily="@string/fontmedium"
+            android:textColor="#fcb851"/>
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_ludicoins_small"
-                android:textColor="#fcb851"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_ludicoins_small"
+            android:textColor="#fcb851"/>
 
-        </LinearLayout>
+    </LinearLayout>
 </RelativeLayout>

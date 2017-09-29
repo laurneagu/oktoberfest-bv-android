@@ -143,6 +143,7 @@ public class ConversationsAdapter extends BaseAdapter implements ListAdapter {
                 holder.chatParticipantImage.setImageResource(R.drawable.ph_group);
             }
 
+
             final int timeElapsed = (int) ((System.currentTimeMillis() / 1000 - currentChat.lastMessageTime) / 60);
             setTime(timeElapsed, holder, currentChat);
             updateTime(timeElapsed, holder, currentChat, position);
@@ -168,16 +169,17 @@ public class ConversationsAdapter extends BaseAdapter implements ListAdapter {
             holder.lastMessage.setText(displayMessage);
             if (!currentChat.lastMessageSeen.equalsIgnoreCase(currentChat.lastMessageId)) {
                 holder.lastMessage.setTypeface(typeFaceBold);
+                holder.lastMessage.setTextColor(Color.parseColor("#0c3855"));
 
             } else {
                 holder.lastMessage.setTypeface(typeFace);
+                holder.lastMessage.setTextColor(Color.parseColor("#acb8c1"));
             }
             final View currView = view;
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    currView.setBackgroundColor(Color.parseColor("#f5f5f5"));
                     Intent intent = new Intent(activity, ChatActivity.class);
                     intent.putExtra("chatId", currentChat.chatId);
                     intent.putExtra("otherParticipantName", currentChat.participantName);

@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -89,6 +90,7 @@ public class AroundMeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         TextView creatorLevelAroundMe;
         ProgressBar progressBar;
         View view;
+        RelativeLayout friendsNumberLayout;
 
         public ViewHolder(View view) {
             super(view);
@@ -110,6 +112,7 @@ public class AroundMeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             this.imageViewBackground = (ImageView) view.findViewById(R.id.imageViewBackground);
             this.creatorLevelAroundMe = (TextView) view.findViewById(R.id.creatorLevelAroundMe);
             this.progressBar = (ProgressBar) view.findViewById(R.id.cardProgressBar);
+            this.friendsNumberLayout=(RelativeLayout)view.findViewById(R.id.friendsNumberLayout) ;
             this.progressBar.setAlpha(0);
 
             Typeface typeFace = Typeface.createFromAsset(activity.getAssets(), "fonts/Quicksand-Medium.ttf");
@@ -133,6 +136,7 @@ public class AroundMeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             this.friends1.setVisibility(View.INVISIBLE);
             this.friends2.setVisibility(View.INVISIBLE);
             this.friendsNumber.setVisibility(View.INVISIBLE);
+            this.friendsNumberLayout.setVisibility(View.INVISIBLE);
             this.profileImage.setImageResource(R.drawable.ph_user);
             this.friends0.setImageResource(R.drawable.ph_user);
             this.friends1.setImageResource(R.drawable.ph_user);
@@ -285,6 +289,7 @@ public class AroundMeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 ((ViewHolder)holder).friends1.setVisibility(View.INVISIBLE);
                 ((ViewHolder)holder).friends2.setVisibility(View.INVISIBLE);
                 ((ViewHolder)holder).friendsNumber.setVisibility(View.INVISIBLE);
+                ((ViewHolder)holder).friendsNumberLayout.setVisibility(View.INVISIBLE);
                 ((ViewHolder)holder).profileImage.setImageResource(R.drawable.ph_user);
                 ((ViewHolder)holder).friends0.setImageResource(R.drawable.ph_user);
                 ((ViewHolder)holder).friends1.setImageResource(R.drawable.ph_user);
@@ -374,6 +379,7 @@ public class AroundMeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
                 if (list.get(pos).numberOfParticipants - 1 >= 4) {
                     ((ViewHolder)holder).friendsNumber.setVisibility(View.VISIBLE);
+                    ((ViewHolder)holder).friendsNumberLayout.setVisibility(View.VISIBLE);
                     ((ViewHolder)holder).friendsNumber.setText("+" + String.valueOf(list.get(pos).numberOfParticipants - 4));
 
                 }

@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.facebook.login.LoginManager;
@@ -897,8 +898,12 @@ public class HTTPResponseController {
             public void onErrorResponse(VolleyError error) {
                 try {
                     String json = error.getMessage();
-                    json = trimMessage(json, "error");
-                    if (json != null) displayMessage(json);
+                    if(error instanceof TimeoutError){
+                        Toast.makeText(activity,"Check your internet connection!",Toast.LENGTH_LONG).show();
+                    }else {
+                        json = trimMessage(json, "error");
+                        if (json != null) displayMessage(json);
+                    }
 
 
                 } catch (Exception e) {

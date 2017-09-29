@@ -25,6 +25,8 @@
             android:layout_height="fill_parent"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
+            android:divider="#0D0c3855"
+            android:dividerHeight="1dp"
             android:scrollbars="none"/>
 
     </LinearLayout>

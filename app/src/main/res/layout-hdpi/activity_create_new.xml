@@ -218,12 +218,33 @@
                 android:layout_centerHorizontal="true"
                 android:layout_below="@+id/locationHint"
                 android:id="@+id/switchPrivacy"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_below="@+id/switchPrivacy"
+                android:id="@+id/relativeLayout2">
+
+
+
+                <MultiAutoCompleteTextView
+                    android:id="@+id/simpleMultiAutoCompleteTextView"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#0f0"
+                    android:gravity="center"
+                    android:hint="Enter Your Text Here"
+                    android:padding="10dp"
+                    android:dropDownHeight="100dp"
+                    android:textColor="#f00"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </RelativeLayout>
 
 
             <fragment xmlns:android="http://schemas.android.com/apk/res/android"
                 android:name="com.google.android.gms.maps.MapFragment"
                 android:id="@+id/map"
-                android:layout_below="@+id/switchPrivacy"
+                android:layout_below="@+id/relativeLayout2"
                 android:layout_width="400dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -260,6 +281,6 @@
 
     <include layout="@layout/header"/>
     <!--
-    <include layout="@layout/leftside_panel" />
-    -->
+     <include layout="@layout/leftside_panel" />
+     -->
 </android.support.v4.widget.DrawerLayout>

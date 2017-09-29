@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.util.Base64;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -178,6 +179,9 @@ public class InviteFriendsAdapter extends BaseAdapter implements ListAdapter {
                     holder.friendLevel.setLayoutParams(params);
                     holder.friendName.setText(currentFriend.userName);
                     holder.friendProfileImage.setImageResource(R.drawable.ic_invite);
+                    holder.friendName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+                    final Typeface typeFaceBold = Typeface.createFromAsset(activity.getAssets(), "fonts/Quicksand-Bold.ttf");
+                    holder.friendName.setTypeface(typeFaceBold);
 
 
                     holder.inviteButton.setVisibility(View.INVISIBLE);
@@ -295,7 +299,7 @@ public class InviteFriendsAdapter extends BaseAdapter implements ListAdapter {
                                 }
                                 holder.friendName.setText(displayName);
                             }
-                            holder.friendLevel.setText("Level " + String.valueOf(currentFriend.level));
+                            holder.friendLevel.setText(String.valueOf(currentFriend.level));
                             holder.inviteButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -348,7 +352,7 @@ public class InviteFriendsAdapter extends BaseAdapter implements ListAdapter {
                 });
             }
             if (!currentFriend.isOfflineParticipant) {
-                holder.friendLevel.setText("Level " + currentFriend.level);
+                holder.friendLevel.setText(String.valueOf(currentFriend.level));
             }
         }
         return view;

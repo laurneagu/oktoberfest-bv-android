@@ -16,12 +16,22 @@
         android:layout_height="wrap_content"
         android:text="Be on Top 50 at the end of the month\n and earn Ludicoins"
         android:gravity="center"
-        android:textColor="#000000"/>
+        android:textColor="@color/darkblue"/>
+    <TextView
+        android:id="@+id/valuesRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:text="Values are computed peridocally, so ranks are \n not real-time!"
+        android:gravity="center"
+        android:textColor="@color/darkblue"/>
+
     <TextView
         android:id="@+id/daysLeft"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="14 days left"
         android:gravity="center"
-        android:textColor="#acb8c1"/>
+        android:layout_marginTop="3dp"
+        android:text="14 days left"
+        android:textColor="@color/lightGray" />
 </LinearLayout>

@@ -127,14 +127,14 @@ public class InviteFriendsActivity extends Activity {
 
         if (!isFirstTimeInviteFriends && !getIntent().getBooleanExtra("isEdit", false) && !getIntent().getBooleanExtra("isParticipant", false)) {
             Friend friend = new Friend();
-            friend.userName = "Add Offline Friend";
+            friend.userName = "ADD OFFLINE FRIEND";
             friendsList.add(friend);
             getFriends("0");
             inviteFriendsAdapter = new InviteFriendsAdapter(friendsList, this, this, getResources(), this);
         } else
             if (!isFirstTimeInviteFriends && getIntent().getBooleanExtra("isEdit", false) && !getIntent().getBooleanExtra("isParticipant", false)) {
                 Friend friend = new Friend();
-                friend.userName = "Add Offline Friend";
+                friend.userName = "ADD OFFLINE FRIEND";
                 friendsList.add(friend);
                 getInvitedFriends("0");
                 inviteFriendsAdapter = new InviteFriendsAdapter(friendsList, this, this, getResources(), this);

@@ -8,49 +8,49 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#FFFFFF">
-
-        <LinearLayout
-            android:id="@+id/ludicoinsLayoutInCupons"
-            android:layout_width="wrap_content"
-            android:layout_height="32dp"
-            android:background="@drawable/round_ludicoins"
-            android:orientation="horizontal"
-            android:layout_gravity="center"
-            android:layout_marginRight="16dp"
-            android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true">
-
-            <ImageView
-                android:id="@+id/imageView4"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_ludicoins" />
-
-            <TextView
-                android:id="@+id/cuponsLudicoins"
-                android:layout_height="match_parent"
-                android:layout_width="wrap_content"
-                android:text="\?"
-                android:gravity="center"
-                android:textSize="16sp"
-                android:fontFamily="@string/fontmedium"
-                android:layout_marginEnd="8dp"
-                android:textColor="@color/yellow"/>
-        </LinearLayout>
-
-        <larc.ludiconprod.Utils.ui.SlidingTabLayout
-            android:id="@+id/couponsTabs"
-            android:layout_toLeftOf="@+id/ludicoinsLayoutInCupons"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:textColor="@color/tab_text_color"
-            android:background="#FFFFFF"/>
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF">
 
-    </RelativeLayout>
+            <LinearLayout
+                android:id="@+id/ludicoinsLayoutInCupons"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:background="@drawable/round_ludicoins"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:layout_marginRight="16dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true">
+
+                <ImageView
+                    android:id="@+id/imageView4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_ludicoins" />
+
+                <TextView
+                    android:id="@+id/cuponsLudicoins"
+                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:text="\?"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    android:fontFamily="@string/fontmedium"
+                    android:layout_marginEnd="8dp"
+                    android:textColor="@color/yellow"/>
+            </LinearLayout>
+
+            <larc.ludiconprod.Utils.ui.SlidingTabLayout
+                android:id="@+id/couponsTabs"
+                android:layout_toLeftOf="@+id/ludicoinsLayoutInCupons"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:textColor="@color/tab_text_color"
+                android:background="#FFFFFF"/>
+
+        </RelativeLayout>
 
         <android.support.v4.view.ViewPager
             android:id="@+id/couponsPager"

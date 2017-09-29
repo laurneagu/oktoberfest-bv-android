@@ -52,6 +52,7 @@ import larc.ludiconprod.Utils.ui.SlidingTabLayout;
 
 import static larc.ludiconprod.Activities.ActivitiesActivity.deleteCachedInfo;
 import static larc.ludiconprod.Activities.ChatActivity.isOnChat1to1;
+import static larc.ludiconprod.Activities.Main.bottomBar;
 
 /**
  * Created by ancuta on 8/18/2017.
@@ -138,7 +139,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
             // Setting the ViewPager For the SlidingTabsLayout
             tabs.setViewPager(pager);
             chatAdapter = new ConversationsAdapter(chatList, activity.getApplicationContext(), activity, getResources(), currentFragment);
-            getFirstPage();
+
 
             final float scale = mContext.getResources().getDisplayMetrics().density;
             this.dp56 = (int) (56 * scale + 0.5f);
@@ -179,15 +180,48 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                         if (dataSnapshot.hasChild("event_id")) {
                             chat.eventId = dataSnapshot.child("event_id").getValue().toString();
                         }
-                        String names = "";
+                        String names;
+                        if (chat.eventId != null) {
+                            names = "Group:";
+                        } else {
+                            names = "";
+                        }
+                        int counterOfNames=0;
                         for (DataSnapshot users : dataSnapshot.child("users").getChildren()) {
+
                             if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(activity).id)) {
-                                names += users.child("name").getValue().toString() + ",";
-                                chat.image.add(users.child("image").getValue().toString());
+                                if(counterOfNames == 0) {
+                                    if (users.hasChild("name")) {
+                                        names += users.child("name").getValue().toString() + ",";
+                                        counterOfNames++;
+                                    } else {
+                                        names += "Unknown" + ",";
+                                        counterOfNames++;
+                                    }
+                                }else if(counterOfNames == 1){
+                                    if (users.hasChild("name")) {
+                                        if(dataSnapshot.child("users").getChildrenCount() > 3) {
+                                            names += users.child("name").getValue().toString() + "....";
+                                        }else{
+                                            names += users.child("name").getValue().toString() + ",";
+                                        }
+                                        counterOfNames++;
+                                    } else {
+                                        if(dataSnapshot.child("users").getChildrenCount() > 3) {
+                                            names += "Unknown" + "....";
+                                        }else{
+                                            names += "Unknown" + ",";
+                                        }
+                                        counterOfNames++;
+                                    }
+                                }
+                                if (users.hasChild("image")) {
+                                    chat.image.add(users.child("image").getValue().toString());
+                                } else {
+                                    chat.image.add("");
+                                }
                                 chat.otherParticipantId.add(users.getKey().toString());
-
                             }
-
                         }
                         chat.participantName = names;
 
@@ -216,14 +250,6 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                 @Override
                 public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                     try {
-                        if (!isOnChatPage && !isOnChat1to1) {
-                            String names = "";
-                            for (DataSnapshot users : dataSnapshot.child("users").getChildren()) {
-                                if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(activity).id)) {
-                                    names += users.child("name").getValue().toString() + ",";
-                                }
-                            }
-                        }
                         if (dataSnapshot.hasChild("last_message_date") && isOnChatPage && !isAlreadyProcess) {
                             isAlreadyProcess = true;
                             for (int i = 0; i < chatList.size(); i++) {
@@ -242,15 +268,48 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                             if (dataSnapshot.hasChild("event_id")) {
                                 chat.eventId = dataSnapshot.child("event_id").getValue().toString();
                             }
-                            String names = "";
+                            String names;
+                            if (chat.eventId != null) {
+                                names = "Group:";
+                            } else {
+                                names = "";
+                            }
+                            int counterOfNames=0;
                             for (DataSnapshot users : dataSnapshot.child("users").getChildren()) {
+
                                 if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(activity).id)) {
-                                    names += users.child("name").getValue().toString() + ",";
-                                    chat.image.add(users.child("image").getValue().toString());
+                                    if(counterOfNames == 0) {
+                                        if (users.hasChild("name")) {
+                                            names += users.child("name").getValue().toString() + ",";
+                                            counterOfNames++;
+                                        } else {
+                                            names += "Unknown" + ",";
+                                            counterOfNames++;
+                                        }
+                                    }else if(counterOfNames == 1){
+                                        if (users.hasChild("name")) {
+                                            if(dataSnapshot.child("users").getChildrenCount() > 3) {
+                                                names += users.child("name").getValue().toString() + "....";
+                                            }else{
+                                                names += users.child("name").getValue().toString() + ",";
+                                            }
+                                            counterOfNames++;
+                                        } else {
+                                            if(dataSnapshot.child("users").getChildrenCount() > 3) {
+                                                names += "Unknown" + "....";
+                                            }else{
+                                                names += "Unknown" + ",";
+                                            }
+                                            counterOfNames++;
+                                        }
+                                    }
+                                    if (users.hasChild("image")) {
+                                        chat.image.add(users.child("image").getValue().toString());
+                                    } else {
+                                        chat.image.add("");
+                                    }
                                     chat.otherParticipantId.add(users.getKey().toString());
-
                                 }
-
                             }
                             chat.participantName = names;
 
@@ -303,6 +362,8 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                 }
             });
 
+            getFirstPage();
+
 
             getFriends("0");
             friendsAdapter = new FriendsAdapter(friends, activity, activity, getResources(), this);
@@ -337,6 +398,12 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                 noConversationTV.setVisibility(View.VISIBLE);
                 joinActivitiesTV.setVisibility(View.VISIBLE);
                 discoverActivitiesButton.setVisibility(View.VISIBLE);
+                discoverActivitiesButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        bottomBar.setDefaultTab(R.id.tab_activities);
+                    }
+                });
                 chatImage.setVisibility(View.VISIBLE);
                 chatListView.setVisibility(View.INVISIBLE);
             } else {
@@ -344,8 +411,18 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                 joinActivitiesTV.setVisibility(View.INVISIBLE);
                 discoverActivitiesButton.setVisibility(View.INVISIBLE);
                 chatImage.setVisibility(View.INVISIBLE);
+                chatListView.setVisibility(View.VISIBLE);
             }
             shouldRequestPage=true;
+            if(isLastPage){
+                ArrayList<String> unseenChats=new ArrayList<>();
+                for(int i=0;i<chatList.size();i++){
+                   if(!chatList.get(i).lastMessageId.equals(chatList.get(i).lastMessageSeen)) {
+                       unseenChats.add(chatList.get(i).chatId);
+                   }
+                }
+                Persistance.getInstance().setUnseenChats(activity,unseenChats);
+            }
             if (chatListView != null && shouldRequestPage) {
                 chatListView.setOnTouchListener(new View.OnTouchListener() {
                     @Override
@@ -418,6 +495,12 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                 noFriendsTV.setVisibility(View.VISIBLE);
                 joinActivitiesFriendsTV.setVisibility(View.VISIBLE);
                 discoverActivitiesFriendsButton.setVisibility(View.VISIBLE);
+                discoverActivitiesFriendsButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        bottomBar.setDefaultTab(R.id.tab_activities);
+                    }
+                });
                 friendsImage.setVisibility(View.VISIBLE);
             } else {
                 noFriendsTV.setVisibility(View.INVISIBLE);
@@ -475,7 +558,12 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                numberOfTotalChatsArrived = (int) dataSnapshot.getChildrenCount();
+                numberOfTotalChatsArrived = 0;
+                for (DataSnapshot chats : dataSnapshot.getChildren()) {
+                    if(chats.hasChild("last_message_date")){
+                        numberOfTotalChatsArrived++;
+                    }
+                }
                 for (DataSnapshot chats : dataSnapshot.getChildren()) {
                     if (chats.hasChild("last_message_date")) {
                         final Chat chat = new Chat();
@@ -565,15 +653,16 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                             }
                         });
                     }else{
-                        isLastPage = true;
-                        setAdapter();
+
                         if (numberOfTotalChatsArrived == counterOfChats) {
                             isLastPage = true;
+                            setAdapter();
                         }
                     }
                 }
                 if(numberOfTotalChatsArrived == 0){
                     setAdapter();
+                    isLastPage=true;
                 }
             }
 
@@ -594,7 +683,12 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
 
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    numberOfTotalChatsArrived = (int) dataSnapshot.getChildrenCount();
+                    numberOfTotalChatsArrived = 0;
+                    for (DataSnapshot chats : dataSnapshot.getChildren()) {
+                        if(chats.hasChild("last_message_date")){
+                            numberOfTotalChatsArrived++;
+                        }
+                    }
                     for (DataSnapshot chats : dataSnapshot.getChildren()) {
                         if (chats.hasChild("last_message_date")) {
                             final Chat chat = new Chat();
@@ -685,8 +779,10 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
 
 
                     }else{
-                        isLastPage = true;
-                        setAdapter();
+                            if (numberOfTotalChatsArrived == counterOfChats) {
+                                isLastPage = true;
+                                setAdapter();
+                            }
 
                     }
                     }

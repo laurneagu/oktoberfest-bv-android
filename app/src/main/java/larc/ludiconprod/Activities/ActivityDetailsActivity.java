@@ -31,6 +31,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
@@ -93,6 +94,7 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
     Button deleteOrCancelEventButton;
     Button joinOrUnjoinButton;
     ImageView backgroundImage;
+    TextView sportName;
     GoogleMap m_gmap;
     public static boolean ifFirstTimeGetParticipants = false;
     double latitude;
@@ -179,6 +181,7 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
         playTimeAndDate = (TextView) findViewById(R.id.playTimeAndDate);
         companyImage = (ImageView) findViewById(R.id.companyImage);
         locationName = (TextView) findViewById(R.id.locationName);
+        sportName=(TextView)findViewById(R.id.sportName);
         adress = (TextView) findViewById(R.id.adress);
         mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
@@ -243,18 +246,19 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
 
         if (sport.code.equalsIgnoreCase("JOG") ||
                 sport.code.equalsIgnoreCase("GYM") || sport.code.equalsIgnoreCase("CYC"))
-            weWillPlayString = "Will go to " + sport.sportName;
+            weWillPlayString = "Will go to";
         else
         if (sport.code.equalsIgnoreCase("OTH")) {
-            weWillPlayString = "Will play " + eventDetails.otherSportName;
+            weWillPlayString = "Will play";
         } else
-            weWillPlayString = "Will play " + sport.sportName;
+            weWillPlayString = "Will play";
 
         sportPlayed.setText(weWillPlayString);
+        sportName.setText(sport.sportName.substring(0, 1).toUpperCase() + sport.sportName.substring(1));
 
         ludicoinsNumber.setText("+ " + String.valueOf(eventDetails.ludicoins));
         pointsNumber.setText("+ " + String.valueOf(eventDetails.points));
-        playerNumber.setText("PLAYERS " + String.valueOf(eventDetails.numberOfParticipants + "/" + String.valueOf(eventDetails.capacity)));
+        playerNumber.setText(String.valueOf(eventDetails.numberOfParticipants + "/" + String.valueOf(eventDetails.capacity)));
 
         LinearLayout locationCard = (LinearLayout) findViewById(R.id.root);
         TextView t = (TextView) locationCard.findViewById(R.id.ludicoinsNumber);

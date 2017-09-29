@@ -4,8 +4,7 @@
     android:id="@+id/leaderCard"
     android:layout_width="match_parent"
     android:layout_height="40dp"
-    android:gravity="center_vertical"
-    android:background="@color/background">
+    android:gravity="center_vertical">
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"

@@ -43,6 +43,8 @@
         android:inputType="textEmailAddress"
         android:paddingLeft="15dp"
         android:hint="Email Adress"
+        android:textColor="@color/darkblue"
+        android:textColorHint="@color/lightGray"
         android:drawableLeft="@drawable/ic_email"
         android:layout_marginTop="32dp"
         android:background="@drawable/rounded_edittext"
@@ -61,6 +63,8 @@
         android:layout_marginTop="8dp"
         android:paddingLeft="15dp"
         android:textSize="16sp"
+        android:textColor="@color/darkblue"
+        android:textColorHint="@color/lightGray"
         android:drawableLeft="@drawable/ic_lock"
         android:hint="Password"/>
 
@@ -82,7 +86,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
+            android:textSize="16sp"
             android:text="Forgot your password?"
+            android:textColor="@color/pink"
             android:layout_centerHorizontal="true"/>
         </RelativeLayout>
 

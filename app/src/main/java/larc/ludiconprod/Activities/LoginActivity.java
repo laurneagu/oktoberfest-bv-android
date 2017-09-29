@@ -24,6 +24,7 @@ import java.util.HashMap;
 import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.PasswordEncryptor;
 import larc.ludiconprod.R;
+import me.anwarshahriar.calligrapher.Calligrapher;
 
 /**
  * Created by ancuta on 7/11/2017.
@@ -86,11 +87,15 @@ public class LoginActivity extends Activity {
         TextView title = (TextView)toolbar.findViewById(R.id.titleText);
         title.setTypeface(typeFace);
 
+        Calligrapher calligrapher = new Calligrapher(this);
+        calligrapher.setFont(this, "fonts/Quicksand-Medium.ttf", true);
+
         backButton = (RelativeLayout) findViewById(R.id.backButton);
         forgotPasswordText=(TextView) findViewById(R.id.forgotPasswordText);
         TextView titleText=(TextView) findViewById(R.id.titleText);
         titleText.setText("Login");
         titleText.setTypeface(typeFace);
+        forgotPasswordText.setTypeface(typeFaceBold);
 
         password=(EditText) findViewById(R.id.password) ;
         password.setTypeface(typeFace);

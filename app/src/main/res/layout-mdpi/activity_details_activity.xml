@@ -3,11 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#f7f9fc">
+
     <ImageView
-        android:layout_marginTop="56dp"
-        android:layout_width="match_parent"
-        android:layout_height="12dp"
-        android:background="@drawable/shadow_top_to_bottom"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/backgroundImage"
+        android:background="@drawable/bg_sport_football"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -28,7 +32,6 @@
             android:id="@+id/scroll"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:scrollbars="none"
@@ -37,13 +40,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/backgroundImage"
-                    android:background="@drawable/bg_sport_football"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentRight="true"/>
+
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -55,6 +52,7 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:layout_marginBottom="16dp"
+                        android:layout_marginTop="16dp"
                         android:layout_marginRight="16dp"
                         android:id="@+id/creatorImageProfile"
                         android:background="@drawable/ph_user"/>
@@ -73,14 +71,30 @@
                             android:id="@+id/creatorName"
                             android:textSize="18sp"
                             android:fontFamily="@string/fontmedium"/>
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Will play Football"
+                            android:text="Will play"
                             android:id="@+id/sportPlayed"
-                            android:textColor="#400c3855"
+                            android:textColor="@color/lightGray"
                             android:textSize="14sp"
                             android:fontFamily="@string/fontmedium"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Football"
+                            android:layout_toRightOf="@+id/sportPlayed"
+                            android:id="@+id/sportName"
+                            android:layout_marginLeft="4dp"
+                            android:textColor="@color/green"
+                            android:textSize="14sp"
+                            android:fontFamily="@string/fontmedium"/>
+
+                        </RelativeLayout>
 
 
                     </LinearLayout>
@@ -91,7 +105,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#400c3855"
+                    android:background="#0D0c3855"
                     android:id="@+id/line1"
                     android:layout_below="@+id/creatorLayout">
                 </RelativeLayout>
@@ -147,8 +161,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
-                        android:textColor="#0c3855"
-                        android:alpha="0.4"
+                        android:textColor="@color/lightGray"
                         android:layout_gravity="center"
                         android:text="  per hour" />
 
@@ -159,7 +172,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#400c3855"
+                    android:background="#0D0c3855"
                     android:id="@+id/line2"
                     android:layout_below="@+id/pointsLayout">
 
@@ -172,8 +185,22 @@
                     android:textSize="14sp"
                     android:fontFamily="@string/fontmedium"
                     android:textColor="#0c3855"
+                    android:id="@+id/players"
+                    android:text="PLAYERS"
+                    android:layout_below="@+id/line2"
+                    android:layout_marginTop="24dp"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:fontFamily="@string/fontmedium"
+                    android:textColor="@color/green"
                     android:id="@+id/playerNumber"
-                    android:text="PLAYERS 7/9"
+                    android:layout_marginLeft="4dp"
+                    android:layout_toRightOf="@+id/players"
+                    android:text="7/9"
                     android:layout_below="@+id/line2"
                     android:layout_marginTop="24dp"
                     />
@@ -450,7 +477,7 @@
                     android:text="Lorem ipsum dolor sit amet,consesctetur lorem it adipsicing elit,sed do eiusmod tempor."
                     android:textSize="14dp"
                     android:fontFamily="@string/fontmedium"
-                    android:textColor="#400c3855"
+                    android:textColor="@color/lightGray"
                     android:layout_below="@id/mapLayout"
                     android:layout_marginTop="16dp"
                     android:id="@+id/description"/>
@@ -518,6 +545,14 @@
         </ScrollView>
 
     </LinearLayout>
+
+
+
+    <ImageView
+        android:layout_marginTop="56dp"
+        android:layout_width="match_parent"
+        android:layout_height="12dp"
+        android:background="@drawable/shadow_top_to_bottom"/>
 
 
 </RelativeLayout>

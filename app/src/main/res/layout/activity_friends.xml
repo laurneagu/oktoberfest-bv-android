@@ -7,8 +7,6 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
-
-
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -22,7 +20,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="62.3dp"
+            android:layout_marginTop="50dp"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true" />

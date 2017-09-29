@@ -156,7 +156,7 @@ public class LeaderboardTab extends Fragment implements Response.Listener<JSONOb
 
         int last = listView.getLastVisiblePosition();
         int count = leaderboardAdapter.getCount();
-        if (last + 1 < count) {
+        if ( pageNumber != 0 && last + 1 < count) {
             listView.smoothScrollToPosition(last + 1);
         }
     }

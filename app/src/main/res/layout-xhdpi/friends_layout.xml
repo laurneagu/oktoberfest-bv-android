@@ -10,7 +10,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginLeft="10dp"
-        />
+         />
 
     <TextView
         android:layout_width="wrap_content"
@@ -52,7 +52,7 @@
         android:layout_alignLeft="@+id/badgesLayout"
         android:layout_alignStart="@+id/badgesLayout"
         android:layout_marginBottom="3dp"
-        />
+         />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -69,27 +69,27 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:id="@+id/sportsContainer">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/numberSports"
-                android:textColor="#5c5c5c"
-                android:layout_marginBottom="5dp"
-                android:text="2 sports"
-                android:textSize="12dp"
-                android:layout_marginLeft="3dp"
-                android:layout_alignTop="@+id/linearLayout"
-                android:layout_alignLeft="@+id/more_btn" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/numberSports"
+            android:textColor="#5c5c5c"
+            android:layout_marginBottom="5dp"
+            android:text="2 sports"
+            android:textSize="12dp"
+            android:layout_marginLeft="3dp"
+            android:layout_alignTop="@+id/linearLayout"
+            android:layout_alignLeft="@+id/more_btn" />
 
-            <ImageView
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:layout_marginLeft="7dp"
-                android:layout_marginTop="2dp"
-                android:id="@+id/ballImage"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/sports_icon"
-                android:layout_toRightOf="@id/numberSports" />
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginLeft="7dp"
+            android:layout_marginTop="2dp"
+            android:id="@+id/ballImage"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/sports_icon"
+            android:layout_toRightOf="@id/numberSports" />
         </LinearLayout>
 
         <LinearLayout
@@ -97,27 +97,27 @@
             android:layout_height="wrap_content"
             android:id="@+id/mutualsContainer"
             >
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/numberoOfMutuals"
-                android:textColor="#5c5c5c"
-                android:layout_marginBottom="5dp"
-                android:text="3 mutual friends"
-                android:textSize="12dp"
-                android:layout_marginLeft="10dp"
-                android:layout_alignTop="@+id/ballImage"
-                android:layout_alignLeft="@+id/ballImage" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/numberoOfMutuals"
+            android:textColor="#5c5c5c"
+            android:layout_marginBottom="5dp"
+            android:text="3 mutual friends"
+            android:textSize="12dp"
+            android:layout_marginLeft="10dp"
+            android:layout_alignTop="@+id/ballImage"
+            android:layout_alignLeft="@+id/ballImage" />
 
-            <ImageView
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:layout_marginLeft="7dp"
-                android:id="@+id/mutualsImage"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="2dp"
-                android:background="@drawable/mutualfriends"
-                android:layout_toRightOf="@id/numberoOfMutuals" />
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginLeft="7dp"
+            android:id="@+id/mutualsImage"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="2dp"
+            android:background="@drawable/mutualfriends"
+            android:layout_toRightOf="@id/numberoOfMutuals" />
         </LinearLayout>
     </LinearLayout>
 
