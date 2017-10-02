@@ -233,31 +233,30 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
         int size = monthsLayout.getChildCount();
         ArrayList<String> monthsStrings = new ArrayList<>(u.eventsM.keySet());
         Collections.sort(monthsStrings, UserProfile.MONTH_COMP);
+        TopGraph tg = (TopGraph) v.findViewById(R.id.topGraph);
+        String month;
+        int max = 0;
+        int event;
         for (int i = 0; i < size && i < monthsStrings.size(); ++i) {
             TextView tv = (TextView) monthsLayout.getChildAt(i);
-            tv.setText(monthsStrings.get(i));
-        }
-        TopGraph tg = (TopGraph) v.findViewById(R.id.topGraph);
+            month = monthsStrings.get(i);
+            tv.setText(month);
 
-        Collection<Integer> events = u.eventsM.values();
-        int index = 0;
-        int max = 0;
-        for (Integer e : events) {
-            tg.setText(index, "" + e);
-            ++index;
-            if (max < e) {
-                max = e;
+            event = u.eventsM.get(month);
+            tg.setText(i, "" + u.eventsM.get(month));
+            if (max < event) {
+                max = event;
             }
         }
 
-        index = 0;
-        for (Integer e : events) {
+        for (int i = 0; i < size && i < monthsStrings.size(); ++i) {
+            month = monthsStrings.get(i);
+            event = u.eventsM.get(month);
             if (max == 0) {
-                tg.setProgress(index, 0);
+                tg.setProgress(i, 0);
             } else {
-                tg.setProgress(index, e * 100 / max);
+                tg.setProgress(i, event * 100 / max);
             }
-            ++index;
         }
 
         LinearLayout barsLayout = (LinearLayout) v.findViewById(R.id.barGraph);
@@ -266,8 +265,9 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
         Bar bar;
         max = 0;
         ArrayList<Bar> bars = new ArrayList<>();
-        for (int i = 0; i < size && i < points.size(); ++i) {
-            int p = points.get(i);
+        for (int i = 0; i < size && i < monthsStrings.size(); ++i) {
+            month = monthsStrings.get(i);
+            int p = u.pointsM.get(month);
             RelativeLayout rl = (RelativeLayout) barsLayout.getChildAt(i);
             bar = (Bar) rl.getChildAt(0);
             bar.setValue(p);
@@ -277,8 +277,9 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
             bars.add(bar);
         }
 
-        for (int i = 0; i < size && i < bars.size(); ++i) {
-            int p = points.get(i);
+        for (int i = 0; i < size && i < monthsStrings.size(); ++i) {
+            month = monthsStrings.get(i);
+            int p = u.pointsM.get(month);
             bar = bars.get(i);
             if (max == 0) {
                 bar.setProgress(0);
