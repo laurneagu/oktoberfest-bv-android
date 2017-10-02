@@ -14,7 +14,7 @@ import java.util.TreeMap;
  */
 
 public class UserProfile extends User {
-    private static final Comparator<String> MONTH_COMP = new Comparator<String>() {
+    public static final Comparator<String> MONTH_COMP = new Comparator<String>() {
         private HashMap<String, Integer> mi = new HashMap<>();
         {
             mi.put("jan", 0);

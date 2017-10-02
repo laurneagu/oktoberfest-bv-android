@@ -232,6 +232,7 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
         LinearLayout monthsLayout = (LinearLayout) v.findViewById(R.id.months);
         int size = monthsLayout.getChildCount();
         ArrayList<String> monthsStrings = new ArrayList<>(u.eventsM.keySet());
+        Collections.sort(monthsStrings, UserProfile.MONTH_COMP);
         for (int i = 0; i < size && i < monthsStrings.size(); ++i) {
             TextView tv = (TextView) monthsLayout.getChildAt(i);
             tv.setText(monthsStrings.get(i));
