@@ -387,10 +387,10 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
     public void onFriendResponse(JSONObject response, boolean action) {
         String name = this.user.firstName + " " + this.user.lastName;
         if (action) {
-            Toast.makeText(this, "You are now friend with " + name + "!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "You are now following " + name + "!", Toast.LENGTH_SHORT).show();
             this.friendAdded();
         } else {
-            Toast.makeText(this, "You are no longer friend with " + name + "!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "You are no following " + name + "!", Toast.LENGTH_SHORT).show();
             this.friendRemoved();
         }
     }

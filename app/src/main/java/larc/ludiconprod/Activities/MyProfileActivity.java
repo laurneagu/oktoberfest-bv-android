@@ -1,6 +1,7 @@
 package larc.ludiconprod.Activities;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,6 +11,8 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -26,6 +29,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.NetworkError;
 import com.android.volley.Response;
@@ -45,6 +49,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
@@ -67,6 +72,9 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
     protected View v;
     protected ImageView settings;
     static public FragmentActivity activity;
+    static boolean isActive = false;
+    ConfirmationDialog confirmationDialog;
+
 
     @Nullable
     @Override
@@ -89,43 +97,6 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
             profileTitle.setTextColor(getResources().getColor(R.color.darkblue));
 
             Button logout = (Button) v.findViewById(R.id.profileLogout);
-            logout.setOnClickListener(new View.OnClickListener() {
-                final Typeface typeFace = Typeface.createFromAsset(activity.getAssets(), "fonts/Quicksand-Medium.ttf");
-                final Typeface typeFaceBold = Typeface.createFromAsset(activity.getAssets(), "fonts/Quicksand-Bold.ttf");
-
-                @Override
-                public void onClick(View view) {
-                    final ConfirmationDialog confirmationDialog = new ConfirmationDialog(activity);
-                    confirmationDialog.show();
-                    confirmationDialog.title.setText("Confirm?");
-                    confirmationDialog.title.setTypeface(typeFaceBold);
-                    confirmationDialog.message.setText("Are you sure you want to logout?");
-                    confirmationDialog.message.setTypeface(typeFace);
-                    confirmationDialog.confirm.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            DatabaseReference userNode = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(activity).id);
-                            userNode.child("activeToken").setValue(false);
-                            Persistance.getInstance().deleteUserProfileInfo(activity);
-                            Log.v("logout", "am dat logout");
-                            SharedPreferences preferences = activity.getSharedPreferences("ProfileImage", 0);
-                            preferences.edit().remove("ProfileImage").apply();
-                            activity.finish();
-                            Intent intent = new Intent(mContext, IntroActivity.class);
-                            startActivity(intent);
-                            confirmationDialog.dismiss();
-                            Persistance.getInstance().setHappeningNow(null, getActivity());
-                        }
-                    });
-                    confirmationDialog.dismiss.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            confirmationDialog.dismiss();
-                        }
-                    });
-                }
-            });
-
             this.settings = (ImageView) v.findViewById(R.id.settings);
 
             v.findViewById(R.id.ludicoinsLayout).setOnClickListener(new View.OnClickListener() {
@@ -169,6 +140,45 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
             }
 
             ((Button) v.findViewById(R.id.profileLogout)).setTypeface(typeFaceBold);
+
+            logout.setOnClickListener(new View.OnClickListener() {
+                final Typeface typeFace = Typeface.createFromAsset(activity.getAssets(), "fonts/Quicksand-Medium.ttf");
+                final Typeface typeFaceBold = Typeface.createFromAsset(activity.getAssets(), "fonts/Quicksand-Bold.ttf");
+
+                @Override
+                public void onClick(View view) {
+                    confirmationDialog = new ConfirmationDialog(getActivity());
+                    confirmationDialog.show();
+                    confirmationDialog.title.setText("Confirm?");
+                    confirmationDialog.title.setTypeface(typeFaceBold);
+                    confirmationDialog.message.setText("Are you sure you want to logout?");
+                    confirmationDialog.message.setTypeface(typeFace);
+                    confirmationDialog.confirm.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                DatabaseReference userNode = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(activity).id);
+                                userNode.child("activeToken").setValue(false);
+                                Persistance.getInstance().deleteUserProfileInfo(activity);
+                                Log.v("logout", "am dat logout");
+                                SharedPreferences preferences = activity.getSharedPreferences("ProfileImage", 0);
+                                preferences.edit().remove("ProfileImage").apply();
+                                activity.finish();
+                                Intent intent = new Intent(mContext, IntroActivity.class);
+                                startActivity(intent);
+                                confirmationDialog.dismiss();
+                                Persistance.getInstance().setHappeningNow(null, getActivity());
+                            }
+                        });
+
+                        confirmationDialog.dismiss.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                confirmationDialog.dismiss();
+                            }
+                        });
+                    }
+
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -202,6 +212,17 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
     public void onPause() {
         super.onPause();
         this.runningTime = 0;
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        isActive = true;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        isActive = false;
     }
 
     private void requestInfo() {

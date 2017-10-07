@@ -3,8 +3,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingBottom="56dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <RelativeLayout
         android:id="@+id/myProfileTop"
@@ -75,7 +74,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="80dp"
+        android:layout_marginBottom="56dp"
         android:scrollbars="none"
         android:fillViewport="true"
         android:layout_below="@+id/noConnectionTop"
@@ -390,6 +389,24 @@
                 <include
                     layout="@layout/my_profile_graph"/>
             </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:paddingBottom="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_alignParentBottom="true">
+                <Button
+                    android:id="@+id/profileLogout"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text="LOGOUT"
+                    android:textColor="#ffffff"
+                    android:textSize="14sp"
+                    android:background="@drawable/pink_button_selector"/>
+            </RelativeLayout>
         </LinearLayout>
     </ScrollView>
     <ProgressBar
@@ -413,22 +430,6 @@
         android:background="@drawable/shadow_bottom_to_top"
         android:layout_alignParentBottom="true"/>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:paddingBottom="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_alignParentBottom="true">
-        <Button
-            android:id="@+id/profileLogout"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="LOGOUT"
-            android:textColor="#ffffff"
-            android:textSize="14sp"
-            android:background="@drawable/pink_button_selector"/>
-    </RelativeLayout>
+
 
 </RelativeLayout>

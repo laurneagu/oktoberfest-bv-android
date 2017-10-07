@@ -103,10 +103,6 @@ public class IntroActivity extends Activity {
             headers.put("apiKey", "b0a83e90-4ee7-49b7-9200-fdc5af8c2d33");
             HTTPResponseController.getInstance().returnResponse(params, headers, IntroActivity.this, "http://207.154.236.13/api/login/");
 
-
-
-
-
         }
     }
 
@@ -308,7 +304,8 @@ public class IntroActivity extends Activity {
 
 
                             }
-                        });
+                        }
+                        );
                 Bundle parameters = new Bundle();
                 parameters.putString("fields", "id,name,email,picture.type(large)");
                 request.setParameters(parameters);
