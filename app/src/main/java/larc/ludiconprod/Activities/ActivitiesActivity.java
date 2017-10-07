@@ -54,7 +54,6 @@ import com.google.android.gms.location.FusedLocationProviderApi;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -83,7 +82,6 @@ import larc.ludiconprod.Utils.util.Sponsors;
 import larc.ludiconprod.Utils.util.Sport;
 import me.anwarshahriar.calligrapher.Calligrapher;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
 import static larc.ludiconprod.Activities.Main.bottomBar;
 
 /**
@@ -107,7 +105,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
     static public MyAdapter myAdapter;
     static public ActivitiesActivity currentFragment;
     public static ArrayList<Event> aroundMeEventList = new ArrayList<Event>();
-    static public ArrayList<Sponsors> sponsorsList =new ArrayList<>();
+    static public ArrayList<Sponsors> sponsorsList = new ArrayList<>();
     public static final ArrayList<Event> myEventList = new ArrayList<Event>();
     ImageView heartImageAroundMe;
     TextView noActivitiesTextFieldAroundMe;
@@ -146,13 +144,13 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
     public static CountDownTimer buttonSetter;
     static Button checkinButton;
     private boolean noGps = false;
-    static Thread stopHappeningNow;
-    static Thread startHappeningNow;
+    public static Thread stopHappeningNow;
+    public static Thread startHappeningNow;
     static Boolean HPShouldBeVisible = false;
     static public HappeningNowLocation happeningNowLocation = new HappeningNowLocation();
     static public FragmentActivity activity;
     static public int startedEventDate = Integer.MAX_VALUE;
-    int pastEvent=Integer.MAX_VALUE;
+    int pastEvent = Integer.MAX_VALUE;
     Event eventShouldHappen;
     CallbackManager callbackManager;
     ShareDialog shareDialog;
@@ -169,24 +167,25 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         byte[] decodedBytes = Base64.decode(input, 0);
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
+
     public String encodeToBase64(Bitmap image, Bitmap.CompressFormat compressFormat, int quality) {
         ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
         image.compress(compressFormat, quality, byteArrayOS);
         return Base64.encodeToString(byteArrayOS.toByteArray(), Base64.DEFAULT);
     }
 
-    public boolean checkedLocation(Event currentEvent){
-        Boolean isInLocation=false;
-        Location location=LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-        System.out.println(location.getLatitude()+ " locatie");
-        latitude=location.getLatitude();
-        longitude=location.getLongitude();
-        Location eventLocation=new Location(LocationManager.GPS_PROVIDER);
+    public boolean checkedLocation(Event currentEvent) {
+        Boolean isInLocation = false;
+        Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+        System.out.println(location.getLatitude() + " locatie");
+        latitude = location.getLatitude();
+        longitude = location.getLongitude();
+        Location eventLocation = new Location(LocationManager.GPS_PROVIDER);
         eventLocation.setLatitude(currentEvent.latitude);
         eventLocation.setLongitude(currentEvent.longitude);
-        System.out.println(location.distanceTo(eventLocation) +" distanta");
-        if(location.distanceTo(eventLocation) < 20){
-            isInLocation =true;
+        System.out.println(location.distanceTo(eventLocation) + " distanta");
+        if (location.distanceTo(eventLocation) < 20) {
+            isInLocation = true;
         }
         return isInLocation;
     }
@@ -209,12 +208,10 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                     @Override
                     public void run() {
 
-                        params.height=(int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 218, getResources().getDisplayMetrics());
+                        params.height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 218, getResources().getDisplayMetrics());
                         happeningNowLayout.requestLayout();
                     }
                 });
-
-
 
 
                 //set happening now field
@@ -232,11 +229,11 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
                 final Event currentEvent = Persistance.getInstance().getHappeningNow(activity);
 
-              checkinButton.setOnClickListener(new View.OnClickListener() {
+                checkinButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         if (buttonState == 0) {
-                            if(!checkedLocation(currentEvent)) {
+                            if (!checkedLocation(currentEvent)) {
                                 HashMap<String, String> params = new HashMap<String, String>();
                                 HashMap<String, String> headers = new HashMap<String, String>();
                                 headers.put("authKey", Persistance.getInstance().getUserInfo(activity).authKey);
@@ -284,7 +281,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
                                 requestLocationUpdates();
                                 happeningNowLocation.startDate = String.valueOf(System.currentTimeMillis() / 1000);
-                            }else{
+                            } else {
                                 Toast.makeText(activity, "Go to event location to start sweating on points!", Toast.LENGTH_LONG).show();
                             }
 
@@ -418,9 +415,6 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                 }
 
 
-
-
-
             } else
                 if (msg.what == 1) {
                     System.out.println("eventStopped");
@@ -476,7 +470,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         headers.put("authKey", Persistance.getInstance().getUserInfo(activity).authKey);
 
         GPSTracker gps = new GPSTracker(activity.getApplicationContext(), activity);
-         if (!gps.canGetLocation()) {
+        if (!gps.canGetLocation()) {
             this.noGps = true;
             this.prepareError("No location services available!");
             return;
@@ -545,6 +539,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
         googleApiClient.connect();
 
+        System.out.println("on create");
 
         mContext = inflater.getContext();
         isOnActivityPage = true;
@@ -559,9 +554,9 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         Calligrapher calligrapher = new Calligrapher(activity);
         calligrapher.setFont(activity, "fonts/Quicksand-Medium.ttf", true);
 
-        if(Persistance.getInstance().getMyActivities(activity) !=null && !Persistance.getInstance().getMyActivities(activity).equals("0") && Persistance.getInstance().getMyActivities(activity).size() > 1) {
+        if (Persistance.getInstance().getMyActivities(activity) != null && !Persistance.getInstance().getMyActivities(activity).equals("0") && Persistance.getInstance().getMyActivities(activity).size() > 1) {
 
-            eventShouldHappen=Persistance.getInstance().getMyActivities(activity).get(0);
+            eventShouldHappen = Persistance.getInstance().getMyActivities(activity).get(0);
             pastEvent = eventShouldHappen.eventDateTimeStamp;
         }
         v1 = (ProgressBar) v.findViewById(R.id.activityProgressBar);
@@ -609,34 +604,27 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                 savePoints();
 
             }
-            if(HPShouldBeVisible){
+            if (HPShouldBeVisible) {
                 happeningNowLayout = (RelativeLayout) v.findViewById(R.id.generalHappeningNowLayout);
                 params = happeningNowLayout.getLayoutParams();
-                params.height=ViewGroup.LayoutParams.WRAP_CONTENT;
+                params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 happeningNowLayout.setLayoutParams(params);
+            } else {
+                happeningNowLayout = (RelativeLayout) v.findViewById(R.id.generalHappeningNowLayout);
+                params = happeningNowLayout.getLayoutParams();
+                params.height = 0;
             }
-
-            happeningNowLayout = (RelativeLayout) v.findViewById(R.id.generalHappeningNowLayout);
-            params = happeningNowLayout.getLayoutParams();
-            params.height=0;
             happeningNowLayout.requestLayout();
 
 
-
-
-
-
-            myAdapter = new MyAdapter(myEventList,sponsorsList, activity.getApplicationContext(), activity, getResources(), currentFragment);
-            fradapter = new AroundMeAdapter(aroundMeEventList,sponsorsList, activity.getApplicationContext(), activity, getResources(), currentFragment);
-
+            myAdapter = new MyAdapter(myEventList, sponsorsList, activity.getApplicationContext(), activity, getResources(), currentFragment);
+            fradapter = new AroundMeAdapter(aroundMeEventList, sponsorsList, activity.getApplicationContext(), activity, getResources(), currentFragment);
 
 
             getMyEvents("0");
 
             NumberOfRefreshMyEvents = 0;
             NumberOfRefreshAroundMe = 0;
-
-
 
 
             //
@@ -696,9 +684,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                 });
 
 
-
             }
-
 
 
             Runnable runnableStart = new Runnable() {
@@ -710,7 +696,6 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
                 @Override
                 public void run() {
-                    Log.d("runnableStart", "Started");
                     try {
                         Event currentEvent = Persistance.getInstance().getHappeningNow(activity);
                         if (currentEvent != null) {
@@ -718,7 +703,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                             if ((timeToNextEvent > -3600 && buttonState == 0) || (timeToNextEvent > -7200 && buttonState == 1)) {
                                 googleApiClient.connect();
                                 startedEventDate = currentEvent.eventDateTimeStamp;
-                                params.height=ViewGroup.LayoutParams.WRAP_CONTENT;
+                                params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                                 activity.runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
@@ -729,16 +714,23 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                                 return;
                             }
                         }
+                        System.out.println("ajung aici " + Persistance.getInstance().getMyActivities(activity).size());
 
-                        if (Persistance.getInstance().getMyActivities(activity).size() > 1) {
+                        if (myEventList.size() >= 1) {
                             long timeToNextEvent = (pastEvent - System.currentTimeMillis() / 1000);
+                            System.out.println("hai " + timeToNextEvent);
                             while (timeToNextEvent >= 0 || timeToNextEvent < -3600) {
                                 Thread.sleep(1000);
-                                pastEvent =Persistance.getInstance().getMyActivities(activity).get(0).eventDateTimeStamp;
-                                eventShouldHappen =Persistance.getInstance().getMyActivities(activity).get(0);
-                                timeToNextEvent = (Persistance.getInstance().getMyActivities(activity).get(0).eventDateTimeStamp - System.currentTimeMillis() / 1000);
-                            }
+                                System.out.println("ajung aici2");
+                               /* pastEvent = Persistance.getInstance().getMyActivities(activity).get(0)
+                                        .eventDateTimeStamp;
+                                eventShouldHappen = Persistance.getInstance().getMyActivities(activity).get(0);
+                                timeToNextEvent = (Persistance.getInstance().getMyActivities(activity).get(0).eventDateTimeStamp - System.currentTimeMillis() / 1000);*/
 
+                                pastEvent = myEventList.get(0).eventDateTimeStamp;
+                                eventShouldHappen = myEventList.get(0);
+                                timeToNextEvent = myEventList.get(0).eventDateTimeStamp - System.currentTimeMillis() / 1000;
+                            }
 
 
                             synchronized (myEventList) {
@@ -746,7 +738,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                                 if ((timeToNextEvent > -3600 && buttonState == 0) || (timeToNextEvent > -7200 && buttonState == 1)) {
                                     googleApiClient.connect();
                                     startedEventDate = pastEvent;
-                                    if(pastEvent == myEventList.get(0).eventDateTimeStamp) {
+                                    if (pastEvent == myEventList.get(0).eventDateTimeStamp) {
                                         myEventList.remove(0);
                                     }
 
@@ -790,13 +782,13 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
             };
 
             if (stopHappeningNow == null || !stopHappeningNow.isAlive()) {
+                System.out.println("primul");
                 stopHappeningNow = new Thread(runnableStop);
             }
             if (startHappeningNow == null || !stopHappeningNow.isAlive()) {
+                System.out.println("al doilea");
                 startHappeningNow = new Thread(runnableStart);
             }
-
-
 
             if (HPShouldBeVisible) {
                 googleApiClient.connect();
@@ -905,12 +897,13 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
             int last = layoutManagerAroundMe.findLastCompletelyVisibleItemPosition();
             int count = fradapter.getItemCount();
             if (last + 1 < count) {
-                layoutManagerAroundMe.scrollToPositionWithOffset(last,30);
+                layoutManagerAroundMe.scrollToPositionWithOffset(last, 30);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void updateListOfMyEvents(final boolean eventHappeningNow) {
         RelativeLayout ll = (RelativeLayout) v.findViewById(R.id.noInternetLayout);
@@ -921,9 +914,9 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         }
 
 
-
         // stop swiping on my events
-        final SwipeRefreshLayout mSwipeRefreshLayout1 = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh1);;
+        final SwipeRefreshLayout mSwipeRefreshLayout1 = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh1);
+        ;
         myAdapter.notifyDataSetChanged();
         mylistView = (RecyclerView) v.findViewById(R.id.events_listView1);
         heartImageMyActivity = (ImageView) v.findViewById(R.id.heartImageMyActivity);
@@ -978,7 +971,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                 @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
-                    if (layoutManagerMyActivities.findLastCompletelyVisibleItemPosition() == myEventList.size()-1) {
+                    if (layoutManagerMyActivities.findLastCompletelyVisibleItemPosition() == myEventList.size() - 1) {
                         progressBarMyEvents.setAlpha(1f);
                         getMyEvents(String.valueOf(NumberOfRefreshMyEvents));
                     }
@@ -1016,11 +1009,11 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        Location location=LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-        System.out.println(location.getLatitude()+ " locatie");
-        latitude=location.getLatitude();
+        Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+        System.out.println(location.getLatitude() + " locatie");
+        latitude = location.getLatitude();
 
-        longitude=location.getLongitude();
+        longitude = location.getLongitude();
         getAroundMeEvents("0", latitude, longitude);
     }
 
@@ -1091,12 +1084,12 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
     @Override
     public void onErrorResponse(VolleyError error) {
         try {
-            if(error.getMessage().contains("error")) {
+            if (error.getMessage().contains("error")) {
                 String json = trimMessage(error.getMessage(), "error");
-                if (json != null){
+                if (json != null) {
                     Toast.makeText(super.getContext(), json, Toast.LENGTH_LONG).show();
                 }
-            }else {
+            } else {
                 Toast.makeText(super.getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
             }
             Log.d("Response", error.toString());
@@ -1115,9 +1108,9 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         try {
             JSONObject obj = new JSONObject(json);
             trimmedString = obj.getString(key);
-            if(trimmedString.equalsIgnoreCase("Invalid Auth Key provided.")){
+            if (trimmedString.equalsIgnoreCase("Invalid Auth Key provided.")) {
                 deleteCachedInfo();
-                Intent intent =new Intent(activity,LoginActivity.class);
+                Intent intent = new Intent(activity, LoginActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
                 activity.startActivity(intent);
             }
@@ -1129,7 +1122,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         return trimmedString;
     }
 
-    public static void deleteCachedInfo(){
+    public static void deleteCachedInfo() {
         DatabaseReference userNode = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(activity).id);
         userNode.child("activeToken").setValue(false);
         Persistance.getInstance().deleteUserProfileInfo(activity);

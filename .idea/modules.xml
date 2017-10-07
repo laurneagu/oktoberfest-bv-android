@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Ludicon.iml" filepath="$PROJECT_DIR$/Ludicon.iml" />
+      <module fileurl="file://$PROJECT_DIR$/LudiconNew.iml" filepath="$PROJECT_DIR$/LudiconNew.iml" />
       <module fileurl="file://$PROJECT_DIR$/LudiconNewWithAlexR.iml" filepath="$PROJECT_DIR$/LudiconNewWithAlexR.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>

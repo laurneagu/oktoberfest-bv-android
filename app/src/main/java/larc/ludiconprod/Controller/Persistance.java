@@ -3,7 +3,6 @@ package larc.ludiconprod.Controller;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.location.Location;
 
 import com.facebook.login.LoginManager;
 import com.google.gson.Gson;
@@ -11,7 +10,6 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import larc.ludiconprod.Activities.BalanceActivity;
 import larc.ludiconprod.User;
@@ -155,7 +153,7 @@ public class Persistance {
         SharedPreferences.Editor editor = activity.getSharedPreferences(this.myActivitiesString, 0).edit();
         Gson gson = new Gson();
         editor.putString(this.myActivitiesString, gson.toJson(eventList));
-        editor.commit();
+        editor.apply();
     }
 
     public ArrayList<Event> getMyActivities(Activity activity){
