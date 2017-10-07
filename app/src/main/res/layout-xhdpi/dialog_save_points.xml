@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="@drawable/bg_modal_gradient"
-    tools:theme="@android:style/Theme.Dialog">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_modal_gradient"
+                tools:theme="@android:style/Theme.Dialog">
 
     <!--
     <RelativeLayout
@@ -145,7 +145,8 @@
         android:paddingRight="60dp"
         android:text="OKAY"
         android:textColor="#d4498b"
-        android:textSize="14dp" />
+        android:textSize="14dp"
+        android:layout_marginBottom="10dp"/>
 
     <!-- </RelativeLayout> -->
 

@@ -204,7 +204,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                 }
                 System.out.println("eventStarted");
 
-                ActivitiesActivity.this.getActivity().runOnUiThread(new Runnable() {
+                activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
 
@@ -609,11 +609,11 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                 params = happeningNowLayout.getLayoutParams();
                 params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 happeningNowLayout.setLayoutParams(params);
-            } else {
-                happeningNowLayout = (RelativeLayout) v.findViewById(R.id.generalHappeningNowLayout);
-                params = happeningNowLayout.getLayoutParams();
-                params.height = 0;
             }
+            happeningNowLayout = (RelativeLayout) v.findViewById(R.id.generalHappeningNowLayout);
+            params = happeningNowLayout.getLayoutParams();
+            params.height = 0;
+
             happeningNowLayout.requestLayout();
 
 
@@ -699,6 +699,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                     try {
                         Event currentEvent = Persistance.getInstance().getHappeningNow(activity);
                         if (currentEvent != null) {
+                            System.out.println("intra in primul if");
                             long timeToNextEvent = (currentEvent.eventDateTimeStamp - System.currentTimeMillis() / 1000);
                             if ((timeToNextEvent > -3600 && buttonState == 0) || (timeToNextEvent > -7200 && buttonState == 1)) {
                                 googleApiClient.connect();
@@ -717,6 +718,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                         System.out.println("ajung aici " + Persistance.getInstance().getMyActivities(activity).size());
 
                         if (myEventList.size() >= 1) {
+                            pastEvent = myEventList.get(0).eventDateTimeStamp;
                             long timeToNextEvent = (pastEvent - System.currentTimeMillis() / 1000);
                             System.out.println("hai " + timeToNextEvent);
                             while (timeToNextEvent >= 0 || timeToNextEvent < -3600) {
@@ -1009,12 +1011,16 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-        System.out.println(location.getLatitude() + " locatie");
-        latitude = location.getLatitude();
+        try {
+            Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+            System.out.println(location.getLatitude() + " locatie");
+            latitude = location.getLatitude();
 
-        longitude = location.getLongitude();
-        getAroundMeEvents("0", latitude, longitude);
+            longitude = location.getLongitude();
+            getAroundMeEvents("0", latitude, longitude);
+        } catch (NullPointerException e) {
+
+        }
     }
 
     @Override

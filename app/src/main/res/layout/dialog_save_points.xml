@@ -145,7 +145,8 @@
         android:paddingRight="60dp"
         android:text="OKAY"
         android:textColor="#d4498b"
-        android:textSize="14dp" />
+        android:textSize="14dp"
+        android:layout_marginBottom="10dp"/>
 
     <!-- </RelativeLayout> -->
 
