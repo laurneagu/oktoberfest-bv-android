@@ -308,10 +308,15 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
             ImageView versusImg = (ImageView) findViewById(R.id.profileFoeImage);
 
             TextView foeLabel = (TextView) findViewById(R.id.foeLabel);
-            foeLabel.setText(u.firstName);
+            String firstName = u.firstName;
+            String[] splited = firstName.split("\\s+");
+            foeLabel.setText(splited[0]);
             TextView youLabel = (TextView) findViewById(R.id.youLabel);
             User you = Persistance.getInstance().getUserInfo(this);
-            youLabel.setText(you.firstName);
+            String firstNameYou = you.firstName;
+            String[] splitedYou = firstNameYou.split("\\s+");
+            youLabel.setText(splitedYou[0]);
+
 
             if (you.profileImage != null && !you.profileImage.isEmpty()) {
                 Bitmap im = IntroActivity.decodeBase64(you.profileImage);
