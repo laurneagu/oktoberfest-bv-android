@@ -48,8 +48,8 @@ public class EditProfileTab1 extends Fragment implements View.OnClickListener {
             User u = Persistance.getInstance().getProfileInfo(super.getActivity());
             SeekBar seekBar = (SeekBar) v.findViewById(R.id.editRangeBar);
             Button save = (Button) v.findViewById(R.id.saveChangesButton2);
-            this.progressText = (TextView) v.findViewById(R.id.editRangeTextView);
-
+            progressText = (TextView) v.findViewById(R.id.editRangeTextView);
+            progressText.setText(u.range+ " km");
             this.sports = epa.getSports();
             epa.setRange(seekBar);
             this.sports.clear();
