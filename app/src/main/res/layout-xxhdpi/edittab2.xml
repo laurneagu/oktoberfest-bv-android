@@ -87,7 +87,7 @@
                     android:paddingLeft="15dp"
                     android:textSize="16sp"
                     android:layout_marginTop="8dp"
-                    android:inputType="text"
+                    android:inputType="textCapWords"
                     android:background="@drawable/rounded_edittext"
                     android:hint="First Name"/>
                 <EditText
@@ -99,7 +99,7 @@
                     android:textSize="16sp"
                     android:paddingLeft="15dp"
                     android:layout_marginTop="8dp"
-                    android:inputType="text"
+                    android:inputType="textCapWords"
                     android:background="@drawable/rounded_edittext"
                     android:hint="Last Name"/>
 

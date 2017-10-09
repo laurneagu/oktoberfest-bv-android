@@ -44,14 +44,17 @@
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Daniel Grigore"
+            android:text="Daniel Grigore Ionut mihai"
             android:textSize="18sp"
             android:fontFamily="@string/fontmedium"
             android:textColor="@color/pink"
+            android:maxLines="1"
             android:layout_marginLeft="16dp"
+            android:layout_marginRight="40dp"
             android:layout_gravity="center"/>
     </LinearLayout>
     <LinearLayout
+        android:id="@+id/layoutPoints"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
