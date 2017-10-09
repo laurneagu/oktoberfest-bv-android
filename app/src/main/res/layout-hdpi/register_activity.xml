@@ -63,7 +63,7 @@
                 android:layout_marginTop="8dp"
                 android:inputType="textEmailAddress"
                 android:background="@drawable/rounded_edittext"
-                android:hint="Email Adress"/>
+                android:hint="Email Address"/>
             <EditText
                 android:id="@+id/password"
                 android:layout_width="match_parent"

@@ -42,7 +42,7 @@
         android:textSize="16sp"
         android:inputType="textEmailAddress"
         android:paddingLeft="15dp"
-        android:hint="Email Adress"
+        android:hint="Email Address"
         android:textColor="@color/darkblue"
         android:textColorHint="@color/lightGray"
         android:drawableLeft="@drawable/ic_email"
