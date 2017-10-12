@@ -313,6 +313,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                                             googleApiClient.disconnect();
                                         }
                                         confirmationDialog.dismiss();
+                                        Persistance.getInstance().setHappeningNow(null, activity);
                                     }
                                 });
                                 confirmationDialog.dismiss.setOnClickListener(new View.OnClickListener() {
@@ -442,6 +443,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         Event currentEvent;
 
         currentEvent = Persistance.getInstance().getHappeningNow(getActivity());
+        System.out.println(currentEvent.creatorName + " " + currentEvent.eventDate + " " + currentEvent.id);
         if (currentEvent == null) {
             return;
         }
@@ -458,7 +460,9 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
             params.put("locations[" + i + "][latitude]", String.valueOf(happeningNowLocation.locationList.get(i).getLatitude()));
             params.put("locations[" + i + "][longitude]", String.valueOf(happeningNowLocation.locationList.get(i).getLongitude()));
         }
-
+        System.out.println("se apeleaza aici ");
+        System.out.println(params.toString());
+        System.out.println(headers.toString());
         HTTPResponseController.getInstance().savePoints(params, headers, activity, this);
     }
 
@@ -697,7 +701,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                 @Override
                 public void run() {
                     try {
-                        Event currentEvent = Persistance.getInstance().getHappeningNow(activity);
+                        /*Event currentEvent = Persistance.getInstance().getHappeningNow(activity);
                         if (currentEvent != null) {
                             System.out.println("intra in primul if");
                             long timeToNextEvent = (currentEvent.eventDateTimeStamp - System.currentTimeMillis() / 1000);
@@ -715,7 +719,8 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                                 return;
                             }
                         }
-                        System.out.println("ajung aici " + Persistance.getInstance().getMyActivities(activity).size());
+                        System.out.println("ajung aici " + Persistance.getInstance().getMyActivities(activity).size()
+                        );*/
 
                         if (myEventList.size() >= 1) {
                             pastEvent = myEventList.get(0).eventDateTimeStamp;
@@ -770,7 +775,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                                 Thread.sleep(1000);
                                 timeToNextEvent = (startedEventDate - System.currentTimeMillis() / 1000);
                             }
-                            if (timeToNextEvent > 7200) {
+                            if (timeToNextEvent > 7200 && buttonState != 2) {
                                 savePoints();
                             }
                             //happening now stoped
@@ -925,7 +930,6 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         noActivitiesTextFieldMyActivity = (TextView) v.findViewById(R.id.noActivitiesTextFieldMyActivity);
         pressPlusButtonTextFieldMyActivity = (TextView) v.findViewById(R.id.pressPlusButtonTextFieldMyActivity);
         progressBarMyEvents = (ProgressBar) v.findViewById(R.id.progressBarMyEvents);
-
         progressBarMyEvents.setIndeterminate(true);
         progressBarMyEvents.setAlpha(0f);
 
@@ -1092,10 +1096,14 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         try {
             if (error.getMessage().contains("error")) {
                 String json = trimMessage(error.getMessage(), "error");
+                System.out.println("sunt aici");
                 if (json != null) {
+                    System.out.println(error.getMessage());
                     Toast.makeText(super.getContext(), json, Toast.LENGTH_LONG).show();
                 }
             } else {
+                System.out.println("sunt aici 222");
+                System.out.println(error.getMessage());
                 Toast.makeText(super.getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
             }
             Log.d("Response", error.toString());

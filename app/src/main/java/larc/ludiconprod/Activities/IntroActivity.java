@@ -3,19 +3,23 @@ package larc.ludiconprod.Activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.text.Html;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
@@ -237,6 +241,36 @@ public class IntroActivity extends Activity {
         termsAndPrivacyPolicy.setTypeface(typeFace);
         infoTextView.setTypeface(typeFace);
         termsAndPrivacyPolicy.setText(Html.fromHtml("By continuing you agree to our<br/><font color='#d4498b'>Terms</font> &amp; <font color='#d4498b'>Privacy Policy</font>"), TextView.BufferType.SPANNABLE);
+        SpannableString ss = new SpannableString(Html.fromHtml("By continuing you agree to our<br/><font color='#d4498b'>Terms</font> &amp; <font color='#d4498b'>Privacy Policy</font>"));
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View textView) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.ludicon.ro/documents/TermsOfUse.pdf"));
+                startActivity(browserIntent);
+            }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+            }
+        };
+        ClickableSpan clickableSpan2 = new ClickableSpan() {
+            @Override
+            public void onClick(View textView) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.ludicon.ro/documents/PrivacyPolicy.pdf"));
+                startActivity(browserIntent);
+            }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+            }
+        };
+        ss.setSpan(clickableSpan, 31, 36, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ss.setSpan(clickableSpan2, termsAndPrivacyPolicy.getText().toString().length() - 14, termsAndPrivacyPolicy
+                .getText().toString().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        termsAndPrivacyPolicy.setText(ss);
+        termsAndPrivacyPolicy.setMovementMethod(LinkMovementMethod.getInstance());
+        termsAndPrivacyPolicy.setHighlightColor(Color.TRANSPARENT);
+
     }
 
     public ArrayList<String> updateFriends() {
@@ -305,7 +339,7 @@ public class IntroActivity extends Activity {
 
                             }
                         }
-                        );
+                );
                 Bundle parameters = new Bundle();
                 parameters.putString("fields", "id,name,email,picture.type(large)");
                 request.setParameters(parameters);

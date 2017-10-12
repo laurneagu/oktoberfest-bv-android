@@ -235,6 +235,8 @@ public class HTTPResponseController {
 
                 } else {
                     Intent intent = new Intent(activity, Main.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     activity.startActivity(intent);
                     activity.finish();
                 }
@@ -339,9 +341,11 @@ public class HTTPResponseController {
                 oldActivity = activity;
 
                 myEventList.clear();
-                ActivitiesActivity.currentFragment.getMyEvents("0");
+               // ActivitiesActivity.currentFragment.getMyEvents("0");
 
                 Intent intent = new Intent(activity, Main.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 activity.startActivity(intent);
                 activity.finish();
 
@@ -793,7 +797,8 @@ public class HTTPResponseController {
                             }
                         }
                         fradapter.notifyDataSetChanged();
-                        Persistance.getInstance().setMyActivities(activity, myEventList);
+                        Persistance.getInstance().setHappeningNow(myEventList.get(0), activity);
+                        //Persistance.getInstance().setMyActivities(activity, myEventList);
                         Toast.makeText(activity, "Join was successful!", Toast.LENGTH_SHORT).show();
                         ActivitiesActivity.startHappeningNow.interrupt();
                         ActivitiesActivity.startHappeningNow.start();
@@ -903,6 +908,8 @@ public class HTTPResponseController {
                         Toast.makeText(activity, "Check your internet connection!", Toast.LENGTH_LONG).show();
                     } else {
                         json = trimMessage(json, "error");
+                        System.out.println(json);
+                        System.out.println("de aici");
                         if (json != null) displayMessage(json);
                     }
 
@@ -924,6 +931,8 @@ public class HTTPResponseController {
                 String json = error.getMessage();
 
                 json = trimMessage(json, "error");
+                System.out.println("aici eroare");
+                System.out.println(json);
                 if (json != null) {
                     displayMessage(json);
                 }
@@ -1168,8 +1177,11 @@ public class HTTPResponseController {
 
     public void savePoints(HashMap<String, String> params, HashMap<String, String> headers, Activity activity, Response.ErrorListener errorListener) {
         RequestQueue requestQueue = Volley.newRequestQueue(activity);
+        Log.v("log", "request");
+        System.out.println("request trimis 1");
         CustomRequest request = new CustomRequest(Request.Method.POST, prodServer + "api/savePoints", params, headers, this.savePointsSuccessListener(), errorListener);
         requestQueue.add(request);
+        System.out.println("request trimis");
     }
 
     public void checkin(HashMap<String, String> params, HashMap<String, String> headers, Activity activity) {

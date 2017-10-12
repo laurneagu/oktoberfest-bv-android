@@ -38,6 +38,9 @@
 
     <string name="title_activity_create_new">CreateNewActivity</string>
 
+    <string name="Terms"><a href="http://www.google.com">Terms</a></string>
+    <string name="Policy"><a href="http://www.facebook.com">Policy</a></string>
+
     <string-array name="rankings_array">
         <item>Football</item>
         <item>Volleyball</item>
