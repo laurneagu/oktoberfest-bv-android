@@ -341,11 +341,11 @@ public class HTTPResponseController {
                 oldActivity = activity;
 
                 myEventList.clear();
-               // ActivitiesActivity.currentFragment.getMyEvents("0");
+               ActivitiesActivity.currentFragment.getMyEvents("0");
 
                 Intent intent = new Intent(activity, Main.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                /*intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);*/
                 activity.startActivity(intent);
                 activity.finish();
 
