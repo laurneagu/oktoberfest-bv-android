@@ -93,6 +93,9 @@ public class BalanceAdapter extends BaseAdapter implements ListAdapter {
         if (current.ludicoins < 0) {
             holder.activity.setTextColor(0xffff0000);
         }
+        else{
+            holder.activity.setTextColor(0xff009150);
+        }
 
         String date = new SimpleDateFormat("dd MMM yyyy").format(current.date);
         holder.date.setText(date);

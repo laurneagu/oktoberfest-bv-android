@@ -78,7 +78,9 @@ public class BalanceActivity extends AppCompatActivity implements Response.Liste
 
             this.balanceAdapter = new BalanceAdapter(this.entryes, this);
 
-            this.entryes.addAll(Persistance.getInstance().getBalanceCache(this));
+            // Laur Neagu -- found this as poor implementation, fuck it!
+            //this.entryes.addAll(Persistance.getInstance().getBalanceCache(this));
+
             this.updateBalanceList();
             getBalance(0);
 
@@ -170,7 +172,8 @@ public class BalanceActivity extends AppCompatActivity implements Response.Liste
 
                 this.entryes.add(be);
             }
-            Persistance.getInstance().setBalanceCache(this.entryes, this);
+            // Laur Neagu -- found this as poor implementation, fuck it!
+            //Persistance.getInstance().setBalanceCache(this.entryes, this);
             this.updateBalanceList();
         } catch (JSONException e) {
             e.printStackTrace();

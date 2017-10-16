@@ -900,12 +900,14 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
             progressBarAroundMe.setAlpha(0f);
 
             isFirstTimeAroundMe = true;
-
+            // SMOOTHING THE SCROLL STOP
+            /*
             int last = layoutManagerAroundMe.findLastCompletelyVisibleItemPosition();
             int count = fradapter.getItemCount();
             if (last + 1 < count) {
                 layoutManagerAroundMe.scrollToPositionWithOffset(last, 30);
             }
+            */
         } catch (Exception e) {
             e.printStackTrace();
         }

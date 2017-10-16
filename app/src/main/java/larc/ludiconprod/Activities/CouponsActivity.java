@@ -38,6 +38,7 @@ import larc.ludiconprod.Adapters.CouponsActivity.MyCouponsAdapter;
 import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
+import larc.ludiconprod.User;
 import larc.ludiconprod.Utils.Coupon;
 import larc.ludiconprod.Utils.CouponsUtils.CouponsPagerAdapter;
 import larc.ludiconprod.Utils.Location.GPSTracker;
@@ -327,7 +328,12 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
         if(error.getMessage().contains("error")) {
             String json = trimMessage(error.getMessage(), "error");
             if (json != null){
-                Toast.makeText(super.getContext(), json, Toast.LENGTH_LONG).show();
+                if(json.compareTo("User does not have enough points to redeem coupon.") == 0){
+                    Toast.makeText(super.getContext(), "You do not have enough ludicoins to redeem the coupon.", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    Toast.makeText(super.getContext(), json, Toast.LENGTH_LONG).show();
+                }
             }
         }else {
             Toast.makeText(super.getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
@@ -405,7 +411,8 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
         TextView ludicoins = (TextView) v.findViewById(R.id.cuponsLudicoins);
         Typeface typeFace = Typeface.createFromAsset(super.getActivity().getAssets(), "fonts/Quicksand-Medium.ttf");
         ludicoins.setTypeface(typeFace);
-        int ludicoinsS = Persistance.getInstance().getProfileInfo(getActivity()).ludicoins;
+        //int ludicoinsS = Persistance.getInstance().getProfileInfo(getActivity()).ludicoins;
+        int ludicoinsS = Persistance.getInstance().getUserInfo(getActivity()).ludicoins;
         ludicoins.setText(String.valueOf(ludicoinsS));
         while (activity == null) {
             activity = getActivity();
@@ -530,7 +537,21 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
         }
 
         try {
-            Toast.makeText(activity, "" + response, Toast.LENGTH_SHORT).show();
+            if(response.get("status") != null && ((String)response.get("status")).compareTo("Success") == 0){
+                Toast.makeText(activity, "The coupon is yours, congrats!", Toast.LENGTH_SHORT).show();
+
+                // Reset the value for ludicoins
+                TextView ludicoins = (TextView) v.findViewById(R.id.cuponsLudicoins);
+                User userInfo = Persistance.getInstance().getUserInfo(getActivity());
+                userInfo.ludicoins = (int)response.get("pointsLeft");
+                Persistance.getInstance().setUserInfo(getActivity(), userInfo);
+
+                ludicoins.setText(String.valueOf(userInfo.ludicoins));
+                ludicoins.invalidate();  // for refreshment
+            }
+            else {
+                Toast.makeText(activity, "" + response, Toast.LENGTH_SHORT).show();
+            }
 
             this.coupons.clear();
             this.getCoupons("0");

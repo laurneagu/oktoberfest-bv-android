@@ -226,7 +226,9 @@ public class Persistance {
         if (json.equals("0")) {
             return new ArrayList<>();
         }
-        return gson.fromJson(json, ArrayList.class);
+        Type listType = new TypeToken<ArrayList<BalanceActivity.BalanceEntry>>(){}.getType();
+
+        return gson.fromJson(json, listType);
     }
 
     public void setBalanceCache(ArrayList<BalanceActivity.BalanceEntry> entries, Activity activity) {
