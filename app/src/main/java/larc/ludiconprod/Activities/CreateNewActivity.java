@@ -130,7 +130,7 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                 Toast.makeText(getApplicationContext(), "Please enter a time!", Toast.LENGTH_SHORT).show();
                 return true;
             } else
-                if (lat == Double.MAX_VALUE) {
+                if (lat == Double.MAX_VALUE && !getIntent().getBooleanExtra("isEdit", false)) {
                     Toast.makeText(getApplicationContext(), "Please select a location!", Toast.LENGTH_SHORT).show();
                     return true;
                 } else
