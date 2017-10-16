@@ -22,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="3dp"
-        android:text="Values are computed peridocally, so ranks are \n not real-time!"
+        android:text="Values are computed periodically, so ranks are \n not real-time!"
         android:gravity="center"
         android:textColor="@color/darkblue"/>
 
