@@ -424,6 +424,7 @@ public class HTTPResponseController {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onResponse(JSONObject jsonObject) {
+                ActivitiesActivity.startHappeningNow.interrupt();
                 System.out.println(jsonObject + " myevent");
                 synchronized (myEventList) {
                     if (getFirstPageMyActivity) {
@@ -475,6 +476,7 @@ public class HTTPResponseController {
                         e.printStackTrace();
                     }
                 }
+                ActivitiesActivity.startHappeningNow.start();
             }
         };
     }

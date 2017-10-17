@@ -157,6 +157,8 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
     int nrElements = 4;
     ViewGroup.LayoutParams params;
 
+    public static boolean fromSwipe = false;
+
 
     public ActivitiesActivity() {
         currentFragment = this;
@@ -736,7 +738,8 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
                                 pastEvent = myEventList.get(0).eventDateTimeStamp;
                                 eventShouldHappen = myEventList.get(0);
-                                timeToNextEvent = myEventList.get(0).eventDateTimeStamp - System.currentTimeMillis() / 1000;
+                                timeToNextEvent = myEventList.get(0).eventDateTimeStamp - System.currentTimeMillis()
+                                        / 1000;
                             }
 
 
@@ -993,13 +996,15 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
             mSwipeRefreshLayout1.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
+                    System.out.println("intra aici");
                     getMyEvents("0");
                     getFirstPageMyActivity = true;
                     mSwipeRefreshLayout1.setRefreshing(false);
                     NumberOfRefreshMyEvents = 0;
+                    fromSwipe = true;
                 }
             });
-            addedSwipeMyActivity = true;
+            //addedSwipeMyActivity = true;
         }
         if (!stopHappeningNow.isAlive() && !startHappeningNow.isAlive()) {
             stopHappeningNow.start();
@@ -1010,9 +1015,10 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
 
         int last = layoutManagerMyActivities.findLastCompletelyVisibleItemPosition();
         int count = myAdapter.getItemCount();
-        if (last + 1 < count) {
+        if (last + 1 < count && !fromSwipe) {
             layoutManagerMyActivities.smoothScrollToPosition(mylistView, null, last + 1);
         }
+        fromSwipe = false;
     }
 
     @Override
