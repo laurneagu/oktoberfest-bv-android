@@ -336,18 +336,18 @@ public class HTTPResponseController {
                 urlParams.put("eventId", eventid);
                 urlParams.put("userId", Persistance.getInstance().getUserInfo(activity).id);
                 flag = true;
-                HTTPResponseController.getInstance().getEventDetails(params, headers, activity, urlParams);
+                //HTTPResponseController.getInstance().getEventDetails(params, headers, activity, urlParams);
 
                 oldActivity = activity;
 
                 myEventList.clear();
-               ActivitiesActivity.currentFragment.getMyEvents("0");
+                ActivitiesActivity.currentFragment.getMyEvents("0");
 
                 Intent intent = new Intent(activity, Main.class);
                 /*intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);*/
-                activity.startActivity(intent);
-                activity.finish();
+                //activity.startActivity(intent);
+                oldActivity.finish();
 
             }
         };
