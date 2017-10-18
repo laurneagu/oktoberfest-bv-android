@@ -112,6 +112,7 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
                 this.printInfo(up);
             }
 
+
             ((TextView) v.findViewById(R.id.profileTitle)).setTypeface(typeFace);
             ((TextView) v.findViewById(R.id.profileLudicoins)).setTypeface(typeFace);
             ((TextView) v.findViewById(R.id.profileToNextLevel)).setTypeface(typeFace);
@@ -313,7 +314,7 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
         TextView eventsText = (TextView) v.findViewById(R.id.profileTotalEvents);
 
         pointsText.setText("" + u.points);
-        eventsText.setText("" + u.events);
+        eventsText.setText("" + u.countEventsAttended);
 
         /*tg.setText(0, "37");
         tg.setText(1, "56");
@@ -467,6 +468,7 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
             u.lastName = jsonObject.getString("lastName");
             u.gender = jsonObject.getString("gender");
             u.ludicoins = Integer.parseInt(jsonObject.getString("ludicoins"));
+            u.countEventsAttended = Integer.parseInt(jsonObject.getString("countEventsAttended"));
             u.level = Integer.parseInt(jsonObject.getString("level"));
             u.points = Integer.parseInt(jsonObject.getString("points"));
             u.pointsToNextLevel = Integer.parseInt(jsonObject.getString("pointsToNextLevel"));

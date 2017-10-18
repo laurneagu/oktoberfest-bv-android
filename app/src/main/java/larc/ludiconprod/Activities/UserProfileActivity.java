@@ -161,6 +161,7 @@ public class UserProfileActivity extends AppCompatActivity implements Response.L
             u.lastName = jsonObject.getString("lastName");
             u.gender = jsonObject.getString("gender");
             u.ludicoins = Integer.parseInt(jsonObject.getString("ludicoins"));
+            u.countEventsAttended = Integer.parseInt(jsonObject.getString("countEventsAttended"));
             u.level = Integer.parseInt(jsonObject.getString("level"));
             u.points = Integer.parseInt(jsonObject.getString("points"));
             u.pointsToNextLevel = Integer.parseInt(jsonObject.getString("pointsToNextLevel"));

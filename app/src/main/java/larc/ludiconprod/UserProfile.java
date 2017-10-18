@@ -67,5 +67,4 @@ public class UserProfile extends User {
 
     public TreeMap<String, Integer> pointsM = new TreeMap<>(UserProfile.MONTH_COMP);
     public TreeMap<String, Integer> eventsM = new TreeMap<>(UserProfile.MONTH_COMP);
-    public int events;
 }

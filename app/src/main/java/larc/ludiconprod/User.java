@@ -26,6 +26,7 @@ public class User {
     public  int age;
     public  String profileImage;
     public  String range;
+    public int countEventsAttended;
     public  ArrayList<Sport> sports=new ArrayList<Sport>();
 
 /*
@@ -64,6 +65,7 @@ public User(){
         }
         this.password=password;
         this.email=email;
+
     }
 
 
