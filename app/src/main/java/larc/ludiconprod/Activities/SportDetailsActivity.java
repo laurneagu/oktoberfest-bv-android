@@ -68,8 +68,8 @@ public class SportDetailsActivity extends Activity {
         seekBar=(SeekBar) findViewById(R.id.seekBar);
         seekBar.setMax(19);
         seekBar.setProgress(19);
-        seekBar.getProgressDrawable().setColorFilter(Color.parseColor("#d4498b"), PorterDuff.Mode.SRC);
-        seekBar.getThumb().setColorFilter(Color.parseColor("#d4498b"), PorterDuff.Mode.SRC_IN);
+        //seekBar.getProgressDrawable().setColorFilter(Color.parseColor("#d4498b"), PorterDuff.Mode.SRC);
+        //seekBar.getThumb().setColorFilter(Color.parseColor("#d4498b"), PorterDuff.Mode.SRC_IN);
         savePreferincesButton=(Button) findViewById(R.id.savePreferincesButton);
         progressText=(TextView) findViewById(R.id.rangeTextView);
         Typeface typeFace= Typeface.createFromAsset(getAssets(),"fonts/Quicksand-Medium.ttf");
