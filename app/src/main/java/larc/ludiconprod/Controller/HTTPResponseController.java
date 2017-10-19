@@ -144,6 +144,7 @@ public class HTTPResponseController {
                             Sport sport = new Sport(listOfSports.get(i));
                             sports.add(sport);
                         }
+                        System.out.println(jsonObject.getJSONObject("user").getString("firstName"));
                         User user = new User(jsonObject.getString("authKey"), jsonObject.getJSONObject("user").getString("id"),
                                 jsonObject.getJSONObject("user").getString("firstName"), jsonObject.getJSONObject("user").getString("gender"),
                                 jsonObject.getJSONObject("user").getString("facebookId"), jsonObject.getJSONObject("user").getString("lastName"),
@@ -424,7 +425,8 @@ public class HTTPResponseController {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onResponse(JSONObject jsonObject) {
-                ActivitiesActivity.startHappeningNow.interrupt();
+                //ActivitiesActivity.startHappeningNow.interrupt();
+
                 System.out.println(jsonObject + " myevent");
                 synchronized (myEventList) {
                     if (getFirstPageMyActivity) {
@@ -476,7 +478,9 @@ public class HTTPResponseController {
                         e.printStackTrace();
                     }
                 }
-                ActivitiesActivity.startHappeningNow.start();
+                if (!ActivitiesActivity.startHappeningNow.isAlive()) {
+                    ActivitiesActivity.startHappeningNow.start();
+                }
             }
         };
     }
@@ -593,13 +597,15 @@ public class HTTPResponseController {
                     }
 
                     if (!ActivityDetailsActivity.ifFirstTimeGetParticipants) {
+                        System.out.println("intra aici la participanti");
                         Intent intent = new Intent(activity, InviteFriendsActivity.class);
                         intent.putExtra("isParticipant", true);
                         intent.putExtra("isEdit", false);
                         intent.putExtra("mustRedirect", true);
                         InviteFriendsActivity.isFirstTimeInviteFriends = false;
+                        InviteFriendsActivity.justSeeParticipants = true;
                         activity.startActivity(intent);
-                        activity.finish();
+                        //activity.finish();
                     } else {
                         InviteFriendsActivity.inviteFriendsAdapter.notifyDataSetChanged();
                     }
@@ -799,11 +805,12 @@ public class HTTPResponseController {
                             }
                         }
                         fradapter.notifyDataSetChanged();
-                        Persistance.getInstance().setHappeningNow(myEventList.get(0), activity);
+                        //Persistance.getInstance().setHappeningNow(myEventList.get(0), activity);
                         //Persistance.getInstance().setMyActivities(activity, myEventList);
                         Toast.makeText(activity, "Join was successful!", Toast.LENGTH_SHORT).show();
-                        ActivitiesActivity.startHappeningNow.interrupt();
-                        ActivitiesActivity.startHappeningNow.start();
+                        if (!ActivitiesActivity.startHappeningNow.isAlive()) {
+                            ActivitiesActivity.startHappeningNow.start();
+                        }
                     }
 
                 } catch (Exception e) {

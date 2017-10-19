@@ -29,7 +29,7 @@ import larc.ludiconprod.Utils.Friend;
  */
 
 public class InviteFriendsActivity extends Activity {
-
+    public static boolean justSeeParticipants = false;
     static public InviteFriendsAdapter inviteFriendsAdapter;
     static public ArrayList<Friend> friendsList = new ArrayList<Friend>();
     static public ArrayList<Friend> participantList = new ArrayList<Friend>();
@@ -38,7 +38,7 @@ public class InviteFriendsActivity extends Activity {
     Button saveInvitedFriends;
     ListView friendsListView;
     RelativeLayout backButton;
-    Boolean mustRedirect=false;
+    Boolean mustRedirect = false;
 
     private View v;
 
@@ -52,7 +52,7 @@ public class InviteFriendsActivity extends Activity {
         RelativeLayout toolbar = (RelativeLayout) findViewById(R.id.tool_bar);
         TextView title = (TextView) toolbar.findViewById(R.id.titleText);
         title.setTypeface(typeFace);
-        mustRedirect=getIntent().getBooleanExtra("mustRedirect",false);
+        mustRedirect = getIntent().getBooleanExtra("mustRedirect", false);
         backButton = (RelativeLayout) findViewById(R.id.backButton);
         TextView titleText = (TextView) findViewById(R.id.titleText);
         friendsListView = (ListView) findViewById(R.id.inviteFriendsListView);
@@ -62,22 +62,30 @@ public class InviteFriendsActivity extends Activity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mustRedirect){
-                    HashMap<String, String> params = new HashMap<String, String>();
-                    HashMap<String, String> headers = new HashMap<String, String>();
-                    HashMap<String, String> urlParams = new HashMap<String, String>();
-                    headers.put("authKey", Persistance.getInstance().getUserInfo(InviteFriendsActivity.this).authKey);
-
-                    //set urlParams
-
-                    urlParams.put("eventId", ActivityDetailsActivity.eventID);
-                    urlParams.put("userId", Persistance.getInstance().getUserInfo(InviteFriendsActivity.this).id);
-                    HTTPResponseController.getInstance().getEventDetails(params, headers, InviteFriendsActivity.this, urlParams);
+                if (justSeeParticipants) {
+                    justSeeParticipants = false;
                     finish();
-                }else {
-                    Intent intent = new Intent();
-                    setResult(CreateNewActivity.ASK_FRIENDS_DONE, intent);
-                    finish();
+                } else {
+
+                    if (mustRedirect) {
+                        System.out.println("intra aici la back");
+                        HashMap<String, String> params = new HashMap<String, String>();
+                        HashMap<String, String> headers = new HashMap<String, String>();
+                        HashMap<String, String> urlParams = new HashMap<String, String>();
+                        headers.put("authKey", Persistance.getInstance().getUserInfo(InviteFriendsActivity.this).authKey);
+
+                        //set urlParams
+
+                        urlParams.put("eventId", ActivityDetailsActivity.eventID);
+                        urlParams.put("userId", Persistance.getInstance().getUserInfo(InviteFriendsActivity.this).id);
+                        //HTTPResponseController.getInstance().getEventDetails(params, headers, InviteFriendsActivity.this, urlParams);
+                        finish();
+                    } else {
+
+                        Intent intent = new Intent();
+                        setResult(CreateNewActivity.ASK_FRIENDS_DONE, intent);
+                        finish();
+                    }
                 }
             }
         });
@@ -108,7 +116,7 @@ public class InviteFriendsActivity extends Activity {
                             }
                         }
                     }
-                    HTTPResponseController.getInstance().createEvent(params, headers, InviteFriendsActivity.this, getIntent().getStringExtra("eventId"), null,false);
+                    HTTPResponseController.getInstance().createEvent(params, headers, InviteFriendsActivity.this, getIntent().getStringExtra("eventId"), null, false);
                     saveInvitedFriends.setEnabled(false);
 
                 }
@@ -206,25 +214,31 @@ public class InviteFriendsActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        if(mustRedirect){
-            HashMap<String, String> params = new HashMap<String, String>();
-            HashMap<String, String> headers = new HashMap<String, String>();
-            HashMap<String, String> urlParams = new HashMap<String, String>();
-            headers.put("authKey", Persistance.getInstance().getUserInfo(this).authKey);
+        if (justSeeParticipants) {
+            justSeeParticipants = false;
+            finish();
 
-            //set urlParams
-           if(ActivityDetailsActivity.eventID != null) {
-               urlParams.put("eventId", ActivityDetailsActivity.eventID);
-           }else{
-               urlParams.put("eventId", getIntent().getStringExtra("eventId"));
-           }
-            urlParams.put("userId", Persistance.getInstance().getUserInfo(this).id);
-            HTTPResponseController.getInstance().getEventDetails(params, headers, this, urlParams);
-            finish();
-        }else {
-            Intent intent = new Intent();
-            setResult(CreateNewActivity.ASK_FRIENDS_DONE, intent);
-            finish();
+        } else {
+            if (mustRedirect) {
+                HashMap<String, String> params = new HashMap<String, String>();
+                HashMap<String, String> headers = new HashMap<String, String>();
+                HashMap<String, String> urlParams = new HashMap<String, String>();
+                headers.put("authKey", Persistance.getInstance().getUserInfo(this).authKey);
+
+                //set urlParams
+                if (ActivityDetailsActivity.eventID != null) {
+                    urlParams.put("eventId", ActivityDetailsActivity.eventID);
+                } else {
+                    urlParams.put("eventId", getIntent().getStringExtra("eventId"));
+                }
+                urlParams.put("userId", Persistance.getInstance().getUserInfo(this).id);
+                HTTPResponseController.getInstance().getEventDetails(params, headers, this, urlParams);
+                finish();
+            } else {
+                Intent intent = new Intent();
+                setResult(CreateNewActivity.ASK_FRIENDS_DONE, intent);
+                finish();
+            }
         }
     }
 

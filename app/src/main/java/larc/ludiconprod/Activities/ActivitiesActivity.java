@@ -158,6 +158,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
     ViewGroup.LayoutParams params;
 
     public static boolean fromSwipe = false;
+    public static boolean checkinDone = false;
 
 
     public ActivitiesActivity() {
@@ -703,43 +704,48 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                 @Override
                 public void run() {
                     try {
-                        /*Event currentEvent = Persistance.getInstance().getHappeningNow(activity);
+                        long timeToNextEvent = Integer.MAX_VALUE;
+                        Event currentEvent = Persistance.getInstance().getHappeningNow(activity);
                         if (currentEvent != null) {
+                            //din shared pref, a inceput deja eventul
                             System.out.println("intra in primul if");
-                            long timeToNextEvent = (currentEvent.eventDateTimeStamp - System.currentTimeMillis() / 1000);
+                            timeToNextEvent = (currentEvent.eventDateTimeStamp - System.currentTimeMillis() / 1000);
                             if ((timeToNextEvent > -3600 && buttonState == 0) || (timeToNextEvent > -7200 && buttonState == 1)) {
                                 googleApiClient.connect();
                                 startedEventDate = currentEvent.eventDateTimeStamp;
                                 params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                                activity.runOnUiThread(new Runnable() {
+                                //mai am nevoie de asta?
+                                /*activity.runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
                                         happeningNowLayout.setLayoutParams(params);
                                     }
-                                });
+                                });*/
                                 handler.sendEmptyMessage(0);
                                 return;
                             }
-                        }
-                        System.out.println("ajung aici " + Persistance.getInstance().getMyActivities(activity).size()
-                        );*/
+                        } else {
+                            System.out.println("intra in al doilea if " + myEventList.size()
+                            );
 
-                        if (myEventList.size() >= 1) {
-                            pastEvent = myEventList.get(0).eventDateTimeStamp;
-                            long timeToNextEvent = (pastEvent - System.currentTimeMillis() / 1000);
-                            System.out.println("hai " + timeToNextEvent);
-                            while (timeToNextEvent >= 0 || timeToNextEvent < -3600) {
-                                Thread.sleep(1000);
-                                System.out.println("ajung aici2");
+                            if (myEventList.size() >= 1) {
+                                pastEvent = myEventList.get(0).eventDateTimeStamp;
+                                timeToNextEvent = (pastEvent - System.currentTimeMillis() / 1000);
+                                System.out.println("hai " + timeToNextEvent);
+                                System.out.println(timeToNextEvent);
+                                while (timeToNextEvent >= 0 || timeToNextEvent < -3600) {
+                                    Thread.sleep(1000);
+                                    System.out.println("ajung aici2");
                                /* pastEvent = Persistance.getInstance().getMyActivities(activity).get(0)
                                         .eventDateTimeStamp;
                                 eventShouldHappen = Persistance.getInstance().getMyActivities(activity).get(0);
                                 timeToNextEvent = (Persistance.getInstance().getMyActivities(activity).get(0).eventDateTimeStamp - System.currentTimeMillis() / 1000);*/
 
-                                pastEvent = myEventList.get(0).eventDateTimeStamp;
-                                eventShouldHappen = myEventList.get(0);
-                                timeToNextEvent = myEventList.get(0).eventDateTimeStamp - System.currentTimeMillis()
-                                        / 1000;
+                                    pastEvent = myEventList.get(0).eventDateTimeStamp;
+                                    eventShouldHappen = myEventList.get(0);
+                                    timeToNextEvent = myEventList.get(0).eventDateTimeStamp - System.currentTimeMillis()
+                                            / 1000;
+                                }
                             }
 
 
@@ -749,6 +755,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                                     googleApiClient.connect();
                                     startedEventDate = pastEvent;
                                     if (pastEvent == myEventList.get(0).eventDateTimeStamp) {
+                                        System.out.println("intra vreodata aici?");
                                         myEventList.remove(0);
                                     }
 
