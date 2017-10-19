@@ -13,6 +13,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -71,6 +72,7 @@ public class ProfileDetailsActivity extends Activity {
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         setContentView(R.layout.profile_details_activity);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         final Typeface typeFace = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Medium.ttf");
         final Typeface typeFaceBold = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.ttf");
 
@@ -106,7 +108,7 @@ public class ProfileDetailsActivity extends Activity {
         saveAndContinueButton = (Button) findViewById(R.id.saveAndContinueButton);
         saveAndContinueButton.setTypeface(typeFaceBold);
         introText = (TextView) findViewById(R.id.introText);
-        introText.setText("New you out here " + Persistance.getInstance().getUserInfo(this).firstName + "?Cool!");
+        introText.setText("First time here, " + Persistance.getInstance().getUserInfo(this).firstName + "? Cool!");
         introText.setTypeface(typeFace);
         age = (EditText) findViewById(R.id.age);
         age.setTypeface(typeFace);
