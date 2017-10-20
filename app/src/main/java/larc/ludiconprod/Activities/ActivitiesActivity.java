@@ -56,6 +56,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Logger;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -232,6 +233,14 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                 checkinButton = (Button) v.findViewById(R.id.checkinHN);
 
                 final Event currentEvent = Persistance.getInstance().getHappeningNow(activity);
+
+                if(currentEvent == null) {
+                    ViewGroup.LayoutParams params = happeningNowLayout.getLayoutParams();
+                    params.height = 0;
+                    happeningNowLayout.setLayoutParams(params);
+
+                    return;
+                }
 
                 checkinButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -422,6 +431,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                             }
                 }
                 } catch (Exception e) {
+                    e.printStackTrace();
                     //I don't know why the fuck i am here
                 }
 
@@ -473,6 +483,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         System.out.println(params.toString());
         System.out.println(headers.toString());
         HTTPResponseController.getInstance().savePoints(params, headers, activity, this);
+        Persistance.getInstance().setHappeningNow(null, activity);
     }
 
     public void getAroundMeEvents(String pageNumber, Double latitude, Double longitude) {
@@ -762,7 +773,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                                 if ((timeToNextEvent > -3600 && buttonState == 0) || (timeToNextEvent > -7200 && buttonState == 1)) {
                                     googleApiClient.connect();
                                     startedEventDate = pastEvent;
-                                    if (pastEvent == myEventList.get(0).eventDateTimeStamp) {
+                                    if (myEventList.size()>0 && pastEvent == myEventList.get(0).eventDateTimeStamp) {
                                         System.out.println("intra vreodata aici?");
                                         myEventList.remove(0);
                                     }
@@ -844,13 +855,18 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
             if (!isFirstTimeAroundMe) {
                 layoutManagerAroundMe = new LinearLayoutManager(activity);
             }
+            if(fradapter == null){
+                fradapter = new AroundMeAdapter(aroundMeEventList, sponsorsList, activity.getApplicationContext(), activity, getResources(), currentFragment);
+            }
 
             fradapter.notifyDataSetChanged();
 
             if (!isFirstTimeAroundMe) {
                 frlistView = (RecyclerView) v.findViewById(R.id.events_listView2);
                 layoutManagerAroundMe.setOrientation(LinearLayoutManager.VERTICAL);
-                frlistView.setLayoutManager(layoutManagerAroundMe);
+                if(frlistView != null) {
+                    frlistView.setLayoutManager(layoutManagerAroundMe);
+                }
                 heartImageAroundMe = (ImageView) v.findViewById(R.id.heartImageAroundMe);
                 progressBarAroundMe = (ProgressBar) v.findViewById(R.id.progressBarAroundMe);
                 progressBarAroundMe.setIndeterminate(true);

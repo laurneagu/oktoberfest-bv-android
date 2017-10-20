@@ -183,7 +183,7 @@ public class AroundMeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private Activity activity;
     private Resources resources;
     private ActivitiesActivity fragment;
-    final ListView listView;
+    final RecyclerView listView;
     public static ProgressBar progressBarCard;
 
     public AroundMeAdapter(ArrayList<Event> list,ArrayList<Sponsors> sponsorList, Context context, Activity activity, Resources resources, ActivitiesActivity fragment) {
@@ -194,7 +194,7 @@ public class AroundMeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         this.fragment = fragment;
         this.sponsorsList=sponsorList;
 
-        this.listView = (ListView) activity.findViewById(R.id.events_listView2); // era v.
+        this.listView = (RecyclerView) activity.findViewById(R.id.events_listView2); // era v.
     }
 
     public AroundMeAdapter(ArrayList<Event> list,ArrayList<Sponsors> sponsorList, Context context, Activity activity, Resources resources) {
@@ -203,7 +203,7 @@ public class AroundMeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         this.activity = activity;
         this.resources = resources;
         this.sponsorsList=sponsorList;
-        this.listView = (ListView) activity.findViewById(R.id.events_listView2); // era v.
+        this.listView = (RecyclerView) activity.findViewById(R.id.events_listView2); // era v.
     }
 
     public void setListOfEvents(ArrayList<Event> newList) {
