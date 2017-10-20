@@ -216,9 +216,6 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                             happeningNowLayout.requestLayout();
                         }
                     });
-                } catch (Exception e) {
-
-                }
 
 
                 //set happening now field
@@ -424,7 +421,9 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                                 friends2.setImageBitmap(bitmap);
                             }
                 }
-
+                } catch (Exception e) {
+                    //I don't know why the fuck i am here
+                }
 
             } else
                 if (msg.what == 1) {
