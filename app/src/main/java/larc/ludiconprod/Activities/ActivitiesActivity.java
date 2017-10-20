@@ -187,7 +187,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         eventLocation.setLatitude(currentEvent.latitude);
         eventLocation.setLongitude(currentEvent.longitude);
         System.out.println(location.distanceTo(eventLocation) + " distanta");
-        if (location.distanceTo(eventLocation) < 20) {
+        if (location.distanceTo(eventLocation) < 70) {
             isInLocation = true;
         }
         return isInLocation;
@@ -236,7 +236,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                     @Override
                     public void onClick(View view) {
                         if (buttonState == 0) {
-                            if (!checkedLocation(currentEvent)) {
+                            if (checkedLocation(currentEvent)) {
                                 HashMap<String, String> params = new HashMap<String, String>();
                                 HashMap<String, String> headers = new HashMap<String, String>();
                                 headers.put("authKey", Persistance.getInstance().getUserInfo(activity).authKey);

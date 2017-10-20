@@ -478,8 +478,12 @@ public class HTTPResponseController {
                         e.printStackTrace();
                     }
                 }
-                if (!ActivitiesActivity.startHappeningNow.isAlive()) {
-                    ActivitiesActivity.startHappeningNow.start();
+                try {
+                    if (!ActivitiesActivity.startHappeningNow.isAlive()) {
+                        ActivitiesActivity.startHappeningNow.start();
+                    }
+                }catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         };
