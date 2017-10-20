@@ -207,14 +207,18 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                 }
                 System.out.println("eventStarted");
 
-                activity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
+                try {
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
 
-                        params.height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 218, getResources().getDisplayMetrics());
-                        happeningNowLayout.requestLayout();
-                    }
-                });
+                            params.height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 218, getResources().getDisplayMetrics());
+                            happeningNowLayout.requestLayout();
+                        }
+                    });
+                } catch (Exception e) {
+
+                }
 
 
                 //set happening now field
@@ -242,6 +246,8 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                                 headers.put("authKey", Persistance.getInstance().getUserInfo(activity).authKey);
                                 params.put("eventId", currentEvent.id);
                                 HTTPResponseController.getInstance().checkin(params, headers, activity);
+
+                                checkinDone = true;
 
                                 buttonState = 1;
                                 buttonSetter = new CountDownTimer(7200000, 1000) {
@@ -304,6 +310,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                                     @Override
                                     public void onClick(View view) {
                                         //Call sendLocation
+                                        checkinDone = false;
                                         happeningNowLocation.endDate = String.valueOf(System.currentTimeMillis() / 1000);
                                         savePoints();
 
@@ -708,7 +715,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                         Event currentEvent = Persistance.getInstance().getHappeningNow(activity);
                         if (currentEvent != null) {
                             //din shared pref, a inceput deja eventul
-                            System.out.println("intra in primul if");
+                            System.out.println("intra in primul if, cu shared pref");
                             timeToNextEvent = (currentEvent.eventDateTimeStamp - System.currentTimeMillis() / 1000);
                             if ((timeToNextEvent > -3600 && buttonState == 0) || (timeToNextEvent > -7200 && buttonState == 1)) {
                                 googleApiClient.connect();
@@ -721,7 +728,9 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                                         happeningNowLayout.setLayoutParams(params);
                                     }
                                 });*/
-                                handler.sendEmptyMessage(0);
+                                if (!checkinDone) {
+                                    handler.sendEmptyMessage(0);
+                                }
                                 return;
                             }
                         } else {
@@ -735,7 +744,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                                 System.out.println(timeToNextEvent);
                                 while (timeToNextEvent >= 0 || timeToNextEvent < -3600) {
                                     Thread.sleep(1000);
-                                    System.out.println("ajung aici2");
+                                    System.out.println("ajung aici2, nume creator: " + myEventList.get(0).creatorName);
                                /* pastEvent = Persistance.getInstance().getMyActivities(activity).get(0)
                                         .eventDateTimeStamp;
                                 eventShouldHappen = Persistance.getInstance().getMyActivities(activity).get(0);
