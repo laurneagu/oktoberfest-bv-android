@@ -183,7 +183,12 @@ public class ConversationsAdapter extends BaseAdapter implements ListAdapter {
                     Intent intent = new Intent(activity, ChatActivity.class);
                     intent.putExtra("chatId", currentChat.chatId);
                     intent.putExtra("otherParticipantName", currentChat.participantName);
-                    intent.putExtra("otherParticipantImage", currentChat.image);
+
+                    // This is set only for one-to-one conversations
+                    if(currentChat.image.size() == 1) {
+                        intent.putExtra("otherParticipantImage", currentChat.image);
+                    }
+
                     intent.putExtra("otherParticipantId", currentChat.otherParticipantId);
                     if (currentChat.eventId != null) {
                         intent.putExtra("groupChat", 1);

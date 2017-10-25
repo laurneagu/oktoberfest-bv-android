@@ -191,7 +191,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
 
                             if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(activity).id)) {
                                 if(counterOfNames == 0) {
-                                    if (users.hasChild("name")) {
+                                    if (users.hasChild("name") && users.child("name").getValue().toString().trim().compareToIgnoreCase("") != 0) {
                                         names += users.child("name").getValue().toString() + ",";
                                         counterOfNames++;
                                     } else {
@@ -199,7 +199,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                                         counterOfNames++;
                                     }
                                 }else if(counterOfNames == 1){
-                                    if (users.hasChild("name")) {
+                                    if (users.hasChild("name") && users.child("name").getValue().toString().trim().compareToIgnoreCase("") != 0) {
                                         if(dataSnapshot.child("users").getChildrenCount() > 3) {
                                             names += users.child("name").getValue().toString() + "....";
                                         }else{
@@ -279,7 +279,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
 
                                 if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(activity).id)) {
                                     if(counterOfNames == 0) {
-                                        if (users.hasChild("name")) {
+                                        if (users.hasChild("name") && users.child("name").getValue().toString().trim().compareToIgnoreCase("") != 0) {
                                             names += users.child("name").getValue().toString() + ",";
                                             counterOfNames++;
                                         } else {
@@ -287,7 +287,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                                             counterOfNames++;
                                         }
                                     }else if(counterOfNames == 1){
-                                        if (users.hasChild("name")) {
+                                        if (users.hasChild("name") && users.child("name").getValue().toString().trim().compareToIgnoreCase("") != 0) {
                                             if(dataSnapshot.child("users").getChildrenCount() > 3) {
                                                 names += users.child("name").getValue().toString() + "....";
                                             }else{
@@ -582,7 +582,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
 
                             if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(activity).id)) {
                                 if(counterOfNames == 0) {
-                                        if (users.hasChild("name")) {
+                                        if (users.hasChild("name") && users.child("name").getValue().toString().trim().compareToIgnoreCase("") != 0) {
                                             names += users.child("name").getValue().toString() + ",";
                                             counterOfNames++;
                                         } else {
@@ -590,7 +590,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                                             counterOfNames++;
                                         }
                                     }else if(counterOfNames == 1){
-                                        if (users.hasChild("name")) {
+                                        if (users.hasChild("name") && users.child("name").getValue().toString().trim().compareToIgnoreCase("") != 0) {
                                             if(chats.child("users").getChildrenCount() > 3) {
                                                 names += users.child("name").getValue().toString() + "....";
                                             }else{
@@ -706,7 +706,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                             for (DataSnapshot users : chats.child("users").getChildren()) {
                                 if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(activity).id)) {
                                     if(counterOfNames == 0) {
-                                        if (users.hasChild("name")) {
+                                        if (users.hasChild("name") && users.child("name").getValue().toString().trim().compareToIgnoreCase("") != 0) {
                                             names += users.child("name").getValue().toString() + ",";
                                             counterOfNames++;
                                         } else {
@@ -714,7 +714,7 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                                             counterOfNames++;
                                         }
                                     }else if(counterOfNames == 1){
-                                        if (users.hasChild("name")) {
+                                        if (users.hasChild("name") && users.child("name").getValue().toString().trim().compareToIgnoreCase("") != 0) {
                                             if(chats.child("users").getChildrenCount() > 3) {
                                                 names += users.child("name").getValue().toString() + "....";
                                             }else{

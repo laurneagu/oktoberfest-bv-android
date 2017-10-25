@@ -273,7 +273,7 @@ public class ChatActivity extends Activity {
                             }
                             otherUsersId.add(users.getKey().toString());
                             if(counterOfNames == 0) {
-                                if (users.hasChild("name")) {
+                                if (users.hasChild("name") && users.child("name").getValue().toString().trim().compareToIgnoreCase("") != 0) {
                                     names += users.child("name").getValue().toString() + ",";
                                     counterOfNames++;
                                 } else {
@@ -281,7 +281,7 @@ public class ChatActivity extends Activity {
                                     counterOfNames++;
                                 }
                             }else if(counterOfNames == 1){
-                                if (users.hasChild("name")) {
+                                if (users.hasChild("name") && users.child("name").getValue().toString().trim().compareToIgnoreCase("") != 0) {
                                     if(dataSnapshot.getChildrenCount() > 3) {
                                         names += users.child("name").getValue().toString() + "....";
                                     }else{
