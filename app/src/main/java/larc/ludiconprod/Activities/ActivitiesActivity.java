@@ -1,5 +1,7 @@
 package larc.ludiconprod.Activities;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -194,6 +196,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         return isInLocation;
     }
 
+    @SuppressLint("HandlerLeak")
     Handler handler = new Handler() {
         @Override
         public void handleMessage(android.os.Message msg) {
@@ -453,6 +456,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                     if (googleApiClient.isConnected()) {
                         googleApiClient.disconnect();
                     }
+                    Persistance.getInstance().setHappeningNow(null, activity);
                 }
         }
     };
@@ -743,18 +747,21 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                                 }
                                 return;
                             }
+                            else{
+                                Persistance.getInstance().setHappeningNow(null, activity);
+                            }
                         } else {
-                            System.out.println("intra in al doilea if " + myEventList.size()
+                            System.out.println("intra in al doilea if, nu am nimic in sharedPref " + myEventList.size()
                             );
 
                             if (myEventList.size() >= 1) {
                                 pastEvent = myEventList.get(0).eventDateTimeStamp;
                                 timeToNextEvent = (pastEvent - System.currentTimeMillis() / 1000);
-                                System.out.println("hai " + timeToNextEvent);
                                 System.out.println(timeToNextEvent);
                                 while (timeToNextEvent >= 0 || timeToNextEvent < -3600) {
+                                    System.out.println(timeToNextEvent);
                                     Thread.sleep(1000);
-                                    System.out.println("ajung aici2, nume creator: " + myEventList.get(0).creatorName);
+                                    System.out.println("ajung aici 2, nume creator: " + myEventList.get(0).creatorName);
                                /* pastEvent = Persistance.getInstance().getMyActivities(activity).get(0)
                                         .eventDateTimeStamp;
                                 eventShouldHappen = Persistance.getInstance().getMyActivities(activity).get(0);
@@ -775,7 +782,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                                     startedEventDate = pastEvent;
                                     if (myEventList.size()>0 && pastEvent == myEventList.get(0).eventDateTimeStamp) {
                                         System.out.println("intra vreodata aici?");
-                                        myEventList.remove(0);
+                                        //myEventList.remove(0);
                                     }
 
                                     Persistance.getInstance().setHappeningNow(eventShouldHappen, activity);
