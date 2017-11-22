@@ -595,6 +595,7 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         nearby.setBadgeCount(NumberOfUnseen);
         //set activeToken in firebase node for notification
         final DatabaseReference userNode = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(activity).id);
+
         SharedPreferences sharedPreferences = activity.getSharedPreferences("regId", 0);
         String activeToken = sharedPreferences.getString("regId", "0");
         if (!activeToken.equalsIgnoreCase("0")) {

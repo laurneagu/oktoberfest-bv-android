@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -46,7 +47,9 @@ public class MyPagerAdapter extends FragmentStatePagerAdapter implements ViewPag
             scale = SMALL_SCALE;
 
         position = position % GMapsActivity.PAGES;
-        return MyFragment.newInstance(context, position, scale,authorizedLocation.get(position));
+        return MyFragment.newInstance(context, position, scale, authorizedLocation.get(position));
+
+
     }
     @Override
     public int getItemPosition(Object object) {

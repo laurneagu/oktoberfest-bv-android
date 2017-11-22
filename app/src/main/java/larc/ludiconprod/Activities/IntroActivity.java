@@ -17,6 +17,7 @@ import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -181,47 +182,47 @@ public class IntroActivity extends Activity {
         if (Persistance.getInstance().getUserInfo(IntroActivity.this).facebookId != null && Persistance.getInstance().getUserInfo(IntroActivity.this).facebookId.equals("")) {
             goToActivity();
         } else
-            if (!go) {
-                new GraphRequest(
-                        AccessToken.getCurrentAccessToken(),
-                        "/me/friends",
-                        null,
-                        HttpMethod.GET,
-                        new GraphRequest.Callback() {
-                            public void onCompleted(GraphResponse response) {
-                                final ArrayList<String> friends = new ArrayList<String>();
-                                JSONArray friendsList;
-                                try {
-                                    friendsList = response.getJSONObject().getJSONArray("data");
-                                    for (int l = 0; l < friendsList.length(); l++) {
-                                        friends.add(friendsList.getJSONObject(l).getString("id"));
-                                    }
-
-                                    String firstName = Persistance.getInstance().getUserInfo(IntroActivity.this).firstName;
-                                    String lastName = Persistance.getInstance().getUserInfo(IntroActivity.this).lastName;
-                                    String email = Persistance.getInstance().getUserInfo(IntroActivity.this).email;
-                                    String password = Persistance.getInstance().getUserInfo(IntroActivity.this).password;
-                                    HashMap<String, String> params = new HashMap<String, String>();
-                                    params.put("firstName", firstName);
-                                    params.put("lastName", lastName);
-                                    params.put("email", email);
-                                    params.put("password", password);
-                                    params.put("isCustom", "1");
-                                    for (int i = 0; i < friends.size(); i++) {
-                                        params.put("fbFriends[" + i + "]", friends.get(i));
-                                    }
-                                    HashMap<String, String> headers = new HashMap<String, String>();
-                                    headers.put("apiKey", "b0a83e90-4ee7-49b7-9200-fdc5af8c2d33");
-                                    HTTPResponseController.getInstance().returnResponse(params, headers, IntroActivity.this, "http://207.154.236.13/api/register/");
-                                } catch (Exception e) {
-                                    e.printStackTrace();
+        if (!go) {
+            new GraphRequest(
+                    AccessToken.getCurrentAccessToken(),
+                    "/me/friends",
+                    null,
+                    HttpMethod.GET,
+                    new GraphRequest.Callback() {
+                        public void onCompleted(GraphResponse response) {
+                            final ArrayList<String> friends = new ArrayList<String>();
+                            JSONArray friendsList;
+                            try {
+                                friendsList = response.getJSONObject().getJSONArray("data");
+                                for (int l = 0; l < friendsList.length(); l++) {
+                                    friends.add(friendsList.getJSONObject(l).getString("id"));
                                 }
 
-
+                                String firstName = Persistance.getInstance().getUserInfo(IntroActivity.this).firstName;
+                                String lastName = Persistance.getInstance().getUserInfo(IntroActivity.this).lastName;
+                                String email = Persistance.getInstance().getUserInfo(IntroActivity.this).email;
+                                String password = Persistance.getInstance().getUserInfo(IntroActivity.this).password;
+                                HashMap<String, String> params = new HashMap<String, String>();
+                                params.put("firstName", firstName);
+                                params.put("lastName", lastName);
+                                params.put("email", email);
+                                params.put("password", password);
+                                params.put("isCustom", "1");
+                                for (int i = 0; i < friends.size(); i++) {
+                                    params.put("fbFriends[" + i + "]", friends.get(i));
+                                }
+                                HashMap<String, String> headers = new HashMap<String, String>();
+                                headers.put("apiKey", "b0a83e90-4ee7-49b7-9200-fdc5af8c2d33");
+                                HTTPResponseController.getInstance().returnResponse(params, headers, IntroActivity.this, "http://207.154.236.13/api/register/");
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
+
+
                         }
-                ).executeAsync();
-            }
+                    }
+            ).executeAsync();
+        }
 
 
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -375,7 +376,10 @@ public class IntroActivity extends Activity {
     public void setupProfile(ArrayList<String> friends, JSONObject object, LoginResult loginResult, LoginButton facebookButton) {
         String firstName = profile.getFirstName();
         String lastName = profile.getLastName();
-        String email = object.optString("email");
+        String email = "";
+        if(object != null) {
+           email = object.optString("email");
+        }
         String password = loginResult.getAccessToken().getUserId();
         final HashMap<String, String> params = new HashMap<String, String>();
         params.put("firstName", firstName);
@@ -396,6 +400,7 @@ public class IntroActivity extends Activity {
                         image = bitmap;
                         String imageString = ProfileDetailsActivity.encodeToBase64(image, Bitmap.CompressFormat.JPEG, 100);
                         setImageForProfile(IntroActivity.this, imageString);
+                        Log.v("poza",imageString);
                         logo.animate().translationY(300f);
                         logo.animate().translationY(-300f).setDuration(1000);
                         betaText.animate().translationY(300f);

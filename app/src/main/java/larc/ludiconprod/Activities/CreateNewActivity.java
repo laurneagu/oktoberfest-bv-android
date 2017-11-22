@@ -1218,13 +1218,15 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        if(error.getMessage().contains("error")) {
-            String json = trimMessage(error.getMessage(), "error");
-            if (json != null){
-                Toast.makeText(this, json, Toast.LENGTH_LONG).show();
+        if(error != null) {
+            if (error.getMessage().contains("error")) {
+                String json = trimMessage(error.getMessage(), "error");
+                if (json != null) {
+                    Toast.makeText(this, json, Toast.LENGTH_LONG).show();
+                }
+            } else {
+                Toast.makeText(this, error.getMessage(), Toast.LENGTH_LONG).show();
             }
-        }else {
-            Toast.makeText(this, error.getMessage(), Toast.LENGTH_LONG).show();
         }
         if (error instanceof NetworkError) {
             RelativeLayout ll = (RelativeLayout) findViewById(R.id.noInternetLayout);

@@ -872,13 +872,15 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        if(error.getMessage().contains("error")) {
-            String json = trimMessage(error.getMessage(), "error");
-            if (json != null){
-                Toast.makeText(super.getContext(), json, Toast.LENGTH_LONG).show();
+        if(error.getMessage() != null) {
+            if (error.getMessage().contains("error")) {
+                String json = trimMessage(error.getMessage(), "error");
+                if (json != null) {
+                    Toast.makeText(super.getContext(), json, Toast.LENGTH_LONG).show();
+                }
+            } else {
+                Toast.makeText(super.getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
             }
-        }else {
-            Toast.makeText(super.getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
         }
         Log.d("Response", error.toString());
         if (error instanceof NetworkError) {

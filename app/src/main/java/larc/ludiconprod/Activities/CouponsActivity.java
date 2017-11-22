@@ -325,19 +325,20 @@ public class CouponsActivity extends Fragment implements Response.ErrorListener,
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        if(error.getMessage().contains("error")) {
-            String json = trimMessage(error.getMessage(), "error");
-            if (json != null){
-                if(json.compareTo("User does not have enough points to redeem coupon.") == 0){
-                    Toast.makeText(super.getContext(), "You do not have enough ludicoins to redeem the coupon.", Toast.LENGTH_LONG).show();
+        if (error != null) {
+            if (error.getMessage().contains("error")) {
+                String json = trimMessage(error.getMessage(), "error");
+                if (json != null) {
+                    if (json.compareTo("User does not have enough points to redeem coupon.") == 0) {
+                        Toast.makeText(super.getContext(), "You do not have enough ludicoins to redeem the coupon.", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(super.getContext(), json, Toast.LENGTH_LONG).show();
+                    }
                 }
-                else {
-                    Toast.makeText(super.getContext(), json, Toast.LENGTH_LONG).show();
-                }
-            }
-        }else {
+        } else {
             Toast.makeText(super.getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
         }
+    }
         if (error instanceof NetworkError) {
             this.prepareError("No internet connection!");
         } else {
