@@ -436,8 +436,8 @@ public class ChatActivity extends Activity {
                                 message.message = messages.child("message").getValue().toString();
                                 message.messageId = messages.getKey();
                                 for(int i=0;i < otherUsersId.size();i++) {
-                                    if(message.authorId.equalsIgnoreCase(otherUsersId.get(i))) {
-                                        message.otherUserImage =otherUsersImage.get(i);
+                                    if(message.authorId.equalsIgnoreCase(otherUsersId.get(i)) && otherUsersImage.get(i) != null) {
+                                        message.otherUserImage = otherUsersImage.get(i);
                                     }
                                 }
 
