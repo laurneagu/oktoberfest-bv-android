@@ -25,6 +25,7 @@ import com.android.volley.VolleyError;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Console;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -219,7 +220,9 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         user.id = old.id;
         user.authKey = old.authKey;
         user.gender = "" + this.sex;
+
         user.firstName = this.firstName.getText().toString();
+
 
         if (user.firstName.isEmpty()) {
             Toast.makeText(this, "Enter your first name!", Toast.LENGTH_SHORT).show();

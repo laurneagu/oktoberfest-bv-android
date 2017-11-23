@@ -135,9 +135,34 @@ public class InviteFriendsAdapter extends BaseAdapter implements ListAdapter {
                     holder.friendName.setText(currentFriend.userName);
                 } else {
                     String names[] = currentFriend.userName.split(" ");
-                    String displayName = names[0] + "\n";
-                    for (int i = 1; i < names.length; i++) {
-                        displayName = displayName + names[i];
+                    String displayName="";
+                    String auxString;
+                    Boolean nextRow = false;
+                    for (int i = 0; i < names.length; i++) {
+                        auxString = displayName + names[i];
+                        if(auxString.length() < 16) {
+                            if(i == 0) {
+                                displayName = displayName + names[i];
+                            }
+                            else {
+                                displayName = displayName + " " + names[i];
+                            }
+                        }
+                        else {
+                            if(!nextRow){
+
+                                displayName = displayName + "\n" + names[i];
+                                nextRow = true;
+                            }else{
+                                displayName = displayName + " " + names[i];
+                            }
+                        }
+
+//                        if( i == 1) {
+//                            displayName = displayName + names[i];
+//                        }else{
+//                            displayName = displayName + " " + names[i];
+//                        }
 
                     }
                     holder.friendName.setText(displayName);
