@@ -102,6 +102,7 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
     int authorizedLevel;
     LinearLayout chatAndInviteLayout;
     static public String eventID = null;
+    static  public String creatorID = null;
     static ActivityDetailsActivity activity;
 
     public static Bitmap decodeBase64(String input) {
@@ -225,6 +226,7 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
         eventDetails.creatorName = b.getString("creatorName");
         eventDetails.creatorLevel = b.getInt("creatorLevel");
         eventDetails.creatorId = b.getString("creatorId");
+        creatorID = b.getString("creatorId");
         eventDetails.creatorProfilePicture = b.getString("creatorProfilePicture");
         for (int i = 0; i < b.getStringArrayList("participantsId").size(); i++) {
             Friend friend = new Friend();

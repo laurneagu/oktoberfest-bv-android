@@ -168,7 +168,7 @@ public class InviteFriendsAdapter extends BaseAdapter implements ListAdapter {
                     holder.friendName.setText(displayName);
                 }
 
-                if (!currentFriend.userID.equals(Persistance.getInstance().getUserInfo(activity).id) && Persistance.getInstance().getUserInfo(activity).id.equals(InviteFriendsActivity.participantList.get(0).userID)) {
+                if (!currentFriend.userID.equals(Persistance.getInstance().getUserInfo(activity).id) && Persistance.getInstance().getUserInfo(activity).id.equals(ActivityDetailsActivity.creatorID )) {
 
                     holder.inviteButton.setText("REMOVE");
                     holder.inviteButton.setBackgroundResource(R.drawable.green_button_selector);
