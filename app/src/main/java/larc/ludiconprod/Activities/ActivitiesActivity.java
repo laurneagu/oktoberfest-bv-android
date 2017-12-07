@@ -283,9 +283,10 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                                         } else {
                                             secondsValue = "0" + String.valueOf(seconds);
                                         }
-                                        System.out.println(isOnActivityPage + " booleana " + checkinButton);
+                                        //System.out.println(isOnActivityPage + " booleana " + checkinButton);
                                         if (isOnActivityPage) {
-                                            checkinButton.setText("CHECK-OUT " + minutesValue + ":" + secondsValue);
+                                           // checkinButton.setText("CHECK-OUT " + minutesValue + ":" + secondsValue);
+                                            checkinButton.setText("CHECK-OUT");
                                         }
 
 
