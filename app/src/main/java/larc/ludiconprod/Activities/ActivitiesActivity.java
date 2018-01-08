@@ -190,7 +190,9 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
         eventLocation.setLatitude(currentEvent.latitude);
         eventLocation.setLongitude(currentEvent.longitude);
         System.out.println(location.distanceTo(eventLocation) + " distanta");
-        if (location.distanceTo(eventLocation) < 150) {
+        float distanceToEvent = location.distanceTo(eventLocation);
+
+        if (distanceToEvent < 1000) {
             isInLocation = true;
         }
         return isInLocation;

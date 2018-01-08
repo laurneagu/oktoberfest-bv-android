@@ -800,6 +800,9 @@ public class HTTPResponseController {
                         }
                         fradapter.notifyDataSetChanged();
 
+                        if (!ActivitiesActivity.startHappeningNow.isAlive()) {
+                            ActivitiesActivity.startHappeningNow.start();
+                        }
                     } else {
                         myEventList.clear();
                         ActivitiesActivity.currentFragment.getMyEvents("0");
