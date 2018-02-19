@@ -442,7 +442,6 @@ public class ChatActivity extends Activity {
                                     }
                                 }
 
-
                                 if (counterOfChats > 0 || numberOfTotalChatsArrived < 21) {
                                     messageList.add(message);
 

@@ -186,11 +186,13 @@ public class HTTPResponseController {
                                     activity.finish();
                                 }
                             }.start();
-
-
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
+
+                        LoginManager.getInstance().logOut();
+                        Intent intent = new Intent(activity, IntroActivity.class);
+                        activity.startActivity(intent);
                     }
                 } else
                     if (activity.getLocalClassName().toString().equals("Activities.RegisterActivity")) {
@@ -203,8 +205,6 @@ public class HTTPResponseController {
                                 activity.startActivity(intent);
                             }
                         }, 3000);
-
-
                     } else
                         if (activity.getLocalClassName().toString().equals("Activities.SportDetailsActivity")) {
                             Intent intent = new Intent(activity, Main.class);

@@ -36,6 +36,7 @@ import com.facebook.HttpMethod;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.login.LoginBehavior;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.facebook.login.widget.ProfilePictureView;
@@ -146,7 +147,7 @@ public class IntroActivity extends Activity {
         facebookButton = (LoginButton) findViewById(R.id.facebookButton);
         /*facebookButton.setLoginBehavior(LoginBehavior.NATIVE_WITH_FALLBACK);
         facebookButton.setLoginBehavior(LoginBehavior.NATIVE_ONLY);*/
-        facebookButton.setLoginBehavior(LoginBehavior.WEB_ONLY);
+        //facebookButton.setLoginBehavior(LoginBehavior.WEB_ONLY);
         facebookButton.setTypeface(typeFace);
         facebookButton.setReadPermissions(Arrays.asList("public_profile, email, user_friends"));
         loginButton = (Button) findViewById(R.id.loginButton);
@@ -295,13 +296,14 @@ public class IntroActivity extends Activity {
 
                             for (int l = 0; l < friendsList.length(); l++) {
                                 friends.add(friendsList.getJSONObject(l).getString("id"));
-
-
                             }
                             setupProfile(friends, jsonObject, loginRslt, facebookButton);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
+
+                            // Fallback
+                            setupProfile(friends, jsonObject, loginRslt, facebookButton);
                         }
                     }
                 }
@@ -341,8 +343,6 @@ public class IntroActivity extends Activity {
                                     profile = Profile.getCurrentProfile();
                                     updateFriends();
                                 }
-
-
                             }
                         }
                 );
@@ -407,13 +407,15 @@ public class IntroActivity extends Activity {
                         betaText.animate().translationY(-300f).setDuration(1000);
 
                         HTTPResponseController.getInstance().returnResponse(params, headers, IntroActivity.this, "http://207.154.236.13/api/register/");
-
                     }
 
 
                     @Override
                     public void onBitmapFailed(Drawable errorDrawable) {
                         System.out.println("bitmapfailed");
+
+                        // Fallback strategy
+                        HTTPResponseController.getInstance().returnResponse(params, headers, IntroActivity.this, "http://207.154.236.13/api/register/");
                     }
 
                     @Override
