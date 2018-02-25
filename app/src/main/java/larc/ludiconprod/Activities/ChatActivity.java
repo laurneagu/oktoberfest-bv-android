@@ -137,9 +137,11 @@ public class ChatActivity extends Activity {
         chatLoading = (ProgressBar)findViewById(R.id.chatLoading);
         backButton = (RelativeLayout) findViewById(R.id.backButton);
         titleText = (TextView) findViewById(R.id.titleText);
-        if((getIntent().getStringExtra("otherParticipantName")!= null)) {
 
-            titleText.setText(getIntent().getStringExtra("otherParticipantName").substring(0, getIntent().getStringExtra("otherParticipantName").length() - 1));
+        String participantName = (getIntent().getStringExtra("otherParticipantName"));
+        if(participantName != null && participantName.length() > 0) {
+
+            titleText.setText(participantName.substring(0, participantName.length() - 1));
         }
         //checkChatExistence(getIntent().getStringExtra("UserId"),this);
         isOnChat1to1 = true;

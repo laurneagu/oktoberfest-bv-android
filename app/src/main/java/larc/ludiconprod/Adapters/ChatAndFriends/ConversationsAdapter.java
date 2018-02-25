@@ -138,8 +138,12 @@ public class ConversationsAdapter extends BaseAdapter implements ListAdapter {
             if (currentChat.image != null && currentChat.image.size() >= 1 && currentChat.eventId == null) {
                 Bitmap bitmap = decodeBase64(currentChat.image.get(0));
                 holder.chatParticipantImage.setImageBitmap(bitmap);
+            } else if(currentChat.eventId != null) {
+                holder.chatParticipantImage.setImageResource(R.drawable.ph_group);
             }
-            if (currentChat.eventId != null) {
+
+            // Edge case, no participants any more
+            if (currentChat.participantName.compareTo("No participants in group ") == 0){
                 holder.chatParticipantImage.setImageResource(R.drawable.ph_group);
             }
 

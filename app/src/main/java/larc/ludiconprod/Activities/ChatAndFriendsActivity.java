@@ -571,12 +571,8 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                         if (chats.hasChild("event_id")) {
                             chat.eventId = chats.child("event_id").getValue().toString();
                         }
-                        String names;
-                        if (chat.eventId != null) {
-                            names = "Group:";
-                        } else {
-                            names = "";
-                        }
+                        String names ="";
+
                         int counterOfNames=0;
                         for (DataSnapshot users : chats.child("users").getChildren()) {
 
@@ -614,7 +610,18 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                                 chat.otherParticipantId.add(users.getKey().toString());
                             }
                         }
-                        chat.participantName = names;
+                        if(counterOfNames == 0){
+                            chat.participantName = "No participants in group ";
+                        }
+                        else{
+                            if (counterOfNames == 1 && chat.eventId == null){
+                                chat.participantName = names;
+                            }
+                            else{
+                                // is group
+                                chat.participantName = "Group: " + names;
+                            }
+                        }
                         if (chats.hasChild("seen")) {
                             chat.lastMessageSeen = chats.child("seen").getValue().toString();
                         }
