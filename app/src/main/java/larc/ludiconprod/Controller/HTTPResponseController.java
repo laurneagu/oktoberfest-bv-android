@@ -479,7 +479,7 @@ public class HTTPResponseController {
                     }
                 }
                 try {
-                    if (!ActivitiesActivity.startHappeningNow.isAlive()) {
+                    if (!ActivitiesActivity.startHappeningNow.isAlive() && ActivitiesActivity.startHappeningNow.getState() == Thread.State.NEW) {
                         ActivitiesActivity.startHappeningNow.start();
                     }
                 }catch (Exception e) {
@@ -776,7 +776,7 @@ public class HTTPResponseController {
             public void onResponse(JSONObject jsonObject) {
                 try {
                     if (activity.getLocalClassName().toString().equals("Activities.ActivityDetailsActivity")) {
-                        Toast.makeText(activity, "You join this event successfull!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity, "Join was successful!", Toast.LENGTH_SHORT).show();
                         HashMap<String, String> params = new HashMap<String, String>();
                         HashMap<String, String> headers = new HashMap<String, String>();
                         HashMap<String, String> urlParams = new HashMap<String, String>();
@@ -815,7 +815,7 @@ public class HTTPResponseController {
                         //Persistance.getInstance().setHappeningNow(myEventList.get(0), activity);
                         //Persistance.getInstance().setMyActivities(activity, myEventList);
                         Toast.makeText(activity, "Join was successful!", Toast.LENGTH_SHORT).show();
-                        if (!ActivitiesActivity.startHappeningNow.isAlive()) {
+                        if (!ActivitiesActivity.startHappeningNow.isAlive() && ActivitiesActivity.startHappeningNow.getState() == Thread.State.NEW) {
                             ActivitiesActivity.startHappeningNow.start();
                         }
                     }
@@ -1016,7 +1016,7 @@ public class HTTPResponseController {
         setActivity(activity, params.get("email"), params.get("password"));
         eventid = eventId;
         RequestQueue requestQueue = Volley.newRequestQueue(activity);
-        CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, prodServer + "api/joinEvent/", params, headers, this.createJoinEventSuccesListener(), errorListener);
+        CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, prodServer + "api/joinEvent", params, headers, this.createJoinEventSuccesListener(), this.createRequestErrorListener());
         requestQueue.add(jsObjRequest);
 
     }
@@ -1043,7 +1043,7 @@ public class HTTPResponseController {
             errorListener = this.createErrorListener();
         }
         RequestQueue requestQueue = Volley.newRequestQueue(activity);
-        CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, prodServer + "api/event/", params, headers, this.createEventSuccesListener(), errorListener);
+        CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, prodServer + "api/event", params, headers, this.createEventSuccesListener(), errorListener);
         requestQueue.add(jsObjRequest);
     }
 
@@ -1117,7 +1117,7 @@ public class HTTPResponseController {
         setActivity(activity, params.get("email"), params.get("password"));
         setEventId(params.get("eventId"), deleteAnotherUser, params.get("userId"), position, false);
         RequestQueue requestQueue = Volley.newRequestQueue(activity);
-        CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, prodServer + "api/updateOfflineFriends/", params, headers, this.removeOfflineSuccesListener(), this.createRequestErrorListener());
+        CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, prodServer + "api/updateOfflineFriends", params, headers, this.removeOfflineSuccesListener(), this.createRequestErrorListener());
         requestQueue.add(jsObjRequest);
     }
 

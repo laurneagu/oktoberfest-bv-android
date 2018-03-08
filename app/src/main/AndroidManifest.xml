@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="larc.ludiconprod"
-    android:versionCode="47"
-    android:versionName="2.70" >
+    android:versionCode="48"
+    android:versionName="2.71" >
 
     <uses-sdk
         android:minSdkVersion="21"

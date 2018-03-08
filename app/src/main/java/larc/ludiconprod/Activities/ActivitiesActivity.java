@@ -765,16 +765,23 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
                                 while (timeToNextEvent >= 0 || timeToNextEvent < -3600) {
                                     System.out.println(timeToNextEvent);
                                     Thread.sleep(1000);
-                                    System.out.println("ajung aici 2, nume creator: " + myEventList.get(0).creatorName);
-                               /* pastEvent = Persistance.getInstance().getMyActivities(activity).get(0)
-                                        .eventDateTimeStamp;
-                                eventShouldHappen = Persistance.getInstance().getMyActivities(activity).get(0);
-                                timeToNextEvent = (Persistance.getInstance().getMyActivities(activity).get(0).eventDateTimeStamp - System.currentTimeMillis() / 1000);*/
 
-                                    pastEvent = myEventList.get(0).eventDateTimeStamp;
-                                    eventShouldHappen = myEventList.get(0);
-                                    timeToNextEvent = myEventList.get(0).eventDateTimeStamp - System.currentTimeMillis()
-                                            / 1000;
+                                     /* pastEvent = Persistance.getInstance().getMyActivities(activity).get(0)
+                                        .eventDateTimeStamp;
+                                    eventShouldHappen = Persistance.getInstance().getMyActivities(activity).get(0);
+                                    timeToNextEvent = (Persistance.getInstance().getMyActivities(activity).get(0).eventDateTimeStamp - System.currentTimeMillis() / 1000);*/
+
+                                     if(myEventList.size() > 0) {
+                                         System.out.println("ajung aici 2, nume creator: " + myEventList.get(0).creatorName);
+
+                                         pastEvent = myEventList.get(0).eventDateTimeStamp;
+                                         eventShouldHappen = myEventList.get(0);
+                                         timeToNextEvent = myEventList.get(0).eventDateTimeStamp - System.currentTimeMillis()
+                                                 / 1000;
+                                     }
+                                     else{
+                                         break;
+                                     }
                                 }
                             }
 

@@ -30,8 +30,8 @@ android {
         applicationId "larc.ludiconprod"
         minSdkVersion 19
         targetSdkVersion 20
-        versionCode 47
-        versionName "2.70"
+        versionCode 48
+        versionName "2.71"
         multiDexEnabled true
     }
     buildTypes {
