@@ -451,6 +451,7 @@ public class MyProfileActivity extends Fragment implements Response.Listener<JSO
             return R.drawable.ic_sport_voleyball_large;
         default:
             return R.drawable.ic_sport_others_large;
+            //return R.drawable.ic_sport_darts_large;
         }
     }
 

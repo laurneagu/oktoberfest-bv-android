@@ -27,8 +27,12 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.ByteArrayOutputStream;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TimeZone;
 
 import larc.ludiconprod.Adapters.ChatAndFriends.MessageAdapter;
 import larc.ludiconprod.Controller.Persistance;
@@ -253,70 +257,147 @@ public class ChatActivity extends Activity {
             });
 
         }
-        if(!ChatId.equalsIgnoreCase("isNot") && isGroupChat == 1){
-            if(otherUsersId != null) {
+        if(!ChatId.equalsIgnoreCase("isNot") && isGroupChat == 1) {
+            if (otherUsersId != null) {
                 otherUsersId.clear();
             }
-            if(otherUsersImage != null) {
+            if (otherUsersImage != null) {
                 otherUsersImage.clear();
             }
 
-            final DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(ChatActivity.this).id).child("chats").child(ChatId).child("users");
-            firebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    String names="";
-                    int counterOfNames = 0;
-                    for(DataSnapshot users : dataSnapshot.getChildren()){
-                        if(!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(ChatActivity.this).id)){
-                            if(users.hasChild("image")) {
-                                otherUsersImage.add(users.child("image").getValue().toString());
-                            }else{
-                                otherUsersImage.add("");
-                            }
-                            otherUsersId.add(users.getKey().toString());
-                            if(counterOfNames == 0) {
-                                if (users.hasChild("name") && users.child("name").getValue().toString().trim().compareToIgnoreCase("") != 0) {
-                                    names += users.child("name").getValue().toString() + ",";
-                                    counterOfNames++;
-                                } else {
-                                    names += "Unknown" + ",";
-                                    counterOfNames++;
-                                }
-                            }else if(counterOfNames == 1){
-                                if (users.hasChild("name") && users.child("name").getValue().toString().trim().compareToIgnoreCase("") != 0) {
-                                    if(dataSnapshot.getChildrenCount() > 3) {
-                                        names += users.child("name").getValue().toString() + "....";
-                                    }else{
-                                        names += users.child("name").getValue().toString() + ",";
-                                    }
-                                    counterOfNames++;
-                                } else {
-                                    if(dataSnapshot.getChildrenCount() > 3) {
-                                        names += "Unknown" + "....";
-                                    }else{
-                                        names += "Unknown" + ",";
-                                    }
-                                    counterOfNames++;
-                                }
-                            }
+            // Check if we have event_info:
+            final DatabaseReference firebaseRefEventInfo = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(ChatActivity.this).id).child("chats").child(ChatId);
+            //if (/*firebaseRefEventInfo != null*/ false) {
 
-                        }
-                    }if(names.length() > 0) {
-                        titleText.setText(names.substring(0, names.length() - 1));
+                firebaseRefEventInfo.addListenerForSingleValueEvent(new ValueEventListener() {
+                           @Override
+                           public void onDataChange(DataSnapshot dataSnapshot) {
+                                   String dateShort = "";
+                                   String sport = "";
+                                   if(dataSnapshot.hasChild("event_info")) {
+                                       DataSnapshot newds = dataSnapshot.child("event_info");
+
+                                       if (newds.hasChild("date")) {
+                                           dateShort = newds.child("date").getValue().toString();
+
+                                           long dateShortInt = 0;
+                                           try {
+                                               dateShortInt = Long.parseLong(dateShort);
+                                               SimpleDateFormat formatter = new SimpleDateFormat("dd MMM  - HH:mm");
+                                               TimeZone tz = TimeZone.getDefault();
+                                               formatter.setTimeZone(tz);
+
+                                               java.util.Date date = new java.util.Date(dateShortInt * 1000);
+                                               dateShort = formatter.format(date);
+                                           } catch (NumberFormatException ex) {
+                                               DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                               df.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+                                               try {
+                                                   java.util.Date date = df.parse(dateShort);
+
+                                                   SimpleDateFormat formatter = new SimpleDateFormat("dd MMM - HH:mm");
+                                                   formatter.setTimeZone(TimeZone.getDefault());
+                                                   dateShort = formatter.format(date);
+
+                                               } catch (ParseException e) {
+                                                   e.printStackTrace();
+                                               }
+                                           }
+                                       }
+                                        if (newds.hasChild("sport_code")) {
+                                           sport = newds.child("sport_code").getValue().toString();
+                                           if (sport.compareToIgnoreCase("OTH") == 0) {
+                                               sport = newds.child("other_sport_name").getValue().toString();
+                                           }
+                                       }
+
+                                       titleText.setText(dateShort + " - " + sport + " ");
+                                   }
+
+                               if(dataSnapshot.hasChild("users")) {
+                                   for (DataSnapshot users : dataSnapshot.child("users").getChildren()) {
+                                       if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(ChatActivity.this).id)) {
+                                           if (users.hasChild("image")) {
+                                               otherUsersImage.add(users.child("image").getValue().toString());
+                                           } else {
+                                               otherUsersImage.add("");
+                                           }
+                                           otherUsersId.add(users.getKey().toString());
+                                       }
+                                   }
+                               }
+
+                               listenForChanges();
+                               Runnable getPage = getFirstPage();
+                               Thread listener = new Thread(getPage);
+                               listener.start();
+                               }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        titleText.setText("Group chat");
                     }
-                    listenForChanges();
-                    Runnable getPage = getFirstPage();
-                    Thread listener = new Thread(getPage);
-                    listener.start();
+                });
+            /*} else {
+                final DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(Persistance.getInstance().getUserInfo(ChatActivity.this).id).child("chats").child(ChatId).child("users");
+                firebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        String names = "";
+                        int counterOfNames = 0;
+                        for (DataSnapshot users : dataSnapshot.getChildren()) {
+                            if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(ChatActivity.this).id)) {
+                                if (users.hasChild("image")) {
+                                    otherUsersImage.add(users.child("image").getValue().toString());
+                                } else {
+                                    otherUsersImage.add("");
+                                }
+                                otherUsersId.add(users.getKey().toString());
+                                if (counterOfNames == 0) {
+                                    if (users.hasChild("name") && users.child("name").getValue().toString().trim().compareToIgnoreCase("") != 0) {
+                                        names += users.child("name").getValue().toString() + ",";
+                                        counterOfNames++;
+                                    } else {
+                                        names += "Unknown" + ",";
+                                        counterOfNames++;
+                                    }
+                                } else if (counterOfNames == 1) {
+                                    if (users.hasChild("name") && users.child("name").getValue().toString().trim().compareToIgnoreCase("") != 0) {
+                                        if (dataSnapshot.getChildrenCount() > 3) {
+                                            names += users.child("name").getValue().toString() + "....";
+                                        } else {
+                                            names += users.child("name").getValue().toString() + ",";
+                                        }
+                                        counterOfNames++;
+                                    } else {
+                                        if (dataSnapshot.getChildrenCount() > 3) {
+                                            names += "Unknown" + "....";
+                                        } else {
+                                            names += "Unknown" + ",";
+                                        }
+                                        counterOfNames++;
+                                    }
+                                }
 
-                }
+                            }
+                        }
+                        if (names.length() > 0) {
+                            titleText.setText(names.substring(0, names.length() - 1));
+                        }
+                        listenForChanges();
+                        Runnable getPage = getFirstPage();
+                        Thread listener = new Thread(getPage);
+                        listener.start();
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
+                    }
 
-                }
-            });
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }*/
         }
 
         findViewById(R.id.internetRefresh).setAlpha(0);

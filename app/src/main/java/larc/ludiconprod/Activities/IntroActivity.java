@@ -194,9 +194,11 @@ public class IntroActivity extends Activity {
                             final ArrayList<String> friends = new ArrayList<String>();
                             JSONArray friendsList;
                             try {
-                                friendsList = response.getJSONObject().getJSONArray("data");
-                                for (int l = 0; l < friendsList.length(); l++) {
-                                    friends.add(friendsList.getJSONObject(l).getString("id"));
+                                if(response != null && response.getJSONObject() != null) {
+                                    friendsList = response.getJSONObject().getJSONArray("data");
+                                    for (int l = 0; l < friendsList.length(); l++) {
+                                        friends.add(friendsList.getJSONObject(l).getString("id"));
+                                    }
                                 }
 
                                 String firstName = Persistance.getInstance().getUserInfo(IntroActivity.this).firstName;
@@ -209,14 +211,32 @@ public class IntroActivity extends Activity {
                                 params.put("email", email);
                                 params.put("password", password);
                                 params.put("isCustom", "1");
-                                for (int i = 0; i < friends.size(); i++) {
-                                    params.put("fbFriends[" + i + "]", friends.get(i));
+                                if(response != null && response.getJSONObject() != null) {
+                                    for (int i = 0; i < friends.size(); i++) {
+                                        params.put("fbFriends[" + i + "]", friends.get(i));
+                                    }
                                 }
+
                                 HashMap<String, String> headers = new HashMap<String, String>();
                                 headers.put("apiKey", "b0a83e90-4ee7-49b7-9200-fdc5af8c2d33");
                                 HTTPResponseController.getInstance().returnResponse(params, headers, IntroActivity.this, "http://207.154.236.13/api/register/");
                             } catch (Exception e) {
                                 e.printStackTrace();
+
+                                String firstName = Persistance.getInstance().getUserInfo(IntroActivity.this).firstName;
+                                String lastName = Persistance.getInstance().getUserInfo(IntroActivity.this).lastName;
+                                String email = Persistance.getInstance().getUserInfo(IntroActivity.this).email;
+                                String password = Persistance.getInstance().getUserInfo(IntroActivity.this).password;
+                                HashMap<String, String> params = new HashMap<String, String>();
+                                params.put("firstName", firstName);
+                                params.put("lastName", lastName);
+                                params.put("email", email);
+                                params.put("password", password);
+                                params.put("isCustom", "1");
+
+                                HashMap<String, String> headers = new HashMap<String, String>();
+                                headers.put("apiKey", "b0a83e90-4ee7-49b7-9200-fdc5af8c2d33");
+                                HTTPResponseController.getInstance().returnResponse(params, headers, IntroActivity.this, "http://207.154.236.13/api/register/");
                             }
 
 

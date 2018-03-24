@@ -28,7 +28,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:textSize="18dp"
+                android:textSize="16dp"
                 android:textColor="#d4498b"
                 android:fontFamily="@string/fontmedium"
                 android:id="@+id/participantName"/>
@@ -51,7 +51,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=""
-        android:textSize="14dp"
+        android:textSize="11dp"
         android:gravity="right"
         android:layout_marginTop="24dp"
         android:textColor="#400c3855"

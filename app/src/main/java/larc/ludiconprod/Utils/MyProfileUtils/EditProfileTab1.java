@@ -79,6 +79,7 @@ public class EditProfileTab1 extends Fragment implements View.OnClickListener {
             cd.put(R.id.editPingPong, R.drawable.ic_sport_pingpong);
             cd.put(R.id.editSquash, R.drawable.ic_sport_squash);
             cd.put(R.id.editOthers, R.drawable.ic_sport_others);
+            //cd.put(R.id.editOthers, R.drawable.ic_sport_darts);
 
             Set<Integer> codesKeys = this.codes.keySet();
 

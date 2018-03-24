@@ -7,7 +7,7 @@
     <tab
         icon="@drawable/ic_bnav_prize_selected"
         id="@+id/tab_coupons"
-        title="Coupons"/>
+        title="Prizes"/>
     <tab
         icon="@drawable/ic_bnav_leaderboard_selected"
         id="@+id/tab_leaderboard"
