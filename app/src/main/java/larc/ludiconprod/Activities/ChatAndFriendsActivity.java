@@ -31,14 +31,20 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Logger;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.TimeZone;
 
 import larc.ludiconprod.Adapters.ChatAndFriends.ConversationsAdapter;
 import larc.ludiconprod.Adapters.ChatAndFriends.FriendsAdapter;
@@ -574,10 +580,47 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                         String names ="";
 
                         int counterOfNames=0;
-                        for (DataSnapshot users : chats.child("users").getChildren()) {
+                        if(chats.hasChild("event_info")){
+                            // Format date
+                            String dateShort = chats.child("event_info").child("date").getValue().toString();
+                            long dateShortInt = 0;
+                            try {
+                                dateShortInt = Long.parseLong(dateShort);
+                                SimpleDateFormat formatter = new SimpleDateFormat("dd MMM  - HH:mm");
+                                TimeZone tz = TimeZone.getDefault();
+                                formatter.setTimeZone(tz);
 
-                            if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(activity).id)) {
-                                if(counterOfNames == 0) {
+                                java.util.Date date = new java.util.Date( dateShortInt * 1000);
+                                dateShort = formatter.format(date);
+                            }
+                            catch (NumberFormatException ex){
+                                DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                df.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+                                try {
+                                    java.util.Date date = df.parse(dateShort);
+
+                                    SimpleDateFormat formatter = new SimpleDateFormat("dd MMM - HH:mm");
+                                    formatter.setTimeZone(TimeZone.getDefault());
+                                    dateShort = formatter.format(date);
+
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            // Format sport
+                            String sport = chats.child("event_info").child("sport_code").getValue().toString();
+                            if(sport.compareToIgnoreCase("OTH") == 0){
+                                sport = chats.child("event_info").child("other_sport_name").getValue().toString();
+                            }
+
+                            chat.participantName = dateShort + " - " + sport + " ";
+                        }
+                        else {
+                            for (DataSnapshot users : chats.child("users").getChildren()) {
+
+                                if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(activity).id)) {
+                                    if (counterOfNames == 0) {
                                         if (users.hasChild("name") && users.child("name").getValue().toString().trim().compareToIgnoreCase("") != 0) {
                                             names += users.child("name").getValue().toString() + ",";
                                             counterOfNames++;
@@ -585,43 +628,43 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                                             names += "Unknown" + ",";
                                             counterOfNames++;
                                         }
-                                    }else if(counterOfNames == 1){
+                                    } else if (counterOfNames == 1) {
                                         if (users.hasChild("name") && users.child("name").getValue().toString().trim().compareToIgnoreCase("") != 0) {
-                                            if(chats.child("users").getChildrenCount() > 3) {
+                                            if (chats.child("users").getChildrenCount() > 3) {
                                                 names += users.child("name").getValue().toString() + "....";
-                                            }else{
+                                            } else {
                                                 names += users.child("name").getValue().toString() + ",";
                                             }
                                             counterOfNames++;
                                         } else {
-                                            if(chats.child("users").getChildrenCount() > 3) {
+                                            if (chats.child("users").getChildrenCount() > 3) {
                                                 names += "Unknown" + "....";
-                                            }else{
+                                            } else {
                                                 names += "Unknown" + ",";
                                             }
                                             counterOfNames++;
                                         }
+                                    }
+                                    if (users.hasChild("image")) {
+                                        chat.image.add(users.child("image").getValue().toString());
+                                    } else {
+                                        chat.image.add("");
+                                    }
+                                    chat.otherParticipantId.add(users.getKey().toString());
                                 }
-                                if (users.hasChild("image")) {
-                                    chat.image.add(users.child("image").getValue().toString());
+                            }
+                            if (counterOfNames == 0) {
+                                chat.participantName = "No participants in group ";
+                            } else {
+                                if (counterOfNames == 1 && chat.eventId == null) {
+                                    chat.participantName = names;
                                 } else {
-                                    chat.image.add("");
+                                    // is group
+                                    chat.participantName = "Group: " + names;
                                 }
-                                chat.otherParticipantId.add(users.getKey().toString());
                             }
                         }
-                        if(counterOfNames == 0){
-                            chat.participantName = "No participants in group ";
-                        }
-                        else{
-                            if (counterOfNames == 1 && chat.eventId == null){
-                                chat.participantName = names;
-                            }
-                            else{
-                                // is group
-                                chat.participantName = "Group: " + names;
-                            }
-                        }
+
                         if (chats.hasChild("seen")) {
                             chat.lastMessageSeen = chats.child("seen").getValue().toString();
                         }
@@ -703,48 +746,89 @@ public class ChatAndFriendsActivity extends Fragment implements Response.ErrorLi
                             if (chats.hasChild("event_id")) {
                                 chat.eventId = chats.child("event_id").getValue().toString();
                             }
-                            String names;
-                            if (chat.eventId != null) {
-                                names = "Group:";
-                            } else {
-                                names = "";
-                            }
-                            int counterOfNames = 0;
-                            for (DataSnapshot users : chats.child("users").getChildren()) {
-                                if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(activity).id)) {
-                                    if(counterOfNames == 0) {
-                                        if (users.hasChild("name") && users.child("name").getValue().toString().trim().compareToIgnoreCase("") != 0) {
-                                            names += users.child("name").getValue().toString() + ",";
-                                            counterOfNames++;
-                                        } else {
-                                            names += "Unknown" + ",";
-                                            counterOfNames++;
-                                        }
-                                    }else if(counterOfNames == 1){
-                                        if (users.hasChild("name") && users.child("name").getValue().toString().trim().compareToIgnoreCase("") != 0) {
-                                            if(chats.child("users").getChildrenCount() > 3) {
-                                                names += users.child("name").getValue().toString() + "....";
-                                            }else{
-                                                names += users.child("name").getValue().toString() + ",";
-                                            }
-                                            counterOfNames++;
-                                        } else {
-                                            if(chats.child("users").getChildrenCount() > 3) {
-                                                names += "Unknown" + "....";
-                                            }else{
-                                                names += "Unknown" + ",";
-                                            }
-                                            counterOfNames++;
-                                        }
-                                    }
 
-                                    if (users.hasChild("image")) {
-                                        chat.image.add(users.child("image").getValue().toString());
-                                    }
-                                    chat.otherParticipantId.add(users.getKey().toString());
+                            if(chats.hasChild("event_info")){
+                                // Format date
+                                String dateShort = chats.child("event_info").child("date").getValue().toString();
+                                long dateShortInt = 0;
+                                try {
+                                    dateShortInt = Long.parseLong(dateShort);
+                                    SimpleDateFormat formatter = new SimpleDateFormat("dd MMM  - HH:mm");
+                                    TimeZone tz = TimeZone.getDefault();
+                                    formatter.setTimeZone(tz);
+
+                                    java.util.Date date = new java.util.Date( dateShortInt * 1000);
+                                    dateShort = formatter.format(date);
                                 }
+                                catch (NumberFormatException ex){
+                                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                    df.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+                                    try {
+                                        java.util.Date date = df.parse(dateShort);
+
+                                        SimpleDateFormat formatter = new SimpleDateFormat("dd MMM  - HH:mm");
+                                        TimeZone tz = TimeZone.getDefault();
+                                        formatter.setTimeZone(tz);
+
+                                        dateShort = formatter.format(date);
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                // Format sport
+                                String sport = chats.child("event_info").child("sport_code").getValue().toString();
+                                if(sport.compareToIgnoreCase("OTH") == 0){
+                                    sport = chats.child("event_info").child("other_sport_name").getValue().toString();
+                                }
+
+                                chat.participantName = dateShort + " - " + sport + " ";
                             }
-                            chat.participantName = names;
+                            else {
+                                String names;
+                                if (chat.eventId != null) {
+                                    names = "Group:";
+                                } else {
+                                    names = "";
+                                }
+                                int counterOfNames = 0;
+                                for (DataSnapshot users : chats.child("users").getChildren()) {
+                                    if (!users.getKey().equalsIgnoreCase(Persistance.getInstance().getUserInfo(activity).id)) {
+                                        if (counterOfNames == 0) {
+                                            if (users.hasChild("name") && users.child("name").getValue().toString().trim().compareToIgnoreCase("") != 0) {
+                                                names += users.child("name").getValue().toString() + ",";
+                                                counterOfNames++;
+                                            } else {
+                                                names += "Unknown" + ",";
+                                                counterOfNames++;
+                                            }
+                                        } else if (counterOfNames == 1) {
+                                            if (users.hasChild("name") && users.child("name").getValue().toString().trim().compareToIgnoreCase("") != 0) {
+                                                if (chats.child("users").getChildrenCount() > 3) {
+                                                    names += users.child("name").getValue().toString() + "....";
+                                                } else {
+                                                    names += users.child("name").getValue().toString() + ",";
+                                                }
+                                                counterOfNames++;
+                                            } else {
+                                                if (chats.child("users").getChildrenCount() > 3) {
+                                                    names += "Unknown" + "....";
+                                                } else {
+                                                    names += "Unknown" + ",";
+                                                }
+                                                counterOfNames++;
+                                            }
+                                        }
+
+                                        if (users.hasChild("image")) {
+                                            chat.image.add(users.child("image").getValue().toString());
+                                        }
+                                        chat.otherParticipantId.add(users.getKey().toString());
+                                    }
+                                }
+                                chat.participantName = names;
+                            }
+
                             if (chats.hasChild("seen")) {
                                 chat.lastMessageSeen = chats.child("seen").getValue().toString();
                             }
