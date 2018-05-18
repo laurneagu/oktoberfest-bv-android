@@ -29,8 +29,10 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.FacebookRequestError;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
+import com.facebook.GraphRequestAsyncTask;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
 import com.facebook.Profile;
@@ -80,26 +82,6 @@ public class IntroActivity extends Activity {
     JSONObject jsonObject;
     LoginResult loginRslt;
     LoginButton facebookButton;
-
-    public void animateProfileImage(Boolean isMain) {
-        String image;
-        if (isMain) {
-            image = Persistance.getInstance().getUserInfo(IntroActivity.this).profileImage;
-        } else {
-            SharedPreferences sharedPreferences = getSharedPreferences("ProfileImage", 0);
-            image = sharedPreferences.getString("ProfileImage", "0");
-        }
-
-        if (image != null && !image.equals("0")) {
-            Bitmap bitmap = decodeBase64(image);
-            IntroActivity.profileImage.setImageBitmap(bitmap);
-            IntroActivity.profileImage.setAlpha(0.3f);
-            IntroActivity.profileImage.animate().alpha(1f).setDuration(1000);
-        }
-
-
-    }
-
 
     public void goToActivity() {
         if (!go) {
@@ -155,7 +137,6 @@ public class IntroActivity extends Activity {
         termsAndPrivacyPolicy = (TextView) findViewById(R.id.termsAndPrivacyPolicy);
         betaText = (TextView) findViewById(R.id.betaText);
 
-
         registerButton = (Button) findViewById(R.id.registerButton);
         registerButton.setTypeface(typeFace);
         infoTextView = (TextView) findViewById(R.id.textView);
@@ -184,7 +165,7 @@ public class IntroActivity extends Activity {
             goToActivity();
         } else
         if (!go) {
-            new GraphRequest(
+            final GraphRequest request = new GraphRequest(
                     AccessToken.getCurrentAccessToken(),
                     "/me/friends",
                     null,
@@ -238,13 +219,39 @@ public class IntroActivity extends Activity {
                                 headers.put("apiKey", "b0a83e90-4ee7-49b7-9200-fdc5af8c2d33");
                                 HTTPResponseController.getInstance().returnResponse(params, headers, IntroActivity.this, "http://207.154.236.13/api/register/");
                             }
-
-
                         }
                     }
-            ).executeAsync();
-        }
+            );//.executeAsync();
 
+            // Run facebook graphRequest.
+            Thread t = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    GraphResponse gResponse = request.executeAndWait();
+                }
+            });
+            t.start();
+            try {
+                t.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+
+                String firstName = Persistance.getInstance().getUserInfo(IntroActivity.this).firstName;
+                String lastName = Persistance.getInstance().getUserInfo(IntroActivity.this).lastName;
+                String email = Persistance.getInstance().getUserInfo(IntroActivity.this).email;
+                String password = Persistance.getInstance().getUserInfo(IntroActivity.this).password;
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("firstName", firstName);
+                params.put("lastName", lastName);
+                params.put("email", email);
+                params.put("password", password);
+                params.put("isCustom", "1");
+
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("apiKey", "b0a83e90-4ee7-49b7-9200-fdc5af8c2d33");
+                HTTPResponseController.getInstance().returnResponse(params, headers, IntroActivity.this, "http://207.154.236.13/api/register/");
+            }
+        }
 
         loginButton.setOnClickListener(new View.OnClickListener() {
 
@@ -349,7 +356,6 @@ public class IntroActivity extends Activity {
                                 jsonObject = object;
                                 loginRslt = loginResult;
 
-
                                 if (Profile.getCurrentProfile() == null) {
                                     mProfileTracker = new ProfileTracker() {
                                         @Override
@@ -379,7 +385,6 @@ public class IntroActivity extends Activity {
                 registerButton.setVisibility(View.VISIBLE);
                 infoTextView.setVisibility(View.VISIBLE);
                 termsAndPrivacyPolicy.setVisibility(View.VISIBLE);
-
             }
 
             @Override
@@ -389,11 +394,11 @@ public class IntroActivity extends Activity {
                 registerButton.setVisibility(View.VISIBLE);
                 infoTextView.setVisibility(View.VISIBLE);
                 termsAndPrivacyPolicy.setVisibility(View.VISIBLE);
-            }
+        }
         });
     }
 
-    public void setupProfile(ArrayList<String> friends, JSONObject object, LoginResult loginResult, LoginButton facebookButton) {
+    public void setupProfile(ArrayList<String> friends, JSONObject object, LoginResult loginResult, final LoginButton facebookButton) {
         String firstName = profile.getFirstName();
         String lastName = profile.getLastName();
         String email = "";
@@ -429,13 +434,18 @@ public class IntroActivity extends Activity {
                         HTTPResponseController.getInstance().returnResponse(params, headers, IntroActivity.this, "http://207.154.236.13/api/register/");
                     }
 
-
                     @Override
                     public void onBitmapFailed(Drawable errorDrawable) {
                         System.out.println("bitmapfailed");
 
                         // Fallback strategy
-                        HTTPResponseController.getInstance().returnResponse(params, headers, IntroActivity.this, "http://207.154.236.13/api/register/");
+                        //HTTPResponseController.getInstance().returnResponse(params, headers, IntroActivity.this, "http://207.154.236.13/api/register/");
+
+                        facebookButton.setVisibility(View.VISIBLE);
+                        loginButton.setVisibility(View.VISIBLE);
+                        registerButton.setVisibility(View.VISIBLE);
+                        infoTextView.setVisibility(View.VISIBLE);
+                        termsAndPrivacyPolicy.setVisibility(View.VISIBLE);
                     }
 
                     @Override

@@ -129,6 +129,10 @@ public class HTTPResponseController {
             @Override
             public void onResponse(JSONObject jsonObject) {
                 if (activity == null) {
+                    LoginManager.getInstance().logOut();
+                    Intent intent = new Intent(activity, IntroActivity.class);
+                    activity.startActivity(intent);
+
                     return;
                 }
 
@@ -932,6 +936,10 @@ public class HTTPResponseController {
 
                 } catch (Exception e) {
                     e.printStackTrace();
+
+                    LoginManager.getInstance().logOut();
+                    Intent intent = new Intent(activity, IntroActivity.class);
+                    activity.startActivity(intent);
                 }
 
 
@@ -983,6 +991,11 @@ public class HTTPResponseController {
         } else
             if (activity.getLocalClassName().toString().equals("Activities.CreateNewActivity")) {
                 CreateNewActivity.createActivityButton.setEnabled(true);
+            }
+            else{
+                LoginManager.getInstance().logOut();
+                Intent intent = new Intent(activity, IntroActivity.class);
+                activity.startActivity(intent);
             }
     }
 

@@ -322,6 +322,16 @@ public class AroundMeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     ((ViewHolder)holder).profileImage.setImageBitmap(bitmap);
                 }
 
+                // Card color for Ludicon Bucharest
+                /*
+                if(list.get(pos).creatorName.compareTo("Ludicon Bucharest") == 0){
+                    ((ViewHolder)holder).view.setBackgroundColor(0xFFffdae0);
+                }
+                else{
+                    ((ViewHolder)holder).view.setBackgroundColor(0xFFFFFFFF);
+                }
+                */
+
                 // Redirect to user profile on picture tap
                 ((ViewHolder)holder).profileImage.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
