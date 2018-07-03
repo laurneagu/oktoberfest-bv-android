@@ -127,6 +127,8 @@ public class InviteFriendsAdapter extends BaseAdapter implements ListAdapter {
                 if (!currentFriend.profileImage.equals("")) {
                     Bitmap bitmap = decodeBase64(currentFriend.profileImage);
                     holder.friendProfileImage.setImageBitmap(bitmap);
+                } else {
+                    holder.friendProfileImage.setImageResource(R.drawable.ic_user);
                 }
                 ViewGroup.LayoutParams params = holder.friendLevel.getLayoutParams();
                 params.height = ViewGroup.LayoutParams.WRAP_CONTENT;

@@ -21,11 +21,23 @@
             android:layout_marginRight="8dp"
             android:id="@+id/otherParticipantImage"
             android:background="@drawable/ic_bnav_user_selected"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/otherParticipantName"
+            android:textColor="@color/black"
+            android:textSize="14dp"
+            android:layout_toRightOf="@+id/otherParticipantImage"
+            android:text = "Ludicon"/>
+
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/otherParticipantImage"
-        android:layout_toLeftOf="@+id/otherParticipantPadding">
+        android:layout_toLeftOf="@+id/otherParticipantPadding"
+        android:layout_marginTop="20dp">
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -36,10 +48,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-
-
-
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -50,7 +58,6 @@
         android:paddingTop="8dp"
         android:id="@+id/otherParticipantMessage"
         android:text="c"/>
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -136,32 +143,34 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/profileImageLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/profileImageLayout"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:background="#f7f9fc"
         android:visibility="invisible">
 
         <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/topOtherParticipantImage"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:background="@drawable/ic_bnav_user_selected"
             android:layout_centerHorizontal="true"
-            android:id="@+id/topOtherParticipantImage"
-            android:layout_marginTop="60dp"/>
+            android:layout_marginTop="60dp"
+            android:background="@drawable/ic_bnav_user_selected" />
 
         <TextView
+            android:id="@+id/topOtherParticipantName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
             android:layout_below="@+id/topOtherParticipantImage"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="28dp"
             android:layout_marginTop="16dp"
             android:text="Costianu"
-            android:textSize="18dp"
-            android:id="@+id/topOtherParticipantName"
-            android:layout_marginBottom="28dp"
-            android:textColor="#d4498b"/>
+            android:textColor="#d4498b"
+            android:textSize="18dp" />
 
-        </RelativeLayout>
+    </RelativeLayout>
 
 </RelativeLayout>

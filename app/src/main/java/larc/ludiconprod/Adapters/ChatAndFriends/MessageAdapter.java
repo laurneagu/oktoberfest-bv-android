@@ -17,6 +17,7 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,7 @@ import java.util.HashMap;
 import de.hdodenhof.circleimageview.CircleImageView;
 import larc.ludiconprod.Activities.ChatActivity;
 import larc.ludiconprod.Activities.ChatAndFriendsActivity;
+import larc.ludiconprod.Activities.UserProfileActivity;
 import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.R;
@@ -78,7 +80,7 @@ public class MessageAdapter extends BaseAdapter implements ListAdapter {
         TextView myMessageTime;
         CircleImageView topOtherParticipantImage;
         TextView topOtherParticipantName;
-
+        TextView otherParticipantName;
 
 
     }
@@ -145,6 +147,7 @@ public class MessageAdapter extends BaseAdapter implements ListAdapter {
                 holder.myMessageTime=(TextView)view.findViewById(R.id.myMessageTime);
                 holder.topOtherParticipantImage=(CircleImageView)view.findViewById(R.id.topOtherParticipantImage);
                 holder.topOtherParticipantName=(TextView)view.findViewById(R.id.topOtherParticipantName);
+                holder.otherParticipantName=(TextView)view.findViewById(R.id.otherParticipantName);
 
                 Typeface typeFace = Typeface.createFromAsset(fragment.getAssets(),"fonts/Quicksand-Medium.ttf");
                 holder.otherParticipantMessage.setTypeface(typeFace);
@@ -152,6 +155,7 @@ public class MessageAdapter extends BaseAdapter implements ListAdapter {
                 holder.myMessage.setTypeface(typeFace);
                 holder.myMessageTime.setTypeface(typeFace);
                 holder.topOtherParticipantName.setTypeface(typeFace);
+                holder.otherParticipantName.setTypeface(typeFace);
 
                 view.setTag(holder);
             } else {
@@ -240,7 +244,6 @@ public class MessageAdapter extends BaseAdapter implements ListAdapter {
                     spanTxt.setSpan(new ForegroundColorSpan(Color.BLACK), spanTxt.length()-1, spanTxt.length(), 0);
                 }
 
-
                 holder.myMessage.setMovementMethod(LinkMovementMethod.getInstance());
                 holder.myMessage.setText(spanTxt, TextView.BufferType.SPANNABLE);
 
@@ -320,7 +323,6 @@ public class MessageAdapter extends BaseAdapter implements ListAdapter {
 
                 holder.otherParticipantMessage.setMovementMethod(LinkMovementMethod.getInstance());
                 holder.otherParticipantMessage.setText(spanTxt, TextView.BufferType.SPANNABLE);
-
                 java.util.Date date1 = new java.util.Date(currentMessage.date.longValue() * 1000);
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MMM-dd,HH:mm");
                 String displayDate = formatter.format(date1);
@@ -330,14 +332,38 @@ public class MessageAdapter extends BaseAdapter implements ListAdapter {
                 if(currentMessage.otherUserImage != null){
                     Bitmap bitmap=decodeBase64(currentMessage.otherUserImage);
                     holder.otherParticipantImage.setImageBitmap(bitmap);
+
+                   holder.otherParticipantImage.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view){
+                          String id = currentMessage.authorId;
+                            Activity ac = activity;
+                            if (Persistance.getInstance().getUserInfo(ac).id.equals(id)) {
+                                Toast.makeText(ac, "It's you :)", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            Intent intent = new Intent(ac, UserProfileActivity.class);
+                            intent.putExtra("UserId", currentMessage.authorId);
+                            activity.startActivity(intent);
+                        }
+                    });
+
+                } else {
+                    holder.otherParticipantImage.setImageResource(R.drawable.ic_user);
                 }
 
                 ViewGroup.LayoutParams paramsOther = holder.otherParticipantLayout.getLayoutParams();
                 paramsOther.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 holder.otherParticipantLayout.setLayoutParams(paramsOther);
+                holder.otherParticipantName.setText(currentMessage.name);
                 if(position < list.size()-1 && list.get(position+1).authorId.equalsIgnoreCase(list.get(position).authorId)){
                     holder.otherParticipantImage.setVisibility(View.INVISIBLE);
+                    holder.otherParticipantName.setText("");
                 }
+
+
+
+
             }else if(currentMessage.setTopImage){
                 holder.profileImageLayout.setVisibility(View.VISIBLE);
                 if(currentMessage.otherUserName.length() > 1) {

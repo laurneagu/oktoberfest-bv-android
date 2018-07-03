@@ -12,4 +12,5 @@ public class Message {
     public Boolean setTopImage=false;
     public String otherUserImage;
     public String otherUserName;
+    public  String name;
 }
