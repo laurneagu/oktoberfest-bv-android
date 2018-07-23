@@ -39,7 +39,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
 
 
-        if(remoteMessage.getData().get("type").equalsIgnoreCase("chat")) {
+        if(remoteMessage.getData().get("type") != null && remoteMessage.getData().get("type").equalsIgnoreCase("chat")) {
             ArrayList<String> numberOfChatUnseen = Persistance.getInstance().getUnseenChats(getApplicationContext());
             Boolean chatIsAlreadyUnseen = false;
             for (int i = 0; i < numberOfChatUnseen.size(); i++) {

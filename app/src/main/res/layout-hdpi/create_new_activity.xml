@@ -350,12 +350,235 @@
                     android:background="#f7f9fc"
                     android:layout_below="@+id/mapLayout"
                     android:id="@+id/imageBelowMap"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/imageBelowMap"
+                    android:id="@+id/enrollWithAForm"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:textColor="#0c3855"
+                        android:fontFamily="@string/fontbold"
+                        android:text="ENROLL WITH A FORM "/>
+
+                </LinearLayout>
+                <RadioGroup
+                    android:id="@+id/yesOrNoSwitch"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/rounded_edittext"
+                    android:checkedButton="@+id/yes"
+                    android:orientation="horizontal"
+                    android:layout_below="@+id/enrollWithAForm"
+                    android:layout_marginTop="16dp">
+
+                    <RadioButton
+                        android:id="@+id/yes"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="1dp"
+                        android:layout_marginLeft="1dp"
+                        android:layout_marginTop="1dp"
+                        android:layout_weight="1"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:text="Yes"
+                        android:textColor="#1A0c3855"
+                        android:textSize="16sp" />
+
+                    <RadioButton
+                        android:id="@+id/no"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="1dp"
+                        android:layout_marginRight="1dp"
+                        android:layout_marginTop="1dp"
+                        android:layout_weight="1"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:text="No"
+                        android:textColor="#1A0c3855" />
+                </RadioGroup>
+
+
+                <TextView
+                    android:id="@+id/enrollmentFields"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/yesOrNoSwitch"
+                    android:layout_marginTop="24dp"
+                    android:fontFamily="@string/fontmedium"
+                    android:text="ENROLLMENT FIELDS"
+                    android:textColor="#0c3855"
+                    android:textSize="14sp" />
+
+                <LinearLayout
+                    android:id="@+id/enrollmentFields1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/enrollmentFields"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_weight="0.6"
+                        android:background="@drawable/rounded_edittext"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:id="@+id/relAddress">
+
+                        <ImageView
+                            android:id="@+id/pin_1_normal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/pin_1_normal"
+                            android:gravity="center" />
+
+                        <TextView
+                            android:id="@+id/enrollmentFieldsAddress"
+                            android:layout_width="207dp"
+                            android:layout_height="37dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:background="@android:color/transparent"
+                            android:gravity="center_vertical"
+                            android:text="Address"
+                            android:textColor="@color/darkblue"
+                            android:textColorHint="@color/lightGray"
+                            android:textSize="16sp" />
+
+                        <ImageButton
+                            android:id="@+id/minusButton1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/ic_minus"
+                            android:gravity="center" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/enrollmentFields2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/enrollmentFields1"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_weight="0.6"
+                        android:background="@drawable/rounded_edittext"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:id="@+id/relPhone">
+
+                        <ImageView
+                            android:id="@+id/ic_bnav_user_selected"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/ic_info"
+                            android:gravity="center" />
+
+                        <TextView
+                            android:id="@+id/enrollmentFieldsPhone"
+                            android:layout_width="207dp"
+                            android:layout_height="37dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:background="@android:color/transparent"
+                            android:gravity="center_vertical"
+                            android:text="Phone No."
+                            android:textColor="@color/darkblue"
+                            android:textColorHint="@color/lightGray"
+                            android:textSize="16sp" />
+
+                        <ImageButton
+                            android:id="@+id/minusButton2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/ic_minus"
+                            android:gravity="center" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/newFields"
+                    android:layout_below="@+id/enrollmentFields2">
+
+
+                    <LinearLayout
+                        android:id="@+id/addCustom"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
+                        <RelativeLayout
+                            android:id="@+id/relLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:layout_weight="0.6"
+                            android:background="@drawable/rounded_edittext"
+                            android:paddingLeft="8dp"
+                            android:paddingRight="8dp">
+
+                            <ImageView
+                                android:id="@+id/ic_info"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_centerVertical="true"
+                                android:background="@drawable/ic_info"
+                                android:gravity="center" />
+
+                            <EditText
+                                android:id="@+id/addCustomText"
+                                android:layout_width="207dp"
+                                android:layout_height="37dp"
+                                android:layout_centerHorizontal="true"
+                                android:layout_centerVertical="true"
+                                android:background="@android:color/transparent"
+                                android:gravity="center_vertical"
+                                android:hint="Add Custom"
+                                android:textColor="@color/darkblue"
+                                android:textColorHint="@color/lightGray"
+                                android:textSize="16sp" />
+
+                            <ImageButton
+                                android:id="@+id/plusButton1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:background="@drawable/ic_plus"
+                                android:gravity="center" />
+                        </RelativeLayout>
+                    </LinearLayout>
+
+                </RelativeLayout>
+
                 <LinearLayout
                     android:id="@+id/descriptionLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/imageBelowMap"
-                    android:orientation="horizontal">
+                    android:layout_below="@+id/newFields"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="24dp">
 
                 <TextView
                     android:id="@+id/description"

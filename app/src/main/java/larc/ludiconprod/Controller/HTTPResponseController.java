@@ -24,6 +24,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.facebook.login.LoginManager;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -395,6 +396,18 @@ public class HTTPResponseController {
                             event.participansProfilePicture.add(jsonObject.getJSONArray("aroundMe").getJSONObject(i).getJSONArray("participantsProfilePicture").getString(j));
                         }
                         System.out.println(event.id + " eventid:" + i + "  " + event.numberOfParticipants + " profilepicture" + jsonObject.getJSONArray("aroundMe").getJSONObject(i).getJSONArray("participantsProfilePicture").length());
+
+                        String isFormBasedStr =  jsonObject.getJSONArray("aroundMe").getJSONObject(i).getString("isFormBased");
+                        if (isFormBasedStr.equals("0")){
+                            event.isFormBased = false;
+                        }else event.isFormBased = true;
+
+                        if (event.isFormBased == true && jsonObject.getJSONArray("aroundMe").getJSONObject(i).optJSONArray("formParameters") != null){
+                         for (int j = 0; j < jsonObject.getJSONArray("aroundMe").getJSONObject(i).getJSONArray("formParameters").length(); j++) {
+                            event.formParameters.add(jsonObject.getJSONArray("aroundMe").getJSONObject(i).getJSONArray("formParameters").getString(j));
+                            }
+                        }
+
                         aroundMeEventList.add(event);
                     }
                     if (getFirstPageAroundMe) {
@@ -712,7 +725,14 @@ public class HTTPResponseController {
                     b.putStringArrayList("participantsProfileImage", participantsProfileImage);
                     b.putIntegerArrayList("participantsLevel", participantsLevel);
                     b.putString("eventId", eventid);
-
+                    b.putString("isFormBased", jsonObject.getString("isFormBased"));
+                    ArrayList<String> formParameters = new ArrayList<>();
+                    if (jsonObject.optJSONArray("formParameters") != null) {
+                        for (int i = 0; i < jsonObject.getJSONArray("formParameters").length(); i++) {
+                            formParameters.add(jsonObject.getJSONArray("formParameters").getString(i).toString());
+                        }
+                        b.putStringArrayList("formParameters", formParameters);
+                    }
 
                     if (flag == true) {
                         oldActivity.finish();
@@ -1011,7 +1031,7 @@ public class HTTPResponseController {
     public void getAroundMeEvent(HashMap<String, String> params, HashMap<String, String> headers, Activity activity, HashMap<String, String> urlParams, Response.ErrorListener errorListener) {
         setActivity(activity, params.get("email"), params.get("password"));
         RequestQueue requestQueue = Volley.newRequestQueue(activity);
-        CustomRequest jsObjRequest = new CustomRequest(Request.Method.GET, prodServer + "api/events?userId=" + urlParams.get("userId") + "&pageNumber=" + urlParams.get("pageNumber") + "&userLatitude=" + urlParams.get("userLatitude") +
+        CustomRequest jsObjRequest = new CustomRequest(Request.Method.GET, prodServer + "api/v2/events?userId=" + urlParams.get("userId") + "&pageNumber=" + urlParams.get("pageNumber") + "&userLatitude=" + urlParams.get("userLatitude") +
                 "&userLongitude=" + urlParams.get("userLongitude") + "&userRange=" + urlParams.get("userRange") + "&userSports=" + urlParams.get("userSports"), params, headers, this.createAroundMeEventSuccesListener(), errorListener);
 
 
@@ -1021,7 +1041,7 @@ public class HTTPResponseController {
     public void getMyEvent(HashMap<String, String> params, HashMap<String, String> headers, Activity activity, HashMap<String, String> urlParams, Response.ErrorListener errorListener) {
         setActivity(activity, params.get("email"), params.get("password"));
         RequestQueue requestQueue = Volley.newRequestQueue(activity);
-        CustomRequest jsObjRequest = new CustomRequest(Request.Method.GET, prodServer + "api/events?userId=" + urlParams.get("userId") + "&pageNumber=" + urlParams.get("pageNumber"), params, headers, this.createMyEventSuccesListener(), errorListener);
+        CustomRequest jsObjRequest = new CustomRequest(Request.Method.GET, prodServer + "api/v2/events?userId=" + urlParams.get("userId") + "&pageNumber=" + urlParams.get("pageNumber"), params, headers, this.createMyEventSuccesListener(), errorListener);
         requestQueue.add(jsObjRequest);
     }
 
@@ -1029,7 +1049,7 @@ public class HTTPResponseController {
         setActivity(activity, params.get("email"), params.get("password"));
         eventid = eventId;
         RequestQueue requestQueue = Volley.newRequestQueue(activity);
-        CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, prodServer + "api/joinEvent", params, headers, this.createJoinEventSuccesListener(), this.createRequestErrorListener());
+        CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, prodServer + "api/v2/joinEvent", params, headers, this.createJoinEventSuccesListener(), this.createRequestErrorListener());
         requestQueue.add(jsObjRequest);
 
     }
@@ -1056,7 +1076,7 @@ public class HTTPResponseController {
             errorListener = this.createErrorListener();
         }
         RequestQueue requestQueue = Volley.newRequestQueue(activity);
-        CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, prodServer + "api/event", params, headers, this.createEventSuccesListener(), errorListener);
+        CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, prodServer + "api/v2/event", params, headers, this.createEventSuccesListener(), errorListener);
         requestQueue.add(jsObjRequest);
     }
 
@@ -1064,7 +1084,7 @@ public class HTTPResponseController {
         setActivity(activity, params.get("email"), params.get("password"));
         setEventId(urlParams.get("eventId"), false, "", -1, false);
         RequestQueue requestQueue = Volley.newRequestQueue(activity);
-        CustomRequest jsObjRequest = new CustomRequest(Request.Method.GET, prodServer + "api/event?eventId=" + urlParams.get("eventId") + "&userId=" + urlParams.get("userId"), params, headers, this.getEventDetailsSuccesListener(), this.createRequestErrorListener());
+        CustomRequest jsObjRequest = new CustomRequest(Request.Method.GET, prodServer + "api/v2/event?eventId=" + urlParams.get("eventId") + "&userId=" + urlParams.get("userId"), params, headers, this.getEventDetailsSuccesListener(), this.createRequestErrorListener());
         requestQueue.add(jsObjRequest);
     }
 

@@ -3,6 +3,7 @@ package larc.ludiconprod.Utils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,5 +27,7 @@ public class Event {
     public double latitude;
     public double longitude;
     public ArrayList<String> participansProfilePicture = new ArrayList<String>();
+    public boolean isFormBased;
+    public ArrayList<String> formParameters = new ArrayList<String>();
 
 }

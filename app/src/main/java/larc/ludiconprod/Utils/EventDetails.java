@@ -31,4 +31,6 @@ public class EventDetails {
     public int isParticipant;
     public String chatId="";
     public ArrayList<Friend> listOfParticipants=new ArrayList<Friend>();
+    public Boolean isFormBased;
+    public ArrayList<String> formParameters = new ArrayList<String>();
 }

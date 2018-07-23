@@ -288,6 +288,11 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="50b28f48aeb1a7dae3feff618d1a0d8c19b9d9ce" />
+
+        <activity android:name=".Activities.Pop"
+            android:theme="@style/AppTheme.CustomTheme1">
+        </activity>
+
     </application>
 
 </manifest>

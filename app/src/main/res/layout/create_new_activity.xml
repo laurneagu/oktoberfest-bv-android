@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#f7f9fc">
+    android:background="#f7f9fc"
+    android:id="@+id/relativeLayout">
     <ImageView
         android:layout_marginTop="56dp"
         android:layout_width="match_parent"
@@ -18,91 +19,94 @@
 
 
 
-    <include
-        android:id="@+id/tool_bar"
-        layout="@layout/header_login"
-        android:layout_height="56dp"
-        android:layout_width="match_parent"
-        />
         <include
-            layout="@layout/no_connection_bar"/>
+            android:id="@+id/tool_bar"
+            layout="@layout/header_login"
+            android:layout_width="match_parent"
+            android:layout_height="56dp" />
+
+        <include layout="@layout/no_connection_bar" />
+
         <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/scroll"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="24dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:scrollbars="none"
-            android:fillViewport="true">
+            android:layout_marginTop="24dp"
+            android:fillViewport="true"
+            android:scrollbars="none">
+
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:id="@+id/rL">
 
 
                 <TextView
-                android:id="@+id/activityText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="ACTIVITY"
-                android:textSize="14sp"
-                android:fontFamily="@string/fontbold"
-                android:textColor="#0c3855"/>
+                    android:id="@+id/activityText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@string/fontbold"
+                    android:text="ACTIVITY"
+                    android:textColor="#0c3855"
+                    android:textSize="14sp" />
+
                 <RelativeLayout
+                    android:id="@+id/spinnerLayout"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:layout_below="@+id/activityText"
                     android:layout_marginTop="16dp"
-                    android:id="@+id/spinnerLayout"
                     android:background="@drawable/rounded_edittext">
 
-                     <Spinner
-                         android:id="@+id/sportSpinner"
-                         android:layout_width="match_parent"
-                         android:layout_height="wrap_content"
-                         android:background="@drawable/gradient_spinner"
-                         android:gravity="center"
-                         />
+                    <Spinner
+                        android:id="@+id/sportSpinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/gradient_spinner"
+                        android:gravity="center" />
 
 
                 </RelativeLayout>
+
                 <RelativeLayout
+                    android:id="@+id/chooseSportNameLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/spinnerLayout"
-                    android:id="@+id/chooseSportNameLayout">
+                    android:layout_below="@+id/spinnerLayout">
 
 
                     <TextView
                         android:id="@+id/chooseSportNameText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="OTHER SPORT"
-                        android:textSize="14sp"
                         android:layout_marginTop="24dp"
-
                         android:fontFamily="@string/fontbold"
-                        android:textColor="#0c3855"/>
+                        android:text="OTHER SPORT"
+
+                        android:textColor="#0c3855"
+                        android:textSize="14sp" />
 
                     <EditText
                         android:id="@+id/otherSportName"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
-                        android:ems="10"
-                        android:background="@drawable/rounded_edittext"
-                        android:layout_marginTop="16dp"
                         android:layout_below="@+id/chooseSportNameText"
-                        android:inputType="text"
-                        android:textSize="16sp"
-                        android:maxLength="32"
-                        android:textColorHint="@color/lightGray"
-                        android:paddingLeft="8dp"
+                        android:layout_marginTop="16dp"
+                        android:background="@drawable/rounded_edittext"
                         android:drawableLeft="@drawable/ic_sport_others"
-                        android:textColor="#0c3855"
+                        android:ems="10"
                         android:fontFamily="@string/fontmedium"
                         android:hint="Sport name"
-                        android:text="" />
+                        android:inputType="text"
+                        android:maxLength="32"
+                        android:paddingLeft="8dp"
+                        android:text=""
+                        android:textColor="#0c3855"
+                        android:textColorHint="@color/lightGray"
+                        android:textSize="16sp" />
 
                 </RelativeLayout>
 
@@ -110,48 +114,49 @@
                     android:id="@+id/typeAndNumber"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:textColor="#0c3855"
-                    android:fontFamily="@string/fontmedium"
                     android:layout_below="@+id/chooseSportNameLayout"
                     android:layout_marginTop="24dp"
-                    android:text="TYPE &amp; NUMBER OF PLAYERS" />
+                    android:fontFamily="@string/fontmedium"
+                    android:text="TYPE &amp; NUMBER OF PLAYERS"
+                    android:textColor="#0c3855"
+                    android:textSize="14sp" />
 
                 <LinearLayout
+                    android:id="@+id/typeAndNumberLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:id="@+id/typeAndNumberLayout"
                     android:layout_below="@+id/typeAndNumber"
-                    android:layout_marginTop="16dp">
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal">
 
                     <RelativeLayout
+                        android:id="@+id/privacySpinnerLayout"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
                         android:layout_weight="0.5"
-                        android:id="@+id/privacySpinnerLayout"
                         android:background="@drawable/rounded_edittext">
 
-                    <Spinner
-                        android:id="@+id/privacySpinner"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/gradient_spinner"
-                        android:gravity="center"
-                        />
+                        <Spinner
+                            android:id="@+id/privacySpinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/gradient_spinner"
+                            android:gravity="center" />
                     </RelativeLayout>
+
                     <ImageView
+                        android:id="@+id/imageView"
                         android:layout_width="8dp"
                         android:layout_height="8dp"
-                        android:id="@+id/imageView"
-                        android:alpha="0"/>
+                        android:alpha="0" />
+
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
                         android:layout_weight="0.6"
+                        android:background="@drawable/rounded_edittext"
                         android:paddingLeft="8dp"
-                        android:paddingRight="8dp"
-                        android:background="@drawable/rounded_edittext">
+                        android:paddingRight="8dp">
 
                         <ImageButton
                             android:id="@+id/minusButton"
@@ -165,118 +170,121 @@
                             android:id="@+id/playersNumber"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:background="@android:color/transparent"
                             android:layout_centerHorizontal="true"
-                            android:textColor="@color/darkblue"
                             android:layout_centerVertical="true"
-                            android:text="2" />
+                            android:background="@android:color/transparent"
+                            android:gravity="center"
+                            android:text="2"
+                            android:textColor="@color/darkblue" />
 
                         <ImageButton
                             android:id="@+id/plusButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:gravity="center"
                             android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
-                            android:background="@drawable/ic_plus" />
+                            android:background="@drawable/ic_plus"
+                            android:gravity="center" />
                     </RelativeLayout>
                 </LinearLayout>
+
                 <TextView
                     android:id="@+id/privateText"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
-                    android:textSize="12sp"
-                    android:textColor="#d4498b"
-                    android:fontFamily="@string/fontmedium"
                     android:layout_below="@+id/typeAndNumberLayout"
                     android:layout_marginTop="0dp"
-                    android:text="This activity is set as Private and will not be visible in the Activity List.Invite your friends to Join this activity" />
+                    android:fontFamily="@string/fontmedium"
+                    android:text="This activity is set as Private and will not be visible in the Activity List.Invite your friends to Join this activity"
+                    android:textColor="#d4498b"
+                    android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/dateAndTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:textColor="#0c3855"
-                    android:fontFamily="@string/fontmedium"
                     android:layout_below="@+id/privateText"
                     android:layout_marginTop="24dp"
-                    android:text="DATE &amp; TIME" />
+                    android:fontFamily="@string/fontmedium"
+                    android:text="DATE &amp; TIME"
+                    android:textColor="#0c3855"
+                    android:textSize="14sp" />
+
                 <LinearLayout
+                    android:id="@+id/layoutDateAndTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:id="@+id/layoutDateAndTime"
                     android:layout_below="@+id/dateAndTime"
-                    android:layout_marginTop="16dp">
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal">
 
                     <RelativeLayout
+                        android:id="@+id/dateLayout"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
                         android:layout_weight="0.5"
-                        android:id="@+id/dateLayout"
                         android:background="@drawable/rounded_edittext">
+
                         <ImageView
                             android:id="@+id/calendarImageView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="8dp"
-                            android:background="@drawable/ic_calendar"/>
+                            android:background="@drawable/ic_calendar" />
 
 
                         <TextView
                             android:id="@+id/calendarTextView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="8dp"
-                            android:textSize="16dp"
-                            android:layout_toRightOf="@+id/calendarImageView"
-                            android:hint="Date"
-                            android:textColorHint="@color/lightGray"
-                            android:text=""
-                            android:fontFamily="@string/fontmedium"
                             android:layout_centerVertical="true"
-                            android:textColor="#0c3855"/>
-
+                            android:layout_marginLeft="8dp"
+                            android:layout_toRightOf="@+id/calendarImageView"
+                            android:fontFamily="@string/fontmedium"
+                            android:hint="Date"
+                            android:text=""
+                            android:textColor="#0c3855"
+                            android:textColorHint="@color/lightGray"
+                            android:textSize="16dp" />
 
 
                     </RelativeLayout>
 
                     <ImageView
+                        android:id="@+id/imageView1"
                         android:layout_width="8dp"
                         android:layout_height="8dp"
-                        android:id="@+id/imageView1"
-                        android:alpha="0"/>
+                        android:alpha="0" />
+
                     <RelativeLayout
+                        android:id="@+id/timeLayout"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
                         android:layout_weight="0.6"
-                        android:id="@+id/timeLayout"
                         android:background="@drawable/rounded_edittext">
+
                         <ImageView
                             android:id="@+id/hourImageView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="8dp"
-                            android:background="@drawable/ic_calendar"/>
+                            android:background="@drawable/ic_calendar" />
 
                         <TextView
                             android:id="@+id/hourTextView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="8dp"
-                            android:textSize="16dp"
-                            android:layout_toRightOf="@+id/hourImageView"
-                            android:hint="Hour"
-                            android:textColorHint="@color/lightGray"
-                            android:text=""
-                            android:fontFamily="@string/fontmedium"
                             android:layout_centerVertical="true"
-                            android:textColor="#0c3855"/>
-
+                            android:layout_marginLeft="8dp"
+                            android:layout_toRightOf="@+id/hourImageView"
+                            android:fontFamily="@string/fontmedium"
+                            android:hint="Hour"
+                            android:text=""
+                            android:textColor="#0c3855"
+                            android:textColorHint="@color/lightGray"
+                            android:textSize="16dp" />
 
 
                     </RelativeLayout>
@@ -288,18 +296,20 @@
                     android:id="@+id/location"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:textColor="#0c3855"
-                    android:fontFamily="@string/fontmedium"
                     android:layout_below="@+id/layoutDateAndTime"
                     android:layout_marginTop="24dp"
-                    android:text="LOCATION" />
+                    android:fontFamily="@string/fontmedium"
+                    android:text="LOCATION"
+                    android:textColor="#0c3855"
+                    android:textSize="14sp" />
+
                 <ImageView
+                    android:id="@+id/imageAboveMap"
                     android:layout_width="match_parent"
                     android:layout_height="16dp"
-                    android:background="#f7f9fc"
                     android:layout_below="@+id/location"
-                    android:id="@+id/imageAboveMap"/>
+                    android:background="#f7f9fc" />
+
                 <RelativeLayout
                     android:id="@+id/mapLayout"
                     android:layout_width="match_parent"
@@ -309,104 +319,327 @@
                     <include
                         android:id="@+id/root"
                         layout="@layout/selected_location_layout"
-                        android:layout_height="0dp"
                         android:layout_width="match_parent"
-                        />
+                        android:layout_height="0dp" />
 
 
-
-
-                <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-                    xmlns:map="http://schemas.android.com/apk/res-auto"
-                    android:name="com.google.android.gms.maps.MapFragment"
-                    android:id="@+id/map"
-                    android:layout_below="@+id/root"
-                    android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    map:mapType="normal"
-                    map:liteMode="true"
-                    >
-
-                    <TextView
+                    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                        xmlns:map="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/map"
+                        android:name="com.google.android.gms.maps.MapFragment"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="Tap here to Select Location"
-                        android:textSize="14sp"
-                        android:gravity="center_horizontal|center_vertical"
-                        android:textColor="#0c3855"
-                        android:id="@+id/tapHereTextView"
-                        android:fontFamily="@string/fontbold"/>
+                        android:layout_height="120dp"
+                        android:layout_below="@+id/root"
+                        map:liteMode="true"
+                        map:mapType="normal">
 
-                </fragment>
+                        <TextView
+                            android:id="@+id/tapHereTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:fontFamily="@string/fontbold"
+                            android:gravity="center_horizontal|center_vertical"
+                            android:text="Tap here to Select Location"
+                            android:textColor="#0c3855"
+                            android:textSize="14sp" />
 
-
-
+                    </fragment>
 
 
                 </RelativeLayout>
+
                 <ImageView
+                    android:id="@+id/imageBelowMap"
                     android:layout_width="match_parent"
                     android:layout_height="24dp"
-                    android:background="#f7f9fc"
                     android:layout_below="@+id/mapLayout"
-                    android:id="@+id/imageBelowMap"/>
+                    android:background="#f7f9fc" />
+
+                <LinearLayout
+                android:id="@+id/enrollWithAForm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/imageBelowMap"
+                android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@string/fontbold"
+                        android:text="ENROLL WITH A FORM "
+                        android:textColor="#0c3855"
+                        android:textSize="14sp" />
+
+                </LinearLayout>
+                <RadioGroup
+                    android:id="@+id/yesOrNoSwitch"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/rounded_edittext"
+                    android:checkedButton="@+id/yes"
+                    android:orientation="horizontal"
+                    android:layout_below="@+id/enrollWithAForm"
+                    android:layout_marginTop="16dp">
+
+                    <RadioButton
+                        android:id="@+id/yes"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="1dp"
+                        android:layout_marginLeft="1dp"
+                        android:layout_marginTop="1dp"
+                        android:layout_weight="1"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:text="Yes"
+                        android:textColor="#1A0c3855"
+                        android:textSize="16sp" />
+
+                    <RadioButton
+                        android:id="@+id/no"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="1dp"
+                        android:layout_marginRight="1dp"
+                        android:layout_marginTop="1dp"
+                        android:layout_weight="1"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:text="No"
+                        android:textColor="#1A0c3855" />
+                </RadioGroup>
+
+
+                <TextView
+                    android:id="@+id/enrollmentFields"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/yesOrNoSwitch"
+                    android:layout_marginTop="24dp"
+                    android:fontFamily="@string/fontmedium"
+                    android:text="ENROLLMENT FIELDS"
+                    android:textColor="#0c3855"
+                    android:textSize="14sp" />
+
+                <LinearLayout
+                    android:id="@+id/enrollmentFields1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/enrollmentFields"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_weight="0.6"
+                        android:background="@drawable/rounded_edittext"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:id="@+id/relAddress">
+
+                        <ImageView
+                            android:id="@+id/pin_1_normal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/pin_1_normal"
+                            android:gravity="center" />
+
+                        <TextView
+                            android:id="@+id/enrollmentFieldsAddress"
+                            android:layout_width="205dp"
+                            android:layout_height="37dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:background="@android:color/transparent"
+                            android:gravity="center_vertical"
+                            android:text="Address"
+                            android:textColor="@color/darkblue"
+                            android:textColorHint="@color/lightGray"
+                            android:textSize="16sp"/>
+
+                        <ImageButton
+                            android:id="@+id/minusButton1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/ic_minus"
+                            android:gravity="center" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/enrollmentFields2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/enrollmentFields1"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_weight="0.6"
+                        android:background="@drawable/rounded_edittext"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:id="@+id/relPhone">
+
+                        <ImageView
+                            android:id="@+id/ic_bnav_user_selected"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/ic_info"
+                            android:gravity="center" />
+
+                        <TextView
+                            android:id="@+id/enrollmentFieldsPhone"
+                            android:layout_width="205dp"
+                            android:layout_height="37dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:background="@android:color/transparent"
+                            android:gravity="center_vertical"
+                            android:text="Phone No."
+                            android:textColor="@color/darkblue"
+                            android:textColorHint="@color/lightGray"
+                            android:textSize="16sp"/>
+
+                        <ImageButton
+                            android:id="@+id/minusButton2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/ic_minus"
+                            android:gravity="center" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/newFields"
+                    android:layout_below="@+id/enrollmentFields2">
+
+
+                    <LinearLayout
+                        android:id="@+id/addCustom"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
+                        <RelativeLayout
+                            android:id="@+id/relLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:layout_weight="0.6"
+                            android:background="@drawable/rounded_edittext"
+                            android:paddingLeft="8dp"
+                            android:paddingRight="8dp">
+
+                            <ImageView
+                                android:id="@+id/ic_info"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_centerVertical="true"
+                                android:background="@drawable/ic_info"
+                                android:gravity="center" />
+
+                            <EditText
+                                android:id="@+id/addCustomText"
+                                android:layout_width="205dp"
+                                android:layout_height="37dp"
+                                android:layout_centerHorizontal="true"
+                                android:layout_centerVertical="true"
+                                android:background="@android:color/transparent"
+                                android:gravity="center_vertical"
+                                android:hint="Add Custom"
+                                android:textColor="@color/darkblue"
+                                android:textColorHint="@color/lightGray"
+                                android:textSize="16sp" />
+
+                            <ImageButton
+                                android:id="@+id/plusButton1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:background="@drawable/ic_plus"
+                                android:gravity="center" />
+                        </RelativeLayout>
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+
+
+
                 <LinearLayout
                     android:id="@+id/descriptionLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/imageBelowMap"
-                    android:orientation="horizontal">
+                    android:layout_below="@+id/newFields"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="24dp">
 
-                <TextView
-                    android:id="@+id/description"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:textColor="#0c3855"
-                    android:fontFamily="@string/fontbold"
-                    android:text="DESCRIPTION" />
+                    <TextView
+                        android:id="@+id/description"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@string/fontbold"
+                        android:text="DESCRIPTION"
+                        android:textColor="#0c3855"
+                        android:textSize="14sp" />
+
                     <TextView
                         android:id="@+id/optional"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="14sp"
-                        android:textColor="@color/lightGray"
                         android:fontFamily="@string/fontbold"
                         android:gravity="right"
-                        android:text="Optional" />
+                        android:text="Optional"
+                        android:textColor="@color/lightGray"
+                        android:textSize="14sp" />
 
                 </LinearLayout>
-                
+
                 <EditText
+                    android:id="@+id/descriptionEditText"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
-                    android:id="@+id/descriptionEditText"
-                    android:background="@drawable/rounded_edittext"
                     android:layout_below="@+id/descriptionLayout"
                     android:layout_marginTop="16dp"
+                    android:background="@drawable/rounded_edittext"
+                    android:drawableLeft="@drawable/ic_info"
+                    android:fontFamily="@string/fontmedium"
                     android:hint="Additional Info"
                     android:maxLength="100"
-                    android:drawableLeft="@drawable/ic_info"
-                    android:textColorHint="@color/lightGray"
-                    android:textSize="16sp"
-                    android:fontFamily="@string/fontmedium"
+                    android:paddingLeft="8dp"
                     android:textColor="#0c3855"
-                    android:paddingLeft="8dp"/>
+                    android:textColorHint="@color/lightGray"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/inviteFriends"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
                     android:layout_below="@+id/descriptionEditText"
-                    android:textColor="#0c3855"
-                    android:fontFamily="@string/fontbold"
                     android:layout_marginTop="24dp"
-                    android:text="INVITE FRIENDS" />
+                    android:fontFamily="@string/fontbold"
+                    android:text="INVITE FRIENDS"
+                    android:textColor="#0c3855"
+                    android:textSize="14sp" />
+
                 <LinearLayout
+                    android:id="@+id/invitedFriendsLayout"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
-                    android:id="@+id/invitedFriendsLayout"
                     android:layout_below="@+id/inviteFriends"
                     android:layout_marginTop="16dp"
                     android:orientation="horizontal">
@@ -417,58 +650,59 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:background="@drawable/ic_invite" />
+
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/invitedFriends1"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:layout_marginLeft="8dp"
-                        android:visibility="invisible"
-                        android:background="@drawable/ic_invite" />
+                        android:background="@drawable/ic_invite"
+                        android:visibility="invisible" />
+
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/invitedFriends2"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:layout_marginLeft="8dp"
-                        android:visibility="invisible"
-                        android:background="@drawable/ic_invite" />
+                        android:background="@drawable/ic_invite"
+                        android:visibility="invisible" />
+
                     <TextView
                         android:id="@+id/friendsNumber"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:textAlignment="center"
-                        android:paddingTop="14dp"
-                        android:textSize="14sp"
-                        android:textColor="#02b9ad"
-                        android:layout_marginLeft="8dp"
-                        android:visibility="invisible"
                         android:layout_gravity="center"
+                        android:layout_marginLeft="8dp"
                         android:background="@drawable/round_textview"
-                        android:text="+3" />
+                        android:paddingTop="14dp"
+                        android:text="+3"
+                        android:textAlignment="center"
+                        android:textColor="#02b9ad"
+                        android:textSize="14sp"
+                        android:visibility="invisible" />
 
                     <ImageView
                         android:id="@+id/invitedFriends4"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:visibility="invisible"
                         android:layout_marginLeft="8dp"
-                        android:background="@drawable/ic_invite" />
+                        android:background="@drawable/ic_invite"
+                        android:visibility="invisible" />
                 </LinearLayout>
 
 
-                
                 <Button
+                    android:id="@+id/createActivityButton"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
-                    android:id="@+id/createActivityButton"
-                    android:background="@drawable/pink_button_selector"
-                    android:text="CREATE ACTIVITY"
-                    android:textSize="14sp"
-                    android:fontFamily="@string/fontbold"
-                    android:textColor="#ffffff"
                     android:layout_below="@+id/invitedFriendsLayout"
-                    android:layout_marginTop="16dp"
                     android:layout_marginBottom="16dp"
-
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/pink_button_selector"
+                    android:fontFamily="@string/fontbold"
+                    android:text="CREATE ACTIVITY"
+                    android:textColor="#ffffff"
+                    android:textSize="14sp"
 
 
                     />

@@ -64,6 +64,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -91,7 +92,7 @@ import static larc.ludiconprod.Activities.Main.bottomBar;
  * Created by ancuta on 7/26/2017.
  */
 
-public class ActivitiesActivity extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, Response.ErrorListener {
+public class ActivitiesActivity extends Fragment implements Serializable, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, Response.ErrorListener {
 
     ViewPager pager;
     private Context mContext;
@@ -506,7 +507,6 @@ public class ActivitiesActivity extends Fragment implements GoogleApiClient.Conn
             this.prepareError("No location services available!");
             return;
         }
-
         //set urlParams
         urlParams.put("userId", Persistance.getInstance().getUserInfo(activity).id);
         urlParams.put("pageNumber", pageNumber);

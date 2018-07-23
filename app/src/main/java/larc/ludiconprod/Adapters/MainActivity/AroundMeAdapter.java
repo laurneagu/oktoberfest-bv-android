@@ -39,6 +39,7 @@ import java.util.TimerTask;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import larc.ludiconprod.Activities.ActivitiesActivity;
+import larc.ludiconprod.Activities.Pop;
 import larc.ludiconprod.Activities.UserProfileActivity;
 import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
@@ -473,13 +474,25 @@ public class AroundMeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 ((ViewHolder)holder).joinButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        HashMap<String, String> params = new HashMap<String, String>();
-                        HashMap<String, String> headers = new HashMap<String, String>();
-                        headers.put("authKey", Persistance.getInstance().getUserInfo(activity).authKey);
-                        params.put("eventId", list.get(pos).id);
-                        params.put("userId", Persistance.getInstance().getUserInfo(activity).id);
-                        HTTPResponseController.getInstance().joinEvent(activity, params, headers, list.get(pos).id, fragment);
-                        ((ViewHolder)holder).joinButton.setEnabled(false);
+
+                        if (list.get(pos).isFormBased == false) {
+                            HashMap<String, String> params = new HashMap<String, String>();
+                            HashMap<String, String> headers = new HashMap<String, String>();
+                            headers.put("authKey", Persistance.getInstance().getUserInfo(activity).authKey);
+                            params.put("eventId", list.get(pos).id);
+                            params.put("userId", Persistance.getInstance().getUserInfo(activity).id);
+                            HTTPResponseController.getInstance().joinEvent(activity, params, headers, list.get(pos).id, fragment);
+                            ((ViewHolder) holder).joinButton.setEnabled(false);
+                        } else {
+                            Intent intent = new Intent(activity, Pop.class);
+                            intent.putExtra("formParameters", list.get(pos).formParameters);
+                            intent.putExtra("eventId", list.get(pos).id);
+                            intent.putExtra("authKey", Persistance.getInstance().getUserInfo(activity).authKey);
+                            intent.putExtra("userId", Persistance.getInstance().getUserInfo(activity).id);
+                            activity.startActivity(intent);
+
+                        }
+
                     }
                 });
 
@@ -487,8 +500,6 @@ public class AroundMeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 break;
         }
     }
-
-
     @Override
     public long getItemId(int pos) {
         return Long.valueOf(list.get(pos).id);

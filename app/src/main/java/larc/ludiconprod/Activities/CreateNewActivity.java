@@ -1,24 +1,36 @@
 package larc.ludiconprod.Activities;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
+import android.support.annotation.RequiresApi;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.IntentCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -38,9 +50,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
@@ -54,6 +68,8 @@ import larc.ludiconprod.Utils.Friend;
 import larc.ludiconprod.Utils.Location.GPSTracker;
 import me.anwarshahriar.calligrapher.Calligrapher;
 
+import static android.R.color.transparent;
+import static android.view.View.VISIBLE;
 import static larc.ludiconprod.Activities.ActivitiesActivity.deleteCachedInfo;
 import static larc.ludiconprod.Activities.ActivitiesActivity.latitude;
 import static larc.ludiconprod.Activities.ActivitiesActivity.longitude;
@@ -108,6 +124,29 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
     EventDetails eventDetails;
     Double lat = Double.MAX_VALUE;
     Double lng = Double.MAX_VALUE;
+    public boolean isFormBased = true;
+    public ArrayList<String> formParameters = new ArrayList<String>();
+
+    RadioButton yes;
+    RadioButton no;
+    RadioGroup yesOrNoSwitch;
+    int enroll = 0;
+    TextView enrollmentFields;
+    LinearLayout enrollmentFields1;
+    LinearLayout enrollmentFields2;
+    LinearLayout addCustom;
+    ImageButton minusButton1;
+    ImageButton minusButton2;
+    ImageButton plusButton1;
+    RelativeLayout newFields;
+    LinearLayout descriptionLayout;
+    EditText addCustomText;
+    TextView enrollmentFieldsAddress;
+    TextView enrollmentFieldsPhone;
+    RelativeLayout rL;
+    RelativeLayout relAddress;
+    RelativeLayout relPhone;
+    public int numberOfLines = 0;
 
     public static String getMonth(int month) {
         String date = new DateFormatSymbols().getMonths()[month - 1];
@@ -142,6 +181,160 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
 
 
         return isConstraintChecked;
+
+    }
+       @SuppressLint("ResourceType")
+       public void Add_Line() {
+
+           RelativeLayout.LayoutParams layoutParams;
+           layoutParams = (RelativeLayout.LayoutParams) addCustom.getLayoutParams();
+
+           final LinearLayout linLayout = new LinearLayout(this);
+           linLayout.setId(numberOfLines + 1);
+           linLayout.setOrientation(LinearLayout.HORIZONTAL);
+
+           final TextView et = new TextView(this);
+           RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,145);
+           params.setMargins(0, 30, 0, 0);
+           linLayout.setLayoutParams(params);
+
+           if(numberOfLines!=0){
+               params.addRule(RelativeLayout.BELOW,linLayout.getId()-1);
+               layoutParams.addRule(RelativeLayout.BELOW,linLayout.getId());
+           } else{
+               layoutParams.addRule(RelativeLayout.BELOW,linLayout.getId());
+           }
+
+
+           ImageView img = new ImageView(this);
+           RelativeLayout.LayoutParams paramsImg = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+           paramsImg.addRule(RelativeLayout.CENTER_VERTICAL);
+           paramsImg.setMargins(50,0,50,0);
+           LinearLayout.LayoutParams lparamsImg = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+           lparamsImg.gravity=Gravity.CENTER;
+           img.setLayoutParams(paramsImg);
+           img.setLayoutParams(lparamsImg);
+           img.setImageResource(R.drawable.ic_info);
+           img.setPadding(20,0,0,0);
+           linLayout.addView(img);
+
+           linLayout.setBackgroundDrawable(ContextCompat.getDrawable(CreateNewActivity.this, R.drawable.rounded_edittext));
+
+           LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(750, ViewGroup.LayoutParams.WRAP_CONTENT);
+           lparams.gravity = Gravity.CENTER;
+           RelativeLayout.LayoutParams paramsText = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+           paramsText.addRule(RelativeLayout.CENTER_HORIZONTAL);
+           paramsText.addRule(RelativeLayout.CENTER_VERTICAL);
+           paramsText.setMargins(100, 0, 0, 0);
+           et.setLayoutParams(paramsText);
+           et.setLayoutParams(lparams);
+           et.setId(numberOfLines + 1);
+           et.setBackgroundColor(transparent);
+           et.setTextColor(getResources().getColor(R.color.darkblue));
+           et.setText(addCustomText.getText().toString());
+           addCustomText.setText("");
+           et.setTextSize(16);
+           linLayout.addView(et);
+
+           ImageButton buttonMinus = new ImageButton(this);
+           RelativeLayout.LayoutParams paramsButton = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+           paramsButton.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
+           buttonMinus.setLayoutParams(paramsButton);
+           buttonMinus.setImageResource(R.drawable.ic_minus);
+           buttonMinus.setBackgroundResource(R.drawable.transparent_button);
+           linLayout.addView(buttonMinus);
+
+           newFields.addView(linLayout,numberOfLines, params);
+            numberOfLines++;
+
+           buttonMinus.setOnClickListener(new View.OnClickListener() {
+               @Override
+               public void onClick(View view) {
+                   linLayout.setVisibility(View.GONE);
+                   formParameters.remove(et.getText().toString());
+               }
+           });
+
+           if (newFields.getVisibility() == VISIBLE) {
+               formParameters.add(et.getText().toString());
+           }
+    }
+
+
+    public void Add_Line2(String fieldTitle) {
+
+        RelativeLayout.LayoutParams layoutParams;
+        layoutParams = (RelativeLayout.LayoutParams) addCustom.getLayoutParams();
+
+        final LinearLayout linLayout = new LinearLayout(this);
+        linLayout.setId(numberOfLines + 1);
+        linLayout.setOrientation(LinearLayout.HORIZONTAL);
+
+        final TextView et = new TextView(this);
+
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,145);
+        params.setMargins(0, 30, 0, 0);
+        linLayout.setLayoutParams(params);
+
+        if(numberOfLines!=0){
+            params.addRule(RelativeLayout.BELOW,linLayout.getId()-1);
+            layoutParams.addRule(RelativeLayout.BELOW,linLayout.getId());
+        } else{
+            layoutParams.addRule(RelativeLayout.BELOW,linLayout.getId());
+        }
+
+
+        ImageView img = new ImageView(this);
+        RelativeLayout.LayoutParams paramsImg = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        paramsImg.addRule(RelativeLayout.CENTER_VERTICAL);
+        paramsImg.setMargins(50,0,50,0);
+        LinearLayout.LayoutParams lparamsImg = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lparamsImg.gravity=Gravity.CENTER;
+        img.setLayoutParams(paramsImg);
+        img.setLayoutParams(lparamsImg);
+        img.setImageResource(R.drawable.ic_info);
+        img.setPadding(20,0,0,0);
+        linLayout.addView(img);
+
+        linLayout.setBackgroundDrawable(ContextCompat.getDrawable(CreateNewActivity.this, R.drawable.rounded_edittext));
+
+        LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(750, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lparams.gravity=Gravity.CENTER;
+        RelativeLayout.LayoutParams paramsText = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        paramsText.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        paramsText.addRule(RelativeLayout.CENTER_VERTICAL);
+        paramsText.setMargins(100,0,0,0);
+        et.setLayoutParams(paramsText);
+        et.setLayoutParams(lparams);
+        et.setId(numberOfLines + 1);
+        et.setBackgroundColor(transparent);
+        et.setTextColor(getResources().getColor(R.color.darkblue));
+        et.setTextSize(16);
+        et.setText(fieldTitle);
+        linLayout.addView(et);
+
+        ImageButton buttonMinus = new ImageButton(this);
+        RelativeLayout.LayoutParams paramsButton = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        paramsButton.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
+        buttonMinus.setLayoutParams(paramsButton);
+        buttonMinus.setImageResource(R.drawable.ic_minus);
+        buttonMinus.setBackgroundResource(R.drawable.transparent_button);
+        linLayout.addView(buttonMinus);
+
+        newFields.addView(linLayout,numberOfLines, params);
+        numberOfLines++;
+
+        buttonMinus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                linLayout.setVisibility(View.GONE);
+                formParameters.remove(et.getText().toString());
+            }
+        });
+
+        if (newFields.getVisibility() == VISIBLE) {
+            formParameters.add(et.getText().toString());
+        }
 
     }
 
@@ -183,6 +376,112 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
         createActivityButton = (Button) findViewById(R.id.createActivityButton);
         descriptionEditText = (EditText) findViewById(R.id.descriptionEditText);
         eventDetails = new EventDetails();
+
+        yesOrNoSwitch = (RadioGroup) findViewById(R.id.yesOrNoSwitch);
+        yes = (RadioButton) findViewById(R.id.yes);
+        no = (RadioButton) findViewById(R.id.no);
+        yes.setTypeface(typeFace);
+        no.setTypeface(typeFace);
+        enrollmentFields = (TextView) findViewById(R.id.enrollmentFields);
+        enrollmentFields1 = (LinearLayout) findViewById(R.id.enrollmentFields1);
+        enrollmentFields2 = (LinearLayout) findViewById(R.id.enrollmentFields2);
+        addCustom = (LinearLayout) findViewById(R.id.addCustom);
+        minusButton1 =(ImageButton) findViewById(R.id.minusButton1);
+        minusButton2 =(ImageButton) findViewById(R.id.minusButton2);
+        plusButton1 = (ImageButton) findViewById(R.id.plusButton1);
+        descriptionLayout = (LinearLayout) findViewById(R.id.descriptionLayout);
+        newFields = (RelativeLayout) findViewById(R.id.newFields);
+        addCustomText = (EditText) findViewById(R.id.addCustomText);
+        enrollmentFieldsAddress = (TextView) findViewById(R.id.enrollmentFieldsAddress);
+        enrollmentFieldsPhone = (TextView) findViewById(R.id.enrollmentFieldsPhone);
+        rL = (RelativeLayout) findViewById(R.id.rL);
+        relAddress = (RelativeLayout) findViewById(R.id.relAddress);
+        relPhone = (RelativeLayout) findViewById(R.id.relPhone);
+
+        plusButton1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(addCustomText.getText().toString().length()>0) {
+                    Add_Line();
+                }
+            }
+        });
+
+        if (getIntent().getStringExtra("form") != null) {
+            if (getIntent().getStringExtra("form").equals("0")) {
+                yes.setChecked(true);
+                yes.setTextColor(Color.parseColor("#ffffff"));
+            } else
+            if (getIntent().getStringExtra("form").equals("1")) {
+                no.setChecked(true);
+                no.setTextColor(Color.parseColor("#ffffff"));
+            }
+        }
+
+        if (yes.isChecked()) {
+            yes.setBackgroundResource(R.drawable.pink_button_selector);
+            yes.setTextColor(Color.parseColor("#ffffff"));
+        } else {
+            no.setBackgroundResource(R.drawable.green_button_selector);
+            yes.setTextColor(Color.parseColor("#ffffff"));
+        }
+
+        yesOrNoSwitch.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
+                    if (yes.isChecked()) {
+                        yes.setBackgroundResource(R.drawable.pink_button_selector);
+                        no.setBackgroundResource(transparent);
+                        yes.setTextColor(Color.parseColor("#ffffff"));
+                        no.setTextColor(Color.parseColor("#1A0c3855"));
+                        enroll = 1;
+                        enrollmentFields.setVisibility(VISIBLE);
+                        enrollmentFields1.setVisibility(VISIBLE);
+                        enrollmentFields2.setVisibility(VISIBLE);
+                        newFields.setVisibility(VISIBLE);
+                        isFormBased = true;
+                        formParameters.add(enrollmentFieldsAddress.getText().toString());
+                        formParameters.add(enrollmentFieldsPhone.getText().toString());
+                    } else {
+                        no.setBackgroundResource(R.drawable.green_button_selector);
+                        yes.setBackgroundResource(transparent);
+                        yes.setTextColor(Color.parseColor("#1A0c3855"));
+                        no.setTextColor(Color.parseColor("#ffffff"));
+                        enroll = 0;
+                        enrollmentFields.setVisibility(View.GONE);
+                        enrollmentFields1.setVisibility(View.GONE);
+                        enrollmentFields2.setVisibility(View.GONE);
+                        newFields.setVisibility(View.GONE);
+                        isFormBased = false;
+                        formParameters.removeAll(formParameters);
+                    }
+                }
+        });
+
+        if (!getIntent().getBooleanExtra("isEdit", false)) {
+            if (enrollmentFields1.getVisibility() == View.VISIBLE) {
+                formParameters.add(enrollmentFieldsAddress.getText().toString());
+            }
+            if (enrollmentFields2.getVisibility() == View.VISIBLE) {
+                formParameters.add(enrollmentFieldsPhone.getText().toString());
+            }
+        }
+
+        minusButton1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                enrollmentFields1.setVisibility(View.GONE);
+                formParameters.remove("Address");
+            }
+        });
+
+        minusButton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                enrollmentFields2.setVisibility(View.GONE);
+                formParameters.remove("Phone No.");
+            }
+        });
 
         //check if is a Create or Edit
 
@@ -226,6 +525,17 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                             if (InviteFriendsActivity.friendsList.get(i).isInvited) {
                                 params.put("invitedParticipants[" + counterOfInvitedFriends + "]", InviteFriendsActivity.friendsList.get(i).userID);
                                 counterOfInvitedFriends++;
+                            }
+                        }
+
+                        if (isFormBased) {
+                            params.put("isFormBased", isFormBased ? "1" : "0");
+                            int counter = 0;
+                            if (formParameters.size() > 0) {
+                                for (int i = 0; i < formParameters.size(); i++) {
+                                    params.put("formParameters[" + counter + "]", formParameters.get(i));
+                                    counter++;
+                                }
                             }
                         }
                         HTTPResponseController.getInstance().createEvent(params, headers, CreateNewActivity.this, null, CreateNewActivity.this,false);
@@ -278,6 +588,18 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                                     params.put("invitedParticipants[" + counterOfInvitedFriends + "]", InviteFriendsActivity.friendsList.get(i).userID);
                                     counterOfInvitedFriends++;
                                 }
+                            }
+                        }
+                        params.put("isFormBased", isFormBased ? "1" : "0");
+                        int counter = 0;
+                        if (formParameters.size() > 0 && isFormBased) {
+                            for (int i = 0; i < formParameters.size(); i++) {
+                                params.put("formParameters[" + counter + "]", formParameters.get(i));
+                                counter++;
+                            }
+                        }else {
+                            for (int i = 0; i < formParameters.size(); i++){
+                                params.remove("formParameters[" + i + "]");
                             }
                         }
                         HTTPResponseController.getInstance().createEvent(params, headers, CreateNewActivity.this, params.get("eventId"), CreateNewActivity.this,true);
@@ -548,7 +870,20 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                 friend.level = b.getIntegerArrayList("participantsLevel").get(i);
                 eventDetails.listOfParticipants.add(friend);
             }
-
+            String isFormBasedStr = b.getString("isFormBased");
+            if (isFormBasedStr.equals("0")) {
+                eventDetails.isFormBased = false;
+            }else {
+                eventDetails.isFormBased = true;
+            }
+            if (eventDetails.isFormBased) {
+                if (b.getStringArrayList("formParameters") != null) {
+                    for (int i = 0; i < b.getStringArrayList("formParameters").size(); i++) {
+                        String param = b.getStringArrayList("formParameters").get(i);
+                        eventDetails.formParameters.add(param);
+                    }
+                }
+            }
             createActivityButton.setText("SAVE CHANGES");
 
             //set custom data for edit
@@ -587,6 +922,42 @@ public class CreateNewActivity extends Activity implements AdapterView.OnItemSel
                 otherSportName.setSelection(eventDetails.otherSportName.length());
                 break;
             }
+
+            if (eventDetails.isFormBased){
+                yes.setBackgroundResource(R.drawable.pink_button_selector);
+                no.setBackgroundResource(transparent);
+                yes.setTextColor(Color.parseColor("#ffffff"));
+                no.setTextColor(Color.parseColor("#1A0c3855"));
+                enrollmentFields.setVisibility(VISIBLE);
+                enrollmentFields1.setVisibility(View.GONE);
+                enrollmentFields2.setVisibility(View.GONE);
+                addCustom.setVisibility(VISIBLE);
+                for (int i =0; i<eventDetails.formParameters.size();i++) {
+                    if (eventDetails.formParameters.get(i).equals("Address")){
+                        enrollmentFields1.setVisibility(VISIBLE);
+                        formParameters.add(eventDetails.formParameters.get(i));
+                    }else if (eventDetails.formParameters.get(i).equals("PhoneNo")||eventDetails.formParameters.get(i).equals("Phone")||eventDetails.formParameters.get(i).equals("Phone No.")){
+                        enrollmentFields2.setVisibility(VISIBLE);
+                        formParameters.add(eventDetails.formParameters.get(i));
+                    }else if (eventDetails.formParameters.get(i) != null){
+                        Add_Line2(eventDetails.formParameters.get(i).toString());
+                        newFields.setVisibility(VISIBLE);
+                    }
+                }
+            }else {
+                no.setBackgroundResource(R.drawable.green_button_selector);
+                yes.setBackgroundResource(transparent);
+                yes.setTextColor(Color.parseColor("#1A0c3855"));
+                no.setTextColor(Color.parseColor("#ffffff"));
+                enrollmentFields.setVisibility(View.GONE);
+                enrollmentFields1.setVisibility(View.GONE);
+                enrollmentFields2.setVisibility(View.GONE);
+                newFields.setVisibility(View.GONE);
+            }
+
+
+
+
 
             if (eventDetails.privacy == 0) {
                 privacySpinner.setSelection(0);

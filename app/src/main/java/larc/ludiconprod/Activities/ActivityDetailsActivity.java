@@ -47,6 +47,7 @@ import larc.ludiconprod.Controller.HTTPResponseController;
 import larc.ludiconprod.Controller.Persistance;
 import larc.ludiconprod.Dialogs.ConfirmationDialog;
 import larc.ludiconprod.R;
+import larc.ludiconprod.Utils.Event;
 import larc.ludiconprod.Utils.EventDetails;
 import larc.ludiconprod.Utils.Friend;
 import larc.ludiconprod.Utils.General;
@@ -228,6 +229,16 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
         eventDetails.creatorId = b.getString("creatorId");
         creatorID = b.getString("creatorId");
         eventDetails.creatorProfilePicture = b.getString("creatorProfilePicture");
+        String isFormBasedStr =  b.getString("isFormBased");
+        if (isFormBasedStr.equals("0")){
+            eventDetails.isFormBased = false;
+        }else eventDetails.isFormBased = true;
+        if (b.getStringArrayList("formParameters") != null) {
+            for (int i = 0; i < b.getStringArrayList("formParameters").size(); i++) {
+                String params = b.getStringArrayList("formParameters").get(i);
+                eventDetails.formParameters.add(params);
+            }
+        }
         for (int i = 0; i < b.getStringArrayList("participantsId").size(); i++) {
             Friend friend = new Friend();
             friend.userID = b.getStringArrayList("participantsId").get(i);
@@ -639,13 +650,24 @@ public class ActivityDetailsActivity extends Activity implements OnMapReadyCallb
                         joinOrUnjoinButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                HashMap<String, String> params = new HashMap<String, String>();
-                                HashMap<String, String> headers = new HashMap<String, String>();
-                                headers.put("authKey", Persistance.getInstance().getUserInfo(ActivityDetailsActivity.this).authKey);
-                                params.put("eventId", eventid);
-                                params.put("userId", Persistance.getInstance().getUserInfo(ActivityDetailsActivity.this).id);
-                                HTTPResponseController.getInstance().joinEvent(ActivityDetailsActivity.this, params, headers, eventid, ActivityDetailsActivity.this);
-                                joinOrUnjoinButton.setEnabled(false);
+                                if (eventDetails.isFormBased == false) {
+                                    HashMap<String, String> params = new HashMap<String, String>();
+                                    HashMap<String, String> headers = new HashMap<String, String>();
+                                    headers.put("authKey", Persistance.getInstance().getUserInfo(ActivityDetailsActivity.this).authKey);
+                                    params.put("eventId", eventid);
+                                    params.put("userId", Persistance.getInstance().getUserInfo(ActivityDetailsActivity.this).id);
+                                    HTTPResponseController.getInstance().joinEvent(ActivityDetailsActivity.this, params, headers, eventid, ActivityDetailsActivity.this);
+                                    joinOrUnjoinButton.setEnabled(false);
+                                }else{
+                                    Intent intent = new Intent(ActivityDetailsActivity.this, Pop.class);
+                                    intent.putExtra("authKey", Persistance.getInstance().getUserInfo(ActivityDetailsActivity.this).authKey);
+                                    intent.putExtra("eventId", eventid);
+                                    intent.putExtra("userId", Persistance.getInstance().getUserInfo(ActivityDetailsActivity.this).id);
+                                    intent.putExtra("formParameters", eventDetails.formParameters);
+                                    startActivity(intent);
+                                    joinOrUnjoinButton.setEnabled(false);
+                                    finish();
+                                }
                             }
                         });
 
