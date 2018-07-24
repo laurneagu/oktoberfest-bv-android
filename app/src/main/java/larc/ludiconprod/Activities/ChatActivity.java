@@ -113,7 +113,7 @@ public class ChatActivity extends Activity {
                     Message firstMessage = new Message();
                     firstMessage.otherUserName = getIntent().getStringExtra("otherParticipantName");
                     firstMessage.otherUserImage = getIntent().getStringArrayListExtra("otherParticipantImage").get(0);
-                    firstMessage.name = getIntent().getStringArrayListExtra("otherParticipantName").get(0);
+                    firstMessage.name = getIntent().getStringExtra("otherParticipantName");
                     firstMessage.setTopImage = true;
                     messageList.add(0, firstMessage);
                     setAdapter();
