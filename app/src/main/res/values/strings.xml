@@ -7,17 +7,17 @@
     <string name="fontmedium">Quicksand-Medium.ttf</string>
     <string name="fontbold">Quicksand-Bold.ttf</string>
 
-    <string name="app_name">Ludicon</string>
+    <string name="app_name">Oktoberfest Brasov</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="errorMessage">Incorrect email or password</string>
     <string name="pick_image_intent_text"></string>
 
-    <string name="hello_world">LUDICON is here!</string>
+    <string name="hello_world">Oktoberfest Brasov is here!</string>
     <string name="action_settings">Settings</string>
     <string name="facebook_app_id">1486061805033157</string>
 
     <string name="title_activity_intro">IntroActivity</string>
-    <string name="dummy_content">LUDICON</string>
+    <string name="dummy_content">Oktoberfest Brasov</string>
     <string name="hello_user">Hi, %1$s!</string>
 
     <string name="dialogmessage">\tThere is no Internet connection!\n\tPlease go to Settings and activate\n\tWi-Fi or Mobile Data</string>

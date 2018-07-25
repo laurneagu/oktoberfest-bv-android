@@ -12,7 +12,7 @@
             android:layout_height="1dp"
             android:background="#FFFFFF" />
 
-        <larc.ludiconprod.Utils.ui.SlidingTabLayout
+        <larc.oktoberfestprod.Utils.ui.SlidingTabLayout
             android:id="@+id/tabsChatFriends"
             android:layout_width="match_parent"
             android:layout_height="50dp"

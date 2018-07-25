@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/frame"></FrameLayout>
 
-    <larc.ludiconprod.BottomBarHelper.BottomBar
+    <larc.oktoberfestprod.BottomBarHelper.BottomBar
         android:id="@+id/bottomBar"
         android:layout_width="match_parent"
         android:layout_height="56dp"

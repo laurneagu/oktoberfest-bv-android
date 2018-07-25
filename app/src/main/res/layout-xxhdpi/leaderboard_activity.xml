@@ -22,7 +22,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="56dp">
-                <larc.ludiconprod.Utils.ui.SlidingTabLayout
+                <larc.oktoberfestprod.Utils.ui.SlidingTabLayout
                     android:id="@+id/couponsTabs"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

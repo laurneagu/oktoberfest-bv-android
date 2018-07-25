@@ -19,7 +19,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center_horizontal"
                 android:layout_weight="1">
-                <larc.ludiconprod.Utils.MyProfileUtils.Bar
+                <larc.oktoberfestprod.Utils.MyProfileUtils.Bar
                     android:layout_width="16dp"
                     android:layout_height="wrap_content"
                     app:value="10"
@@ -30,7 +30,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center_horizontal"
                 android:layout_weight="1">
-                <larc.ludiconprod.Utils.MyProfileUtils.Bar
+                <larc.oktoberfestprod.Utils.MyProfileUtils.Bar
                     android:layout_width="16dp"
                     android:layout_height="wrap_content"
                     app:value="18"
@@ -41,7 +41,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center_horizontal"
                 android:layout_weight="1">
-                <larc.ludiconprod.Utils.MyProfileUtils.Bar
+                <larc.oktoberfestprod.Utils.MyProfileUtils.Bar
                     android:layout_width="16dp"
                     android:layout_height="wrap_content"
                     app:value="4"
@@ -52,7 +52,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center_horizontal"
                 android:layout_weight="1">
-                <larc.ludiconprod.Utils.MyProfileUtils.Bar
+                <larc.oktoberfestprod.Utils.MyProfileUtils.Bar
                     android:layout_width="16dp"
                     android:layout_height="wrap_content"
                     app:value="12"
@@ -63,7 +63,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center_horizontal"
                 android:layout_weight="1">
-                <larc.ludiconprod.Utils.MyProfileUtils.Bar
+                <larc.oktoberfestprod.Utils.MyProfileUtils.Bar
                     android:layout_width="16dp"
                     android:layout_height="wrap_content"
                     app:value="8"
@@ -74,7 +74,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center_horizontal"
                 android:layout_weight="1">
-                <larc.ludiconprod.Utils.MyProfileUtils.Bar
+                <larc.oktoberfestprod.Utils.MyProfileUtils.Bar
                     android:layout_width="16dp"
                     android:layout_height="wrap_content"
                     app:value="21"
@@ -85,7 +85,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center_horizontal"
                 android:layout_weight="1">
-                <larc.ludiconprod.Utils.MyProfileUtils.Bar
+                <larc.oktoberfestprod.Utils.MyProfileUtils.Bar
                     android:layout_width="16dp"
                     android:layout_height="wrap_content"
                     app:value="4"
@@ -96,14 +96,14 @@
                 android:layout_height="match_parent"
                 android:gravity="center_horizontal"
                 android:layout_weight="1">
-                <larc.ludiconprod.Utils.MyProfileUtils.Bar
+                <larc.oktoberfestprod.Utils.MyProfileUtils.Bar
                     android:layout_width="16dp"
                     android:layout_height="wrap_content"
                     app:value="4"
                     app:progress="30"/>
             </RelativeLayout>
         </LinearLayout>
-        <larc.ludiconprod.Utils.MyProfileUtils.TopGraph
+        <larc.oktoberfestprod.Utils.MyProfileUtils.TopGraph
             android:id="@+id/topGraph"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

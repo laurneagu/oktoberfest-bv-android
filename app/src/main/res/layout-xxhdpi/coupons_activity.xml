@@ -42,7 +42,7 @@
                     android:textColor="@color/yellow"/>
             </LinearLayout>
 
-            <larc.ludiconprod.Utils.ui.SlidingTabLayout
+            <larc.oktoberfestprod.Utils.ui.SlidingTabLayout
                 android:id="@+id/couponsTabs"
                 android:layout_toLeftOf="@+id/ludicoinsLayoutInCupons"
                 android:layout_width="match_parent"
